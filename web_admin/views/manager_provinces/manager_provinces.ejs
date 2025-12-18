@@ -1,0 +1,186 @@
+<div class="row align-items-center mb-4">
+  <div class="col">
+    <h4 class="mb-1">Quan ly mien & tinh thanh</h4>
+    <p class="text-muted mb-0">Chon mien ben trai, xem cac tinh cua mien do ben phai.</p>
+  </div>
+  <div class="col-auto d-flex flex-wrap align-items-center gap-2">
+    <input id="search-province" type="text" class="form-control form-control-sm" placeholder="Tim theo ten tinh" style="width: 240px;">
+    <button class="btn btn-primary btn-sm" id="btn-search-province">Tim kiem</button>
+    <button class="btn btn-light btn-sm" id="btn-reset-province" title="Reset"><i class="bi-arrow-clockwise"></i></button>
+    <button class="btn btn-success btn-sm" id="btn-add-province">+ Them tinh thanh</button>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-header d-flex align-items-center justify-content-between">
+        <h6 class="mb-0">Mien</h6>
+        <button class="btn btn-sm btn-outline-primary" id="btn-add-region">+ Them mien</button>
+      </div>
+      <div class="list-group list-group-flush" id="region-list">
+        <div class="list-group-item text-muted text-center">Dang tai...</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="card h-100">
+      <div class="card-header d-flex align-items-center justify-content-between">
+        <h6 class="mb-0" id="province-title">Tinh thanh</h6>
+        <span class="text-muted small" id="province-count"></span>
+      </div>
+      <div class="table-responsive" id="provinces-table-wrapper">
+        <table class="table table-bordered table-sm mb-0">
+          <thead class="table-header-orange">
+            <tr>
+              <th>Ma tinh</th>
+              <th>Ten tinh</th>
+              <th>Mien</th>
+              <th class="text-center" style="width:120px;">Tac vu</th>
+            </tr>
+          </thead>
+          <tbody id="province-list">
+            <tr><td colspan="4" class="text-center text-muted">Chon mien de xem tinh thanh</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Modal add region tweaks */
+  #modal-add-region .modal-content {
+    border: none;
+    border-radius: 18px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+  }
+  #modal-add-region .form-control,
+  #modal-add-region .form-select {
+    border-radius: 12px;
+    border-color: #eef0f3;
+  }
+  #modal-add-region .form-control:focus,
+  #modal-add-region .form-select:focus {
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    border-color: #787bff;
+  }
+  #modal-add-region .helper {
+    color: #8a94a6;
+    font-size: 13px;
+  }
+</style>
+
+<div class="modal fade" id="modal-add-region" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Them mien moi</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="form-add-region">
+        <div class="modal-body">
+          <div id="add-region-alert" class="mb-3" style="display:none;"></div>
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="helper">Dien thong tin mien va chon vung Bac/Trung/Nam</span>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Ma mien (duy nhat)</label>
+            <input type="text" class="form-control" id="region-code" required placeholder="vd: dong_bac_bo">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Ten mien</label>
+            <input type="text" class="form-control" id="region-name" required placeholder="Dong Bac Bo">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold d-flex align-items-center gap-2">
+              Vung (macro_region)
+              <span class="badge bg-light text-dark border">Bat buoc</span>
+            </label>
+            <select class="form-select" id="region-macro" required>
+              <option value="">-- Chon vung --</option>
+              <option value="Bac">Bac</option>
+              <option value="Trung">Trung</option>
+              <option value="Nam">Nam</option>
+            </select>
+            <div class="helper mt-1">Luu vao truong macro_region (Bac/Trung/Nam)</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Thu tu (tuy chon)</label>
+            <input type="number" class="form-control" id="region-number" placeholder="vd: 1">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Huy</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-region">Luu</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modal-add-province" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Them tinh thanh</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="form-add-province">
+        <div class="modal-body">
+          <div id="add-province-alert" class="mb-3" style="display:none;"></div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Ma tinh (duy nhat)</label>
+              <input type="text" class="form-control" id="province-code" placeholder="vd: ha_noi" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Ten tinh</label>
+              <input type="text" class="form-control" id="province-name" placeholder="Ha Noi" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Mien</label>
+              <select class="form-select" id="province-region" required>
+                <option value="">-- Chon mien --</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Slug</label>
+              <input type="text" class="form-control" id="province-slug" placeholder="ha-noi">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Center Lat</label>
+              <input type="number" step="any" class="form-control" id="province-lat" placeholder="0">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Center Lng</label>
+              <input type="number" step="any" class="form-control" id="province-lng" placeholder="0">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Image URL</label>
+              <input type="text" class="form-control" id="province-image" placeholder="https://...">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Chon anh tu may (tu dong dien vao truong tren)</label>
+              <input type="file" accept="image/*" class="form-control" id="province-image-file">
+              <small class="text-muted">File se duoc doc thanh base64 va luu vao truong Image URL.</small>
+              <div class="mt-2">
+                <img id="province-image-preview" src="" alt="" style="max-width: 180px; display: none; border: 1px solid #eee; border-radius: 6px;">
+              </div>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Mo ta</label>
+              <textarea class="form-control" rows="2" id="province-desc" placeholder="Mo ta ngan"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Huy</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-province">Luu</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="/js/manager_provinces/manager_provinces.js"></script>

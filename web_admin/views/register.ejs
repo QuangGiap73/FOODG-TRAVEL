@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dang ky - Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050815;
+      --panel: rgba(15, 20, 42, 0.78);
+      --border: rgba(255, 255, 255, 0.1);
+      --primary: #5bd8c2;
+      --accent: #f7a600;
+      --text: #eaf2ff;
+      --muted: #9aa4c8;
+      --shadow: 0 25px 80px rgba(2, 6, 18, 0.7);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(500px 500px at 20% 20%, rgba(91, 216, 194, 0.12), transparent 45%),
+                  radial-gradient(460px 460px at 80% 10%, rgba(247, 166, 0, 0.12), transparent 42%),
+                  linear-gradient(135deg, #050815, #0c1230 50%, #050815);
+      font-family: "Space Grotesk", system-ui, -apple-system, sans-serif;
+      color: var(--text);
+      padding: 24px;
+    }
+    .shell { width: min(960px, 100%); display: grid; grid-template-columns: 1fr; gap: 24px; }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      position: relative;
+      overflow: hidden;
+    }
+    .panel::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: radial-gradient(700px 700px at -20% 10%, rgba(91, 216, 194, 0.12), transparent 35%),
+                  radial-gradient(500px 500px at 120% -10%, rgba(247, 166, 0, 0.08), transparent 40%);
+      opacity: 0.5; pointer-events: none;
+    }
+    .panel > * { position: relative; z-index: 1; }
+    .logo { display: inline-flex; align-items: center; gap: 12px; margin-bottom: 12px; font-weight: 700; letter-spacing: 0.4px; }
+    .logo-mark {
+      width: 42px; height: 42px; display: grid; place-items: center; border-radius: 14px;
+      background: linear-gradient(135deg, #5bd8c2, #37bca4); color: #05121e; font-weight: 800;
+      box-shadow: 0 14px 40px rgba(91, 216, 194, 0.45);
+    }
+    h1 { margin: 10px 0 8px; font-size: clamp(26px, 3vw, 32px); line-height: 1.1; }
+    p { margin: 0 0 18px; color: var(--muted); line-height: 1.6; }
+    form { display: grid; gap: 14px; margin-top: 12px; }
+    label { font-weight: 600; font-size: 14px; }
+    input[type="text"], input[type="email"], input[type="password"] {
+      width: 100%; padding: 14px 14px; border-radius: 12px; border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.02); color: var(--text); font-size: 15px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    input:focus { outline: none; border-color: rgba(91, 216, 194, 0.6); box-shadow: 0 0 0 3px rgba(91, 216, 194, 0.18); }
+    .btn { border: none; border-radius: 12px; padding: 14px 16px; font-weight: 700; font-size: 15px; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.2s ease; }
+    .btn-primary { background: linear-gradient(135deg, #5bd8c2, #33b09c); color: #04111b; box-shadow: 0 14px 40px rgba(91, 216, 194, 0.35); }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 10px 26px rgba(0, 0, 0, 0.35); }
+    .muted { color: var(--muted); font-size: 14px; text-align: center; margin-top: 8px; }
+    .muted a { color: var(--primary); font-weight: 600; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="panel">
+      <div class="logo">
+        <div class="logo-mark">A</div>
+        <div>
+          <div>Arclight Admin</div>
+          <small style="color: var(--muted); font-weight: 500;">Dang ky tai khoan</small>
+        </div>
+      </div>
+      <h1>Tao tai khoan admin</h1>
+      <p>Chi su dung khi ban co quyen tao admin moi. Sau khi tao, can set custom claim admin tu server.</p>
+
+      <form id="register-form">
+        <div>
+          <label for="name">Ho ten</label>
+          <input id="name" type="text" name="name" placeholder="Admin Name" required>
+        </div>
+        <div>
+          <label for="email">Email</label>
+          <input id="email" type="email" name="email" placeholder="ban@congty.com" required>
+        </div>
+        <div>
+          <label for="password">Mat khau</label>
+          <input id="password" type="password" name="password" placeholder="••••••••" required>
+        </div>
+        <div>
+          <label for="confirm">Nhap lai mat khau</label>
+          <input id="confirm" type="password" name="confirm" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Dang ky</button>
+        <div class="muted">Da co tai khoan? <a href="/login">Dang nhap</a></div>
+      </form>
+      <div id="error" style="margin-top:10px;color:#ffb4b4;font-weight:600;"></div>
+      <div id="success" style="margin-top:10px;color:#5bd8c2;font-weight:600;"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js';
+    import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js';
+
+    const firebaseConfig = {
+      apiKey: 'AIzaSyBpfEezr2jddRgUs9_5_vMtg1jHeynqAVs',
+      authDomain: 'foodg-travel.firebaseapp.com',
+      projectId: 'foodg-travel',
+      storageBucket: 'foodg-travel.appspot.com',
+      messagingSenderId: '272763763632',
+      appId: '1:272763763632:web:8338bc7ce331035b7af475'
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const form = document.getElementById('register-form');
+    const errorBox = document.getElementById('error');
+    const successBox = document.getElementById('success');
+
+    function setText(el, text) { el.textContent = text || ''; }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      setText(errorBox, '');
+      setText(successBox, '');
+
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const confirm = document.getElementById('confirm').value;
+
+      if (password !== confirm) {
+        setText(errorBox, 'Mat khau nhap lai khong khop.');
+        return;
+      }
+
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        if (name) {
+          await updateProfile(cred.user, { displayName: name });
+        }
+        setText(successBox, 'Dang ky thanh cong. Lien he quan tri de cap quyen admin.');
+        setTimeout(() => { window.location.href = '/login'; }, 1200);
+      } catch (err) {
+        console.error(err);
+        setText(errorBox, err.message || 'Dang ky that bai');
+      }
+    });
+  </script>
+</body>
+</html>

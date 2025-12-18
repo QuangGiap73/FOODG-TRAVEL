@@ -1,0 +1,143 @@
+﻿  <header id="header" class="navbar navbar-expand-lg navbar-fixed navbar-flush navbar-container navbar-bordered">
+    <div class="navbar-nav-wrap">
+      <div class="navbar-brand-wrapper">
+        <a class="navbar-brand" href="/" aria-label="Admin home">
+          <img class="navbar-brand-logo" src="/assets/svg/logos/logoApp.png" alt="Logo" style="display: block; margin-left: auto; margin-right: auto;">
+          <img class="navbar-brand-logo-mini" src="/assets/svg/logos/icon_App.png" alt="Logo">
+        </a>
+      </div>
+
+      <div class="navbar-nav-wrap-content-left">
+        <button id="sidebar-toggle-btn" type="button" class="js-navbar-vertical-aside-toggle-invoker close mr-3">
+          <i id="sidebar-toggle-icon" class="tio-first-page navbar-vertical-aside-toggle-short-align" data-toggle="tooltip" data-placement="right" title="Collapse"></i>
+        </button>
+      </div>
+
+      <div class="navbar-nav-wrap-content-right">
+        <ul class="navbar-nav align-items-center flex-row">
+          <li class="nav-item">
+            <div class="hs-unfold">
+              <a class="js-hs-unfold-invoker navbar-dropdown-account-wrapper" href="javascript:;" data-hs-unfold-options='{
+                   "target": "#accountNavbarDropdown",
+                   "type": "css-animation"
+                 }'>
+                <div class="avatar avatar-sm avatar-circle">
+                  <img class="avatar-img" src="/assets/img/160x160/img6.jpg" alt="Avatar">
+                  <span class="avatar-status avatar-sm-status avatar-status-success"></span>
+                </div>
+              </a>
+
+              <div id="accountNavbarDropdown" class="hs-unfold-content dropdown-unfold dropdown-menu dropdown-menu-right navbar-dropdown-menu navbar-dropdown-account" style="width: 16rem;">
+                <div class="dropdown-item-text">
+                  <div class="media align-items-center">
+                    <div class="avatar avatar-sm avatar-circle mr-2">
+                      <img class="avatar-img" src="/assets/img/160x160/img6.jpg" alt="Avatar">
+                    </div>
+                    <div class="media-body">
+                      <span class="card-title h5 mb-0">Admin demo</span>
+                      <span class="card-text">admin@example.com</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="dropdown-divider"></div>
+
+                <a class="dropdown-item" href="/login">
+                  <span class="text-truncate pr-2">Dang nhap</span>
+                </a>
+                <a class="dropdown-item" href="#">
+                  <span class="text-truncate pr-2">Dang xuat</span>
+                </a>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </header>
+  <!-- ========== END HEADER ========== -->
+
+  <!-- ========== MAIN CONTENT ========== -->
+  <aside class="js-navbar-vertical-aside navbar navbar-vertical-aside navbar-vertical navbar-vertical-fixed navbar-expand-xl navbar-bordered">
+    <div class="navbar-vertical-container">
+      <div class="navbar-vertical-footer-offset">
+        <div class="navbar-brand-wrapper justify-content-between">
+          <a class="navbar-brand" href="/" aria-label="Admin home">
+            <img class="navbar-brand-logo" src="/assets/svg/logos/logoApp.png" alt="Logo">
+            <img class="navbar-brand-logo-mini" src="/assets/svg/logos/icon_App.png" alt="Logo mini">
+          </a>
+
+          <button type="button" class="js-navbar-vertical-aside-toggle-invoker navbar-vertical-aside-toggle btn btn-icon btn-xs btn-ghost-dark">
+            <i class="tio-clear tio-lg"></i>
+          </button>
+        </div>
+
+        <div class="navbar-vertical-content">
+          <ul class="navbar-nav navbar-nav-lg nav-tabs">
+            <li class="navbar-vertical-aside-has-menu <%= (currentPath === '/' || currentPath === '/dashboard') ? 'active' : '' %>">
+              <a class="js-navbar-vertical-aside-menu-link nav-link" href="/" title="Trang chá»§">
+                <i class="tio-home-vs-1-outlined nav-icon"></i>
+                <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">Trang chá»§</span>
+              </a>
+            </li>
+            <li class="navbar-vertical-aside-has-menu <%= currentPath.startsWith('/manager-uses') ? 'active' : '' %>">
+              <a class="js-navbar-vertical-aside-menu-link nav-link" href="/manager-uses" title="Quan ly tai khoan">
+                <i class="bi-people nav-icon"></i>
+                <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">Quan ly tai khoan</span>
+              </a>
+            </li>
+            <li class="navbar-vertical-aside-has-menu <%= currentPath.startsWith('/manager-provinces') ? 'active' : '' %>">
+              <a class="js-navbar-vertical-aside-menu-link nav-link" href="/manager-provinces" title="Quan ly tinh thanh">
+                <i class="bi-geo-alt nav-icon"></i>
+                <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">Quan ly tinh thanh</span>
+              </a>
+            </li>
+            <li class="navbar-vertical-aside-has-menu <%= currentPath === '/login' ? 'active' : '' %>">
+              <a class="js-navbar-vertical-aside-menu-link nav-link" href="/login" title="Dang nhap">
+                <i class="bi-box-arrow-in-right nav-icon"></i>
+                <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">Dang nhap</span>
+              </a>
+            </li>
+            <li class="navbar-vertical-aside-has-menu <%= currentPath === '/landing' ? 'active' : '' %>">
+              <a class="js-navbar-vertical-aside-menu-link nav-link" href="/landing" title="Landing demo">
+                <i class="tio-pages-outlined nav-icon"></i>
+                <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">Landing demo</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <div class="nav-divider"></div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="navbar-vertical-footer text-center py-3">
+          <small class="text-muted d-block mb-1">Giaodien demo</small>
+          <small class="text-muted d-block">Tuy chỉnh sidebar khi thêm trang mới.</small>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <!-- ========== END MAIN CONTENT ========== -->
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var btn = document.getElementById('sidebar-toggle-btn');
+      var icon = document.getElementById('sidebar-toggle-icon');
+      var sidebar = document.querySelector('.js-navbar-vertical-aside');
+
+      if (btn && icon && sidebar) {
+        btn.addEventListener('click', function() {
+          sidebar.classList.toggle('collapsed');
+          if (sidebar.classList.contains('collapsed')) {
+          icon.classList.remove('tio-first-page');
+          icon.classList.add('tio-last-page');
+          icon.setAttribute('title', 'Expand');
+        } else {
+          icon.classList.remove('tio-last-page');
+          icon.classList.add('tio-first-page');
+          icon.setAttribute('title', 'Collapse');
+        }
+      });
+    }
+  });
+</script>

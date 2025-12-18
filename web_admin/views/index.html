@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bảng điều khiển demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b1021;
+      --panel: rgba(18, 25, 46, 0.8);
+      --border: rgba(255, 255, 255, 0.08);
+      --primary: #5bd8c2;
+      --accent: #f7a600;
+      --text: #eaf2ff;
+      --muted: #99a2c4;
+      --shadow: 0 20px 70px rgba(3, 10, 26, 0.6);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Space Grotesk", system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at 20% 20%, rgba(91, 216, 194, 0.12), transparent 25%),
+                  radial-gradient(circle at 80% 10%, rgba(247, 166, 0, 0.12), transparent 22%),
+                  linear-gradient(135deg, #0b1021 0%, #0f1a37 50%, #0b1021 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: 48px;
+    }
+
+    .glow {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(600px 600px at 30% 20%, rgba(91, 216, 194, 0.09), transparent 40%),
+        radial-gradient(500px 500px at 80% 0%, rgba(247, 166, 0, 0.07), transparent 45%);
+      filter: blur(20px);
+      z-index: 0;
+    }
+
+    .shell {
+      position: relative;
+      z-index: 1;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 32px 20px 0;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: rgba(10, 14, 29, 0.7);
+      backdrop-filter: blur(14px);
+      position: sticky;
+      top: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #5bd8c2, #31a88f);
+      color: #04101a;
+      font-weight: 700;
+      box-shadow: 0 12px 35px rgba(91, 216, 194, 0.35);
+    }
+
+    nav {
+      display: flex;
+      gap: 18px;
+      color: var(--muted);
+      font-weight: 500;
+      flex: 1;
+      margin: 0 24px;
+    }
+
+    nav a {
+      color: inherit;
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 12px;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+    }
+
+    nav a:hover {
+      color: var(--text);
+      border-color: var(--border);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      padding: 10px 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(255, 255, 255, 0.14);
+      box-shadow: 0 8px 30px rgba(4, 15, 38, 0.45);
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, #5bd8c2, #3cbcaa);
+      color: #04101a;
+      border-color: transparent;
+    }
+
+    .hero {
+      margin-top: 28px;
+      padding: 28px;
+      border-radius: 22px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 26px;
+      box-shadow: var(--shadow);
+    }
+
+    .eyebrow {
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    h1 {
+      margin: 10px 0 12px;
+      font-size: clamp(28px, 4vw, 36px);
+      line-height: 1.1;
+    }
+
+    p.lead {
+      margin: 0 0 18px;
+      color: var(--muted);
+      max-width: 620px;
+    }
+
+    .cta {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .badge {
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted);
+      font-size: 13px;
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .badge .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--primary);
+      box-shadow: 0 0 0 4px rgba(91, 216, 194, 0.15);
+    }
+
+    .hero-visual {
+      position: relative;
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: linear-gradient(145deg, rgba(91, 216, 194, 0.06), rgba(255, 255, 255, 0.02));
+      overflow: hidden;
+    }
+
+    .pulse {
+      position: absolute;
+      inset: -30%;
+      background: radial-gradient(circle, rgba(91, 216, 194, 0.12), transparent 45%);
+      animation: float 8s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0); opacity: 1; }
+      50% { transform: translateY(-6px); opacity: 0.8; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    .mini-cards {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      z-index: 1;
+    }
+
+    .mini {
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      padding: 14px;
+      background: rgba(4, 11, 26, 0.65);
+      box-shadow: 0 16px 35px rgba(0, 0, 0, 0.35);
+    }
+
+    .mini h4 {
+      margin: 0 0 6px;
+    }
+
+    .mini .value {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .mini small {
+      color: var(--muted);
+    }
+
+    .trend {
+      color: var(--primary);
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .grid {
+      margin-top: 26px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .stats {
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+
+    .tile {
+      padding: 18px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: rgba(10, 16, 34, 0.8);
+      box-shadow: var(--shadow);
+    }
+
+    .tile h3 {
+      margin: 0 0 6px;
+    }
+
+    .metric {
+      font-size: 26px;
+      font-weight: 700;
+    }
+
+    .spark {
+      margin-top: 10px;
+      height: 6px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(91, 216, 194, 0.3), rgba(247, 166, 0, 0.35));
+      position: relative;
+      overflow: hidden;
+    }
+
+    .spark::after {
+      content: "";
+      position: absolute;
+      left: 10%;
+      top: 0;
+      bottom: 0;
+      width: 38%;
+      border-radius: inherit;
+      background: linear-gradient(135deg, #5bd8c2, #38c4b0);
+      box-shadow: 0 0 20px rgba(91, 216, 194, 0.4);
+    }
+
+    .two-col {
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      align-items: start;
+    }
+
+    .list {
+      display: grid;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .row {
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.02);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .row strong {
+      font-size: 15px;
+    }
+
+    .pill {
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      letter-spacing: 0.3px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted);
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+
+    .table th, .table td {
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .table th {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .highlight {
+      color: var(--accent);
+    }
+
+    footer {
+      margin-top: 28px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 13px;
+    }
+
+    @media (max-width: 900px) {
+      header {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+      }
+
+      nav {
+        order: 3;
+        width: 100%;
+        margin: 6px 0 0;
+        overflow-x: auto;
+      }
+
+      .actions {
+        align-self: flex-end;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="glow"></div>
+  <div class="shell">
+    <header>
+      <div class="brand">
+        <div class="brand-mark">A</div>
+        <div>
+          <div>Arclight Admin</div>
+          <small style="color: var(--muted); font-weight: 500;">Bản thử nghiệm giao diện</small>
+        </div>
+      </div>
+      <nav>
+        <a href="#demo">Tổng quan</a>
+        <a href="#insights">Phân tích</a>
+        <a href="#tasks">Công việc</a>
+      </nav>
+      <div class="actions">
+        <button class="btn">Xem API</button>
+        <button class="btn primary">Khởi chạy demo</button>
+      </div>
+    </header>
+
+    <section class="hero" id="demo">
+      <div>
+        <div class="eyebrow">chào mừng</div>
+        <h1>Phòng điều khiển sẵn sàng vận hành ngay bây giờ.</h1>
+        <p class="lead">Trang mẫu này giúp bạn xem nhanh bố cục quản trị: tóm tắt số liệu, danh sách công việc và hoạt động gần đây. Bạn có thể chỉnh sửa nội dung tùy ý để khởi động dự án.</p>
+        <div class="cta">
+          <button class="btn primary">Chạy thử giao diện</button>
+          <button class="btn">Tùy chỉnh màu sắc</button>
+        </div>
+        <div class="badges">
+          <span class="badge"><span class="dot"></span> Máy chủ đang online</span>
+          <span class="badge">Cập nhật lúc: 5 phút trước</span>
+          <span class="badge">Hiệu suất: 99.9%</span>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="pulse"></div>
+        <div class="mini-cards">
+          <div class="mini">
+            <h4>Người dùng hoạt động</h4>
+            <div class="value">1,204 <small>/h</small></div>
+            <div class="trend">+18% so với hôm qua</div>
+          </div>
+          <div class="mini">
+            <h4>Đơn hàng</h4>
+            <div class="value">326 <small>đơn</small></div>
+            <div class="trend">+42 đơn mới</div>
+          </div>
+          <div class="mini">
+            <h4>Độ trễ trung bình</h4>
+            <div class="value">184 <small>ms</small></div>
+            <small>Ổn định & tối ưu</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid stats" id="insights">
+      <article class="tile">
+        <h3>Doanh thu dự kiến</h3>
+        <div class="metric">$58,420</div>
+        <div class="spark"></div>
+        <p style="color: var(--muted); margin: 10px 0 0;">Nguồn chính từ chiến dịch Q4 + marketplace.</p>
+      </article>
+      <article class="tile">
+        <h3>Tỉ lệ hoàn thành</h3>
+        <div class="metric">93%</div>
+        <div class="spark" style="--accent: #5bd8c2;"></div>
+        <p style="color: var(--muted); margin: 10px 0 0;">Tăng nhẹ 3% sau khi tối ưu quy trình.</p>
+      </article>
+      <article class="tile">
+        <h3>Thông báo hệ thống</h3>
+        <ul style="margin: 8px 0 0 16px; color: var(--muted); line-height: 1.6;">
+          <li>API v2.4 sẵn sàng thử nghiệm.</li>
+          <li>Backup đêm qua hoàn tất lúc 02:14.</li>
+          <li>Không có cảnh báo bảo mật mới.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="grid two-col" id="tasks">
+      <article class="tile">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <h3>Nhiệm vụ hôm nay</h3>
+          <span class="pill">Bảng mẫu</span>
+        </div>
+        <div class="list">
+          <div class="row">
+            <div>
+              <strong>Đồng bộ dữ liệu bán hàng</strong>
+              <div style="color: var(--muted);">Kết nối data warehouse và chuẩn hóa trường dữ liệu.</div>
+            </div>
+            <span class="pill" style="color: var(--primary);">Đang chạy</span>
+          </div>
+          <div class="row">
+            <div>
+              <strong>Tối ưu trang thanh toán</strong>
+              <div style="color: var(--muted);">Giảm bước nhập liệu, thử A/B nút mua.</div>
+            </div>
+            <span class="pill">Đang chuẩn bị</span>
+          </div>
+          <div class="row">
+            <div>
+              <strong>Kiểm thử bảo mật</strong>
+              <div style="color: var(--muted);">Đánh giá quyền truy cập admin và token hết hạn.</div>
+            </div>
+            <span class="pill" style="color: var(--accent);">Ưu tiên cao</span>
+          </div>
+        </div>
+      </article>
+      <article class="tile">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <h3>Hoạt động gần đây</h3>
+          <span class="pill">Realtime</span>
+        </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Sự kiện</th>
+              <th>Người dùng</th>
+              <th>Thời gian</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="highlight">Đẩy bản build</span> - Dashboard</td>
+              <td>Quang V.</td>
+              <td>2 phút trước</td>
+            </tr>
+            <tr>
+              <td>Import dữ liệu CRM</td>
+              <td>Lan P.</td>
+              <td>9 phút trước</td>
+            </tr>
+            <tr>
+              <td>Chạy kiểm thử tích hợp</td>
+              <td>Minh T.</td>
+              <td>24 phút trước</td>
+            </tr>
+            <tr>
+              <td>Thiết lập cảnh báo lỗi 5xx</td>
+              <td>Hà L.</td>
+              <td>35 phút trước</td>
+            </tr>
+          </tbody>
+        </table>
+      </article>
+    </section>
+
+    <footer>
+      Giao diện demo được dựng bằng Express + HTML/CSS thuần. Tuỳ chỉnh nội dung trong file <code>views/index.html</code> rồi chạy <code>npm start</code> để xem ngay.
+    </footer>
+  </div>
+</body>
+</html>

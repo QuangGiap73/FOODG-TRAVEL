@@ -1,0 +1,158 @@
+<div class="row align-items-center mb-4">
+  <div class="col">
+    <div class="d-flex align-items-center">
+      <div class="mr-3">
+        <span class="display-4 text-dark d-block mb-1">Quan ly tai khoan</span>
+        <p class="text-body">Xin chao den voi trang quan ly tai khoan. Bat dau quan ly nguoi dung cua ban tai day.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-auto d-flex flex-wrap align-items-center gap-2">
+    <a class="btn btn-primary" href="/login">
+      <i class="bi-people mr-1"></i>
+      Xem danh sach tai khoan
+    </a>
+  </div>
+</div>
+
+<div >
+  <div class="card mt-3">
+    <div class="card-body">
+        <div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
+          <div class="d-flex align-items-center gap-3">
+            <h5 class="card-title mb-0">Quan ly nguoi dung</h5>
+            <div id="bulk-actions" class="align-items-center gap-3 d-none" style="margin-left: 8px;">
+              <span id="selected-count" class="text-muted mb-0" style="font-size: 14px; font-weight: 600;"></span>
+              <button id="btn-delete-selected" class="btn btn-danger btn-sm" disabled>Xoa da chon</button>
+            </div>
+          </div>
+          <div class="d-flex flex-wrap align-items-center gap-2 justify-content-end">
+            <input id="search-user" type="text" class="form-control form-control-sm" placeholder="Tim theo ten hoac SDT" style="width: 220px;">
+            <button id="btn-search-user" class="btn btn-primary btn-sm" style="margin-left:8px;">Tim kiem</button>
+           
+            <button id="btn-add-user" class="btn btn-success btn-sm" style="margin-left:8px;">
+              + Them nguoi dung
+            </button>
+            <a class="btn btn-info btn-sm" href="/manager-uses/api/users/export" title="Xuat Excel" style="margin-left:8px;">Xuat file Excel</a>
+            <div class="dropdown">
+              <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="btn-sort-menu" data-bs-toggle="dropdown" aria-expanded="false" title="Sap xep" style="margin-left:8px;">
+                <i class="bi-filter"></i>
+              </button>
+              <button id="btn-reset-users" class="btn btn-light btn-sm" title="Reset">
+                <i class="bi-arrow-clockwise"></i>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="btn-sort-menu">
+                <li><button class="dropdown-item sort-option" type="button" data-sort="name">Sap xep theo ten</button></li>
+                <li><button class="dropdown-item sort-option" type="button" data-sort="createdAt">Sap xep theo ngay tao</button></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      <div class="table-responsive" id="users-table-wrapper">
+        <table class="table table-bordered table-sm" id="users-table">
+          <thead class="table-header-orange">
+            <tr>
+              <th style="width:32px;">
+                <input type="checkbox" id="select-all">
+              </th>
+              <th>Email</th>
+              <th>Ho ten</th>
+              <th>Vai tro</th>
+              <th>Phone</th>
+              <th>Ngay tao</th>
+              <th>Tac vu</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal them tai khoan -->
+<div class="modal fade" id="addUserModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Them tai khoan</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="add-user-form">
+          <div class="form-group mb-2">
+            <label>Email</label>
+            <input name="email" type="email" class="form-control" required>
+          </div>
+          <div class="form-group mb-2">
+            <label>Password</label>
+            <input name="password" type="password" class="form-control" required>
+          </div>
+          <div class="form-group mb-2">
+            <label>Ho ten</label>
+            <input name="fullName" type="text" class="form-control">
+          </div>
+          <div class="form-group mb-2">
+            <label>Phone</label>
+            <input name="phone" type="text" class="form-control">
+          </div>
+          <div class="form-group mb-2">
+            <label>Vai tro</label>
+            <select name="role" class="form-control">
+              <option value="user" selected>User</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div id="add-user-error" class="text-danger small mt-2"></div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huy</button>
+        <button type="button" id="btn-save-user" class="btn btn-primary">Luu</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal sua tai khoan -->
+<div class="modal fade" id="editUserModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Sua tai khoan</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="edit-user-form">
+          <div class="form-group mb-2">
+            <label>Email</label>
+            <input name="email" type="email" class="form-control" required>
+          </div>
+          <div class="form-group mb-2">
+            <label>Ho ten</label>
+            <input name="fullName" type="text" class="form-control">
+          </div>
+          <div class="form-group mb-2">
+            <label>Phone</label>
+            <input name="phone" type="text" class="form-control">
+          </div>
+          <div class="form-group mb-2">
+            <label>Vai tro</label>
+            <select name="role" class="form-control">
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div id="edit-user-error" class="text-danger small mt-2"></div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huy</button>
+        <button type="button" id="btn-update-user" class="btn btn-primary">Luu</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/manager_users.js"></script>
+<script src="/js/edit_users.js"></script>

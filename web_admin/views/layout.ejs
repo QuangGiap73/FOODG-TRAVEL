@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <%- include('partials/header', { pageTitle }) %>
+  <body class="navbar-vertical-aside-show-xl footer-offset">
+    <!-- Sidebar -->
+    <%- include('partials/sidebar') %>
+
+    <!-- Main content -->
+    <main id="content" role="main" class="main">
+      <div class="content container-fluid">
+        <%- body %>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <%- include('partials/footer') %>
+  </body>
+</html>

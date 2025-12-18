@@ -138,13 +138,9 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
-# Project-specific (FOODG-TRAVEL)
-web_admin/node_modules/
-web_admin/.env
-web_admin/.env.*
-!web_admin/.env.example
+# Cloudinary config
+config/cloudinary.js
 
-# Local secrets
-web_admin/serviceAccountKey.json
-web_admin/firebase/config.js
-web_admin/config/cloudinary.js
+# Firebase secrets
+firebase/config.js
+serviceAccountKey.json
