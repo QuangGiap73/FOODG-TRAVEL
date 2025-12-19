@@ -148,3 +148,7 @@ web_admin/.env.*
 web_admin/serviceAccountKey.json
 web_admin/firebase/config.js
 web_admin/config/cloudinary.js
+
+food_travel/android/app/google-services.json
+food_travel/lib/firebase_options.dart
+
