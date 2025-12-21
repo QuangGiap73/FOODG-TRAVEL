@@ -33,15 +33,29 @@ document.addEventListener('DOMContentLoaded', () => {
   const previewProvinceImg = document.getElementById('province-image-preview');
   const inputProvinceDesc = document.getElementById('province-desc');
   const saveProvinceBtn = document.getElementById('btn-save-province');
-
+  // Edit province elements
+  const editProvinceModalEl = document.getElementById('modal-edit-province');
+  const editProvinceModal = editProvinceModalEl ? new bootstrap.Modal(editProvinceModalEl) : null;
+  const editProvinceForm = document.getElementById('form-edit-province');
+  const alertEditProvince = document.getElementById('edit-province-alert');
+  const editCode = document.getElementById('edit-province-code');
+  const editName = document.getElementById('edit-province-name');
+  const editRegion = document.getElementById('edit-province-region');
+  const editSlug = document.getElementById('edit-province-slug');
+  const editLat = document.getElementById('edit-province-lat');
+  const editLng = document.getElementById('edit-province-lng');
+  const editImage = document.getElementById('edit-province-image');
+  const editDesc = document.getElementById('edit-province-desc');
+  const btnUpdateProvince = document.getElementById('btn-update-province');
   let regionsCache = [];
   let provincesCache = [];
   let currentRegion = null;
 
-  async function fetchJSON(url) {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error('Request failed');
-    return res.json();
+  async function fetchJSON(url, options = {}) {
+    const res = await fetch(url, options);
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'Request failed');
+    return data;
   }
 
   async function loadRegions(selectCode) {
@@ -100,22 +114,21 @@ document.addEventListener('DOMContentLoaded', () => {
         handleDeleteRegion(code);
       });
     });
-    // fill region select in province modal
-    if (selectProvinceRegion) {
-      selectProvinceRegion.innerHTML =
-        '<option value=\"\">-- Chon mien --</option>' +
-        list
-          .map((r) => `<option value=\"${r.code || r.id}\">${r.name || r.code}</option>`)
-          .join('');
-    }
+    // fill region select in province modal + edit modal
+    const options =
+      '<option value=\"\">-- Chon mien --</option>' +
+      list.map((r) => `<option value=\"${r.code || r.id}\">${r.name || r.code}</option>`).join('');
+    if (selectProvinceRegion) selectProvinceRegion.innerHTML = options;
+    const editRegion = document.getElementById('edit-province-region');
+    if (editRegion) editRegion.innerHTML = options;
   }
 
   async function selectRegion(code) {
     currentRegion = code;
     // highlight
-    regionListEl.querySelectorAll('.region-item').forEach((btn) => {
-      btn.classList.toggle('active', btn.dataset.code === code);
-    });
+    regionListEl
+      .querySelectorAll('.region-item-wrapper')
+      .forEach((btn) => btn.classList.toggle('active', btn.dataset.code === code));
     provinceTitle.textContent = `Tinh thanh - ${code}`;
     provinceListEl.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Dang tai...</td></tr>';
     try {
@@ -137,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
     provinceListEl.innerHTML = list
       .map(
         (p) => `
-        <tr>
+        <tr data-code="${p.code || ''}">
           <td>${p.code || ''}</td>
           <td>${p.name || ''}</td>
           <td>${p.regionsCode || ''}</td>
@@ -146,10 +159,10 @@ document.addEventListener('DOMContentLoaded', () => {
               <button class="btn btn-sm btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="bi-three-dots-vertical"></i>
               </button>
-              <ul class="dropdown-menu dropdown-menu-end">
-                <li><button class="dropdown-item" type="button">Xem</button></li>
-                <li><button class="dropdown-item" type="button">Sua</button></li>
-                <li><button class="dropdown-item text-danger" type="button">Xoa</button></li>
+              <ul class="dropdown-menu dropdown-menu-end province-action-menu">
+                <li><button class="dropdown-item" type="button" data-action="view" data-id="${p.code || ''}">Xem</button></li>
+                <li><button class="dropdown-item" type="button" data-action="edit" data-id="${p.code || ''}">Sua</button></li>
+                <li><button class="dropdown-item text-danger" type="button" data-action="delete" data-id="${p.code || ''}">Xoa</button></li>
               </ul>
             </div>
           </td>
@@ -157,9 +170,40 @@ document.addEventListener('DOMContentLoaded', () => {
       `,
       )
       .join('');
-  }
 
-  // Tim kiem tinh theo ten
+    document.dispatchEvent(
+      new CustomEvent('province:list-rendered', {
+        detail: { container: provinceListEl, provinces: list },
+      }),
+    );
+
+    // Gan hanh dong Xem/Sua/Xoa giong manager_users
+    provinceListEl.querySelectorAll('.province-action-menu .dropdown-item').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const action = btn.dataset.action;
+        const code = btn.dataset.id;
+        const province = list.find((p) => (p.code || p.id) === code);
+        if (!province) return alert('Khong tim thay tinh thanh');
+        if (action === 'view') {
+          alert([
+            `Ma: ${province.code}`,
+            `Ten: ${province.name}`,
+            `Mien: ${province.regionsCode}`,
+            `Slug: ${province.slug || ''}`,
+            `Lat: ${province.centerLat || 0}`,
+            `Lng: ${province.centerLng || 0}`,
+            `Image: ${province.imageUrl || ''}`,
+            `Mo ta: ${province.description || ''}`,
+          ].join('\n'));
+        } else if (action === 'edit') {
+          openEditProvince(province);
+        } else if (action === 'delete') {
+          handleDeleteProvince(code);
+        }
+      });
+    });
+  }
+// Tim kiem tinh theo ten
   function applyProvinceSearch() {
     const q = (searchInput?.value || '').trim().toLowerCase();
     if (!q) {
@@ -379,5 +423,106 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+    // Mo modal sua tinh
+  function openEditProvince(province) {
+    if (!province) return;
+    if (alertEditProvince) {
+      alertEditProvince.style.display = 'none';
+      alertEditProvince.textContent = '';
+    }
+    editCode && (editCode.value = province.code || '');
+    editName && (editName.value = province.name || '');
+    editRegion && (editRegion.value = province.regionsCode || '');
+    editSlug && (editSlug.value = province.slug || '');
+    editLat && (editLat.value = province.centerLat || 0);
+    editLng && (editLng.value = province.centerLng || 0);
+    editImage && (editImage.value = province.imageUrl || '');
+    editDesc && (editDesc.value = province.description || '');
+    editProvinceModal?.show();
+  }
+
+  editProvinceForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!editCode || !editName || !editRegion) return;
+    const payload = {
+      code: editCode.value.trim(),
+      name: editName.value.trim(),
+      regionsCode: editRegion.value.trim(),
+      slug: editSlug?.value.trim() || '',
+      centerLat: editLat?.value || 0,
+      centerLng: editLng?.value || 0,
+      imageUrl: editImage?.value.trim() || '',
+      description: editDesc?.value.trim() || '',
+    };
+    if (!payload.code || !payload.name || !payload.regionsCode) {
+      if (alertEditProvince) {
+        alertEditProvince.style.display = 'block';
+        alertEditProvince.className = 'alert alert-danger';
+        alertEditProvince.textContent = 'Ma tinh, ten tinh va ma mien la bat buoc';
+      }
+      return;
+    }
+    try {
+      btnUpdateProvince && (btnUpdateProvince.disabled = true, btnUpdateProvince.textContent = 'Dang luu...');
+      await fetchJSON(`/manager-provinces/api/provinces/${encodeURIComponent(payload.code)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      editProvinceModal?.hide();
+      await selectRegion(payload.regionsCode);
+    } catch (err) {
+      console.error(err);
+      if (alertEditProvince) {
+        alertEditProvince.style.display = 'block';
+        alertEditProvince.className = 'alert alert-danger';
+        alertEditProvince.textContent = err.message || 'Cap nhat that bai';
+      }
+    } finally {
+      btnUpdateProvince && (btnUpdateProvince.disabled = false, btnUpdateProvince.textContent = 'Cap nhat');
+    }
+  });
+
+  async function handleDeleteProvince(code) {
+    const ok = confirm('Ban chac chan muon xoa tinh thanh nay?');
+    if (!ok) return;
+    try {
+      await fetchJSON(`/manager-provinces/api/provinces/${encodeURIComponent(code)}`, { method: 'DELETE' });
+      await selectRegion(currentRegion || '');
+    } catch (err) {
+      console.error(err);
+      alert(err.message || 'Xoa tinh that bai');
+    }
+  }
+// Fallback dropdown toggle (phòng khi Bootstrap JS chưa được load)
+  document.addEventListener('click', (e) => {
+    const toggle = e.target.closest('[data-bs-toggle="dropdown"]');
+    const menus = document.querySelectorAll('.dropdown-menu.show');
+    if (toggle) {
+      const menu = toggle.parentElement.querySelector('.dropdown-menu');
+      menus.forEach((m) => {
+        if (m !== menu) m.classList.remove('show');
+      });
+      if (menu) menu.classList.toggle('show');
+      e.preventDefault();
+      e.stopPropagation();
+    } else {
+      menus.forEach((m) => m.classList.remove('show'));
+    }
+  });
+
+  // expose ham dung chung cho file action
+  window.provincePage = {
+    fetchJSON,
+    selectRegion,
+    getCurrentRegion: () => currentRegion,
+    getProvincesCache: () => provincesCache,
+  };
+
   loadRegions();
 });
+
+
+
+
+

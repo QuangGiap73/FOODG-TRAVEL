@@ -183,4 +183,60 @@
   </div>
 </div>
 
+<div class="modal fade" id="modal-edit-province" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Chinh sua tinh thanh</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="form-edit-province">
+        <div class="modal-body">
+          <div id="edit-province-alert" class="mb-3" style="display:none;"></div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Ma tinh (readonly)</label>
+              <input type="text" class="form-control" id="edit-province-code" readonly>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Ten tinh</label>
+              <input type="text" class="form-control" id="edit-province-name" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Mien</label>
+              <select class="form-select" id="edit-province-region" required>
+                <option value="">-- Chon mien --</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Slug</label>
+              <input type="text" class="form-control" id="edit-province-slug">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Center Lat</label>
+              <input type="number" step="any" class="form-control" id="edit-province-lat">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Center Lng</label>
+              <input type="number" step="any" class="form-control" id="edit-province-lng">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Image URL</label>
+              <input type="text" class="form-control" id="edit-province-image">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Mo ta</label>
+              <textarea class="form-control" rows="2" id="edit-province-desc"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Huy</button>
+          <button type="submit" class="btn btn-primary" id="btn-update-province">Cap nhat</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <script src="/js/manager_provinces/manager_provinces.js"></script>

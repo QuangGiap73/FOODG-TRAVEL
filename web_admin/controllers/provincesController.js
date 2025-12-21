@@ -48,9 +48,7 @@ async function addRegion(req, res) {
     }
     const allowedMacro = ['bac', 'trung', 'nam'];
     if (!allowedMacro.includes(macroRegionRaw)) {
-      return res
-        .status(400)
-        .json({ error: 'macro_region phai la mot trong: Bac/Trung/Nam' });
+      return res.status(400).json({ error: 'macro_region phai la mot trong: Bac/Trung/Nam' });
     }
     const macroRegion =
       macroRegionRaw === 'bac'
@@ -89,7 +87,6 @@ async function deleteRegion(req, res) {
     const code = (req.params.code || '').trim();
     if (!code) return res.status(400).json({ error: 'Thieu ma mien' });
 
-    // Kiem tra con tinh thanh nao thuoc mien khong
     const provincesSnap = await db
       .collection('provinces')
       .where('regionsCode', '==', code)
@@ -123,7 +120,6 @@ async function addProvince(req, res) {
       return res.status(400).json({ error: 'Ma tinh, ten tinh va ma mien la bat buoc' });
     }
 
-    // Kiem tra region ton tai
     const regionSnap = await db.collection('regions').doc(regionsCode).get();
     if (!regionSnap.exists) {
       return res.status(400).json({ error: 'Ma mien khong ton tai' });
@@ -178,6 +174,51 @@ async function uploadProvinceImage(req, res) {
   }
 }
 
+// API: cap nhat tinh thanh
+async function updateProvince(req, res) {
+  try {
+    const code = (req.params.code || req.body.code || '').trim();
+    const name = (req.body.name || '').trim();
+    const regionsCode = (req.body.regionsCode || '').trim();
+    const description = (req.body.description || '').trim();
+    const imageUrl = (req.body.imageUrl || '').trim();
+    const slug = (req.body.slug || '').trim();
+    const centerLat = Number(req.body.centerLat) || 0;
+    const centerLng = Number(req.body.centerLng) || 0;
+
+    if (!code || !name || !regionsCode) {
+      return res.status(400).json({ error: 'Ma tinh, ten tinh va ma mien la bat buoc' });
+    }
+
+    const docRef = db.collection('provinces').doc(code);
+    const docSnap = await docRef.get();
+    if (!docSnap.exists) return res.status(404).json({ error: 'Tinh thanh khong ton tai' });
+
+    const regionSnap = await db.collection('regions').doc(regionsCode).get();
+    if (!regionSnap.exists) return res.status(400).json({ error: 'Ma mien khong ton tai' });
+
+    await docRef.set(
+      {
+        code,
+        name,
+        regionsCode,
+        description,
+        imageUrl,
+        slug: slug || code,
+        centerLat,
+        centerLng,
+        updatedAt: new Date().toISOString(),
+      },
+      { merge: true },
+    );
+
+    res.json({ message: 'Da cap nhat tinh thanh', data: { code, name, regionsCode } });
+  } catch (err) {
+    console.error('updateProvince error:', err);
+    res.status(500).json({ error: 'Failed to update province' });
+  }
+}
+
 module.exports = {
   renderProvincesPage,
   listRegions,
@@ -186,4 +227,5 @@ module.exports = {
   deleteRegion,
   addProvince,
   uploadProvinceImage,
+  updateProvince,
 };

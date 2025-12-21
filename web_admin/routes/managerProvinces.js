@@ -7,6 +7,7 @@ const {
   addRegion,
   deleteRegion,
   addProvince,
+  updateProvince,
   uploadProvinceImage,
 } = require('../controllers/provincesController');
 const upload = require('../middlewares/upload');
@@ -19,6 +20,8 @@ router.get('/api/provinces', requireAdmin, listProvinces);
 router.post('/api/regions', requireAdmin, addRegion);
 router.delete('/api/regions/:code', requireAdmin, deleteRegion);
 router.post('/api/provinces', requireAdmin, addProvince);
+router.put('/api/provinces/:code', requireAdmin, updateProvince);
+
 router.post(
   '/api/provinces/upload-image',
   requireAdmin,
