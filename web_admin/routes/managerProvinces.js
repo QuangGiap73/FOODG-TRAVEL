@@ -6,6 +6,7 @@ const {
   listProvinces,
   addRegion,
   deleteRegion,
+  deleteProvince,
   addProvince,
   updateProvince,
   uploadProvinceImage,
@@ -21,7 +22,7 @@ router.post('/api/regions', requireAdmin, addRegion);
 router.delete('/api/regions/:code', requireAdmin, deleteRegion);
 router.post('/api/provinces', requireAdmin, addProvince);
 router.put('/api/provinces/:code', requireAdmin, updateProvince);
-
+router.delete('/api/provinces/:code', requireAdmin, deleteProvince);
 router.post(
   '/api/provinces/upload-image',
   requireAdmin,

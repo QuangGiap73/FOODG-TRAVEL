@@ -218,6 +218,24 @@ async function updateProvince(req, res) {
     res.status(500).json({ error: 'Failed to update province' });
   }
 }
+// chức năng xóa tỉnh 
+async function deleteProvince(req, res) {
+  try{
+    const code = (req.params.code || '').trim();
+    if(!code) return res.status(400).json({error: 'Thieu ma tinh'});
+
+    const docRef = db.collection('provinces').doc(code);
+    const snap = await docRef.get();
+    if(!snap.exists) return res.status(404).json({error:'Tinh thanh khong ton tai'});
+
+    await docRef.delete();
+    res.json({ message: 'Da xoa tinh thanh', code});
+  }catch (err) {
+    console.error('deleteProvince error:', err);
+    res.status(500).json({error: 'Failed to delete province'});
+  }
+  
+}
 
 module.exports = {
   renderProvincesPage,
@@ -228,4 +246,5 @@ module.exports = {
   addProvince,
   uploadProvinceImage,
   updateProvince,
+  deleteProvince
 };
