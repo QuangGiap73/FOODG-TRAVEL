@@ -1,0 +1,35 @@
+<div class="rơ align-items-center mb-3">
+    <div class="col">
+        <h4 class="mb-1">Quan li mon an</h4>
+        <p class="text-muted mb-0">Tim va xem danh sach mon an.</p>
+    </div>
+    <div class="col-auto d-flex align-items-center gap-2">
+        <input id="dish-search" type="text" class="form-control form-control-sm " placeholder="Tim theo ten/slug" style="width: 240px;">
+        <button class="btn btn-primary btn-sm" id="btn-search-dish">Tim</button>
+        <button class="btn btn-light btn-sm" id="btn-reset-dish" title="Reset"><i class="bi-arrow-clockwise"></i></button>
+        <button class="btn btn-success btn-sm" id="btn-add-dish" disabled>+ Them mon</button>
+    </div>
+</div>
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-sm mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>STT</th>
+                    <th>Ảnh</th>
+                    <th>Tên</th>
+                    <th>Tỉnh</th>
+                    <th>Category</th>
+                    <th>Giá</th>
+                    <th>Spicy</th>
+                </tr>
+            </thead>
+            <tbody id="dish-table-body">
+                <tr>
+                    <td colspan="6" class="text-center text-muted">Dang tai...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="/js/manager_dishes/manager_dishes.js"></script>

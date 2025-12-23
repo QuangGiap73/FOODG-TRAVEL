@@ -77,7 +77,7 @@
             <li class="navbar-vertical-aside-has-menu <%= (currentPath === '/' || currentPath === '/dashboard') ? 'active' : '' %>">
               <a class="js-navbar-vertical-aside-menu-link nav-link" href="/" title="Trang chá»§">
                 <i class="tio-home-vs-1-outlined nav-icon"></i>
-                <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">Trang chá»§</span>
+                <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">Trang chủ</span>
               </a>
             </li>
             <li class="navbar-vertical-aside-has-menu <%= currentPath.startsWith('/manager-uses') ? 'active' : '' %>">
@@ -90,6 +90,12 @@
               <a class="js-navbar-vertical-aside-menu-link nav-link" href="/manager-provinces" title="Quan ly tinh thanh">
                 <i class="bi-geo-alt nav-icon"></i>
                 <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">Quan ly tinh thanh</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/manager-dishes">
+                <i class="bi bi-egg-fried"> </i> 
+                <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">Quan ly mon an</span>
               </a>
             </li>
             <li class="navbar-vertical-aside-has-menu <%= currentPath === '/login' ? 'active' : '' %>">

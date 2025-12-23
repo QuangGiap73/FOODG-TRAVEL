@@ -7,6 +7,7 @@ const { requireAdmin, requireUser, getRoleFromClaims } = require('./middlewares/
 const { db, checkFirebaseConnection } = require('./firebase/config');
 const managerUsesRouter = require('./routes/managerUses');
 const managerProvincesRouter = require('./routes/managerProvinces');
+const managerDishesRouter = require('./routes/managerDishes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -60,7 +61,7 @@ app.get('/landing', (req, res) => {
 
 app.use('/manager-uses', managerUsesRouter);
 app.use('/manager-provinces', managerProvincesRouter);
-
+app.use('/manager-dishes', managerDishesRouter);
 app.get('/test-firebase', async (req, res) => {
   try {
     // Test writing a sample document to Firestore
