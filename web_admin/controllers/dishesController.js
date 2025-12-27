@@ -27,7 +27,43 @@ async function listDishes(req, res) {
     }
     
 }
+// hàm cập nhật món ăn 
+async function updateDish(req, res) {
+    try {
+        const id = req.params.id; // lay id mon an
+        if(!id) {
+            return res.status(400).json({error: 'Missing id'});
+        }
+        // lay du lieu moi ve
+        const payload = req.body || {};
+        // ghi du lieu 
+        await db 
+            .collection('dishes')
+            .doc(id)
+            .set(payload, { merge: true});
+        res.json({ success: true});
+    } catch (err) {
+        console.error('updateDish error',err);
+        res.status(500).json({error: 'Failed to update dish'});
+    }
+    
+}
+// hàm xóa 
+async function deleteDish(req, res) {
+    try {
+        const id = req.params.id;
+        if(!id) return res.status(400).json({error: 'Missing id'});
+        await db.collection('dishes').doc(id).delete();
+        res.json({ success:true});
+    } catch (err) {
+        console.error('deleteDish error',err);
+        res.status(500).json({ error: 'Failed to delete dish'});
+    }
+    
+}
 module.exports = {
     renderDishesPage,
-    listDishes
+    listDishes,
+    updateDish,
+    deleteDish
 };
