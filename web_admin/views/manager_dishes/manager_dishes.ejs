@@ -7,7 +7,7 @@
         <input id="dish-search" type="text" class="form-control form-control-sm" placeholder="Tim theo ten/slug" style="width: 240px;">
         <button class="btn btn-primary btn-sm" id="btn-search-dish">Tim</button>
         <button class="btn btn-light btn-sm" id="btn-reset-dish" title="Reset"><i class="bi-arrow-clockwise"></i></button>
-        <button class="btn btn-success btn-sm" id="btn-add-dish" disabled>+ Them mon</button>
+        <button class="btn btn-success btn-sm" id="btn-add-dish" >+ Them mon</button>
     </div>
 </div>
 
@@ -108,6 +108,86 @@
     </div>
   </div>
 </div>
+
+<!-- // modal them mon -->
+<div class="modal" id="modal-add-dish" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Them mon an</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="form-add-dish" class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Ma/ID (duy nhat)</label>
+              <input type="text" class="form-control" id="add-id" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Ten</label>
+              <input type="text" class="form-control" id="add-name" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Slug</label>
+              <input type="text" class="form-control" id="add-slug">
+            </div>
+            <div class="col-md-6">
+              <select name="" id="add-region" class="form-control">
+                <option value="">-- Chọn miền --</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <select name="" id="add-province" class="form-control">
+                <option value="">--Chọn Tỉnh--</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Category</label>
+              <input type="text" class="form-control" id="add-category">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Gia</label>
+              <input type="text" class="form-control" id="add-price">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Best time</label>
+              <input type="text" class="form-control" id="add-best-time">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Best season</label>
+              <input type="text" class="form-control" id="add-best-season">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Tags</label>
+              <input type="text" class="form-control" id="add-tags">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Spicy</label>
+              <input type="number" min="0" class="form-control" id="add-spicy">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">No (satiety)</label>
+              <input type="number" min="0" class="form-control" id="add-satiety">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Anh (URL)</label>
+              <input type="text" class="form-control" id="add-img">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Mo ta</label>
+              <textarea class="form-control" rows="3" id="add-desc"></textarea>
+            </div>
+          </form>
+          <div class="text-danger small mt-2" id="add-error"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Dong</button>
+          <button type="button" class="btn btn-primary" id="btn-save-add">Luu</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
 
 <script src="/js/manager_dishes/manager_dishes.js"></script>
 <script src="/js/manager_dishes/dish_action.js"></script>

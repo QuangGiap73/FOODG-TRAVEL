@@ -61,9 +61,28 @@ async function deleteDish(req, res) {
     }
     
 }
+// hàm thêm món ăn 
+async function createDish(req, res){
+    try {
+        // lay du lieu tu frontend
+        const payload = req.body || {};
+        if(!payload.id || !payload.Name){
+            return res.status(400).json({ error:'Missing id or name'});
+        }
+        // ghi du lieu len firebase
+        await db.collection('dishes')
+            .doc(payload.id)
+            .set(payload, {merge: false});
+            res.json({success: true});
+    } catch (err){
+        console.error('createDisnh error,err', err);
+        res.status(500).json({error:'Failed to create dish'});
+    }
+}
 module.exports = {
     renderDishesPage,
     listDishes,
     updateDish,
-    deleteDish
+    deleteDish,
+    createDish
 };

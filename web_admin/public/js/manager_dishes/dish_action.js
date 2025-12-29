@@ -1,3 +1,4 @@
+/* global bootstrap */
 (function () {
   // Modal + form elements
   const modalEl = document.getElementById('modal-edit-dish');
@@ -7,6 +8,14 @@
   const btnSave = document.getElementById('btn-save-dish');
   const closeSelectors = '[data-bs-dismiss="modal"], .btn-close, .btn-secondary';
 
+  const addModalEl = document.getElementById('modal-add-dish');
+  const addModal = addModalEl && window.bootstrap ? new bootstrap.Modal(addModalEl) : null;
+  const addForm = document.getElementById('form-add-dish');
+  const addError = document.getElementById('add-error');
+  const btnSaveAdd = document.getElementById('btn-save-add');
+  const btnOpenAdd = document.getElementById('btn-add-dish');
+
+  // object s­a
   const f = {
     id: document.getElementById('edit-id'),
     name: document.getElementById('edit-name'),
@@ -23,9 +32,80 @@
     img: document.getElementById('edit-img'),
     desc: document.getElementById('edit-desc'),
   };
+  // object them mon
+  const a = {
+    id: document.getElementById('add-id'),
+    name: document.getElementById('add-name'),
+    slug: document.getElementById('add-slug'),
+    province: document.getElementById('add-province'),
+    region: document.getElementById('add-region'),
+    category: document.getElementById('add-category'),
+    price: document.getElementById('add-price'),
+    bestTime: document.getElementById('add-best-time'),
+    bestSeason: document.getElementById('add-best-season'),
+    tags: document.getElementById('add-tags'),
+    spicy: document.getElementById('add-spicy'),
+    satiety: document.getElementById('add-satiety'),
+    img: document.getElementById('add-img'),
+    desc: document.getElementById('add-desc'),
+  };
 
   let cache = [];
 
+  // tao api de tao select tinh mien cho phan them mon an
+  let provincesCache = []; // taoj mang cache luu danh sach
+  // tao ham load danh sach tinh tu serve
+  async function loadProvinces() {
+    const res = await fetch('/manager-provinces/api/provinces'); // gui request lay api danh sach
+    const data = await res.json().catch(() => ({})); // chuyen sang json
+
+    if (!res.ok) {
+      throw new Error(data.error || 'Tai danh sach that bai');
+    }
+    provincesCache = data.data || []; //luu danh sach tinh vao cache
+
+    // xu ly danh sach mien
+    const regions = [
+      // lay danh sach tinh
+      ...new Set(provincesCache.map((p) => p.regionsCode || p.region)),
+    ].filter(Boolean);
+    // tao danh sach option cho select mien
+    const regionOpts = ['<option value="">-- Chon mien --</option>']
+      .concat(regions.map((r) => `<option value="${r}">${r}</option>`))
+      .join('');
+    // do option mien vao select o form
+    const addRegion = document.getElementById('add-region');
+    if (addRegion) addRegion.innerHTML = regionOpts;
+    const editRegion = document.getElementById('edit-region');
+    if (editRegion) editRegion.innerHTML = regionOpts;
+    renderProvinceOptions('', false); // hien thi tat ca tinh khi chua chon mien
+    renderProvinceOptions('', true);
+  }
+  // ham render danh sach tinh theo mien
+  function renderProvinceOptions(regionCode, isEdit = false) {
+    const sel = document.getElementById(isEdit ? 'edit-province' : 'add-province');
+    if (!sel) return;
+    // chon mien thi loc tinh
+    const list = regionCode
+      ? provincesCache.filter((p) => (p.regionsCode || p.region) === regionCode)
+      : provincesCache;
+    // tao option cho select tinh
+    sel.innerHTML = ['<option value="">-- Chon tinh --</option>']
+      .concat(
+        list.map(
+          (p) => `
+        <option 
+          value="${p.code || p.id}" 
+          data-region="${p.regionsCode || p.region}">
+          ${p.name || p.code}
+        </option>
+      `,
+        ),
+      )
+      .join('');
+  }
+
+  // ham may modal sua mon an
   function showModal() {
     if (modal) {
       modal.show();
@@ -34,7 +114,7 @@
       modalEl.classList.add('show');
     }
   }
-
+  // ham dong modal sua mon an
   function hideModal() {
     if (modal) {
       modal.hide();
@@ -43,7 +123,25 @@
       modalEl.classList.remove('show');
     }
   }
-
+  // ham may modal them mon an
+  function showAddModal() {
+    addError && (addError.textContent = '');
+    addForm?.reset();
+    renderProvinceOptions('', false); // reset select tinh khi mo modal
+    if (addModal) addModal.show();
+    else if (addModalEl) {
+      addModalEl.style.display = 'block';
+      addModalEl.classList.add('show');
+    }
+  }
+  // ham dong modal them mon an
+  function hideAddModal() {
+    if (addModal) addModal.hide();
+    else if (addModalEl) {
+      addModalEl.style.display = 'none';
+      addModalEl.classList.remove('show');
+    }
+  }
   function onView(id) {
     alert(`Xem mon ${id}`);
   }
@@ -71,6 +169,7 @@
     if (f.img) f.img.value = dish.Img || dish.img || dish.imageUrl || '';
     if (f.desc) f.desc.value = dish.description || '';
     showModal();
+    // neu ban doi edit-region/edit-province sang select thi goi renderProvinceOptions(f.region.value, true) o day va set value
   }
 
   async function onDelete(id) {
@@ -86,7 +185,7 @@
       alert(err.message || 'Xoa mon that bai');
     }
   }
-
+  // ham cap nhat sau khi sua
   async function saveDish() {
     if (!f.id || !f.name) return;
     const id = f.id.value || '';
@@ -128,8 +227,50 @@
       if (btnSave) btnSave.disabled = false;
     }
   }
+  // ham luu khi them mon len firebase
+  async function saveNewDish() {
+    if (!a.id || !a.name) return;
+    const payload = {
+      id: a.id.value.trim(),
+      Name: a.name.value.trim(),
+      slug: a.slug.value.trim(),
+      province_code: a.province.value.trim(),
+      region_code: a.region.value.trim(),
+      category: a.category.value.trim(),
+      price_range: a.price.value.trim(),
+      Best_time: a.bestTime.value.trim(),
+      Best_season: a.bestSeason.value.trim(),
+      Tags: a.tags.value.trim(),
+      spicy_level: Number(a.spicy.value || 0),
+      satiety_level: Number(a.satiety.value || 0),
+      Img: a.img.value.trim(),
+      description: a.desc.value.trim(),
+      createdAt: new Date().toISOString(),
+    };
+    if (!payload.id || !payload.Name) {
+      addError && (addError.textContent = 'Id va Ten la bat buoc');
+      return;
+    }
+    try {
+      if (btnSaveAdd) btnSaveAdd.disabled = true;
+      const res = await fetch('/manager-dishes/api/dishes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Them mon that bai');
+      hideAddModal();
+      document.getElementById('btn-search-dish')?.click();
+    } catch (err) {
+      console.error(err);
+      addError && (addError.textContent = err.message || 'Them mon that bai');
+    } finally {
+      if (btnSaveAdd) btnSaveAdd.disabled = false;
+    }
+  }
 
-  // Nhận event render để gắn click vào dropdown
+  // Nhan event render de gan click vao dropdown
   document.addEventListener('dish:list-rendered', (e) => {
     const { container, list } = e.detail || {};
     if (!container) return;
@@ -145,9 +286,9 @@
     });
   });
 
-  // Fallback dropdown nếu không có Bootstrap JS
+  // Fallback dropdown neu khong co Bootstrap JS
   document.addEventListener('click', (e) => {
-    const toggleBtn = e.target.closest('[data-bs-toggle=\"dropdown\"]');
+    const toggleBtn = e.target.closest('[data-bs-toggle="dropdown"]');
     const openMenus = document.querySelectorAll('.dropdown-menu.show');
     if (toggleBtn) {
       const menu = toggleBtn.parentElement?.querySelector('.dropdown-menu');
@@ -162,7 +303,7 @@
     }
   });
 
-  // Fallback đóng modal khi không có Bootstrap JS
+  // Fallback dong modal khi khong co Bootstrap JS
   if (!window.bootstrap && modalEl) {
     modalEl.addEventListener('click', (e) => {
       if (e.target === modalEl) hideModal();
@@ -171,6 +312,46 @@
       btn.addEventListener('click', hideModal);
     });
   }
+  // Fallback dong modal cua them mon an
+  if (!window.bootstrap && addModalEl) {
+    addModalEl.addEventListener('click', (e) => {
+      if (e.target === addModalEl) hideAddModal();
+    });
+    addModalEl.querySelectorAll(closeSelectors).forEach((btn) => {
+      btn.addEventListener('click', hideAddModal);
+    });
+  }
+
+  // bat su kien khi nguoi dung thay doi mien o form add
+  document.getElementById('add-region')?.addEventListener('change', (e) => {
+    renderProvinceOptions(e.target.value, false); // goi ham renderProvinceOption de loc tinh theo mien
+  });
+  document.getElementById('add-province')?.addEventListener('change', (e) => {
+    // lay option dang duoc chon
+    const option = e.target.selectedOptions[0];
+    const region = option?.dataset.region || '';
+    const regionSelect = document.getElementById('add-region');
+    if (region && regionSelect) {
+      regionSelect.value = region;
+    }
+  });
+  // bat su kien khi nguoi dung thay doi mien o form edit
+  document.getElementById('edit-region')?.addEventListener('change', (e) => {
+    renderProvinceOptions(e.target.value, true);
+  });
+  // bat su kien khi nguoi dung duungf thay doi tinh o form edit
+  document.getElementById('edit-province')?.addEventListener('change', (e) => {
+    const option = e.target.selectedOptions[0];
+    const region = option?.dataset.region || '';
+    const regionSelect = document.getElementById('edit-region');
+    if (region && regionSelect) {
+      regionSelect.value = region;
+    }
+  });
 
   btnSave?.addEventListener('click', saveDish);
+  btnOpenAdd?.addEventListener('click', showAddModal);
+  btnSaveAdd?.addEventListener('click', saveNewDish);
+
+  loadProvinces().catch((err) => console.error(err));
 })();
