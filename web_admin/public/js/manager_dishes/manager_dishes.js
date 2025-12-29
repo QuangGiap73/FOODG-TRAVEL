@@ -56,22 +56,18 @@ document.addEventListener('DOMContentLoaded', () => {
             <td>
               <div class="fw-semibold">${name}</div>
               <div class="text-muted small">${slug}</div>
-              ${tags ? `<div class="text-muted small">${tags}</div>` : ''}
             </td>
             <td>
               <div>${province || '-'}</div>
-              <div class="text-muted small">${region || ''}</div>
+            </td>
+            <td>
+              <div>${region || ''}</div>
             </td>
             <td>${cat || ''}</td>
             <td>
-              ${price || ''}
-              ${bestTime ? `<div class="text-muted small">Time: ${bestTime}</div>` : ''}
-              ${bestSeason ? `<div class="text-muted small">Season: ${bestSeason}</div>` : ''}
+            ${bestTime || ''}
             </td>
-            <td>
-              <div>Spicy: ${spicy}</div>
-              <div class="text-muted small">No: ${satiety}</div>
-            </td>
+            
             <td class="text-center">
               <div class="dropdown">
                 <button class="btn btn-sm btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
