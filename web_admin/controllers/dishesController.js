@@ -9,6 +9,7 @@ async function listDishes(req, res) {
     try{
         // lay tu khoa tim kiem
         const q = (req.query.q || '').trim().toLowerCase();
+        const province = (req.query.province || '').trim().toLowerCase();
         const snap = await db.collection('dishes').get(); // lay du lieu dish
         let dishes = snap.docs.map((d) => ({id: d.id, ...d.data()})); // chuyen doi du lieu
 
@@ -20,11 +21,20 @@ async function listDishes(req, res) {
 
             });
         }
+        if (province){
+            dishes = dishes.filter(item => {
+              const provCode = String(item.province_code || '').toLowerCase();
+              const provName = String(item.province_name || item.province || '').toLowerCase();
+              return provCode === province || provName === province;
+            });
+          }
         res.json({data: dishes});
     }catch (err) {
         console.error('listDishes error', err);
         res.status(500).json({error: 'Failed to load dishes'});
     }
+    
+    
     
 }
 // hàm cập nhật món ăn 

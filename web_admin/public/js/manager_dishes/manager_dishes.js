@@ -7,9 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
   async function loadDishes() {
     if (!tbody) return;
     const q = encodeURIComponent((searchInput?.value || '').trim());
+    const provinceSelect = document.getElementById('dish-filter-province');
+    const province = encodeURIComponent((provinceSelect?.value || '').trim().toLowerCase());
+
     tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">Dang tai...</td></tr>';
     try {
-      const res = await fetch(`/manager-dishes/api/dishes?q=${q}`);
+      const res = await fetch(`/manager-dishes/api/dishes?q=${q}&province=${province}`);
       const body = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(body.error || 'Tai mon that bai');
       const list = Array.isArray(body.data) ? body.data : [];
@@ -94,6 +97,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }),
     );
   }
+  document.getElementById('dish-filter-province')?.addEventListener('change', loadDishes);
+
 
   btnSearch?.addEventListener('click', loadDishes);
   btnReset?.addEventListener('click', () => {

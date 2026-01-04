@@ -80,6 +80,19 @@
     if (editRegion) editRegion.innerHTML = regionOpts;
     renderProvinceOptions('', false); // hien thi tat ca tinh khi chua chon mien
     renderProvinceOptions('', true);
+
+    // đổ danh sách tỉnh để học tỉnh ra danh sách món ăn
+    const filterProvince = document.getElementById('dish-filter-province');
+    if (filterProvince) {
+      filterProvince.innerHTML = ['<option value="">Tinh ▼</option>']
+        .concat(
+          provincesCache.map(
+            (p) =>
+              `<option value="${(p.name || p.code || '').toLowerCase()}">${p.name || p.code}</option>`,
+          ),
+        )
+        .join('');
+    }
   }
   // ham render danh sach tinh theo mien
   function renderProvinceOptions(regionCode, isEdit = false) {
@@ -347,6 +360,10 @@
     if (region && regionSelect) {
       regionSelect.value = region;
     }
+  });
+  // khi chọn tỉnh , gọi lại load danh sách
+  document.getElementById('dish-filter-province')?.addEventListener('change',() =>{
+    document.getElementById('btn-search-dish')?.click();
   });
 
   btnSave?.addEventListener('click', saveDish);
