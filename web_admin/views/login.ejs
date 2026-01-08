@@ -3,137 +3,107 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dang nhap - Admin</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>Đăng nhập | Quản lý món ăn</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #050815;
-      --panel: rgba(15, 20, 42, 0.78);
-      --border: rgba(255, 255, 255, 0.1);
-      --primary: #5bd8c2;
-      --accent: #f7a600;
-      --text: #eaf2ff;
-      --muted: #9aa4c8;
-      --shadow: 0 25px 80px rgba(2, 6, 18, 0.7);
+      --bg: #0f172a;
+      --card: #ffffff;
+      --accent: #f97316; /* cam */
+      --accent2: #10b981; /* xanh lá */
+      --text: #0f172a;
+      --muted: #64748b;
+      --shadow: 0 20px 60px rgba(0,0,0,0.25);
     }
     * { box-sizing: border-box; }
     body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      background: radial-gradient(500px 500px at 20% 20%, rgba(91, 216, 194, 0.12), transparent 45%),
-                  radial-gradient(460px 460px at 80% 10%, rgba(247, 166, 0, 0.12), transparent 42%),
-                  linear-gradient(135deg, #050815, #0c1230 50%, #050815);
-      font-family: "Space Grotesk", system-ui, -apple-system, sans-serif;
+      margin: 0; min-height: 100vh;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(600px at 20% 20%, rgba(249,115,22,0.12), transparent 45%),
+                  radial-gradient(500px at 80% 10%, rgba(16,185,129,0.12), transparent 40%),
+                  #0f172a;
+      display: grid; place-items: center; padding: 24px;
       color: var(--text);
-      padding: 24px;
     }
-    .shell { width: min(960px, 100%); display: grid; grid-template-columns: 1.15fr 1fr; gap: 24px; }
-    .panel {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      padding: 28px;
+    .shell {
+      width: min(960px, 95vw);
+      display: grid; grid-template-columns: 1.05fr 0.95fr;
+      background: var(--card); border-radius: 20px; overflow: hidden;
       box-shadow: var(--shadow);
-      backdrop-filter: blur(12px);
-      position: relative;
-      overflow: hidden;
     }
-    .panel::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(700px 700px at -20% 10%, rgba(91, 216, 194, 0.12), transparent 35%),
-                  radial-gradient(500px 500px at 120% -10%, rgba(247, 166, 0, 0.08), transparent 40%);
-      opacity: 0.5;
-      pointer-events: none;
+    @media (max-width: 900px) { .shell { grid-template-columns: 1fr; } }
+
+    .visual {
+      background: linear-gradient(135deg, rgba(249,115,22,0.9), rgba(16,185,129,0.9));
+      color: #fff; padding: 32px; display: flex; flex-direction: column; gap: 18px; justify-content: center;
     }
-    .panel > * { position: relative; z-index: 1; }
-    .logo { display: inline-flex; align-items: center; gap: 12px; margin-bottom: 12px; font-weight: 700; letter-spacing: 0.4px; }
-    .logo-mark {
-      width: 42px; height: 42px; display: grid; place-items: center; border-radius: 14px;
-      background: linear-gradient(135deg, #5bd8c2, #37bca4); color: #05121e; font-weight: 800;
-      box-shadow: 0 14px 40px rgba(91, 216, 194, 0.45);
+    .badge { display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; background: rgba(255,255,255,0.15); font-weight:700; }
+    .headline { font-size: 28px; font-weight: 700; margin: 0; line-height: 1.2; }
+    .chips { display:flex; flex-wrap:wrap; gap:8px; }
+    .chip { background: rgba(255,255,255,0.15); padding:8px 12px; border-radius:12px; font-size:13px; }
+
+    .form {
+      padding: 40px 32px; display: flex; flex-direction: column; gap: 16px; justify-content: center;
     }
-    h1 { margin: 10px 0 8px; font-size: clamp(28px, 3.5vw, 34px); line-height: 1.1; }
-    p { margin: 0 0 18px; color: var(--muted); line-height: 1.6; }
-    form { display: grid; gap: 14px; margin-top: 12px; }
-    label { font-weight: 600; font-size: 14px; }
-    input[type="email"], input[type="password"] {
-      width: 100%; padding: 14px 14px; border-radius: 12px; border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.02); color: var(--text); font-size: 15px;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    h1 { margin: 0; font-size: 24px; font-weight: 700; }
+    .muted { color: var(--muted); font-size: 14px; margin: 0; }
+    label { font-weight: 600; font-size: 14px; display: block; margin-bottom: 6px; }
+    input {
+      width: 100%; padding: 12px 14px; border-radius: 12px;
+      border: 1px solid #e2e8f0; background: #f8fafc; font-size: 14px;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    input:focus { outline: none; border-color: rgba(91, 216, 194, 0.6); box-shadow: 0 0 0 3px rgba(91, 216, 194, 0.18); }
-    .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 14px; color: var(--muted); }
-    .row a { color: var(--primary); text-decoration: none; font-weight: 600; }
-    .btn { border: none; border-radius: 12px; padding: 14px 16px; font-weight: 700; font-size: 15px; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.2s ease; }
-    .btn-primary { background: linear-gradient(135deg, #5bd8c2, #33b09c); color: #04111b; box-shadow: 0 14px 40px rgba(91, 216, 194, 0.35); }
-    .btn:hover { transform: translateY(-1px); box-shadow: 0 10px 26px rgba(0, 0, 0, 0.35); }
-    .muted { color: var(--muted); font-size: 14px; text-align: center; margin-top: 8px; }
-    .muted a { color: var(--primary); font-weight: 600; text-decoration: none; }
-    .side { display: grid; gap: 12px; align-content: center; }
-    .card { border: 1px solid var(--border); border-radius: 16px; padding: 16px; background: rgba(255, 255, 255, 0.03); box-shadow: var(--shadow); }
-    .card h3 { margin: 0 0 6px; font-size: 17px; }
-    .pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 999px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.04); color: var(--muted); font-size: 13px; margin-top: 6px; }
-    .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px rgba(247, 166, 0, 0.15); }
-    @media (max-width: 900px) { .shell { grid-template-columns: 1fr; max-width: 520px; } }
+    input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(249,115,22,0.2); }
+    .actions { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .btn {
+      border: none; border-radius: 12px; padding: 12px 16px; font-weight: 700; font-size: 14px;
+      cursor: pointer; transition: transform 0.15s, box-shadow 0.2s;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-primary { background: linear-gradient(135deg, var(--accent), #fb8c00); color: #fff; box-shadow: 0 10px 30px rgba(249,115,22,0.35); }
+    .btn-ghost { background: transparent; color: var(--muted); }
+    .btn:hover { transform: translateY(-1px); }
+    .helper { font-size: 13px; color: var(--muted); margin-top: -4px; }
+    .error { margin-top: 8px; color: #ef4444; font-weight: 600; }
   </style>
 </head>
 <body>
   <div class="shell">
-    <div class="panel">
-      <div class="logo">
-        <div class="logo-mark">A</div>
-        <div>
-          <div>Arclight Admin</div>
-          <small style="color: var(--muted); font-weight: 500;">Dang nhap de bat dau</small>
-        </div>
+    <div class="visual">
+      <span class="badge">🍜 Food Admin</span>
+      <div class="headline">Quản lý món ăn & vùng miền dễ dàng</div>
+      <p class="muted" style="color:rgba(255,255,255,0.85);">
+        Cập nhật đặc sản, hình ảnh, giá cả và best time cho thực khách.
+      </p>
+      <div class="chips">
+        <span class="chip">Đặc sản</span>
+        <span class="chip">Món mới</span>
+        <span class="chip">Hình đẹp</span>
       </div>
-      <h1>Chao mung tro lai.</h1>
-      <p>Dang nhap de truy cap bang dieu khien. Neu chua co tai khoan admin, vui long lien he quan tri.</p>
+    </div>
 
+    <div class="form">
+      <div>
+        <h1>Đăng nhập</h1>
+        <p class="muted">Chào mừng quay lại trang quản trị Food Travel.</p>
+      </div>
       <form id="login-form">
         <div>
           <label for="email">Email</label>
           <input id="email" type="email" name="email" placeholder="ban@congty.com" required>
         </div>
         <div>
-          <label for="password">Mat khau</label>
-          <input id="password" type="password" name="password" placeholder="••••••••" required>
+          <label for="password">Mật khẩu</label>
+          <input id="password" type="password" name="password" placeholder="********" required>
+          <div class="helper">Quên mật khẩu? Liên hệ admin.</div>
         </div>
-        <div class="row">
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-            <input type="checkbox" style="accent-color: var(--primary); width:16px; height:16px;">
-            Ghi nho dang nhap
-          </label>
-          <a href="/register">Dang ky</a>
-        </div>
-        <button type="submit" class="btn btn-primary">Dang nhap</button>
-        <div class="muted">Chua co tai khoan? <a href="/register">Tao moi</a></div>
-      </form>
-      <div id="error" style="margin-top:10px;color:#ffb4b4;font-weight:600;"></div>
-    </div>
+        <div class="actions">
 
-    <div class="panel side">
-      <div class="card">
-        <div class="pill"><span class="dot"></span> May chu an toan</div>
-        <h3>Dang nhap mot lan</h3>
-        <p>Ho tro SSO va phan quyen theo vai tro. Toan bo phien lam viec duoc ma hoa.</p>
-      </div>
-      <div class="card">
-        <div class="pill"><span class="dot" style="background: var(--primary); box-shadow: 0 0 0 4px rgba(91, 216, 194, 0.18);"></span> Kiem soat truy cap</div>
-        <h3>Giam sat hoat dong</h3>
-        <p>Theo doi lan dang nhap cuoi, IP, thiet bi va canh bao bat thuong theo thoi gian thuc.</p>
-      </div>
-      <div class="card">
-        <div class="pill"><span class="dot" style="background: #5bd8c2;"></span> San sang</div>
-        <h3>Da ket noi</h3>
-        <p>API san, khong co canh bao moi. Ban co the bat dau cong viec ngay.</p>
-      </div>
+          <button type="submit" class="btn btn-primary">Đăng nhập</button>
+        </div>
+        <div class="muted">Chưa có tài khoản? <a href="/register" style="color:var(--accent); font-weight:700; text-decoration:none;">Đăng ký</a></div>
+      </form>
+      <div id="error" class="error"></div>
     </div>
   </div>
 
@@ -155,9 +125,7 @@
     const form = document.getElementById('login-form');
     const errorBox = document.getElementById('error');
 
-    function showError(msg) {
-      errorBox.textContent = msg || '';
-    }
+    function showError(msg) { errorBox.textContent = msg || ''; }
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -168,15 +136,12 @@
         const cred = await signInWithEmailAndPassword(auth, email, password);
         const tokenResult = await cred.user.getIdTokenResult(true);
         const role = tokenResult.claims.role || (tokenResult.claims.admin ? 'admin' : null);
-        if (role !== 'admin') {
-          throw new Error('Tai khoan khong co quyen admin.');
-        }
-        const idToken = tokenResult.token;
-        document.cookie = `idToken=${idToken}; Path=/; Max-Age=3600; SameSite=Lax`;
+        if (role !== 'admin') throw new Error('Tài khoản không có quyền admin.');
+        document.cookie = `idToken=${tokenResult.token}; Path=/; Max-Age=3600; SameSite=Lax`;
         window.location.href = '/';
       } catch (err) {
         console.error(err);
-        showError(err.message || 'Dang nhap that bai');
+        showError(err.message || 'Đăng nhập thất bại');
       }
     });
   </script>

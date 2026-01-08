@@ -2,7 +2,7 @@
     <div class="navbar-nav-wrap">
       <div class="navbar-brand-wrapper">
         <a class="navbar-brand" href="/" aria-label="Admin home">
-          <img class="navbar-brand-logo" src="/assets/svg/logos/logoApp.png" alt="Logo" style="display: block; margin-left: auto; margin-right: auto;">
+          <img class="navbar-brand-logo" src="/assets/svg/logos/anh_dau_bep.jpg" alt="Logo" style="display: block; margin-left: auto; margin-right: auto;" width="100%" height="100%">
           <img class="navbar-brand-logo-mini" src="/assets/svg/logos/icon_App.png" alt="Logo">
         </a>
       </div>
@@ -63,8 +63,8 @@
       <div class="navbar-vertical-footer-offset">
         <div class="navbar-brand-wrapper justify-content-between">
           <a class="navbar-brand" href="/" aria-label="Admin home">
-            <img class="navbar-brand-logo" src="/assets/svg/logos/logoApp.png" alt="Logo">
-            <img class="navbar-brand-logo-mini" src="/assets/svg/logos/icon_App.png" alt="Logo mini">
+            <img class="navbar-brand-logo" src="/assets/svg/logos/anh_dau_bep.jpg" alt="Logo" width="100%" height="100%">
+            <img class="navbar-brand-logo-mini" src="/assets/svg/logos/icon_App.png" alt="Logo mini" width="100%" height="100%">
           </a>
 
           <button type="button" class="js-navbar-vertical-aside-toggle-invoker navbar-vertical-aside-toggle btn btn-icon btn-xs btn-ghost-dark">
@@ -75,7 +75,7 @@
         <div class="navbar-vertical-content">
           <ul class="navbar-nav navbar-nav-lg nav-tabs">
             <li class="navbar-vertical-aside-has-menu <%= (currentPath === '/' || currentPath === '/dashboard') ? 'active' : '' %>">
-              <a class="js-navbar-vertical-aside-menu-link nav-link" href="/" title="Trang chá»§">
+              <a class="js-navbar-vertical-aside-menu-link nav-link" href="/" title="Trang chủ">
                 <i class="tio-home-vs-1-outlined nav-icon"></i>
                 <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">Trang chủ</span>
               </a>
@@ -92,9 +92,9 @@
                 <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">Quan ly tinh thanh</span>
               </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/manager-dishes">
-                <i class="bi bi-egg-fried"> </i> 
+            <li class="navbar-vertical-aside-has-menu <%= currentPath.startsWith('/manager-dishes') ? 'active' : '' %>">
+              <a class="js-navbar-vertical-aside-menu-link nav-link" href="/manager-dishes" title="Quan ly mon an">
+                <i class="bi-egg-fried nav-icon"></i>
                 <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">Quan ly mon an</span>
               </a>
             </li>

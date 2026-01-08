@@ -3,6 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('dish-search');
   const btnSearch = document.getElementById('btn-search-dish');
   const btnReset = document.getElementById('btn-reset-dish');
+  const selectAll = document.getElementById('select-all-dishes');
+  const bulkActions = document.getElementById('bulk-actions-dishes');
+  const selectedCount = document.getElementById('selected-count-dishes');
+  const btnDeleteSelected = document.getElementById('btn-delete-selected-dishes');
 
   async function loadDishes() {
     if (!tbody) return;
@@ -10,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const provinceSelect = document.getElementById('dish-filter-province');
     const province = encodeURIComponent((provinceSelect?.value || '').trim().toLowerCase());
 
-    tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">Dang tai...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9" class="text-center text-muted">Dang tai...</td></tr>';
     try {
       const res = await fetch(`/manager-dishes/api/dishes?q=${q}&province=${province}`);
       const body = await res.json().catch(() => ({}));
@@ -19,13 +23,14 @@ document.addEventListener('DOMContentLoaded', () => {
       renderTable(list);
     } catch (err) {
       console.error(err);
-      tbody.innerHTML = `<tr><td colspan="8" class="text-center text-danger">${err.message || 'Loi tai du lieu'}</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="9" class="text-center text-danger">${err.message || 'Loi tai du lieu'}</td></tr>`;
     }
   }
 
+
   function renderTable(list) {
     if (!list.length) {
-      tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">Chua co du lieu</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="9" class="text-center text-muted">Chua co du lieu</td></tr>';
       return;
     }
 
@@ -48,6 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         return `
           <tr data-id="${id}">
+            <td><input type="checkbox" class="row-check" data-id="${id}"></td>
             <td class="text-muted small">${rowNum}</td>
             <td style="width:70px;">
               ${
@@ -89,6 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .join('');
 
     tbody.innerHTML = rows;
+    refreshBulkState();
 
     // Thông báo cho file action biết đã render xong
     document.dispatchEvent(
@@ -96,6 +103,26 @@ document.addEventListener('DOMContentLoaded', () => {
         detail: { container: tbody, list },
       }),
     );
+  }
+  // hàm xóa nhiều 
+  function refreshBulkState() {
+    if (!tbody) return;
+    const checked = tbody.querySelectorAll('.row-check:checked').length;
+    const total = tbody.querySelectorAll('.row-check').length;
+    if (selectedCount) selectedCount.textContent = `${checked} da chon`;
+    if (btnDeleteSelected) btnDeleteSelected.disabled = checked === 0;
+
+    if (bulkActions) {
+      if (checked > 0) {
+        bulkActions.classList.remove('d-none');
+      } else {
+        bulkActions.classList.add('d-none');
+      }
+    }
+    if (selectAll) {
+      selectAll.checked = total > 0 && checked === total;
+      selectAll.indeterminate = checked > 0 && checked < total;
+    }
   }
   document.getElementById('dish-filter-province')?.addEventListener('change', loadDishes);
 
@@ -108,6 +135,30 @@ document.addEventListener('DOMContentLoaded', () => {
   searchInput?.addEventListener('keyup', (e) => {
     if (e.key === 'Enter') loadDishes();
   });
-
+  // hàm lắng nghe sự kiện chọn xóa nhiều
+  selectAll?.addEventListener('change', () => {
+    tbody?.querySelectorAll('.row-check').forEach((ch) => {
+      ch.checked = selectAll.checked;
+    });
+    refreshBulkState();
+  });
+  tbody?.addEventListener('change', (e) => {
+    if (e.target.classList.contains('row-check')) {
+      refreshBulkState();
+    }
+  });
+  // nút xóa nhiều
+  btnDeleteSelected?.addEventListener('click', async () => {
+    if (!tbody) return;
+    const ids = Array.from(tbody.querySelectorAll('.row-check:checked')).map((ch) => ch.dataset.id);
+    if (!ids.length) return;
+    if (!confirm(`Xoa ${ids.length} mon?`)) return;
+    try {
+      await Promise.all(ids.map((id) => fetch(`/manager-dishes/api/dishes/${encodeURIComponent(id)}`, { method: 'DELETE' })));
+      await loadDishes();
+    } catch (err) {
+      alert('Xoa mon that bai');
+    }
+  });
   loadDishes();
 });
