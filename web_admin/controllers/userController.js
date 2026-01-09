@@ -136,9 +136,13 @@ async function createUser(req, res) {
 async function updateUser(req, res){
   try{
     const { id } = req.params;
-    const {email, fullName, phone, role } = req.body || {};
+    const { email, fullName, phone, role, password } = req.body || {};
     if (!id) return res.status(400).json({error: 'Missing id'});
     if(!email) return res.status(400).json({error:'Missing email'});
+    const passwordValue = typeof password === 'string' ? password.trim() : '';
+    if (passwordValue && passwordValue.length < 6) {
+      return res.status(400).json({ error: 'auth/invalid-password' });
+    }
 
     // lay doc để biết uid thật ( tránh id != uid)
     const docSnap = await db.collection('users').doc(id).get();
@@ -147,10 +151,12 @@ async function updateUser(req, res){
     const authUid = docData?.authUid || id;
 
     // cap nhat auth
-    await admin.auth().updateUser(authUid, {
+    const authUpdate = {
       email,
       displayName: fullName || '',
-    });
+      ...(passwordValue ? { password: passwordValue } : {}),
+    };
+    await admin.auth().updateUser(authUid, authUpdate);
     // Cập nhật claims nếu đổi role
     const normalizedRole = role || docData?.role || 'user';
     const claims = normalizedRole === 'admin'
@@ -174,7 +180,7 @@ async function updateUser(req, res){
     res.json({ ok: true });
 } catch (err) {
   console.error('update user error:', err);
-  const badCodes = ['auth/email-already-exists', 'auth/invalid-email'];
+  const badCodes = ['auth/email-already-exists', 'auth/invalid-email', 'auth/invalid-password'];
   if (badCodes.includes(err?.code)) return res.status(400).json({ error: err.code });
   res.status(500).json({ error: 'Failed to update user' });
 }

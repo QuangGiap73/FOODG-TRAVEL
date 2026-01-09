@@ -12,6 +12,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchBtn = document.getElementById('btn-search-user');
   const resetBtn = document.getElementById('btn-reset-users');
   const sortOptions = document.querySelectorAll('.sort-option');
+  const drawer = document.getElementById('user-drawer');
+  const drawerOverlay = document.getElementById('user-drawer-overlay');
+  const drawerClose = document.getElementById('user-drawer-close');
+  const detailEls = {
+    avatar: document.getElementById('user-detail-avatar'),
+    name: document.getElementById('user-detail-name'),
+    email: document.getElementById('user-detail-email'),
+    role: document.getElementById('user-detail-role'),
+    phone: document.getElementById('user-detail-phone'),
+    created: document.getElementById('user-detail-created'),
+    uid: document.getElementById('user-detail-uid'),
+    auth: document.getElementById('user-detail-auth'),
+  };
   let usersCache = [];
   let sortState = { key: null, asc: true };
 
@@ -94,6 +107,59 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  function setText(el, value) {
+    if (el) el.textContent = value;
+  }
+
+  function formatDate(val) {
+    if (!val) return '-';
+    if (typeof val === 'object' && val._seconds) {
+      return new Date(val._seconds * 1000).toLocaleString('vi-VN');
+    }
+    const t = new Date(val);
+    return isNaN(t) ? '-' : t.toLocaleString('vi-VN');
+  }
+
+  function initials(name, email) {
+    const base = (name || '').trim();
+    if (base) {
+      return base
+        .split(/\s+/)
+        .map((s) => s[0])
+        .join('')
+        .slice(0, 2)
+        .toUpperCase();
+    }
+    return (email || 'U')[0].toUpperCase();
+  }
+
+  function openUserDrawer(user) {
+    if (!drawer || !user) return;
+    setText(detailEls.name, user.fullName || '-');
+    setText(detailEls.email, user.email || '-');
+    setText(detailEls.phone, user.phone || '-');
+    setText(detailEls.created, formatDate(user.createdAt));
+    setText(detailEls.uid, user.id || '-');
+    setText(detailEls.auth, user.authUid || '-');
+    if (detailEls.avatar) {
+      detailEls.avatar.textContent = initials(user.fullName, user.email);
+    }
+    if (detailEls.role) {
+      const role = String(user.role || 'user').toLowerCase();
+      detailEls.role.textContent = role;
+      detailEls.role.classList.toggle('admin', role === 'admin');
+    }
+    drawer.classList.add('is-open');
+    drawerOverlay?.classList.add('is-visible');
+    document.body.classList.add('drawer-open');
+  }
+
+  function closeUserDrawer() {
+    drawer?.classList.remove('is-open');
+    drawerOverlay?.classList.remove('is-visible');
+    document.body.classList.remove('drawer-open');
+  }
+
   function renderUsers(list) {
     if (!tbody) return;
     if (!list.length) {
@@ -153,11 +219,13 @@ document.addEventListener('DOMContentLoaded', () => {
               tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Chua co user</td></tr>';
             }
             await loadUsers();
+            if (window.notify) window.notify.success('Xoa user thanh cong');
           } catch (err) {
             alert(err.message || 'Xoa user that bai');
           }
         } else if (action === 'view') {
-          alert(`Xem user ${userId}`);
+          const user = usersCache.find((u) => String(u.id) === String(userId));
+          if (user) openUserDrawer(user);
         } else if (action === 'edit') {
           const row = e.currentTarget.closest('tr');
           if (window.openEditModal && row) {
@@ -205,6 +273,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // initial load
   loadUsers();
 
+  drawerClose?.addEventListener('click', closeUserDrawer);
+  drawerOverlay?.addEventListener('click', closeUserDrawer);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeUserDrawer();
+  });
+
   // Bulk select handlers
   selectAll?.addEventListener('change', () => {
     tbody?.querySelectorAll('.row-check').forEach((ch) => {
@@ -227,6 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       await Promise.all(ids.map((id) => fetch(`/manager-uses/api/users/${id}`, { method: 'DELETE' })));
       await loadUsers();
+      if (window.notify) window.notify.success(`Da xoa ${ids.length} user`);
     } catch (err) {
       alert('Xoa user that bai');
     }
@@ -315,6 +390,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       closeAddModal();
       await loadUsers();
+      if (window.notify) window.notify.success('Them user thanh cong');
     } catch (err) {
       if (addUserError) addUserError.textContent = err.message || 'Tao user that bai';
     }
@@ -322,7 +398,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Fallback toggle if Bootstrap JS is not active
   document.addEventListener('click', (e) => {
-    const toggle = e.target.closest('[data-bs-toggle="dropdown"]');
+    const target = e.target;
+    if (!target || !target.closest) return;
+    const toggle = target.closest('[data-bs-toggle="dropdown"]');
     const menus = document.querySelectorAll('.dropdown-menu.show');
     if (toggle) {
       const menu = toggle.parentElement.querySelector('.dropdown-menu');

@@ -79,6 +79,7 @@
       );
       hideModal();
       await window.provincePage.selectRegion(window.provincePage.getCurrentRegion());
+      if (window.notify) window.notify.success('Cap nhat tinh thanh thanh cong');
     } catch (err) {
       console.error(err);
       if (alertBox) {
@@ -119,7 +120,11 @@
           window.provincePage.fetchJSON(
             `/manager-provinces/api/provinces/${encodeURIComponent(code)}`,
             { method: 'DELETE' },
-          ).then(() => window.provincePage.selectRegion(window.provincePage.getCurrentRegion()))
+          )
+            .then(() => window.provincePage.selectRegion(window.provincePage.getCurrentRegion()))
+            .then(() => {
+              if (window.notify) window.notify.success('Xoa tinh thanh thanh cong');
+            })
             .catch((err) => {
               console.error(err);
               alert(err.message || 'Xoa tinh that bai');

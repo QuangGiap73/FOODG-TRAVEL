@@ -104,6 +104,13 @@
             <input type="text" class="form-control" id="edit-img">
           </div>
           <div class="col-12">
+            <label class="form-label">Chon anh tu may</label>
+            <input type="file" class="form-control" id="edit-images-file" accept="image/*" multiple>
+            <div class="form-text text-muted">Chon nhieu anh, moi lan chon se duoc them vao danh sach.</div>
+            <div id="edit-images-preview" class="d-flex flex-wrap gap-2 mt-2"></div>
+          </div>
+          
+          <div class="col-12">
             <label class="form-label">Mo ta</label>
             <textarea class="form-control" rows="3" id="edit-desc"></textarea>
           </div>
@@ -146,14 +153,16 @@
               </select>
             </div>
             <div class="col-md-6">
-              <select name="" id="add-province" class="form-control">
+              <select name="" id="add-province" class="form-control" >
                 <option value="">--Chọn Tỉnh--</option>
               </select>
             </div>
+
             <div class="col-md-6">
               <label class="form-label">Category</label>
               <input type="text" class="form-control" id="add-category">
             </div>
+
             <div class="col-md-6">
               <label class="form-label">Gia</label>
               <input type="text" class="form-control" id="add-price">
@@ -181,6 +190,12 @@
             <div class="col-12">
               <label class="form-label">Anh (URL)</label>
               <input type="text" class="form-control" id="add-img">
+            </div>
+            <div class="col-12">
+              <label for="" class="form-label">Chon anh</label>
+              <input type="file" class="form-control" id="add-images-file" accept="image/*" multiple>
+              <div class="form-text text-muted">Vui long chon file anh</div>
+              <div id="add-images-preview" class="d-flex flex-wrap gap-2 mt-2"></div>
             </div>
             <div class="col-12">
               <label class="form-label">Mo ta</label>

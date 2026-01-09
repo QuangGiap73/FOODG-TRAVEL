@@ -14,6 +14,11 @@
   const addError = document.getElementById('add-error');
   const btnSaveAdd = document.getElementById('btn-save-add');
   const btnOpenAdd = document.getElementById('btn-add-dish');
+  // xu ly anh
+  const editImagesInput = document.getElementById('edit-images-file');
+  const editImagesPreview = document.getElementById('edit-images-preview');
+  const addImagesInput = document.getElementById('add-images-file');
+  const addImagesPreview = document.getElementById('add-images-preview');
 
   // object s­a
   const f = {
@@ -51,7 +56,11 @@
   };
 
   let cache = [];
-
+  // cache anh, các biến lưu trạng thái
+  let editSelectedFiles = [];
+  let addSelectedFiles = [];
+  let editExistingUrls = [];
+  const objectUrls = new Set();
   // tao api de tao select tinh mien cho phan them mon an
   let provincesCache = []; // taoj mang cache luu danh sach
   // tao ham load danh sach tinh tu serve
@@ -141,6 +150,8 @@
     addError && (addError.textContent = '');
     addForm?.reset();
     renderProvinceOptions('', false); // reset select tinh khi mo modal
+    addSelectedFiles =[];
+    renderImages(addImagesPreview,[],addSelectedFiles);
     if (addModal) addModal.show();
     else if (addModalEl) {
       addModalEl.style.display = 'block';
@@ -181,6 +192,16 @@
     if (f.satiety) f.satiety.value = dish.satiety_level ?? '';
     if (f.img) f.img.value = dish.Img || dish.img || dish.imageUrl || '';
     if (f.desc) f.desc.value = dish.description || '';
+
+    editSelectedFiles = [];
+    const existing = Array.isArray(dish.Images || dish.images || dish.imageUrls)
+      ? (dish.Images || dish.images || dish.imageUrls)
+      : [];
+    const primary = dish.Img || dish.img || dish.imageUrl || '';
+    editExistingUrls = existing.filter(Boolean);
+    if (primary && !editExistingUrls.includes(primary)) editExistingUrls.unshift(primary);
+
+    renderImages(editImagesPreview, editExistingUrls, editSelectedFiles);
     showModal();
     // neu ban doi edit-region/edit-province sang select thi goi renderProvinceOptions(f.region.value, true) o day va set value
   }
@@ -193,6 +214,7 @@
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Xoa mon that bai');
       document.getElementById('btn-search-dish')?.click();
+      if (window.notify) window.notify.success('Xoa mon thanh cong');
     } catch (err) {
       console.error(err);
       alert(err.message || 'Xoa mon that bai');
@@ -202,6 +224,23 @@
   async function saveDish() {
     if (!f.id || !f.name) return;
     const id = f.id.value || '';
+    let uploadedUrls = [];
+    if(editSelectedFiles.length){
+      try{
+        uploadedUrls = await uploadDishImage(editSelectedFiles); 
+      } catch (err) {
+        console.error(err);
+        errorEl && (errorEl.textContent = err.message || 'Upload anh that bai');
+        return;
+      }
+    }
+    const manualUrl = f.img.value.trim();
+    if (manualUrl && !editExistingUrls.includes(manualUrl)) {
+      editExistingUrls.unshift(manualUrl);
+    }
+
+    const allImages = [...editExistingUrls, ...uploadedUrls].filter(Boolean);
+    const primaryImg = allImages[0] || manualUrl || '';
     const payload = {
       Name: f.name.value.trim(),
       slug: f.slug.value.trim(),
@@ -214,7 +253,8 @@
       Tags: f.tags.value.trim(),
       spicy_level: Number(f.spicy.value || 0),
       satiety_level: Number(f.satiety.value || 0),
-      Img: f.img.value.trim(),
+      Img: primaryImg,
+      Images: allImages,
       description: f.desc.value.trim(),
       updatedAt: new Date().toISOString(),
     };
@@ -233,6 +273,7 @@
       if (!res.ok) throw new Error(data.error || 'Cap nhat that bai');
       hideModal();
       document.getElementById('btn-search-dish')?.click();
+      if (window.notify) window.notify.success('Cap nhat mon thanh cong');
     } catch (err) {
       console.error(err);
       errorEl && (errorEl.textContent = err.message || 'Cap nhat that bai');
@@ -243,6 +284,20 @@
   // ham luu khi them mon len firebase
   async function saveNewDish() {
     if (!a.id || !a.name) return;
+    let uploadedUrls = [];
+    if (addSelectedFiles.length) {
+      try {
+        uploadedUrls = await uploadDishImage(addSelectedFiles);
+      } catch (err) {
+        console.error(err);
+        addError && (addError.textContent = err.message || 'Upload anh that bai');
+        return;
+      }
+    }
+
+    const manualUrl = a.img.value.trim();
+    const allImages = [manualUrl, ...uploadedUrls].filter(Boolean);
+    const primaryImg = allImages[0] || '';
     const payload = {
       id: a.id.value.trim(),
       Name: a.name.value.trim(),
@@ -256,7 +311,8 @@
       Tags: a.tags.value.trim(),
       spicy_level: Number(a.spicy.value || 0),
       satiety_level: Number(a.satiety.value || 0),
-      Img: a.img.value.trim(),
+      Img: primaryImg,
+      Images: allImages,
       description: a.desc.value.trim(),
       createdAt: new Date().toISOString(),
     };
@@ -275,6 +331,7 @@
       if (!res.ok) throw new Error(data.error || 'Them mon that bai');
       hideAddModal();
       document.getElementById('btn-search-dish')?.click();
+      if (window.notify) window.notify.success('Them mon thanh cong');
     } catch (err) {
       console.error(err);
       addError && (addError.textContent = err.message || 'Them mon that bai');
@@ -282,6 +339,85 @@
       if (btnSaveAdd) btnSaveAdd.disabled = false;
     }
   }
+  // hàm giải phóng bộ nhớ ảnh
+  function clearObjectUrls(){
+    objectUrls.forEach((url) =>  URL.revokeObjectURL(url));
+    objectUrls.clear();
+  }
+  // hàm thêm file vào ảnh tránh chống thêm trùng ảnh 
+  function pushFiles(target, fileList){
+    Array.from(fileList || []).forEach((file) =>{// chuyển file list sang array
+      if(!file.type || !file.type.startsWith('image/')) return; // chỉ cho phép chọn file ảnh , ko cho phép chọn pdf hay ..
+      const key = `${file.name}_${file.size}_${file.lastModified}`;
+      // kiểm tra file đã tồn tại chưa
+      const exists = target.some((f) => `${f.name}_${f.size}_${f.lastModified}` === key);
+      if (!exists) target.push(file);
+    });
+  }
+  // hàm render ảnh 
+  function renderImages(container, existingUrls, files){
+    if (!container) return;
+    clearObjectUrls();
+    container.innerHTML = '';
+    // gộp ảnh cũ và ảnh mới
+    const items = [];
+    existingUrls.forEach((url,idx)=> items.push ({kind :'url',url,idx}));
+    files.forEach((file,idx) => {
+      const url = URL.createObjectURL(file);
+      objectUrls.add(url);
+      items.push({kind: 'file',url,idx});
+    });
+    // tạo khung ảnh
+    items.forEach((item)=>{
+      const wrap = document.createElement('div');
+      wrap.className = 'position-relative';
+      wrap.style.width = '80px';
+      wrap.style.height = '80px';
+      wrap.innerHTML = `<img src="${item.url}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;border:1px solid #eee;">`;// thêm thẻ
+
+      // nút xóa ảnh
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'btn btn-sm btn-light position-absolute top-0 end-0';
+      btn.textContent = 'x';
+      // xóa đung loại ảnh 
+      btn.addEventListener('click',() =>{
+        if (item.kind === 'url') existingUrls.splice(item.idx,1);
+        else files.splice(item.idx,1);
+        renderImages(container, existingUrls, files);
+      });
+        wrap.appendChild(btn);
+        container.appendChild(wrap);
+    });
+
+  }
+  // ham cap nhat nhieu anh
+  async function uploadDishImage(files) {
+    if (!files || !files.length) return [];
+    const formdata = new FormData();
+    files.forEach((file)=> formdata.append('images',file));
+    const res = await fetch('/manager-dishes/api/dishes/upload-image',{
+      method: 'POST',
+      body: formdata,
+    });
+    const data = await res.json().catch(()=>({}));
+    if(!res.ok) throw new Error(data.error || 'Upload anh that bai');
+    return data.urls || [];
+    
+  }
+  // sự kiện để chọn ảnh nhiều lần 
+  editImagesInput?.addEventListener('change', (e) => {
+    pushFiles(editSelectedFiles, e.target.files);
+    e.target.value = '';
+    renderImages(editImagesPreview, editExistingUrls, editSelectedFiles);
+  });
+
+  addImagesInput?.addEventListener('change', (e) => {
+    pushFiles(addSelectedFiles, e.target.files);
+    e.target.value = '';
+    renderImages(addImagesPreview, [], addSelectedFiles);
+  });
+
 
   // Nhan event render de gan click vao dropdown
   document.addEventListener('dish:list-rendered', (e) => {

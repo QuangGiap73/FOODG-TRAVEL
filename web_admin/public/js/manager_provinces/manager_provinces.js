@@ -238,6 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       addRegionModal?.hide();
       await loadRegions(code);
+      if (window.notify) window.notify.success('Them mien thanh cong');
     } catch (err) {
       console.error(err);
       showRegionAlert(err.message || 'Them mien that bai');
@@ -261,6 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error(data.error || 'Xoa that bai');
       }
       await loadRegions();
+      if (window.notify) window.notify.success('Xoa mien thanh cong');
     } catch (err) {
       console.error(err);
       alert(err.message || 'Xoa that bai');
@@ -377,6 +379,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!res.ok) throw new Error(data.error || 'Them tinh that bai');
       addProvinceModal?.hide();
       await selectRegion(payload.regionsCode);
+      if (window.notify) window.notify.success('Them tinh thanh cong');
     } catch (err) {
       console.error(err);
       showProvinceAlert(err.message || 'Them tinh that bai');

@@ -33,10 +33,20 @@ document.addEventListener('DOMContentLoaded', () => {
       tbody.innerHTML = '<tr><td colspan="9" class="text-center text-muted">Chua co du lieu</td></tr>';
       return;
     }
+    // sắp xếp theo STT
+    const sorted = [...list].sort((a, b) =>{
+      const aStt = Number(a.STT || a.stt || 0);
+      const bStt = Number(b.STT || b.stt || 0);
+      return aStt - bStt;
+    })
 
-    const rows = list
+    const rows = sorted
       .map((item, idx) => {
-        const img = item.Img || item.img || item.imageUrl || '';
+        const images = Array.isArray(item.Images || item.images || item.imageUrls)
+          ? (item.Images || item.images || item.imageUrls)
+          : [];
+        const img = images[0] || item.Img || item.img || item.imageUrl || '';
+
         const name = item.Name || item.name || '';
         const slug = item.slug || '';
         const region = item.region_code || '';
@@ -63,8 +73,8 @@ document.addEventListener('DOMContentLoaded', () => {
               }
             </td>
             <td>
-              <div class="fw-semibold">${name}</div>
-              <div class="text-muted small">${slug}</div>
+              <div class="cell-ellipsis" style="max-width: 220px;">${name}</div>
+            \
             </td>
             <td>
               <div>${province || '-'}</div>
@@ -72,8 +82,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <td>
               <div>${region || ''}</div>
             </td>
-            <td>${cat || ''}</td>
-            <td>
+            <td class="cell-ellipsis" style="max-width: 160px;">${cat || ''}</td>
+            <td class="cell-ellipsis" style="max-width: 180px;">
             ${bestTime || ''}
             </td>
             
@@ -156,6 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       await Promise.all(ids.map((id) => fetch(`/manager-dishes/api/dishes/${encodeURIComponent(id)}`, { method: 'DELETE' })));
       await loadDishes();
+      if (window.notify) window.notify.success(`Da xoa ${ids.length} mon`);
     } catch (err) {
       alert('Xoa mon that bai');
     }

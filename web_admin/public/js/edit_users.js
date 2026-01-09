@@ -5,6 +5,27 @@ document.addEventListener('DOMContentLoaded', () => {
   const editError = document.getElementById('edit-user-error');
   let currentEditId = null;
   const emailRe = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+  const closeSelectors = '[data-bs-dismiss="modal"], .btn-close, .btn-secondary';
+
+  function showEditModal() {
+    if (editModal) {
+      editModal.show();
+    } else if (editModalEl) {
+      editModalEl.style.display = 'block';
+      editModalEl.classList.add('show');
+      document.body.classList.add('modal-open');
+    }
+  }
+
+  function hideEditModal() {
+    if (editModal) {
+      editModal.hide();
+    } else if (editModalEl) {
+      editModalEl.classList.remove('show');
+      editModalEl.style.display = 'none';
+      document.body.classList.remove('modal-open');
+    }
+  }
 
   function clearEditErrors() {
     if (!editForm) return;
@@ -23,29 +44,34 @@ document.addEventListener('DOMContentLoaded', () => {
     currentEditId = row.dataset.id;
     clearEditErrors();
     const cells = row.querySelectorAll('td');
-    editForm.email.value = cells[0]?.textContent.trim() || '';
-    editForm.fullName.value = cells[1]?.textContent.trim() || '';
-    editForm.role.value = cells[2]?.textContent.trim() || 'user';
-    editForm.phone.value = cells[3]?.textContent.trim() || '';
-    if (editModal) {
-      editModal.show();
-    } else if (editModalEl) {
-      editModalEl.style.display = 'block';
-    }
+    editForm.email.value = cells[1]?.textContent.trim() || '';
+    editForm.fullName.value = cells[2]?.textContent.trim() || '';
+    editForm.role.value = cells[3]?.textContent.trim() || 'user';
+    editForm.phone.value = cells[4]?.textContent.trim() || '';
+    if (editForm.password) editForm.password.value = '';
+
+    showEditModal();
   };
 
   // Lưu chỉnh sửa
   document.getElementById('btn-update-user')?.addEventListener('click', async () => {
     if (!currentEditId || !editForm) return;
     clearEditErrors();
+    const passwordRaw = editForm.password?.value || '';
+    const password = passwordRaw.trim();
     const payload = {
       email: editForm.email.value.trim(),
       fullName: editForm.fullName.value.trim(),
       phone: editForm.phone.value.trim(),
       role: editForm.role.value,
+      ...(password ? { password } : {}),
     };
     if (!payload.email || !emailRe.test(payload.email)) {
       setEditError(editForm.email, 'Email khong hop le');
+      return;
+    }
+    if (password && password.length < 6) {
+      setEditError(editForm.password, 'Mat khau toi thieu 6 ky tu');
       return;
     }
     try {
@@ -59,19 +85,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const msgMap = {
           'auth/email-already-exists': 'Email da ton tai',
           'auth/invalid-email': 'Email khong hop le',
+          'auth/invalid-password': 'Mat khau toi thieu 6 ky tu',
         };
         throw new Error(msgMap[body?.error] || body?.error || 'Cap nhat that bai');
       }
-      if (editModal) {
-        editModal.hide();
-      } else if (editModalEl) {
-        editModalEl.style.display = 'none';
-      }
+      hideEditModal();
       if (window.loadUsers) {
         await window.loadUsers();
       }
     } catch (err) {
       if (editError) editError.textContent = err.message || 'Cap nhat that bai';
     }
+  });
+
+  editModalEl?.querySelectorAll(closeSelectors).forEach((btn) => {
+    btn.addEventListener('click', hideEditModal);
+  });
+
+  editModalEl?.addEventListener('click', (e) => {
+    if (!editModal && e.target === editModalEl) hideEditModal();
   });
 });

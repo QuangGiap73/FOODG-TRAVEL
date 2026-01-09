@@ -1,4 +1,6 @@
 const { db } = require('../firebase/config');
+const cloudinary = require('../config/cloudinary');
+const streamifier = require('streamifier');
 
 function renderDishesPage(req, res){
     res.render('manager_dishes/manager_dishes', { pageTitle: 'Quan ly mon an'});
@@ -89,10 +91,35 @@ async function createDish(req, res){
         res.status(500).json({error:'Failed to create dish'});
     }
 }
+// hàm upload anh món ăn len Cloudinary
+async function uploadDishImage(req, res) {
+    try {
+        const files = req.files || [];
+        if (!files.length) return res.status(400).json({error: 'chua chon file anh'});
+        const folder = process.env.CLOUDINARY_FOLDER || 'dishes';
+        const uploadOne = (file) => 
+            new Promise((resolve, reject) => {
+                const uploadStream = cloudinary.uploader.upload_stream(
+                    { folder, resource_type: 'image'},
+                    (error, result) => {
+                        if (error) return reject(error);
+                        return resolve({url: result.secure_url, public_id: result.public_id});
+                    },
+                );
+                streamifier.createReadStream(file.buffer).pipe(uploadStream);
+            });
+            const results = await Promise.all(files.map(uploadOne));
+            res.json({urls: results.map((r) => r.url), files: results});
+        } catch (err) {
+            console.error('uploadDishImage error', err);
+            res.status(500).json({error: 'Upload anh that bai'});
+        }
+    }
 module.exports = {
     renderDishesPage,
     listDishes,
     updateDish,
     deleteDish,
-    createDish
+    createDish,
+    uploadDishImage
 };
