@@ -24,6 +24,26 @@ class UserService {
         .set({'role': role}, SetOptions(merge: true));
   }
 
+  Future<void> updateUserPhotoUrl({
+    required String uid,
+    required String photoUrl,
+  }) async {
+    await _db
+        .collection(_collection)
+        .doc(uid)
+        .set({'photoUrl': photoUrl}, SetOptions(merge: true));
+  }
+
+  Future<void> updateUserProfile({
+    required String uid,
+    required String fullName,
+    String? phone,
+  }) async {
+    await _db.collection(_collection).doc(uid).set({
+      'fullName': fullName,
+      'phone': phone,
+    }, SetOptions(merge: true));
+  }
   Future<UserModel?> getUserById(String uid) async {
     final doc = await _db.collection(_collection).doc(uid).get();
     if (!doc.exists) return null;

@@ -5,6 +5,7 @@ class UserModel {
   final String fullName;
   final String email;
   final String? phone;
+  final String? photoUrl;
   final DateTime? createdAt;
   final String role;
 
@@ -13,6 +14,7 @@ class UserModel {
     required this.fullName,
     required this.email,
     this.phone,
+    this.photoUrl,
     this.createdAt,
     this.role = 'user',
   });
@@ -22,6 +24,7 @@ class UserModel {
       'fullName': fullName,
       'email': email,
       'phone': phone,
+      'photoUrl': photoUrl,
       'role': role,
       // createdAt will be set in the service
     };
@@ -34,6 +37,7 @@ class UserModel {
       fullName: data['fullName'] ?? '',
       email: data['email'] ?? '',
       phone: data['phone'],
+      photoUrl: data['photoUrl'],
       createdAt: (data['createdAt'] as Timestamp?)?.toDate(),
       role: (data['role'] as String?) ?? 'user',
     );
@@ -46,6 +50,7 @@ class UserModel {
       fullName: map['fullName'] ?? '',
       email: map['email'] ?? '',
       phone: map['phone'],
+      photoUrl: map['photoUrl'],
       createdAt: (map['createdAt'] as Timestamp?)?.toDate(),
       role: (map['role'] as String?) ?? 'user',
     );

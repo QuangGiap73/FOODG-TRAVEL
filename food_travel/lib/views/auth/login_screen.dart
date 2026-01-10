@@ -36,11 +36,23 @@ class _LoginScreenState extends State<LoginScreen> {
         fullName: fullName,
         email: user.email ?? fallbackEmail,
         phone: user.phoneNumber,
+        photoUrl: user.photoURL,
         role: 'user',
       );
       await _userService.createUser(userModel);
-    } else if (existing.role.isEmpty) {
-      await _userService.ensureUserRole(uid: user.uid, role: 'user');
+    } else {
+      if (existing.role.isEmpty) {
+        await _userService.ensureUserRole(uid: user.uid, role: 'user');
+      }
+      final photoUrl = user.photoURL;
+      if (photoUrl != null &&
+          photoUrl.isNotEmpty &&
+          existing.photoUrl != photoUrl) {
+        await _userService.updateUserPhotoUrl(
+          uid: user.uid,
+          photoUrl: photoUrl,
+        );
+      }
     }
   }
 
@@ -171,10 +183,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
-                            return 'Vui lÃ²ng nháº­p email';
+                            return 'Vui long dang nhap email';
                           }
                           if (!value.contains('@')) {
-                            return 'Email khÃ´ng há»£p lá»‡';
+                            return 'Email khong hop le';
                           }
                           return null;
                         },
@@ -204,7 +216,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
-                            return 'Vui lÃ²ng nháº­p máº­t kháº©u';
+                            return 'Vui long nhap mat khau khac';
                           }
                           return null;
                         },
