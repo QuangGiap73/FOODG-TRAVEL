@@ -514,3 +514,374 @@ div.code-toolbar > .prism-light + .toolbar span:focus {
 body.drawer-open {
   overflow: hidden;
 }
+
+/* Province detail drawer */
+.province-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.35);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease;
+  z-index: 1200;
+}
+
+.province-drawer-overlay.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.province-drawer {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  width: min(720px, 92vw);
+  max-height: 85vh;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.25);
+  transform: translate(-50%, -50%) scale(0.96);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform .2s ease, opacity .2s ease;
+  z-index: 1300;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.province-drawer.is-open {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.province-drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 18px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.province-drawer-title {
+  font-weight: 700;
+  font-size: 16px;
+  color: #0f172a;
+}
+
+.province-drawer-close {
+  border: 0;
+  background: #f1f5f9;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.province-drawer-hero {
+  display: flex;
+  gap: 12px;
+  padding: 16px 18px 8px;
+  align-items: center;
+}
+
+.province-drawer-image {
+  width: 72px;
+  height: 72px;
+  border-radius: 14px;
+  background: #f1f5f9;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  text-transform: uppercase;
+  overflow: hidden;
+}
+
+.province-drawer-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+}
+
+.province-drawer-image.has-image img {
+  display: block;
+}
+
+.province-drawer-image.has-image .province-image-placeholder {
+  display: none;
+}
+
+.province-name {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.province-sub {
+  color: #64748b;
+  font-size: 13px;
+  margin-top: 2px;
+}
+
+.province-badge {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #ecfeff;
+  color: #0e7490;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.province-drawer-body {
+  padding: 12px 18px 18px;
+  display: grid;
+  gap: 10px;
+  overflow: auto;
+}
+
+.province-row {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px dashed #e2e8f0;
+  padding-bottom: 6px;
+  color: #334155;
+  gap: 12px;
+}
+
+.province-row-desc {
+  flex-direction: column;
+}
+
+.province-desc {
+  color: #475569;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+/* Dish detail modal */
+.dish-detail-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.35);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease;
+  z-index: 1200;
+}
+
+.dish-detail-overlay.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.dish-detail-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: min(920px, 94vw);
+  max-height: 88vh;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
+  transform: translate(-50%, -50%) scale(0.96);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform .2s ease, opacity .2s ease;
+  z-index: 1300;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.dish-detail-modal.is-open {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.dish-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.dish-detail-title {
+  font-weight: 700;
+  font-size: 16px;
+  color: #0f172a;
+}
+
+.dish-detail-close {
+  border: 0;
+  background: #f1f5f9;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.dish-detail-hero {
+  display: flex;
+  gap: 16px;
+  padding: 16px 20px;
+  align-items: center;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.dish-detail-image {
+  width: 120px;
+  height: 120px;
+  border-radius: 16px;
+  background: #f1f5f9;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  font-size: 12px;
+  overflow: hidden;
+}
+
+.dish-detail-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+}
+
+.dish-detail-image.has-image img {
+  display: block;
+}
+
+.dish-detail-image.has-image .dish-detail-placeholder {
+  display: none;
+}
+
+.dish-detail-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.dish-detail-name {
+  font-weight: 700;
+  font-size: 18px;
+  color: #0f172a;
+}
+
+.dish-detail-sub {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.dish-detail-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.dish-detail-badge {
+  display: inline-flex;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #ecfeff;
+  color: #0e7490;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.dish-detail-badge.is-soft {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.dish-detail-badge.is-dark {
+  background: #ede9fe;
+  color: #5b21b6;
+}
+
+.dish-detail-body {
+  padding: 12px 20px 20px;
+  display: grid;
+  gap: 10px;
+  overflow: auto;
+}
+
+.dish-detail-row {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px dashed #e2e8f0;
+  padding-bottom: 6px;
+  color: #334155;
+  gap: 12px;
+}
+
+.dish-detail-row-desc {
+  flex-direction: column;
+}
+
+.dish-detail-desc {
+  color: #475569;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.dish-detail-gallery {
+  display: grid;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.dish-detail-gallery-title {
+  font-weight: 600;
+  color: #0f172a;
+  font-size: 14px;
+}
+
+.dish-detail-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 10px;
+}
+
+.dish-detail-gallery-item {
+  background: #f1f5f9;
+  border-radius: 10px;
+  height: 80px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dish-detail-gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.dish-detail-gallery-empty {
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+@media (max-width: 640px) {
+  .dish-detail-hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dish-detail-image {
+    width: 100%;
+    height: 180px;
+  }
+}

@@ -13,6 +13,21 @@
   const editDesc = document.getElementById('edit-province-desc');
   const btnUpdate = document.getElementById('btn-update-province');
   const modalDismissSelectors = '[data-bs-dismiss="modal"], .btn-close, .btn-secondary';
+  const drawer = document.getElementById('province-drawer');
+  const drawerOverlay = document.getElementById('province-drawer-overlay');
+  const drawerClose = document.getElementById('province-drawer-close');
+  const detailEls = {
+    imageWrap: document.getElementById('province-detail-image-wrap'),
+    image: document.getElementById('province-detail-image'),
+    name: document.getElementById('province-detail-name'),
+    code: document.getElementById('province-detail-code'),
+    region: document.getElementById('province-detail-region'),
+    slug: document.getElementById('province-detail-slug'),
+    coord: document.getElementById('province-detail-coord'),
+    created: document.getElementById('province-detail-created'),
+    updated: document.getElementById('province-detail-updated'),
+    desc: document.getElementById('province-detail-desc'),
+  };
 
   function hideModal() {
     if (modal) {
@@ -21,6 +36,63 @@
       modalEl.classList.remove('show');
       modalEl.style.display = 'none';
     }
+  }
+
+  function setText(el, value) {
+    if (el) el.textContent = value;
+  }
+
+  function formatDate(val) {
+    if (!val) return '-';
+    if (typeof val === 'object' && val._seconds) {
+      return new Date(val._seconds * 1000).toLocaleString('vi-VN');
+    }
+    const t = new Date(val);
+    return isNaN(t) ? '-' : t.toLocaleString('vi-VN');
+  }
+
+  function formatCoord(lat, lng) {
+    const latNum = Number(lat);
+    const lngNum = Number(lng);
+    const hasLat = Number.isFinite(latNum);
+    const hasLng = Number.isFinite(lngNum);
+    if (!hasLat && !hasLng) return '-';
+    const latText = hasLat ? latNum.toFixed(6) : '-';
+    const lngText = hasLng ? lngNum.toFixed(6) : '-';
+    return `${latText}, ${lngText}`;
+  }
+
+  function setImage(url) {
+    if (!detailEls.imageWrap || !detailEls.image) return;
+    if (url) {
+      detailEls.image.src = url;
+      detailEls.imageWrap.classList.add('has-image');
+    } else {
+      detailEls.image.removeAttribute('src');
+      detailEls.imageWrap.classList.remove('has-image');
+    }
+  }
+
+  function openProvinceDrawer(province) {
+    if (!drawer || !province) return;
+    setText(detailEls.name, province.name || '-');
+    setText(detailEls.code, `Ma: ${province.code || province.id || '-'}`);
+    setText(detailEls.region, province.regionsCode || '-');
+    setText(detailEls.slug, province.slug || '-');
+    setText(detailEls.coord, formatCoord(province.centerLat, province.centerLng));
+    setText(detailEls.created, formatDate(province.createdAt));
+    setText(detailEls.updated, formatDate(province.updatedAt));
+    setText(detailEls.desc, province.description || '-');
+    setImage(province.imageUrl || '');
+    drawer.classList.add('is-open');
+    drawerOverlay?.classList.add('is-visible');
+    document.body.classList.add('drawer-open');
+  }
+
+  function closeProvinceDrawer() {
+    drawer?.classList.remove('is-open');
+    drawerOverlay?.classList.remove('is-visible');
+    document.body.classList.remove('drawer-open');
   }
 
   function openEdit(province) {
@@ -102,16 +174,7 @@
         const province = provinces?.find((p) => (p.code || p.id) === code);
         if (!province) return alert('Khong tim thay tinh thanh');
         if (action === 'view') {
-          alert([
-            `Ma: ${province.code}`,
-            `Ten: ${province.name}`,
-            `Mien: ${province.regionsCode}`,
-            `Slug: ${province.slug || ''}`,
-            `Lat: ${province.centerLat || 0}`,
-            `Lng: ${province.centerLng || 0}`,
-            `Image: ${province.imageUrl || ''}`,
-            `Mo ta: ${province.description || ''}`,
-          ].join('\n'));
+          openProvinceDrawer(province);
         } else if (action === 'edit') {
           openEdit(province);
         } else if (action === 'delete') {
@@ -161,4 +224,10 @@
       btn.addEventListener('click', hideModal);
     });
   }
+
+  drawerClose?.addEventListener('click', closeProvinceDrawer);
+  drawerOverlay?.addEventListener('click', closeProvinceDrawer);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeProvinceDrawer();
+  });
 })();

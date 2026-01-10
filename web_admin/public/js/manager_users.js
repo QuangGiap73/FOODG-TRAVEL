@@ -211,9 +211,9 @@ document.addEventListener('DOMContentLoaded', () => {
               const msg = errBody?.error || 'Xoa user that bai';
               throw new Error(msg);
             }
-            const row = e.currentTarget.closest('tr');
+            const row = e.currentTarget && e.currentTarget.closest ? e.currentTarget.closest('tr') : null;
             if (row) row.remove();
-            const menu = e.currentTarget.closest('.dropdown-menu');
+            const menu = e.currentTarget && e.currentTarget.closest ? e.currentTarget.closest('.dropdown-menu') : null;
             if (menu) menu.classList.remove('show');
             if (!tbody.querySelector('tr')) {
               tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Chua co user</td></tr>';
@@ -227,7 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const user = usersCache.find((u) => String(u.id) === String(userId));
           if (user) openUserDrawer(user);
         } else if (action === 'edit') {
-          const row = e.currentTarget.closest('tr');
+          const row = e.currentTarget && e.currentTarget.closest ? e.currentTarget.closest('tr') : null;
           if (window.openEditModal && row) {
             window.openEditModal(row);
           }

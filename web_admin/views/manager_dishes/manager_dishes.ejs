@@ -213,5 +213,49 @@
   </div>
   
 
+<div id="dish-detail-overlay" class="dish-detail-overlay"></div>
+<aside id="dish-detail-modal" class="dish-detail-modal" aria-hidden="true">
+  <div class="dish-detail-header">
+    <div class="dish-detail-title">Thong tin mon an</div>
+    <button type="button" id="dish-detail-close" class="dish-detail-close">Dong</button>
+  </div>
+
+  <div class="dish-detail-hero">
+    <div id="dish-detail-image-wrap" class="dish-detail-image">
+      <img id="dish-detail-image" src="" alt="">
+      <span class="dish-detail-placeholder">No image</span>
+    </div>
+    <div class="dish-detail-meta">
+      <div id="dish-detail-name" class="dish-detail-name">-</div>
+      <div id="dish-detail-code" class="dish-detail-sub">-</div>
+      <div id="dish-detail-slug" class="dish-detail-sub">-</div>
+      <div class="dish-detail-badges">
+        <span id="dish-detail-region" class="dish-detail-badge">-</span>
+        <span id="dish-detail-province" class="dish-detail-badge is-soft">-</span>
+        <span id="dish-detail-category" class="dish-detail-badge is-dark">-</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="dish-detail-body">
+    <div class="dish-detail-row"><span>Gia</span><strong id="dish-detail-price">-</strong></div>
+    <div class="dish-detail-row"><span>Best time</span><strong id="dish-detail-best-time">-</strong></div>
+    <div class="dish-detail-row"><span>Best season</span><strong id="dish-detail-best-season">-</strong></div>
+    <div class="dish-detail-row"><span>Spicy</span><strong id="dish-detail-spicy">-</strong></div>
+    <div class="dish-detail-row"><span>No (satiety)</span><strong id="dish-detail-satiety">-</strong></div>
+    <div class="dish-detail-row"><span>Tags</span><strong id="dish-detail-tags">-</strong></div>
+    <div class="dish-detail-row"><span>Created</span><strong id="dish-detail-created">-</strong></div>
+    <div class="dish-detail-row"><span>Updated</span><strong id="dish-detail-updated">-</strong></div>
+    <div class="dish-detail-row dish-detail-row-desc">
+      <span>Mo ta</span>
+      <div id="dish-detail-desc" class="dish-detail-desc">-</div>
+    </div>
+    <div class="dish-detail-gallery">
+      <div class="dish-detail-gallery-title">Thu vien anh</div>
+      <div id="dish-detail-gallery" class="dish-detail-gallery-grid"></div>
+    </div>
+  </div>
+</aside>
+
 <script src="/js/manager_dishes/manager_dishes.js"></script>
 <script src="/js/manager_dishes/dish_action.js"></script>

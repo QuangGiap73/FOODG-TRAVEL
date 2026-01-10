@@ -239,5 +239,36 @@
   </div>
 </div>
 
+<div id="province-drawer-overlay" class="province-drawer-overlay"></div>
+<aside id="province-drawer" class="province-drawer" aria-hidden="true">
+  <div class="province-drawer-header">
+    <div class="province-drawer-title">Thong tin tinh thanh</div>
+    <button type="button" id="province-drawer-close" class="province-drawer-close">Dong</button>
+  </div>
+
+  <div class="province-drawer-hero">
+    <div id="province-detail-image-wrap" class="province-drawer-image">
+      <img id="province-detail-image" src="" alt="">
+      <span class="province-image-placeholder">No image</span>
+    </div>
+    <div>
+      <div id="province-detail-name" class="province-name">-</div>
+      <div id="province-detail-code" class="province-sub">-</div>
+      <span id="province-detail-region" class="province-badge">-</span>
+    </div>
+  </div>
+
+  <div class="province-drawer-body">
+    <div class="province-row"><span>Slug</span><strong id="province-detail-slug">-</strong></div>
+    <div class="province-row"><span>Toa do</span><strong id="province-detail-coord">-</strong></div>
+    <div class="province-row"><span>Created</span><strong id="province-detail-created">-</strong></div>
+    <div class="province-row"><span>Updated</span><strong id="province-detail-updated">-</strong></div>
+    <div class="province-row province-row-desc">
+      <span>Mo ta</span>
+      <div id="province-detail-desc" class="province-desc">-</div>
+    </div>
+  </div>
+</aside>
+
 <script src="/js/manager_provinces/manager_provinces.js"></script>
 <script src="/js/manager_provinces/province_actions.js"></script>

@@ -15,11 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const inputRegionName = document.getElementById('region-name');
   const inputRegionNumber = document.getElementById('region-number');
   const inputRegionMacro = document.getElementById('region-macro');
-  const addRegionModal = addRegionModalEl ? new bootstrap.Modal(addRegionModalEl) : null;
+  const addRegionModal = addRegionModalEl && window.bootstrap ? new bootstrap.Modal(addRegionModalEl) : null;
+  const addRegionCloseSelectors = '[data-bs-dismiss="modal"], .btn-close, .btn-light, .btn-secondary';
   // Add province elements
   const addProvinceBtn = document.getElementById('btn-add-province');
   const addProvinceModalEl = document.getElementById('modal-add-province');
-  const addProvinceModal = addProvinceModalEl ? new bootstrap.Modal(addProvinceModalEl) : null;
+  const addProvinceModal = addProvinceModalEl && window.bootstrap ? new bootstrap.Modal(addProvinceModalEl) : null;
+  const addProvinceCloseSelectors = '[data-bs-dismiss="modal"], .btn-close, .btn-light, .btn-secondary';
   const addProvinceForm = document.getElementById('form-add-province');
   const alertProvince = document.getElementById('add-province-alert');
   const inputProvinceCode = document.getElementById('province-code');
@@ -36,6 +38,46 @@ document.addEventListener('DOMContentLoaded', () => {
   let regionsCache = [];
   let provincesCache = [];
   let currentRegion = null;
+
+  function showAddRegionModal() {
+    if (addRegionModal) {
+      addRegionModal.show();
+    } else if (addRegionModalEl) {
+      addRegionModalEl.style.display = 'block';
+      addRegionModalEl.classList.add('show');
+      document.body.classList.add('modal-open');
+    }
+  }
+
+  function hideAddRegionModal() {
+    if (addRegionModal) {
+      addRegionModal.hide();
+    } else if (addRegionModalEl) {
+      addRegionModalEl.classList.remove('show');
+      addRegionModalEl.style.display = 'none';
+      document.body.classList.remove('modal-open');
+    }
+  }
+
+  function showAddProvinceModal() {
+    if (addProvinceModal) {
+      addProvinceModal.show();
+    } else if (addProvinceModalEl) {
+      addProvinceModalEl.style.display = 'block';
+      addProvinceModalEl.classList.add('show');
+      document.body.classList.add('modal-open');
+    }
+  }
+
+  function hideAddProvinceModal() {
+    if (addProvinceModal) {
+      addProvinceModal.hide();
+    } else if (addProvinceModalEl) {
+      addProvinceModalEl.classList.remove('show');
+      addProvinceModalEl.style.display = 'none';
+      document.body.classList.remove('modal-open');
+    }
+  }
 
   async function fetchJSON(url, options = {}) {
     const res = await fetch(url, options);
@@ -203,7 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     saveRegionBtn && (saveRegionBtn.disabled = false);
     saveRegionBtn && (saveRegionBtn.textContent = 'Luu');
-    addRegionModal?.show();
+    showAddRegionModal();
     setTimeout(() => inputRegionCode?.focus(), 200);
   });
 
@@ -236,7 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!res.ok) {
         throw new Error(data.error || 'Them mien that bai');
       }
-      addRegionModal?.hide();
+      hideAddRegionModal();
       await loadRegions(code);
       if (window.notify) window.notify.success('Them mien thanh cong');
     } catch (err) {
@@ -292,7 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
     previewObjectUrl = '';
     saveProvinceBtn && (saveProvinceBtn.disabled = false);
     saveProvinceBtn && (saveProvinceBtn.textContent = 'Luu');
-    addProvinceModal?.show();
+    showAddProvinceModal();
     setTimeout(() => inputProvinceCode?.focus(), 200);
   });
 
@@ -377,7 +419,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Them tinh that bai');
-      addProvinceModal?.hide();
+      hideAddProvinceModal();
       await selectRegion(payload.regionsCode);
       if (window.notify) window.notify.success('Them tinh thanh cong');
     } catch (err) {
@@ -406,6 +448,20 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       menus.forEach((m) => m.classList.remove('show'));
     }
+  });
+
+  addRegionModalEl?.querySelectorAll(addRegionCloseSelectors).forEach((btn) => {
+    btn.addEventListener('click', hideAddRegionModal);
+  });
+  addRegionModalEl?.addEventListener('click', (e) => {
+    if (!addRegionModal && e.target === addRegionModalEl) hideAddRegionModal();
+  });
+
+  addProvinceModalEl?.querySelectorAll(addProvinceCloseSelectors).forEach((btn) => {
+    btn.addEventListener('click', hideAddProvinceModal);
+  });
+  addProvinceModalEl?.addEventListener('click', (e) => {
+    if (!addProvinceModal && e.target === addProvinceModalEl) hideAddProvinceModal();
   });
 
   // expose ham dung chung cho file action

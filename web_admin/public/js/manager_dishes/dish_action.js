@@ -19,6 +19,29 @@
   const editImagesPreview = document.getElementById('edit-images-preview');
   const addImagesInput = document.getElementById('add-images-file');
   const addImagesPreview = document.getElementById('add-images-preview');
+  const detailOverlay = document.getElementById('dish-detail-overlay');
+  const detailModal = document.getElementById('dish-detail-modal');
+  const detailClose = document.getElementById('dish-detail-close');
+  const detailEls = {
+    imageWrap: document.getElementById('dish-detail-image-wrap'),
+    image: document.getElementById('dish-detail-image'),
+    name: document.getElementById('dish-detail-name'),
+    code: document.getElementById('dish-detail-code'),
+    slug: document.getElementById('dish-detail-slug'),
+    region: document.getElementById('dish-detail-region'),
+    province: document.getElementById('dish-detail-province'),
+    category: document.getElementById('dish-detail-category'),
+    price: document.getElementById('dish-detail-price'),
+    bestTime: document.getElementById('dish-detail-best-time'),
+    bestSeason: document.getElementById('dish-detail-best-season'),
+    spicy: document.getElementById('dish-detail-spicy'),
+    satiety: document.getElementById('dish-detail-satiety'),
+    tags: document.getElementById('dish-detail-tags'),
+    desc: document.getElementById('dish-detail-desc'),
+    created: document.getElementById('dish-detail-created'),
+    updated: document.getElementById('dish-detail-updated'),
+    gallery: document.getElementById('dish-detail-gallery'),
+  };
 
   // object s­a
   const f = {
@@ -166,8 +189,137 @@
       addModalEl.classList.remove('show');
     }
   }
+
+  function setText(el, value) {
+    if (el) el.textContent = value;
+  }
+
+  function formatDate(val) {
+    if (!val) return '-';
+    if (typeof val === 'object' && val._seconds) {
+      return new Date(val._seconds * 1000).toLocaleString('vi-VN');
+    }
+    const t = new Date(val);
+    return isNaN(t) ? '-' : t.toLocaleString('vi-VN');
+  }
+
+  function formatTags(val) {
+    if (!val) return '-';
+    if (Array.isArray(val)) {
+      const cleaned = val.map((tag) => String(tag).trim()).filter(Boolean);
+      return cleaned.length ? cleaned.join(', ') : '-';
+    }
+    const text = String(val).trim();
+    return text || '-';
+  }
+
+  function formatValue(val) {
+    if (val === null || val === undefined || val === '') return '-';
+    return String(val);
+  }
+
+  function normalizeDishImages(dish) {
+    const list = Array.isArray(dish.Images || dish.images || dish.imageUrls)
+      ? (dish.Images || dish.images || dish.imageUrls)
+      : [];
+    const primary = dish.Img || dish.img || dish.imageUrl || list[0] || '';
+    const all = [primary, ...list].filter(Boolean);
+    return Array.from(new Set(all));
+  }
+
+  function setDetailImage(url) {
+    if (!detailEls.imageWrap || !detailEls.image) return;
+    if (url) {
+      detailEls.image.src = url;
+      detailEls.imageWrap.classList.add('has-image');
+    } else {
+      detailEls.image.removeAttribute('src');
+      detailEls.imageWrap.classList.remove('has-image');
+    }
+  }
+
+  function renderDetailGallery(urls) {
+    if (!detailEls.gallery) return;
+    detailEls.gallery.innerHTML = '';
+    if (!urls.length) {
+      const empty = document.createElement('div');
+      empty.className = 'dish-detail-gallery-empty';
+      empty.textContent = 'No image';
+      detailEls.gallery.appendChild(empty);
+      return;
+    }
+    urls.forEach((url) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'dish-detail-gallery-item';
+      const img = document.createElement('img');
+      img.src = url;
+      img.alt = '';
+      wrap.appendChild(img);
+      detailEls.gallery.appendChild(wrap);
+    });
+  }
+
+  function openDishDetail(dish) {
+    if (!detailModal || !dish) return;
+    const dishId = dish.id || dish.ID || dish.Stt || dish.STT || '';
+    const name = dish.Name || dish.name || '-';
+    const slug = dish.slug || '';
+    const region = dish.region_name || dish.region || dish.region_code || '';
+    const province = dish.province_name || dish.province || dish.province_code || '';
+    const category = dish.category || '';
+    const price = dish.price_range || '';
+    const bestTime = dish.Best_time || dish.best_time || '';
+    const bestSeason = dish.Best_season || dish.best_season || '';
+    const tags = dish.Tags || dish.tags || '';
+    const spicy = dish.spicy_level;
+    const satiety = dish.satiety_level;
+    const desc = dish.description || dish.desc || '';
+    const created = dish.createdAt || dish.created_at || '';
+    const updated = dish.updatedAt || dish.updated_at || '';
+    const images = normalizeDishImages(dish);
+
+    setText(detailEls.name, name);
+    setText(detailEls.code, dishId ? `ID: ${dishId}` : '-');
+    setText(detailEls.slug, slug ? `Slug: ${slug}` : '-');
+    setText(detailEls.region, region || '-');
+    setText(detailEls.province, province || '-');
+    setText(detailEls.category, category || '-');
+    setText(detailEls.price, price || '-');
+    setText(detailEls.bestTime, bestTime || '-');
+    setText(detailEls.bestSeason, bestSeason || '-');
+    setText(detailEls.spicy, formatValue(spicy));
+    setText(detailEls.satiety, formatValue(satiety));
+    setText(detailEls.tags, formatTags(tags));
+    setText(detailEls.desc, desc || '-');
+    setText(detailEls.created, formatDate(created));
+    setText(detailEls.updated, formatDate(updated));
+    setDetailImage(images[0] || '');
+    renderDetailGallery(images);
+
+    detailModal.classList.add('is-open');
+    detailOverlay?.classList.add('is-visible');
+    detailModal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('drawer-open');
+  }
+
+  function closeDishDetail() {
+    detailModal?.classList.remove('is-open');
+    detailOverlay?.classList.remove('is-visible');
+    detailModal?.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('drawer-open');
+  }
+
   function onView(id) {
-    alert(`Xem mon ${id}`);
+    const dish = cache.find((d) => String(d.id || d.STT) === String(id));
+    if (!dish) {
+      alert('Khong tim thay mon');
+      return;
+    }
+    if (!detailModal) {
+      alert(`Mon: ${dish.Name || dish.name || id}`);
+      return;
+    }
+    openDishDetail(dish);
   }
 
   function onEdit(id) {
@@ -507,4 +659,10 @@
   btnSaveAdd?.addEventListener('click', saveNewDish);
 
   loadProvinces().catch((err) => console.error(err));
+
+  detailClose?.addEventListener('click', closeDishDetail);
+  detailOverlay?.addEventListener('click', closeDishDetail);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeDishDetail();
+  });
 })();
