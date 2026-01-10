@@ -64,22 +64,55 @@ class _LoginScreenState extends State<LoginScreen> {
         MaterialPageRoute(builder: (_) => const HomeScreen()),
       );
     } on FirebaseAuthException catch (e) {
-      String message = 'Đăng nhập thất bại';
+      String message = 'ÄÄƒng nháº­p tháº¥t báº¡i';
       if (e.code == 'user-not-found') {
-        message = 'Tài khoản không tồn tại';
+        message = 'TÃ i khoáº£n khÃ´ng tá»“n táº¡i';
       } else if (e.code == 'wrong-password') {
-        message = 'Mật khẩu không đúng';
+        message = 'Máº­t kháº©u khÃ´ng Ä‘Ãºng';
       } else if (e.code == 'invalid-email') {
-        message = 'Email không hợp lệ';
+        message = 'Email khÃ´ng há»£p lá»‡';
       }
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
     } catch (e) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Lỗi: $e')));
+          .showSnackBar(SnackBar(content: Text('Lá»—i: $e')));
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
   }
+  Future<void> _handleGoogleLogin() async {
+    setState(() => _isLoading = true);
+    try {
+      final cred = await _authService.signInWithGoogle();
+      final user = cred.user;
+      if (user != null) {
+        await _ensureUserProfile(user, user.email ?? "");
+      }
+
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == "sign_in_canceled") {
+        return;
+      }
+      String message = "Google sign-in failed";
+      if (e.code == "account-exists-with-different-credential") {
+        message = "Account exists with a different sign-in method";
+      } else if (e.code == "invalid-credential") {
+        message = "Invalid Google credential";
+      }
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Error: $e")));
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
 
   @override
   void dispose() {
@@ -97,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Ảnh món ăn
+              // áº¢nh mÃ³n Äƒn
               Container(
                 height: 280,
                 decoration: const BoxDecoration(
@@ -138,10 +171,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
-                            return 'Vui lòng nhập email';
+                            return 'Vui lÃ²ng nháº­p email';
                           }
                           if (!value.contains('@')) {
-                            return 'Email không hợp lệ';
+                            return 'Email khÃ´ng há»£p lá»‡';
                           }
                           return null;
                         },
@@ -171,7 +204,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
-                            return 'Vui lòng nhập mật khẩu';
+                            return 'Vui lÃ²ng nháº­p máº­t kháº©u';
                           }
                           return null;
                         },
@@ -199,6 +232,33 @@ class _LoginScreenState extends State<LoginScreen> {
                                   'Login',
                                   style: TextStyle(fontSize: 18),
                                 ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        children: const [
+                          Expanded(child: Divider(color: Color(0xFFE0E0E0))),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 12),
+                            child: Text("or"),
+                          ),
+                          Expanded(child: Divider(color: Color(0xFFE0E0E0))),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: OutlinedButton.icon(
+                          onPressed: _isLoading ? null : _handleGoogleLogin,
+                          icon: const Icon(Icons.g_mobiledata, size: 24),
+                          label: const Text("Continue with Google"),
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: Color(0xFFE0E0E0)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 20),
