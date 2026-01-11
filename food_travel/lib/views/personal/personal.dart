@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../controller/personal_controller.dart';
 import 'edit_personal.dart';
+import '../settings/theme_settings.dart';
+
 
 class PersonalPage extends StatefulWidget {
   const PersonalPage({super.key});
@@ -68,18 +70,19 @@ class _PersonalScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F7FB),
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [
               _HeaderSection(photoUrl: viewData.photoUrl),
               if (isLoading)
-                const LinearProgressIndicator(
+                LinearProgressIndicator(
                   minHeight: 2,
-                  backgroundColor: Color(0xFFE6E9F0),
-                  color: Color(0xFF8A9BD8),
+                  backgroundColor: theme.colorScheme.surfaceVariant,
+                  color: theme.colorScheme.primary,
                 ),
               Transform.translate(
                 offset: const Offset(0, -36),
@@ -124,10 +127,17 @@ class _PersonalScaffold extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 22),
-              const _SectionItem(
+              _SectionItem(
                 icon: Icons.favorite_border,
                 title: 'Trang thai cua toi',
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const ThemeSettingsPage()),
+                  );
+                },
               ),
+
               const _SectionItem(
                 icon: Icons.emoji_events_outlined,
                 title: 'Thanh tich cua toi',
@@ -167,14 +177,25 @@ class _HeaderSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasPhoto = photoUrl != null && photoUrl!.isNotEmpty;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    // xac dinh app dang o che do nao
+    final isDark = theme.brightness == Brightness.dark;
+    final gradient = isDark
+        ? const LinearGradient(
+            colors: [Color(0xFF2A2F3A), Color(0xFF171A20)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          )
+        : const LinearGradient(
+            colors: [Color(0xFF9FB1E5), Color(0xFFB9C7F5)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          );
     return Container(
       height: 260,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0xFF9FB1E5), Color(0xFFB9C7F5)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+      decoration:  BoxDecoration(
+        gradient: gradient
       ),
       child: Stack(
         children: [
@@ -194,14 +215,19 @@ class _HeaderSection extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.9),
+                color: isDark
+                    ? colorScheme.surface.withOpacity(0.9)
+                    : Colors.white.withOpacity(0.9),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Row(
                 children: [
-                  const Text(
+                  Text(
                     'Rut mien phi',
-                    style: TextStyle(fontWeight: FontWeight.w600),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: colorScheme.onSurface,
+                    ),
                   ),
                   const SizedBox(width: 6),
                   CircleAvatar(
@@ -225,19 +251,23 @@ class _HeaderSection extends StatelessWidget {
               height: 130,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.35),
+                color: isDark
+                    ? Colors.white.withOpacity(0.12)
+                    : Colors.white.withOpacity(0.35),
               ),
               child: Center(
                 child: CircleAvatar(
                   radius: 48,
-                  backgroundColor: Colors.white.withOpacity(0.85),
+                  backgroundColor: isDark
+                      ? Colors.white.withOpacity(0.18)
+                      : Colors.white.withOpacity(0.85),
                   backgroundImage: hasPhoto ? NetworkImage(photoUrl!) : null,
                   child: hasPhoto
                       ? null
-                      : const Icon(
+                      : Icon(
                           Icons.face_retouching_natural_rounded,
                           size: 54,
-                          color: Color(0xFF6B6F80),
+                          color: colorScheme.onSurface.withOpacity(0.65),
                         ),
                 ),
               ),
@@ -285,14 +315,21 @@ class _ProfileCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final hasPhoto = photoUrl != null && photoUrl!.isNotEmpty;
     final radius = BorderRadius.circular(20);
+    final theme = Theme.of(context);
+    final cardColor = theme.colorScheme.surface;
+    final shadowColor = theme.brightness == Brightness.dark
+        ? Colors.black.withOpacity(0.35)
+        : Colors.black.withOpacity(0.06);
+    final titleColor = theme.colorScheme.onSurface;
+    final subtitleColor = theme.colorScheme.onSurface.withOpacity(0.6);
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: cardColor,
         borderRadius: radius,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+            color: shadowColor,
             blurRadius: 14,
             offset: const Offset(0, 8),
           ),
@@ -310,14 +347,14 @@ class _ProfileCard extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 30,
-                  backgroundColor: const Color(0xFFEFEFF6),
+                  backgroundColor: theme.colorScheme.surfaceVariant,
                   backgroundImage: hasPhoto ? NetworkImage(photoUrl!) : null,
                   child: hasPhoto
                       ? null
-                      : const Icon(
+                      : Icon(
                           Icons.person,
                           size: 30,
-                          color: Color(0xFF6B6F80),
+                          color: theme.colorScheme.onSurfaceVariant,
                         ),
                 ),
                 const SizedBox(width: 14),
@@ -327,9 +364,10 @@ class _ProfileCard extends StatelessWidget {
                     children: [
                       Text(
                         name,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
+                          color: titleColor,
                         ),
                       ),
                       const SizedBox(height: 6),
@@ -341,15 +379,15 @@ class _ProfileCard extends StatelessWidget {
                               vertical: 2,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFEFF2F8),
+                              color: theme.colorScheme.surfaceVariant,
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: const Text(
+                            child: Text(
                               'ID',
                               style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.w700,
-                                color: Color(0xFF6B6F80),
+                                color: theme.colorScheme.onSurfaceVariant,
                               ),
                             ),
                           ),
@@ -357,7 +395,7 @@ class _ProfileCard extends StatelessWidget {
                           Expanded(
                             child: Text(
                               subtitle,
-                              style: const TextStyle(color: Color(0xFF8A8F9A)),
+                              style: TextStyle(color: subtitleColor),
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
@@ -366,7 +404,11 @@ class _ProfileCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                const Icon(Icons.chevron_right, color: Color(0xFFB0B3C2)),
+                Icon(
+                  Icons.chevron_right,
+                  color: theme.iconTheme.color?.withOpacity(0.6) ??
+                      theme.colorScheme.onSurface.withOpacity(0.6),
+                ),
               ],
             ),
           ),
@@ -389,15 +431,20 @@ class _QuickAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final shadowColor = theme.brightness == Brightness.dark
+        ? Colors.black.withOpacity(0.35)
+        : Colors.black.withOpacity(0.06);
+    final labelColor = theme.colorScheme.onSurface;
     return Expanded(
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 14),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(18),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
+              color: shadowColor,
               blurRadius: 10,
               offset: const Offset(0, 6),
             ),
@@ -417,7 +464,11 @@ class _QuickAction extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               label,
-              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 12,
+                color: labelColor,
+              ),
               textAlign: TextAlign.center,
             ),
           ],
@@ -432,59 +483,81 @@ class _SectionItem extends StatelessWidget {
     required this.icon,
     required this.title,
     this.showDot = false,
+    this.onTap,
   });
 
   final IconData icon;
   final String title;
   final bool showDot;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final shadowColor = theme.brightness == Brightness.dark
+        ? Colors.black.withOpacity(0.35)
+        : Colors.black.withOpacity(0.04);
+    final radius = BorderRadius.circular(16);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.04),
-              blurRadius: 12,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                color: const Color(0xFFEFF2F8),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(icon, color: const Color(0xFF4F596A)),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                title,
-                style: const TextStyle(fontWeight: FontWeight.w600),
-              ),
-            ),
-            if (showDot)
-              Container(
-                width: 8,
-                height: 8,
-                margin: const EdgeInsets.only(right: 8),
-                decoration: const BoxDecoration(
-                  color: Color(0xFFFF6B6B),
-                  shape: BoxShape.circle,
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: radius,
+        child: InkWell(
+          borderRadius: radius,
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surface,
+              borderRadius: radius,
+              boxShadow: [
+                BoxShadow(
+                  color: shadowColor,
+                  blurRadius: 12,
+                  offset: const Offset(0, 8),
                 ),
-              ),
-            const Icon(Icons.chevron_right, color: Color(0xFFB0B3C2)),
-          ],
+              ],
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surfaceVariant,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(icon, color: theme.colorScheme.onSurfaceVariant),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.onSurface,
+                    ),
+                  ),
+                ),
+                if (showDot)
+                  Container(
+                    width: 8,
+                    height: 8,
+                    margin: const EdgeInsets.only(right: 8),
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFFF6B6B),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                Icon(
+                  Icons.chevron_right,
+                  color: theme.iconTheme.color?.withOpacity(0.6) ??
+                      theme.colorScheme.onSurface.withOpacity(0.6),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

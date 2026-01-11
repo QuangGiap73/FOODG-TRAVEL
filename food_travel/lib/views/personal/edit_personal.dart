@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:image_picker/image_picker.dart';
 
+import '../../cloudinary_config.dart';
+import '../../services/cloudinary_service.dart';
 import '../../services/user_service.dart';
 
 class EditPersonalPage extends StatefulWidget {
@@ -18,15 +23,17 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
 
   bool _isLoading = true;
   bool _isSaving = false;
+  bool _isUploadingAvatar = false;
+  String? _avatarUrl;
 
   @override
-  void initState() { // khi mở trang thì tự động load dữ liệu
+  void initState() {
     super.initState();
     _loadProfile();
   }
 
   Future<void> _loadProfile() async {
-    final user = FirebaseAuth.instance.currentUser; // lấy dữ liệu khi đã nhớ đăng nhập
+    final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
       setState(() => _isLoading = false);
       return;
@@ -37,29 +44,71 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
         (profile?.fullName ?? user.displayName ?? '').trim();
     _phoneController.text = (profile?.phone ?? '').trim();
     _emailController.text = (profile?.email ?? user.email ?? '').trim();
+    _avatarUrl = profile?.photoUrl ?? user.photoURL;
 
     if (mounted) {
       setState(() => _isLoading = false);
     }
   }
-  // lưu dữ liệu 
+
+  Future<void> _pickAndUploadAvatar() async {
+    if (_isUploadingAvatar) return;
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final picker = ImagePicker();
+    final picked = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 85,
+    );
+    if (picked == null) return;
+
+    setState(() => _isUploadingAvatar = true);
+
+    try {
+      final service = CloudinaryService(
+        cloudName: cloudinaryCloudName,
+        uploadPreset: cloudinaryUploadPreset,
+        folder: cloudinaryFolder,
+      );
+
+      final url = await service.uploadImage(File(picked.path));
+      await UserService().updateUserPhotoUrl(uid: user.uid, photoUrl: url);
+      await user.updatePhotoURL(url);
+
+      if (mounted) {
+        setState(() => _avatarUrl = url);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Upload failed: $e')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isUploadingAvatar = false);
+      }
+    }
+  }
+
   Future<void> _saveProfile() async {
     if (!_formKey.currentState!.validate()) return;
 
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
-    setState(() => _isSaving = true); // bật trạng thái lưu
-    // lấy dữ liệu từ input
+    setState(() => _isSaving = true);
+
     final fullName = _nameController.text.trim();
     final phone = _phoneController.text.trim();
-    // lưu dữ liệu trong firestore
+
     await UserService().updateUserProfile(
       uid: user.uid,
       fullName: fullName,
       phone: phone.isEmpty ? null : phone,
     );
-    // cập nhật fire auth
+
     if (fullName.isNotEmpty && user.displayName != fullName) {
       await user.updateDisplayName(fullName);
     }
@@ -68,7 +117,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
     setState(() => _isSaving = false);
     Navigator.pop(context, true);
   }
-  // dọn dẹp bộ nhớ
+
   @override
   void dispose() {
     _nameController.dispose();
@@ -76,10 +125,10 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
     _emailController.dispose();
     super.dispose();
   }
-  // build giao diện
+
   @override
   Widget build(BuildContext context) {
-    final photoUrl = FirebaseAuth.instance.currentUser?.photoURL;
+    final photoUrl = _avatarUrl ?? FirebaseAuth.instance.currentUser?.photoURL;
 
     return Scaffold(
       appBar: AppBar(
@@ -105,7 +154,11 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                 child: ListView(
                   padding: const EdgeInsets.all(20),
                   children: [
-                    _AvatarRow(photoUrl: photoUrl),
+                    _AvatarRow(
+                      photoUrl: photoUrl,
+                      isUploading: _isUploadingAvatar,
+                      onTap: _pickAndUploadAvatar,
+                    ),
                     const SizedBox(height: 20),
                     TextFormField(
                       controller: _nameController,
@@ -136,7 +189,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                         labelText: 'Email',
                         border: OutlineInputBorder(),
                       ),
-                      readOnly: true, // chỉ đọc , không được sửa
+                      readOnly: true,
                     ),
                   ],
                 ),
@@ -145,11 +198,17 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
     );
   }
 }
-// hiển thị ảnh 
+
 class _AvatarRow extends StatelessWidget {
-  const _AvatarRow({required this.photoUrl});
+  const _AvatarRow({
+    required this.photoUrl,
+    required this.isUploading,
+    required this.onTap,
+  });
 
   final String? photoUrl;
+  final bool isUploading;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -161,10 +220,14 @@ class _AvatarRow extends StatelessWidget {
         child: photoUrl == null ? const Icon(Icons.person) : null,
       ),
       title: const Text('Hinh dai dien'),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: () {
-        // TODO: hook up avatar change.
-      },
+      trailing: isUploading
+          ? const SizedBox(
+              width: 18,
+              height: 18,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
+          : const Icon(Icons.chevron_right),
+      onTap: isUploading ? null : onTap,
     );
   }
 }
