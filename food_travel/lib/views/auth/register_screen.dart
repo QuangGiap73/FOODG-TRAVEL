@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../models/user_model.dart';
 import '../../services/auth_service.dart';
 import '../../services/user_service.dart';
-import 'login_screen.dart';
+import '../../router/route_names.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -74,10 +74,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         const SnackBar(content: Text('Đăng ký thành công')),
       );
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const LoginScreen()),
-      );
+      Navigator.pushReplacementNamed(context, RouteNames.login);
     } on FirebaseAuthException catch (e) {
       String message = 'Đăng ký thất bại';
       if (e.code == 'email-already-in-use') {
@@ -324,10 +321,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                           ),
                           onPressed: () {
-                            Navigator.pushReplacement(
+                            Navigator.pushReplacementNamed(
                               context,
-                              MaterialPageRoute(
-                                  builder: (_) => const LoginScreen()),
+                              RouteNames.login,
                             );
                           },
                           child: const Text(

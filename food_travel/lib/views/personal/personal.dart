@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../controller/personal_controller.dart';
-import 'edit_personal.dart';
-import '../settings/theme_settings.dart';
+import '../../router/route_names.dart';
 
 
 class PersonalPage extends StatefulWidget {
@@ -29,10 +28,8 @@ class _PersonalPageState extends State<PersonalPage> {
   }
 
   Future<void> _openEdit() async {
-    final result = await Navigator.push<bool>(
-      context,
-      MaterialPageRoute(builder: (_) => const EditPersonalPage()),
-    );
+    final result =
+        await Navigator.pushNamed<bool>(context, RouteNames.editPersonal);
     if (result == true) {
       _controller.refresh();
     }
@@ -131,16 +128,16 @@ class _PersonalScaffold extends StatelessWidget {
                 icon: Icons.favorite_border,
                 title: 'Trang thai cua toi',
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const ThemeSettingsPage()),
-                  );
+                  Navigator.pushNamed(context, RouteNames.themeSettings);
                 },
               ),
 
-              const _SectionItem(
+              _SectionItem(
                 icon: Icons.emoji_events_outlined,
-                title: 'Thanh tich cua toi',
+                title: 'Thay đổi mật khẩu',
+                onTap: (){
+                  Navigator.pushNamed(context, RouteNames.changePassword);
+                },
               ),
               const _SectionItem(
                 icon: Icons.backpack_outlined,

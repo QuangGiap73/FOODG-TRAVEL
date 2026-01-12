@@ -4,8 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../models/user_model.dart';
 import '../../services/auth_service.dart';
 import '../../services/user_service.dart';
-import '../home/home_screen.dart';
-import 'register_screen.dart';
+import '../../router/route_names.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -71,10 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
 
       if (!mounted) return;
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
-      );
+      Navigator.pushReplacementNamed(context, RouteNames.home);
     } on FirebaseAuthException catch (e) {
       String message = 'ÄÄƒng nháº­p tháº¥t báº¡i';
       if (e.code == 'user-not-found') {
@@ -102,10 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
 
       if (!mounted) return;
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
-      );
+      Navigator.pushReplacementNamed(context, RouteNames.home);
     } on FirebaseAuthException catch (e) {
       if (e.code == "sign_in_canceled") {
         return;
@@ -280,10 +273,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           const Text("Don't have an account? "),
                           GestureDetector(
                             onTap: () {
-                              Navigator.pushReplacement(
+                              Navigator.pushReplacementNamed(
                                 context,
-                                MaterialPageRoute(
-                                    builder: (_) => const RegisterScreen()),
+                                RouteNames.register,
                               );
                             },
                             child: const Text(

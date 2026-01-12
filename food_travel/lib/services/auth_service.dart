@@ -50,4 +50,40 @@ class AuthService {
             _googleSignIn.signOut(),
         ]);
     }
+    Future<void> changePassword({
+        required String currentPassword,
+        required String newPassword,
+        }) async {
+        final user = _auth.currentUser;
+        if (user == null) {
+            throw FirebaseAuthException(
+            code: 'no-user',
+            message: 'No user signed in.',
+            );
+        }
+
+        final providers = user.providerData.map((p) => p.providerId).toList();
+        if (!providers.contains('password')) {
+            throw FirebaseAuthException(
+            code: 'no-password-provider',
+            message: 'Password provider not linked.',
+            );
+        }
+
+        final email = user.email;
+        if (email == null || email.isEmpty) {
+            throw FirebaseAuthException(
+            code: 'no-email',
+            message: 'No email for current user.',
+            );
+        }
+
+        final credential = EmailAuthProvider.credential(
+            email: email,
+            password: currentPassword,
+        );
+        await user.reauthenticateWithCredential(credential);
+        await user.updatePassword(newPassword);
+        }
+
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../services/auth_service.dart';
-import '../auth/login_screen.dart';
+import '../../router/route_names.dart';
 import '../personal/personal.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -57,9 +57,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   onPressed: () async {
                     await AuthService().logout();
                     if (!context.mounted) return;
-                    Navigator.pushAndRemoveUntil(
+                    Navigator.pushNamedAndRemoveUntil(
                       context,
-                      MaterialPageRoute(builder: (_) => const LoginScreen()),
+                      RouteNames.login,
                       (_) => false,
                     );
                   },

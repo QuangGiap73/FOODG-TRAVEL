@@ -38,10 +38,15 @@ class UserService {
     required String uid,
     required String fullName,
     String? phone,
+    String? gender,
+    DateTime? dateOfBirth,
   }) async {
     await _db.collection(_collection).doc(uid).set({
       'fullName': fullName,
       'phone': phone,
+      'gender': gender,
+      'dateOfBirth':
+          dateOfBirth != null ? Timestamp.fromDate(dateOfBirth) : null,
     }, SetOptions(merge: true));
   }
   Future<UserModel?> getUserById(String uid) async {

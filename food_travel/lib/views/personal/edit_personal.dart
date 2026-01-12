@@ -20,11 +20,21 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
   final _emailController = TextEditingController();
+  final _dobController = TextEditingController();
 
   bool _isLoading = true;
   bool _isSaving = false;
   bool _isUploadingAvatar = false;
   String? _avatarUrl;
+  String? _selectedGender;
+  DateTime? _dateOfBirth;
+
+  static const Map<String, String> _genderLabels = {
+    'male': 'Nam',
+    'female': 'Nu',
+    'other': 'Khac',
+    'unknown': 'Khong xac dinh',
+  };
 
   @override
   void initState() {
@@ -45,6 +55,11 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
     _phoneController.text = (profile?.phone ?? '').trim();
     _emailController.text = (profile?.email ?? user.email ?? '').trim();
     _avatarUrl = profile?.photoUrl ?? user.photoURL;
+    final storedGender = profile?.gender;
+    _selectedGender =
+        _genderLabels.containsKey(storedGender) ? storedGender : null;
+    _dateOfBirth = profile?.dateOfBirth;
+    _dobController.text = _formatDate(_dateOfBirth);
 
     if (mounted) {
       setState(() => _isLoading = false);
@@ -102,11 +117,15 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
 
     final fullName = _nameController.text.trim();
     final phone = _phoneController.text.trim();
+    final gender = _selectedGender;
+    final dateOfBirth = _dateOfBirth;
 
     await UserService().updateUserProfile(
       uid: user.uid,
       fullName: fullName,
       phone: phone.isEmpty ? null : phone,
+      gender: gender,
+      dateOfBirth: dateOfBirth,
     );
 
     if (fullName.isNotEmpty && user.displayName != fullName) {
@@ -123,7 +142,32 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
     _nameController.dispose();
     _phoneController.dispose();
     _emailController.dispose();
+    _dobController.dispose();
     super.dispose();
+  }
+
+  String _formatDate(DateTime? date) {
+    if (date == null) return '';
+    final day = date.day.toString().padLeft(2, '0');
+    final month = date.month.toString().padLeft(2, '0');
+    return '$day/$month/${date.year}';
+  }
+
+  Future<void> _pickDate() async {
+    final now = DateTime.now();
+    final initial = _dateOfBirth ??
+        DateTime(now.year - 18, now.month, now.day);
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: initial,
+      firstDate: DateTime(1900),
+      lastDate: now,
+    );
+    if (picked == null) return;
+    setState(() {
+      _dateOfBirth = picked;
+      _dobController.text = _formatDate(picked);
+    });
   }
 
   @override
@@ -171,6 +215,40 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                           return 'Vui long nhap ten';
                         }
                         return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    DropdownButtonFormField<String>(
+                      value: _selectedGender,
+                      decoration: const InputDecoration(
+                        labelText: 'Gioi tinh',
+                        border: OutlineInputBorder(),
+                      ),
+                      hint: const Text('Chon gioi tinh'),
+                      items: _genderLabels.entries
+                          .map(
+                            (entry) => DropdownMenuItem(
+                              value: entry.key,
+                              child: Text(entry.value),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (value) {
+                        setState(() => _selectedGender = value);
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _dobController,
+                      readOnly: true,
+                      decoration: const InputDecoration(
+                        labelText: 'Ngay sinh',
+                        border: OutlineInputBorder(),
+                        suffixIcon: Icon(Icons.calendar_today),
+                      ),
+                      onTap: () {
+                        FocusScope.of(context).requestFocus(FocusNode());
+                        _pickDate();
                       },
                     ),
                     const SizedBox(height: 16),

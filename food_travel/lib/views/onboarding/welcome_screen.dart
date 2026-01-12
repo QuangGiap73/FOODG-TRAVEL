@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../auth/login_screen.dart';
-import '../auth/register_screen.dart';
+import '../../router/route_names.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -102,11 +101,7 @@ class WelcomeScreen extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => const LoginScreen()),
-                        );
+                        Navigator.pushNamed(context, RouteNames.login);
                       },
                       child: const Text(
                         'Log in',
@@ -129,11 +124,7 @@ class WelcomeScreen extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const RegisterScreen()),
-                      );
+                      Navigator.pushNamed(context, RouteNames.register);
                     },
                     child: const Text(
                       'Sign up',
