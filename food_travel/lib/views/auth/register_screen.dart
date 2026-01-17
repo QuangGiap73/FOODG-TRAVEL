@@ -74,7 +74,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         const SnackBar(content: Text('Đăng ký thành công')),
       );
 
-      Navigator.pushReplacementNamed(context, RouteNames.login);
+      Navigator.pushReplacementNamed(context, RouteNames.authGate);
     } on FirebaseAuthException catch (e) {
       String message = 'Đăng ký thất bại';
       if (e.code == 'email-already-in-use') {

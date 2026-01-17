@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:food_travel/models/user_model.dart';
+import 'package:food_travel/models/user_preferences.dart';
 
 class UserService {
   UserService._internal();
@@ -53,5 +54,23 @@ class UserService {
     final doc = await _db.collection(_collection).doc(uid).get();
     if (!doc.exists) return null;
     return UserModel.fromFirestore(doc.id, doc.data()!);
+  }
+  Stream<UserModel?> watchUserById(String uid) {
+    return _db.collection(_collection).doc(uid).snapshots().map((doc) {
+      if (!doc.exists) return null;
+      return UserModel.fromFirestore(doc.id, doc.data()!);
+    });
+  }
+  // hàm lưu khảo sát 
+  Future<void> saveOnboarding({
+    required String uid,
+    required UserPreferences preferences,
+  }) async {
+    await _db.collection(_collection).doc(uid).set({
+      'preferences': preferences.toMap(),
+      'onboardingCompleted': true,
+      'updatedAt': FieldValue.serverTimestamp(),
+
+    },SetOptions(merge: true));
   }
 }

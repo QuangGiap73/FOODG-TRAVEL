@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../controller/personal_controller.dart';
 import '../../router/route_names.dart';
+import 'edit_personal.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 
 class PersonalPage extends StatefulWidget {
@@ -28,8 +30,15 @@ class _PersonalPageState extends State<PersonalPage> {
   }
 
   Future<void> _openEdit() async {
-    final result =
-        await Navigator.pushNamed<bool>(context, RouteNames.editPersonal);
+    bool? result;
+    try {
+      result = await Navigator.of(context, rootNavigator: true)
+          .pushNamed<bool>(RouteNames.editPersonal);
+    } catch (_) {
+      result = await Navigator.of(context).push<bool>(
+        MaterialPageRoute(builder: (_) => const EditPersonalPage()),
+      );
+    }
     if (result == true) {
       _controller.refresh();
     }
@@ -67,6 +76,7 @@ class _PersonalScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -96,29 +106,29 @@ class _PersonalScaffold extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
-                  children: const [
+                  children: [
                     _QuickAction(
                       icon: Icons.verified_rounded,
                       color: Color(0xFFFFC857),
-                      label: 'Hoi vien',
+                      label: t.personalMembership,
                     ),
                     SizedBox(width: 12),
                     _QuickAction(
                       icon: Icons.storefront_rounded,
                       color: Color(0xFFFF7BA5),
-                      label: 'Cua hang',
+                      label: t.personalStore,
                     ),
                     SizedBox(width: 12),
                     _QuickAction(
                       icon: Icons.home_rounded,
                       color: Color(0xFFFF8D6E),
-                      label: 'To am',
+                      label: t.personalHome,
                     ),
                     SizedBox(width: 12),
                     _QuickAction(
                       icon: Icons.people_alt_rounded,
                       color: Color(0xFF74C0FC),
-                      label: 'Khach',
+                      label: t.personalGuests,
                     ),
                   ],
                 ),
@@ -126,7 +136,7 @@ class _PersonalScaffold extends StatelessWidget {
               const SizedBox(height: 22),
               _SectionItem(
                 icon: Icons.favorite_border,
-                title: 'Trang thai cua toi',
+                title: t.personalStatus,
                 onTap: () {
                   Navigator.pushNamed(context, RouteNames.themeSettings);
                 },
@@ -134,15 +144,24 @@ class _PersonalScaffold extends StatelessWidget {
 
               _SectionItem(
                 icon: Icons.emoji_events_outlined,
-                title: 'Thay đổi mật khẩu',
+                title: t.personalChangePassword,
                 onTap: (){
                   Navigator.pushNamed(context, RouteNames.changePassword);
                 },
               ),
-              const _SectionItem(
+              _SectionItem(
                 icon: Icons.backpack_outlined,
-                title: 'Ba lo cua toi',
-                showDot: true,
+                title: t.personalLanguage,
+                onTap: (){
+                  Navigator.pushNamed(context,RouteNames.languageSettings);
+                },
+              ),
+              _SectionItem(
+                icon: Icons.assignment_outlined,
+                title: t.personalSurvey,
+                onTap: (){
+                  Navigator.pushNamed(context, RouteNames.survey);
+                },
               ),
               const SizedBox(height: 24),
             ],
@@ -158,9 +177,10 @@ class _SignedOutView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    final t = AppLocalizations.of(context)!;
+    return Scaffold(
       body: Center(
-        child: Text('Please sign in to view your profile.'),
+        child: Text(t.signInToViewProfile),
       ),
     );
   }
@@ -173,6 +193,7 @@ class _HeaderSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final hasPhoto = photoUrl != null && photoUrl!.isNotEmpty;
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
@@ -220,7 +241,7 @@ class _HeaderSection extends StatelessWidget {
               child: Row(
                 children: [
                   Text(
-                    'Rut mien phi',
+                    t.personalFreeWithdraw,
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       color: colorScheme.onSurface,

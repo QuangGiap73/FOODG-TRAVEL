@@ -1,0 +1,26 @@
+﻿{
+  "appTitle": "FoodG Travel",
+  "language": "Ngon ngu",
+  "chooseLanguage": "Chon ngon ngu",
+  "vietnamese": "Tieng Viet",
+  "english": "Tieng Anh",
+  "save": "Luu",
+  "personalMembership": "Hoi vien",
+  "personalStore": "Cua hang",
+  "personalHome": "To am",
+  "personalGuests": "Khach",
+  "personalStatus": "Trang thai cua toi",
+  "personalChangePassword": "Thay doi mat khau",
+  "personalLanguage": "Da ngon ngu",
+  "personalFreeWithdraw": "Rut mien phi",
+  "signInToViewProfile": "Vui long dang nhap de xem trang ca nhan.",
+  "personalSurvey": "Phieu khao sat",
+  "surveyTitle": "Phieu khao sat",
+  "surveyProvinceLabel": "Tinh/Thanh pho",
+  "surveyProvinceRequired": "Vui long nhap tinh/thanh",
+  "surveySpicyLevel": "Muc do cay",
+  "surveyFavoritesLabel": "Mon yeu thich (phan tach bang dau phay)",
+  "surveyDislikesLabel": "Nguyen lieu khong thich (phan tach bang dau phay)",
+  "surveySaveFailed": "Luu that bai"
+}
+

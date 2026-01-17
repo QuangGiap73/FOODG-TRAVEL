@@ -9,6 +9,8 @@ import '../views/personal/edit_personal.dart';
 import '../views/personal/personal.dart';
 import '../views/settings/change_password_page.dart';
 import '../views/settings/theme_settings.dart';
+import '../views/settings/language_setting.dart';
+import '../views/onboarding/survey_page.dart';
 import 'route_names.dart';
 
 class AppRouter {
@@ -32,6 +34,10 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const ThemeSettingsPage());
       case RouteNames.changePassword:
         return MaterialPageRoute(builder: (_) => const ChangePasswordPage());
+      case RouteNames.languageSettings:
+        return MaterialPageRoute(builder: (_) => const LanguageSettingsPage());
+      case RouteNames.survey:
+        return MaterialPageRoute(builder: (_) => const SurveyPage());
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(

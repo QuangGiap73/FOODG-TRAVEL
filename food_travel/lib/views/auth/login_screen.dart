@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../models/user_model.dart';
@@ -70,20 +70,20 @@ class _LoginScreenState extends State<LoginScreen> {
       }
 
       if (!mounted) return;
-      Navigator.pushReplacementNamed(context, RouteNames.home);
+      Navigator.pushReplacementNamed(context, RouteNames.authGate);
     } on FirebaseAuthException catch (e) {
-      String message = 'ÄÄƒng nháº­p tháº¥t báº¡i';
+      String message = 'Ã„ÂÃ„Æ’ng nhÃ¡ÂºÂ­p thÃ¡ÂºÂ¥t bÃ¡ÂºÂ¡i';
       if (e.code == 'user-not-found') {
-        message = 'TÃ i khoáº£n khÃ´ng tá»“n táº¡i';
+        message = 'TÃƒÂ i khoÃ¡ÂºÂ£n khÃƒÂ´ng tÃ¡Â»â€œn tÃ¡ÂºÂ¡i';
       } else if (e.code == 'wrong-password') {
-        message = 'Máº­t kháº©u khÃ´ng Ä‘Ãºng';
+        message = 'MÃ¡ÂºÂ­t khÃ¡ÂºÂ©u khÃƒÂ´ng Ã„â€˜ÃƒÂºng';
       } else if (e.code == 'invalid-email') {
-        message = 'Email khÃ´ng há»£p lá»‡';
+        message = 'Email khÃƒÂ´ng hÃ¡Â»Â£p lÃ¡Â»â€¡';
       }
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
     } catch (e) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Lá»—i: $e')));
+          .showSnackBar(SnackBar(content: Text('LÃ¡Â»â€”i: $e')));
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -98,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
 
       if (!mounted) return;
-      Navigator.pushReplacementNamed(context, RouteNames.home);
+      Navigator.pushReplacementNamed(context, RouteNames.authGate);
     } on FirebaseAuthException catch (e) {
       if (e.code == "sign_in_canceled") {
         return;
@@ -135,7 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // áº¢nh mÃ³n Äƒn
+              // Ã¡ÂºÂ¢nh mÃƒÂ³n Ã„Æ’n
               Container(
                 height: 280,
                 decoration: const BoxDecoration(
@@ -300,3 +300,4 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+

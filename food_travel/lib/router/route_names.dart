@@ -8,4 +8,7 @@ class RouteNames {
   static const editPersonal = '/personal/edit';
   static const themeSettings = '/settings/theme';
   static const changePassword = '/settings/change-password';
+  static const languageSettings = '/settings/language';
+  static const survey = '/onboarding/survey';
+
 }
