@@ -2,6 +2,29 @@ const streamifier = require('streamifier');
 const { db } = require('../firebase/config');
 const cloudinary = require('../config/cloudinary');
 
+function normalizeImageUrls(imageUrlsInput, imageUrlInput) {
+  const result = [];
+  const seen = new Set();
+
+  function pushUrl(value) {
+    if (!value && value !== 0) return;
+    const text = String(value).trim();
+    if (!text || seen.has(text)) return;
+    seen.add(text);
+    result.push(text);
+  }
+
+  if (imageUrlInput) pushUrl(imageUrlInput);
+
+  if (Array.isArray(imageUrlsInput)) {
+    imageUrlsInput.forEach((item) => pushUrl(item));
+  } else if (typeof imageUrlsInput === 'string') {
+    imageUrlsInput.split(/\r?\n/).forEach((item) => pushUrl(item));
+  }
+
+  return result;
+}
+
 // Render trang quan ly mien/tinh
 async function renderProvincesPage(req, res) {
   res.render('manager_provinces/manager_provinces', { pageTitle: 'Quan ly tinh thanh' });
@@ -112,6 +135,8 @@ async function addProvince(req, res) {
     const regionsCode = (req.body.regionsCode || '').trim();
     const description = (req.body.description || '').trim();
     const imageUrl = (req.body.imageUrl || '').trim();
+    const imageUrls = normalizeImageUrls(req.body.imageUrls, imageUrl);
+    const primaryImage = imageUrls[0] || '';
     const slug = (req.body.slug || '').trim();
     const centerLat = Number(req.body.centerLat) || 0;
     const centerLng = Number(req.body.centerLng) || 0;
@@ -136,7 +161,8 @@ async function addProvince(req, res) {
       name,
       regionsCode,
       description: description || '',
-      imageUrl: imageUrl || '',
+      imageUrl: primaryImage,
+      imageUrls,
       slug: slug || code,
       centerLat,
       centerLng,
@@ -185,6 +211,9 @@ async function updateProvince(req, res) {
     const slug = (req.body.slug || '').trim();
     const centerLat = Number(req.body.centerLat) || 0;
     const centerLng = Number(req.body.centerLng) || 0;
+    const hasImageUrl = Object.prototype.hasOwnProperty.call(req.body, 'imageUrl');
+    const hasImageUrls = Object.prototype.hasOwnProperty.call(req.body, 'imageUrls');
+    const shouldUpdateImages = hasImageUrl || hasImageUrls;
 
     if (!code || !name || !regionsCode) {
       return res.status(400).json({ error: 'Ma tinh, ten tinh va ma mien la bat buoc' });
@@ -197,20 +226,24 @@ async function updateProvince(req, res) {
     const regionSnap = await db.collection('regions').doc(regionsCode).get();
     if (!regionSnap.exists) return res.status(400).json({ error: 'Ma mien khong ton tai' });
 
-    await docRef.set(
-      {
-        code,
-        name,
-        regionsCode,
-        description,
-        imageUrl,
-        slug: slug || code,
-        centerLat,
-        centerLng,
-        updatedAt: new Date().toISOString(),
-      },
-      { merge: true },
-    );
+    const updateData = {
+      code,
+      name,
+      regionsCode,
+      description,
+      slug: slug || code,
+      centerLat,
+      centerLng,
+      updatedAt: new Date().toISOString(),
+    };
+
+    if (shouldUpdateImages) {
+      const imageUrls = normalizeImageUrls(req.body.imageUrls, imageUrl);
+      updateData.imageUrls = imageUrls;
+      updateData.imageUrl = imageUrls[0] || '';
+    }
+
+    await docRef.set(updateData, { merge: true });
 
     res.json({ message: 'Da cap nhat tinh thanh', data: { code, name, regionsCode } });
   } catch (err) {

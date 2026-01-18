@@ -663,6 +663,34 @@ body.drawer-open {
   word-break: break-word;
 }
 
+.province-gallery {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+}
+
+.province-gallery-item {
+  background: #f1f5f9;
+  border-radius: 10px;
+  height: 80px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.province-gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.province-gallery-empty {
+  color: #94a3b8;
+  font-size: 13px;
+}
+
 /* Dish detail modal */
 .dish-detail-overlay {
   position: fixed;

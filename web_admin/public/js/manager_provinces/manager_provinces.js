@@ -30,14 +30,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const inputProvinceSlug = document.getElementById('province-slug');
   const inputProvinceLat = document.getElementById('province-lat');
   const inputProvinceLng = document.getElementById('province-lng');
-  const inputProvinceImg = document.getElementById('province-image');
-  const inputProvinceImgFile = document.getElementById('province-image-file');
-  const previewProvinceImg = document.getElementById('province-image-preview');
+  const inputProvinceImages = document.getElementById('province-images');
+  const inputProvinceImageFiles = document.getElementById('province-image-files');
+  const previewProvinceImages = document.getElementById('province-image-preview-list');
   const inputProvinceDesc = document.getElementById('province-desc');
   const saveProvinceBtn = document.getElementById('btn-save-province');
   let regionsCache = [];
   let provincesCache = [];
   let currentRegion = null;
+  let addSelectedFiles = [];
+  let addManualUrls = [];
+  const addImageObjectUrls = new Set();
 
   function showAddRegionModal() {
     if (addRegionModal) {
@@ -77,6 +80,105 @@ document.addEventListener('DOMContentLoaded', () => {
       addProvinceModalEl.style.display = 'none';
       document.body.classList.remove('modal-open');
     }
+    clearObjectUrls(addImageObjectUrls);
+  }
+
+  function parseImageUrls(text) {
+    const raw = (text || '').split(/\r?\n/).map((item) => item.trim()).filter(Boolean);
+    const unique = [];
+    const seen = new Set();
+    raw.forEach((url) => {
+      if (!seen.has(url)) {
+        seen.add(url);
+        unique.push(url);
+      }
+    });
+    return unique;
+  }
+
+  function setImageUrlsInput(input, urls) {
+    if (!input) return;
+    input.value = urls.join('\n');
+  }
+
+  function clearObjectUrls(store) {
+    store.forEach((url) => URL.revokeObjectURL(url));
+    store.clear();
+  }
+
+  function pushFiles(target, fileList) {
+    Array.from(fileList || []).forEach((file) => {
+      if (!file.type || !file.type.startsWith('image/')) return;
+      const key = `${file.name}_${file.size}_${file.lastModified}`;
+      const exists = target.some((f) => `${f.name}_${f.size}_${f.lastModified}` === key);
+      if (!exists) target.push(file);
+    });
+  }
+
+  function renderImagePreview(container, urls, files, objectUrls, onUpdateUrls) {
+    if (!container) return;
+    clearObjectUrls(objectUrls);
+    container.innerHTML = '';
+
+    const items = [];
+    urls.forEach((url, idx) => items.push({ kind: 'url', url, idx }));
+    files.forEach((file, idx) => {
+      const url = URL.createObjectURL(file);
+      objectUrls.add(url);
+      items.push({ kind: 'file', url, idx });
+    });
+
+    if (!items.length) {
+      const empty = document.createElement('div');
+      empty.className = 'text-muted small';
+      empty.textContent = 'Chua co anh';
+      container.appendChild(empty);
+      return;
+    }
+
+    items.forEach((item) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'position-relative';
+      wrap.style.width = '80px';
+      wrap.style.height = '80px';
+      wrap.innerHTML =
+        `<img src="${item.url}" alt="" ` +
+        'style="width:100%;height:100%;object-fit:cover;border-radius:6px;border:1px solid #eee;">';
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'btn btn-sm btn-light position-absolute top-0 end-0';
+      btn.textContent = 'x';
+      btn.addEventListener('click', () => {
+        if (item.kind === 'url') {
+          urls.splice(item.idx, 1);
+          onUpdateUrls && onUpdateUrls(urls);
+        } else {
+          files.splice(item.idx, 1);
+        }
+        renderImagePreview(container, urls, files, objectUrls, onUpdateUrls);
+      });
+      wrap.appendChild(btn);
+      container.appendChild(wrap);
+    });
+  }
+
+  function updateAddManualUrls(nextUrls) {
+    addManualUrls = nextUrls;
+    setImageUrlsInput(inputProvinceImages, addManualUrls);
+  }
+
+  function syncAddManualUrls() {
+    addManualUrls = parseImageUrls(inputProvinceImages?.value || '');
+  }
+
+  function renderAddImagePreview() {
+    renderImagePreview(
+      previewProvinceImages,
+      addManualUrls,
+      addSelectedFiles,
+      addImageObjectUrls,
+      updateAddManualUrls,
+    );
   }
 
   async function fetchJSON(url, options = {}) {
@@ -327,39 +429,30 @@ document.addEventListener('DOMContentLoaded', () => {
     if (selectProvinceRegion && currentRegion) {
       selectProvinceRegion.value = currentRegion;
     }
-    if (previewProvinceImg) {
-      previewProvinceImg.src = '';
-      previewProvinceImg.style.display = 'none';
-    }
-    previewObjectUrl = '';
+    addSelectedFiles = [];
+    addManualUrls = [];
+    clearObjectUrls(addImageObjectUrls);
+    if (inputProvinceImageFiles) inputProvinceImageFiles.value = '';
+    if (inputProvinceImages) inputProvinceImages.value = '';
+    renderAddImagePreview();
     saveProvinceBtn && (saveProvinceBtn.disabled = false);
     saveProvinceBtn && (saveProvinceBtn.textContent = 'Luu');
     showAddProvinceModal();
     setTimeout(() => inputProvinceCode?.focus(), 200);
   });
 
-  // Doc file anh tu may, hien preview (khong convert base64)
-  let previewObjectUrl = '';
-  inputProvinceImgFile?.addEventListener('change', (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (!file.type.startsWith('image/')) {
-      showProvinceAlert('Vui long chon file anh hop le');
-      inputProvinceImgFile.value = '';
-      return;
-    }
-    if (previewObjectUrl) {
-      URL.revokeObjectURL(previewObjectUrl);
-      previewObjectUrl = '';
-    }
-    previewObjectUrl = URL.createObjectURL(file);
-    if (previewProvinceImg) {
-      previewProvinceImg.src = previewObjectUrl;
-      previewProvinceImg.style.display = 'block';
-    }
-    if (inputProvinceImg) {
-      inputProvinceImg.value = ''; // uu tien upload len Cloudinary thay vi base64
-    }
+  inputProvinceImages?.addEventListener('input', () => {
+    syncAddManualUrls();
+    renderAddImagePreview();
+  });
+
+  inputProvinceImageFiles?.addEventListener('change', (e) => {
+    const files = Array.from(e.target.files || []);
+    const hasInvalid = files.some((file) => !file.type || !file.type.startsWith('image/'));
+    if (hasInvalid) showProvinceAlert('Vui long chon file anh hop le');
+    pushFiles(addSelectedFiles, files);
+    e.target.value = '';
+    renderAddImagePreview();
   });
 
   async function uploadProvinceImageFile(file) {
@@ -375,24 +468,28 @@ document.addEventListener('DOMContentLoaded', () => {
     return data.url;
   }
 
+  async function uploadProvinceImageFiles(files) {
+    if (!files || !files.length) return [];
+    const uploads = files.map((file) => uploadProvinceImageFile(file));
+    return Promise.all(uploads);
+  }
+
   addProvinceForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!inputProvinceCode || !inputProvinceName || !selectProvinceRegion) return;
-    let imageUrl = inputProvinceImg?.value.trim() || '';
-    const selectedFile = inputProvinceImgFile?.files?.[0] || null;
-    if (selectedFile) {
-      if (!selectedFile.type.startsWith('image/')) {
-        showProvinceAlert('Vui long chon file anh hop le');
-        return;
-      }
+    const manualUrls = parseImageUrls(inputProvinceImages?.value || '');
+    let uploadedUrls = [];
+    if (addSelectedFiles.length) {
       try {
-        imageUrl = await uploadProvinceImageFile(selectedFile);
+        uploadedUrls = await uploadProvinceImageFiles(addSelectedFiles);
       } catch (uploadErr) {
         console.error(uploadErr);
         showProvinceAlert(uploadErr.message || 'Upload anh that bai');
         return;
       }
     }
+    const imageUrls = parseImageUrls([...manualUrls, ...uploadedUrls].join('\n'));
+    const imageUrl = imageUrls[0] || '';
     const payload = {
       code: inputProvinceCode.value.trim(),
       name: inputProvinceName.value.trim(),
@@ -401,6 +498,7 @@ document.addEventListener('DOMContentLoaded', () => {
       centerLat: inputProvinceLat?.value || 0,
       centerLng: inputProvinceLng?.value || 0,
       imageUrl,
+      imageUrls,
       description: inputProvinceDesc?.value.trim() || '',
     };
     if (!payload.code || !payload.name || !payload.regionsCode) {

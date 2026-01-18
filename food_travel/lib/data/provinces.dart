@@ -54,7 +54,7 @@
   'Thai Binh',
   'Thai Nguyen',
   'Thanh Hoa',
-  'Thua Thien Hue',
+  'Hue',
   'Tien Giang',
   'Tra Vinh',
   'Tuyen Quang',

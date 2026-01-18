@@ -120,121 +120,123 @@
 </div>
 
 <div class="modal fade" id="modal-add-province" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Them tinh thanh</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form id="form-add-province">
-        <div class="modal-body">
-          <div id="add-province-alert" class="mb-3" style="display:none;"></div>
-          <div class="row g-3">
-            <div class="col-md-6">
-              <label class="form-label">Ma tinh (duy nhat)</label>
-              <input type="text" class="form-control" id="province-code" placeholder="vd: ha_noi" required>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Ten tinh</label>
-              <input type="text" class="form-control" id="province-name" placeholder="Ha Noi" required>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Mien</label>
-              <select class="form-select" id="province-region" required>
-                <option value="">-- Chon mien --</option>
-              </select>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Slug</label>
-              <input type="text" class="form-control" id="province-slug" placeholder="ha-noi">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Center Lat</label>
-              <input type="number" step="any" class="form-control" id="province-lat" placeholder="0">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Center Lng</label>
-              <input type="number" step="any" class="form-control" id="province-lng" placeholder="0">
-            </div>
-            <div class="col-12">
-              <label class="form-label">Image URL</label>
-              <input type="text" class="form-control" id="province-image" placeholder="https://...">
-            </div>
-            <div class="col-12">
-              <label class="form-label">Chon anh tu may (tu dong dien vao truong tren)</label>
-              <input type="file" accept="image/*" class="form-control" id="province-image-file">
-              <small class="text-muted">File se duoc doc thanh base64 va luu vao truong Image URL.</small>
-              <div class="mt-2">
-                <img id="province-image-preview" src="" alt="" style="max-width: 180px; display: none; border: 1px solid #eee; border-radius: 6px;">
-              </div>
-            </div>
-            <div class="col-12">
-              <label class="form-label">Mo ta</label>
-              <textarea class="form-control" rows="2" id="province-desc" placeholder="Mo ta ngan"></textarea>
-            </div>
+      <div class="modal-body">
+        <form id="form-add-province" class="row g-3">
+          <div id="add-province-alert" class="col-12 mb-3" style="display:none;"></div>
+          <div class="col-md-6">
+            <label class="form-label">Ma tinh (duy nhat)</label>
+            <input type="text" class="form-control" id="province-code" placeholder="vd: ha_noi" required>
           </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Huy</button>
-          <button type="submit" class="btn btn-primary" id="btn-save-province">Luu</button>
-        </div>
-      </form>
+          <div class="col-md-6">
+            <label class="form-label">Ten tinh</label>
+            <input type="text" class="form-control" id="province-name" placeholder="Ha Noi" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Mien</label>
+            <select class="form-select" id="province-region" required>
+              <option value="">-- Chon mien --</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Slug</label>
+            <input type="text" class="form-control" id="province-slug" placeholder="ha-noi">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Center Lat</label>
+            <input type="number" step="any" class="form-control" id="province-lat" placeholder="0">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Center Lng</label>
+            <input type="number" step="any" class="form-control" id="province-lng" placeholder="0">
+          </div>
+          <div class="col-12">
+            <label class="form-label">Image URLs (moi dong 1 url)</label>
+            <textarea class="form-control" rows="3" id="province-images" placeholder="https://..."></textarea>
+            <small class="text-muted">URL dau tien se la anh chinh.</small>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Chon nhieu anh tu may</label>
+            <input type="file" accept="image/*" class="form-control" id="province-image-files" multiple>
+            <small class="text-muted">Anh se upload len Cloudinary va tu dong them vao danh sach URL.</small>
+            <div class="mt-2 d-flex flex-wrap gap-2" id="province-image-preview-list"></div>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Mo ta</label>
+            <textarea class="form-control" rows="2" id="province-desc" placeholder="Mo ta ngan"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Huy</button>
+        <button type="submit" class="btn btn-primary" id="btn-save-province" form="form-add-province">Luu</button>
+      </div>
     </div>
   </div>
 </div>
 
 <div class="modal fade" id="modal-edit-province" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Chinh sua tinh thanh</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form id="form-edit-province">
-        <div class="modal-body">
-          <div id="edit-province-alert" class="mb-3" style="display:none;"></div>
-          <div class="row g-3">
-            <div class="col-md-6">
-              <label class="form-label">Ma tinh (readonly)</label>
-              <input type="text" class="form-control" id="edit-province-code" readonly>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Ten tinh</label>
-              <input type="text" class="form-control" id="edit-province-name" required>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Mien</label>
-              <select class="form-select" id="edit-province-region" required>
-                <option value="">-- Chon mien --</option>
-              </select>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Slug</label>
-              <input type="text" class="form-control" id="edit-province-slug">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Center Lat</label>
-              <input type="number" step="any" class="form-control" id="edit-province-lat">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Center Lng</label>
-              <input type="number" step="any" class="form-control" id="edit-province-lng">
-            </div>
-            <div class="col-12">
-              <label class="form-label">Image URL</label>
-              <input type="text" class="form-control" id="edit-province-image">
-            </div>
-            <div class="col-12">
-              <label class="form-label">Mo ta</label>
-              <textarea class="form-control" rows="2" id="edit-province-desc"></textarea>
-            </div>
+      <div class="modal-body">
+        <form id="form-edit-province" class="row g-3">
+          <div id="edit-province-alert" class="col-12 mb-3" style="display:none;"></div>
+          <div class="col-md-6">
+            <label class="form-label">Ma tinh (readonly)</label>
+            <input type="text" class="form-control" id="edit-province-code" readonly>
           </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Huy</button>
-          <button type="submit" class="btn btn-primary" id="btn-update-province">Cap nhat</button>
-        </div>
-      </form>
+          <div class="col-md-6">
+            <label class="form-label">Ten tinh</label>
+            <input type="text" class="form-control" id="edit-province-name" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Mien</label>
+            <select class="form-select" id="edit-province-region" required>
+              <option value="">-- Chon mien --</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Slug</label>
+            <input type="text" class="form-control" id="edit-province-slug">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Center Lat</label>
+            <input type="number" step="any" class="form-control" id="edit-province-lat">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Center Lng</label>
+            <input type="number" step="any" class="form-control" id="edit-province-lng">
+          </div>
+          <div class="col-12">
+            <label class="form-label">Image URLs (moi dong 1 url)</label>
+            <textarea class="form-control" rows="3" id="edit-province-images"></textarea>
+            <small class="text-muted">URL dau tien se la anh chinh.</small>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Them anh moi tu may</label>
+            <input type="file" accept="image/*" class="form-control" id="edit-province-image-files" multiple>
+            <small class="text-muted">Anh se upload len Cloudinary va them vao danh sach URL.</small>
+            <div class="mt-2 d-flex flex-wrap gap-2" id="edit-province-image-preview-list"></div>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Mo ta</label>
+            <textarea class="form-control" rows="2" id="edit-province-desc"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Huy</button>
+        <button type="submit" class="btn btn-primary" id="btn-update-province" form="form-edit-province">Cap nhat</button>
+      </div>
     </div>
   </div>
 </div>
@@ -266,6 +268,10 @@
     <div class="province-row province-row-desc">
       <span>Mo ta</span>
       <div id="province-detail-desc" class="province-desc">-</div>
+    </div>
+    <div class="province-row province-row-desc">
+      <span>Anh</span>
+      <div id="province-detail-gallery" class="province-gallery"></div>
     </div>
   </div>
 </aside>

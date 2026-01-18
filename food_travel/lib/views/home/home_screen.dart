@@ -1,6 +1,7 @@
-﻿import 'package:flutter/material.dart';
+﻿import 'dart:async';
+
+import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'dart:async';
 
 import '../../models/dish_model.dart';
 import '../../models/province_model.dart';
@@ -136,13 +137,16 @@ class _HomeFeedState extends State<_HomeFeed> {
   final _searchController = TextEditingController();
   final _userService = UserService();
   StreamSubscription? _profileSub;
+  Timer? _autoSlideTimer;
+  final ValueNotifier<int> _imageIndex = ValueNotifier<int>(0);
+  String? _lastProvinceId;
 
   ProvinceModel? _selectedProvince;
-  int _selectedProvinceIndex = 0;
   String _query = '';
   bool _selectionInitialized = false;
   String? _preferredProvinceCode;
   String? _preferredProvinceName;
+  int _imageCount = 0;
 
   @override
   void initState() {
@@ -153,6 +157,8 @@ class _HomeFeedState extends State<_HomeFeed> {
   @override
   void dispose() {
     _profileSub?.cancel();
+    _autoSlideTimer?.cancel();
+    _imageIndex.dispose();
     _pageController.dispose();
     _searchController.dispose();
     super.dispose();
@@ -181,15 +187,14 @@ class _HomeFeedState extends State<_HomeFeed> {
     });
   }
 
-  void _setProvince(ProvinceModel province, int index) {
-    if (_selectedProvince?.code == province.code &&
-        _selectedProvinceIndex == index) {
+  void _setProvince(ProvinceModel province) {
+    if (_selectedProvince?.id == province.id) {
       return;
     }
     setState(() {
       _selectedProvince = province;
-      _selectedProvinceIndex = index;
     });
+    _imageIndex.value = 0;
   }
 
   List<String> _provinceQueryKeys(ProvinceModel province) {
@@ -212,11 +217,18 @@ class _HomeFeedState extends State<_HomeFeed> {
     return cleaned.split(RegExp(r'\s+')).join('_');
   }
 
+  String _normalizeKey(String raw) {
+    return raw.trim().toLowerCase().replaceAll('-', '_');
+  }
+
   ProvinceModel? _findPreferredProvince(List<ProvinceModel> provinces) {
     final prefCode = _preferredProvinceCode;
     if (prefCode != null && prefCode.isNotEmpty) {
+      final normalizedPref = _normalizeKey(prefCode);
       for (final province in provinces) {
-        if (province.code == prefCode || province.id == prefCode) {
+        final codeKey = _normalizeKey(province.code);
+        final idKey = _normalizeKey(province.id);
+        if (codeKey == normalizedPref || idKey == normalizedPref) {
           return province;
         }
       }
@@ -228,13 +240,39 @@ class _HomeFeedState extends State<_HomeFeed> {
         if (province.name == prefName) {
           return province;
         }
-        if (prefSlug.isNotEmpty &&
-            (province.code == prefSlug || province.id == prefSlug)) {
-          return province;
+        if (prefSlug.isNotEmpty) {
+          final provinceSlug = _slugify(province.name);
+          if (provinceSlug == prefSlug) {
+            return province;
+          }
+          final codeKey = _normalizeKey(province.code);
+          final idKey = _normalizeKey(province.id);
+          if (codeKey == prefSlug || idKey == prefSlug) {
+            return province;
+          }
         }
       }
     }
     return null;
+  }
+
+  void _startImageAutoSlide(int count) {
+    if (_imageCount == count) return;
+    _imageCount = count;
+    _imageIndex.value = 0;
+    _autoSlideTimer?.cancel();
+    if (_imageCount < 2) return;
+
+    _autoSlideTimer = Timer.periodic(const Duration(seconds: 4), (_) {
+      if (!_pageController.hasClients) return;
+      final current = _pageController.page?.round() ?? _imageIndex.value;
+      final next = (current + 1) % _imageCount;
+      _pageController.animateToPage(
+        next,
+        duration: const Duration(milliseconds: 350),
+        curve: Curves.easeOut,
+      );
+    });
   }
 
   @override
@@ -285,14 +323,30 @@ class _HomeFeedState extends State<_HomeFeed> {
               _selectionInitialized = true;
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (!mounted) return;
-                _setProvince(target, 0);
+                _setProvince(target);
                 if (_pageController.hasClients) {
                   _pageController.jumpToPage(0);
                 }
               });
             }
 
-            final visibleProvinces = <ProvinceModel>[target];
+            final images = target.imageUrls.isNotEmpty
+                ? target.imageUrls
+                : (target.imageUrl.isNotEmpty
+                    ? [target.imageUrl]
+                    : const <String>[]);
+
+            if (_lastProvinceId != target.id) {
+              _lastProvinceId = target.id;
+              _imageIndex.value = 0;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                for (final url in images) {
+                  precacheImage(NetworkImage(url), context);
+                }
+              });
+            }
+
+            _startImageAutoSlide(images.length);
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -307,23 +361,34 @@ class _HomeFeedState extends State<_HomeFeed> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                SizedBox(
-                  height: 190,
-                  child: PageView.builder(
-                    controller: _pageController,
-                    onPageChanged: (index) =>
-                        _setProvince(visibleProvinces[index], index),
-                    itemCount: visibleProvinces.length,
-                    itemBuilder: (context, index) {
-                      final province = visibleProvinces[index];
-                      final isActive = index == _selectedProvinceIndex;
-                      return _buildProvinceCard(province, isActive, index);
-                    },
+                if (images.isEmpty)
+                  _buildEmpty('Tinh nay chua co anh.')
+                else
+                  SizedBox(
+                    height: 190,
+                    child: PageView.builder(
+                      controller: _pageController,
+                      onPageChanged: (index) => _imageIndex.value = index,
+                      itemCount: images.length,
+                      itemBuilder: (context, index) {
+                        final imageUrl = images[index];
+                        return _buildProvinceImageSlide(
+                          imageUrl: imageUrl,
+                          name: target.name,
+                        );
+                      },
+                    ),
                   ),
-                ),
                 const SizedBox(height: 8),
-                if (visibleProvinces.length > 1)
-                  Center(child: _buildDots(visibleProvinces.length)),
+                if (images.length > 1)
+                  Center(
+                    child: ValueListenableBuilder<int>(
+                      valueListenable: _imageIndex,
+                      builder: (context, value, _) {
+                        return _buildDots(images.length, value);
+                      },
+                    ),
+                  ),
               ],
             );
           },
@@ -421,79 +486,51 @@ class _HomeFeedState extends State<_HomeFeed> {
     );
   }
 
-  Widget _buildProvinceCard(
-    ProvinceModel province,
-    bool isActive,
-    int index,
-  ) {
+  Widget _buildProvinceImageSlide({
+    required String imageUrl,
+    required String name,
+  }) {
     final theme = Theme.of(context);
-    final imageUrl = province.imageUrl;
-
-    return GestureDetector(
-      onTap: () => _setProvince(province, index),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: isActive ? theme.colorScheme.primary : Colors.transparent,
-            width: 2,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.network(
+            imageUrl,
+            fit: BoxFit.cover,
+            gaplessPlayback: true,
+            errorBuilder: (_, __, ___) => Container(
+              color: theme.colorScheme.surfaceVariant,
+              child: const Icon(Icons.image, size: 32),
+            ),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.18),
-              blurRadius: 12,
-              offset: const Offset(0, 8),
-            ),
-          ],
-          image: imageUrl.isNotEmpty
-              ? DecorationImage(
-                  image: NetworkImage(imageUrl),
-                  fit: BoxFit.cover,
-                )
-              : null,
-          gradient: imageUrl.isEmpty
-              ? const LinearGradient(
-                  colors: [Color(0xFFFAE1B7), Color(0xFFF4B183)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                )
-              : null,
-        ),
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.black.withOpacity(0.55),
-                      Colors.transparent
-                    ],
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                  ),
+          Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.black.withOpacity(0.55), Colors.transparent],
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
                 ),
               ),
             ),
-            Positioned(
-              left: 14,
-              right: 14,
-              bottom: 14,
-              child: Text(
-                province.name,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                ),
+          ),
+          Positioned(
+            left: 14,
+            right: 14,
+            bottom: 14,
+            child: Text(
+              name,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.titleMedium?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -584,12 +621,12 @@ class _HomeFeedState extends State<_HomeFeed> {
     );
   }
 
-  Widget _buildDots(int count) {
+  Widget _buildDots(int count, int activeIndex) {
     final theme = Theme.of(context);
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: List.generate(count, (index) {
-        final isActive = index == _selectedProvinceIndex;
+        final isActive = index == activeIndex;
         return AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           margin: const EdgeInsets.symmetric(horizontal: 3),

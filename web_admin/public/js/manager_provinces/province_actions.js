@@ -9,7 +9,9 @@
   const editSlug = document.getElementById('edit-province-slug');
   const editLat = document.getElementById('edit-province-lat');
   const editLng = document.getElementById('edit-province-lng');
-  const editImage = document.getElementById('edit-province-image');
+  const editImagesInput = document.getElementById('edit-province-images');
+  const editImageFilesInput = document.getElementById('edit-province-image-files');
+  const editImagesPreview = document.getElementById('edit-province-image-preview-list');
   const editDesc = document.getElementById('edit-province-desc');
   const btnUpdate = document.getElementById('btn-update-province');
   const modalDismissSelectors = '[data-bs-dismiss="modal"], .btn-close, .btn-secondary';
@@ -27,7 +29,11 @@
     created: document.getElementById('province-detail-created'),
     updated: document.getElementById('province-detail-updated'),
     desc: document.getElementById('province-detail-desc'),
+    gallery: document.getElementById('province-detail-gallery'),
   };
+  let editSelectedFiles = [];
+  let editExistingUrls = [];
+  const editImageObjectUrls = new Set();
 
   function hideModal() {
     if (modal) {
@@ -36,6 +42,8 @@
       modalEl.classList.remove('show');
       modalEl.style.display = 'none';
     }
+    clearObjectUrls(editImageObjectUrls);
+    editSelectedFiles = [];
   }
 
   function setText(el, value) {
@@ -62,6 +70,92 @@
     return `${latText}, ${lngText}`;
   }
 
+  function parseImageUrls(text) {
+    const raw = (text || '').split(/\r?\n/).map((item) => item.trim()).filter(Boolean);
+    const unique = [];
+    const seen = new Set();
+    raw.forEach((url) => {
+      if (!seen.has(url)) {
+        seen.add(url);
+        unique.push(url);
+      }
+    });
+    return unique;
+  }
+
+  function setImageUrlsInput(input, urls) {
+    if (!input) return;
+    input.value = urls.join('\n');
+  }
+
+  function clearObjectUrls(store) {
+    store.forEach((url) => URL.revokeObjectURL(url));
+    store.clear();
+  }
+
+  function pushFiles(target, fileList) {
+    Array.from(fileList || []).forEach((file) => {
+      if (!file.type || !file.type.startsWith('image/')) return;
+      const key = `${file.name}_${file.size}_${file.lastModified}`;
+      const exists = target.some((f) => `${f.name}_${f.size}_${f.lastModified}` === key);
+      if (!exists) target.push(file);
+    });
+  }
+
+  function renderImagePreview(container, urls, files, objectUrls, onUpdateUrls) {
+    if (!container) return;
+    clearObjectUrls(objectUrls);
+    container.innerHTML = '';
+
+    const items = [];
+    urls.forEach((url, idx) => items.push({ kind: 'url', url, idx }));
+    files.forEach((file, idx) => {
+      const url = URL.createObjectURL(file);
+      objectUrls.add(url);
+      items.push({ kind: 'file', url, idx });
+    });
+
+    if (!items.length) {
+      const empty = document.createElement('div');
+      empty.className = 'text-muted small';
+      empty.textContent = 'Chua co anh';
+      container.appendChild(empty);
+      return;
+    }
+
+    items.forEach((item) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'position-relative';
+      wrap.style.width = '80px';
+      wrap.style.height = '80px';
+      wrap.innerHTML =
+        `<img src="${item.url}" alt="" ` +
+        'style="width:100%;height:100%;object-fit:cover;border-radius:6px;border:1px solid #eee;">';
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'btn btn-sm btn-light position-absolute top-0 end-0';
+      btn.textContent = 'x';
+      btn.addEventListener('click', () => {
+        if (item.kind === 'url') {
+          urls.splice(item.idx, 1);
+          onUpdateUrls && onUpdateUrls(urls);
+        } else {
+          files.splice(item.idx, 1);
+        }
+        renderImagePreview(container, urls, files, objectUrls, onUpdateUrls);
+      });
+      wrap.appendChild(btn);
+      container.appendChild(wrap);
+    });
+  }
+
+  function normalizeProvinceImages(province) {
+    const list = Array.isArray(province?.imageUrls) ? province.imageUrls : [];
+    const primary = province?.imageUrl || list[0] || '';
+    const all = [primary, ...list].filter(Boolean);
+    return Array.from(new Set(all));
+  }
+
   function setImage(url) {
     if (!detailEls.imageWrap || !detailEls.image) return;
     if (url) {
@@ -73,8 +167,30 @@
     }
   }
 
+  function renderProvinceGallery(urls) {
+    if (!detailEls.gallery) return;
+    detailEls.gallery.innerHTML = '';
+    if (!urls.length) {
+      const empty = document.createElement('div');
+      empty.className = 'province-gallery-empty';
+      empty.textContent = 'No image';
+      detailEls.gallery.appendChild(empty);
+      return;
+    }
+    urls.forEach((url) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'province-gallery-item';
+      const img = document.createElement('img');
+      img.src = url;
+      img.alt = '';
+      wrap.appendChild(img);
+      detailEls.gallery.appendChild(wrap);
+    });
+  }
+
   function openProvinceDrawer(province) {
     if (!drawer || !province) return;
+    const images = normalizeProvinceImages(province);
     setText(detailEls.name, province.name || '-');
     setText(detailEls.code, `Ma: ${province.code || province.id || '-'}`);
     setText(detailEls.region, province.regionsCode || '-');
@@ -83,7 +199,8 @@
     setText(detailEls.created, formatDate(province.createdAt));
     setText(detailEls.updated, formatDate(province.updatedAt));
     setText(detailEls.desc, province.description || '-');
-    setImage(province.imageUrl || '');
+    setImage(images[0] || '');
+    renderProvinceGallery(images);
     drawer.classList.add('is-open');
     drawerOverlay?.classList.add('is-visible');
     document.body.classList.add('drawer-open');
@@ -107,7 +224,20 @@
     editSlug && (editSlug.value = province.slug || '');
     editLat && (editLat.value = province.centerLat || 0);
     editLng && (editLng.value = province.centerLng || 0);
-    editImage && (editImage.value = province.imageUrl || '');
+    editSelectedFiles = [];
+    editExistingUrls = normalizeProvinceImages(province);
+    setImageUrlsInput(editImagesInput, editExistingUrls);
+    if (editImageFilesInput) editImageFilesInput.value = '';
+    renderImagePreview(
+      editImagesPreview,
+      editExistingUrls,
+      editSelectedFiles,
+      editImageObjectUrls,
+      (nextUrls) => {
+        editExistingUrls = nextUrls;
+        setImageUrlsInput(editImagesInput, editExistingUrls);
+      },
+    );
     editDesc && (editDesc.value = province.description || '');
     if (modal) {
       modal.show();
@@ -118,9 +248,45 @@
     }
   }
 
+  async function uploadProvinceImageFile(file) {
+    const formData = new FormData();
+    formData.append('image', file);
+    const res = await fetch('/manager-provinces/api/provinces/upload-image', {
+      method: 'POST',
+      body: formData,
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'Upload anh that bai');
+    if (!data.url) throw new Error('Khong nhan duoc URL anh');
+    return data.url;
+  }
+
+  async function uploadProvinceImageFiles(files) {
+    if (!files || !files.length) return [];
+    const uploads = files.map((file) => uploadProvinceImageFile(file));
+    return Promise.all(uploads);
+  }
+
   async function submitEdit(e) {
     e.preventDefault();
     if (!editCode || !editName || !editRegion) return;
+    let uploadedUrls = [];
+    if (editSelectedFiles.length) {
+      try {
+        uploadedUrls = await uploadProvinceImageFiles(editSelectedFiles);
+      } catch (err) {
+        console.error(err);
+        if (alertBox) {
+          alertBox.style.display = 'block';
+          alertBox.className = 'alert alert-danger';
+          alertBox.textContent = err.message || 'Upload anh that bai';
+        }
+        return;
+      }
+    }
+    const manualUrls = parseImageUrls(editImagesInput?.value || '');
+    const imageUrls = parseImageUrls([...manualUrls, ...uploadedUrls].join('\n'));
+    const imageUrl = imageUrls[0] || '';
     const payload = {
       code: editCode.value.trim(),
       name: editName.value.trim(),
@@ -128,7 +294,8 @@
       slug: editSlug?.value.trim() || '',
       centerLat: editLat?.value || 0,
       centerLng: editLng?.value || 0,
-      imageUrl: editImage?.value.trim() || '',
+      imageUrl,
+      imageUrls,
       description: editDesc?.value.trim() || '',
     };
     if (!payload.code || !payload.name || !payload.regionsCode) {
@@ -211,6 +378,42 @@
     if (listEl && provinces.length) {
       window.provinceActionsWire(listEl, provinces);
     }
+  });
+
+  editImagesInput?.addEventListener('input', () => {
+    editExistingUrls = parseImageUrls(editImagesInput.value || '');
+    renderImagePreview(
+      editImagesPreview,
+      editExistingUrls,
+      editSelectedFiles,
+      editImageObjectUrls,
+      (nextUrls) => {
+        editExistingUrls = nextUrls;
+        setImageUrlsInput(editImagesInput, editExistingUrls);
+      },
+    );
+  });
+
+  editImageFilesInput?.addEventListener('change', (e) => {
+    const files = Array.from(e.target.files || []);
+    const hasInvalid = files.some((file) => !file.type || !file.type.startsWith('image/'));
+    if (hasInvalid && alertBox) {
+      alertBox.style.display = 'block';
+      alertBox.className = 'alert alert-danger';
+      alertBox.textContent = 'Vui long chon file anh hop le';
+    }
+    pushFiles(editSelectedFiles, files);
+    e.target.value = '';
+    renderImagePreview(
+      editImagesPreview,
+      editExistingUrls,
+      editSelectedFiles,
+      editImageObjectUrls,
+      (nextUrls) => {
+        editExistingUrls = nextUrls;
+        setImageUrlsInput(editImagesInput, editExistingUrls);
+      },
+    );
   });
 
   form?.addEventListener('submit', submitEdit);
