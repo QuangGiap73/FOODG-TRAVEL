@@ -9,6 +9,8 @@ import '../../services/auth_service.dart';
 import '../../services/food_service.dart';
 import '../../services/user_service.dart';
 import '../../router/route_names.dart';
+import '../../controller/favorite/favorite_controller.dart';
+import '../../widgets/favorite_button.dart';
 import '../onboarding/survey_sheet.dart';
 import '../personal/personal.dart';
 
@@ -140,6 +142,8 @@ class _HomeFeedState extends State<_HomeFeed> {
   Timer? _autoSlideTimer;
   final ValueNotifier<int> _imageIndex = ValueNotifier<int>(0);
   String? _lastProvinceId;
+  final _favoriteController = FavoriteController();
+  Stream<List<DishModel>>? _dishesStream;
 
   ProvinceModel? _selectedProvince;
   String _query = '';
@@ -152,6 +156,8 @@ class _HomeFeedState extends State<_HomeFeed> {
   void initState() {
     super.initState();
     _startProfileListener();
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    _favoriteController.bindUser(uid);
   }
 
   @override
@@ -161,6 +167,7 @@ class _HomeFeedState extends State<_HomeFeed> {
     _imageIndex.dispose();
     _pageController.dispose();
     _searchController.dispose();
+    _favoriteController.dispose();
     super.dispose();
   }
 
@@ -193,6 +200,8 @@ class _HomeFeedState extends State<_HomeFeed> {
     }
     setState(() {
       _selectedProvince = province;
+      _dishesStream =
+          _service.watchDishesByProvinceKeys(_provinceQueryKeys(province));
     });
     _imageIndex.value = 0;
   }
@@ -419,11 +428,9 @@ class _HomeFeedState extends State<_HomeFeed> {
         const SizedBox(height: 10),
         if (_selectedProvince == null)
           _buildEmpty('Chon tinh de xem mon an.'),
-        if (_selectedProvince != null)
+        if (_selectedProvince != null && _dishesStream != null)
           StreamBuilder<List<DishModel>>(
-            stream: _service.watchDishesByProvinceKeys(
-              _provinceQueryKeys(_selectedProvince!),
-            ),
+            stream: _dishesStream,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Padding(
@@ -449,22 +456,35 @@ class _HomeFeedState extends State<_HomeFeed> {
                 return _buildEmpty('Khong tim thay mon an phu hop.');
               }
 
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: filtered.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: crossAxisCount,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                    childAspectRatio: 0.75,
-                  ),
-                  itemBuilder: (context, index) {
-                    return _buildDishCard(filtered[index]);
-                  },
-                ),
+              return AnimatedBuilder(
+                animation: _favoriteController,
+                builder: (context, _) {
+                  final favoriteIds = _favoriteController.favoriteIds;
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: filtered.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: crossAxisCount,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                        childAspectRatio: 0.75,
+                      ),
+                      itemBuilder: (context, index) {
+                        final dish = filtered[index];
+                        final isFavorite = favoriteIds.contains(dish.id);
+                        return _buildDishCard(
+                          dish,
+                          isFavorite: isFavorite,
+                          onToggle: () =>
+                              _favoriteController.toggleFavorite(dish.id),
+                        );
+                      },
+                    ),
+                  );
+                },
               );
             },
           ),
@@ -548,7 +568,11 @@ class _HomeFeedState extends State<_HomeFeed> {
     );
   }
 
-  Widget _buildDishCard(DishModel dish) {
+  Widget _buildDishCard(
+    DishModel dish, {
+    required bool isFavorite,
+    required VoidCallback onToggle,
+  }) {
     final theme = Theme.of(context);
     final imageUrl = dish.imageUrl;
 
@@ -571,21 +595,35 @@ class _HomeFeedState extends State<_HomeFeed> {
           children: [
             AspectRatio(
               aspectRatio: 4 / 3,
-              child: imageUrl.isNotEmpty
-                  ? Image.network(
-                      imageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: theme.colorScheme.surfaceVariant,
-                          child: const Icon(Icons.image, size: 32),
-                        );
-                      },
-                    )
-                  : Container(
-                      color: theme.colorScheme.surfaceVariant,
-                      child: const Icon(Icons.image, size: 32),
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: imageUrl.isNotEmpty
+                        ? Image.network(
+                            imageUrl,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                color: theme.colorScheme.surfaceVariant,
+                                child: const Icon(Icons.image, size: 32),
+                              );
+                            },
+                          )
+                        : Container(
+                            color: theme.colorScheme.surfaceVariant,
+                            child: const Icon(Icons.image, size: 32),
+                          ),
+                  ),
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: FavoriteButton(
+                      isFavorite: isFavorite,
+                      onTap: onToggle,
                     ),
+                  ),
+                ],
+              ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 8, 10, 4),
