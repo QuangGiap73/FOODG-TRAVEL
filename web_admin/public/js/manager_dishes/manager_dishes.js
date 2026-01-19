@@ -7,6 +7,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const bulkActions = document.getElementById('bulk-actions-dishes');
   const selectedCount = document.getElementById('selected-count-dishes');
   const btnDeleteSelected = document.getElementById('btn-delete-selected-dishes');
+  const pageInfo = document.getElementById('dish-page-info');
+  const pageList = document.getElementById('dish-page-list');
+  const PAGE_SIZE = 50;
+  let currentPage = 1;
+  let currentList = [];
 
   async function loadDishes() {
     if (!tbody) return;
@@ -20,27 +25,75 @@ document.addEventListener('DOMContentLoaded', () => {
       const body = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(body.error || 'Tai mon that bai');
       const list = Array.isArray(body.data) ? body.data : [];
-      renderTable(list);
+      currentList = sortByStt(list);
+      currentPage = 1;
+      renderPage();
     } catch (err) {
       console.error(err);
       tbody.innerHTML = `<tr><td colspan="9" class="text-center text-danger">${err.message || 'Loi tai du lieu'}</td></tr>`;
+      currentList = [];
+      currentPage = 1;
+      if (pageInfo) pageInfo.textContent = '';
+      if (pageList) pageList.innerHTML = '';
     }
   }
 
 
-  function renderTable(list) {
+  function sortByStt(list) {
+    return [...list].sort((a, b) => {
+      const aStt = Number(a.STT || a.stt || 0);
+      const bStt = Number(b.STT || b.stt || 0);
+      return aStt - bStt;
+    });
+  }
+
+  function renderPage() {
+    const total = currentList.length;
+    const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+    if (currentPage > totalPages) currentPage = totalPages;
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const pageItems = currentList.slice(start, start + PAGE_SIZE);
+    renderTable(pageItems, start);
+    renderPagination(totalPages, total, start, pageItems.length);
+  }
+
+  function renderPagination(totalPages, total, start, count) {
+    if (!pageList) return;
+    if (pageInfo) {
+      const from = total === 0 ? 0 : start + 1;
+      const to = start + count;
+      pageInfo.textContent = total ? `Hien thi ${from}-${to} / ${total}` : '';
+    }
+    pageList.innerHTML = '';
+    if (totalPages <= 1) return;
+
+    const addItem = (label, page, disabled, active) => {
+      const li = document.createElement('li');
+      li.className = `page-item${active ? ' active' : ''}${disabled ? ' disabled' : ''}`;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'page-link';
+      btn.textContent = label;
+      btn.dataset.page = page;
+      if (disabled) btn.disabled = true;
+      li.appendChild(btn);
+      pageList.appendChild(li);
+    };
+
+    addItem('<', currentPage - 1, currentPage === 1, false);
+    for (let p = 1; p <= totalPages; p += 1) {
+      addItem(String(p), p, false, p === currentPage);
+    }
+    addItem('>', currentPage + 1, currentPage === totalPages, false);
+  }
+
+  function renderTable(list, offset = 0) {
     if (!list.length) {
       tbody.innerHTML = '<tr><td colspan="9" class="text-center text-muted">Chua co du lieu</td></tr>';
       return;
     }
     // sắp xếp theo STT
-    const sorted = [...list].sort((a, b) =>{
-      const aStt = Number(a.STT || a.stt || 0);
-      const bStt = Number(b.STT || b.stt || 0);
-      return aStt - bStt;
-    })
-
-    const rows = sorted
+    const rows = list
       .map((item, idx) => {
         const images = Array.isArray(item.Images || item.images || item.imageUrls)
           ? (item.Images || item.images || item.imageUrls)
@@ -58,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const bestTime = item.Best_time || item.best_time || '';
         const bestSeason = item.Best_season || item.best_season || '';
         const tags = item.Tags || item.tags || '';
-        const rowNum = item.STT || idx + 1;
+        const rowNum = item.STT || offset + idx + 1;
         const id = item.id || rowNum;
 
         return `
@@ -170,6 +223,14 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (err) {
       alert('Xoa mon that bai');
     }
+  });
+  pageList?.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-page]');
+    if (!btn) return;
+    const page = Number(btn.dataset.page);
+    if (!Number.isFinite(page) || page < 1) return;
+    currentPage = page;
+    renderPage();
   });
   loadDishes();
 });

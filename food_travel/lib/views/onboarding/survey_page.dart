@@ -101,7 +101,10 @@ class _SurveyPageState extends State<SurveyPage> {
                         return const Iterable<String>.empty();
                       }
                       return vietnamProvinces.where(
-                        (province) => province.toLowerCase().contains(query),
+                        (province){
+                          final name = province.toLowerCase();
+                          return name.startsWith(query);
+                        }
                       );
                     },
                     onSelected: (selection) {

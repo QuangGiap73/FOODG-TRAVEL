@@ -10,5 +10,6 @@ class RouteNames {
   static const changePassword = '/settings/change-password';
   static const languageSettings = '/settings/language';
   static const survey = '/onboarding/survey';
+  static const provinceDetail = '/province-detail';
 
 }

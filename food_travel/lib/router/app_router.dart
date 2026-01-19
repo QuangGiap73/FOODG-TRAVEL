@@ -11,6 +11,7 @@ import '../views/settings/change_password_page.dart';
 import '../views/settings/theme_settings.dart';
 import '../views/settings/language_setting.dart';
 import '../views/onboarding/survey_page.dart';
+import '../views/provinces/province_detail_page.dart';
 import 'route_names.dart';
 
 class AppRouter {
@@ -38,6 +39,18 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const LanguageSettingsPage());
       case RouteNames.survey:
         return MaterialPageRoute(builder: (_) => const SurveyPage());
+      case RouteNames.provinceDetail:
+        final provinceId = settings.arguments as String?;
+        if(provinceId == null || provinceId.isEmpty){
+          return MaterialPageRoute(
+            builder: (_) => const Scaffold(
+              body:  Center(child: Text('Missing provinces id')),
+            ),
+          );
+        }
+        return MaterialPageRoute(
+          builder: (_) => ProvinceDetailPage(provinceId: provinceId),
+        );
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(

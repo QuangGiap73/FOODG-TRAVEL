@@ -25,6 +25,13 @@ class FoodService {
                 .toList(),
       );
   }
+  Stream<ProvinceModel?> watchProvinceById(String id){
+    return _db 
+        .collection('provinces')
+        .doc(id)
+        .snapshots()
+        .map((doc) => doc.exists ? ProvinceModel.fromDoc(doc) : null);
+  }
   // lang nghe mon ăn theo tỉnh
   Stream<List<DishModel>> watchDishesByProvince(String provinceCode){
     return _db

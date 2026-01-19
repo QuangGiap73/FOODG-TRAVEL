@@ -133,7 +133,7 @@ class _HomeFeed extends StatefulWidget {
 
 class _HomeFeedState extends State<_HomeFeed> {
   final _service = FoodService();
-  final _pageController = PageController(viewportFraction: 0.88);
+  final _pageController = PageController();
   final _searchController = TextEditingController();
   final _userService = UserService();
   StreamSubscription? _profileSub;
@@ -363,22 +363,35 @@ class _HomeFeedState extends State<_HomeFeed> {
                 const SizedBox(height: 10),
                 if (images.isEmpty)
                   _buildEmpty('Tinh nay chua co anh.')
-                else
-                  SizedBox(
-                    height: 190,
-                    child: PageView.builder(
-                      controller: _pageController,
-                      onPageChanged: (index) => _imageIndex.value = index,
-                      itemCount: images.length,
-                      itemBuilder: (context, index) {
-                        final imageUrl = images[index];
-                        return _buildProvinceImageSlide(
-                          imageUrl: imageUrl,
-                          name: target.name,
-                        );
-                      },
+                  else
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: SizedBox(
+                        height: 190,
+                        child: PageView.builder(
+                          controller: _pageController,
+                          onPageChanged: (index) => _imageIndex.value = index,
+                          itemCount: images.length,
+                          itemBuilder: (context, index) {
+                            final imageUrl = images[index];
+                            return GestureDetector(
+                              onTap: (){
+                                Navigator.pushNamed(
+                                  context,
+                                  RouteNames.provinceDetail,
+                                  arguments: target.id,
+                                );
+                              },
+                              child: _buildProvinceImageSlide(
+                                imageUrl: imageUrl,
+                                name: target.name,
+                              ),
+                            );
+                            
+                          },
+                        ),
+                      ),
                     ),
-                  ),
                 const SizedBox(height: 8),
                 if (images.length > 1)
                   Center(

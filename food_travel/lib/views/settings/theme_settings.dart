@@ -10,18 +10,8 @@ class ThemeSettingsPage extends StatefulWidget {
 }
 
 class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
-  bool _auto = false;
-
-  @override
-  void initState() {
-    super.initState();
-    final mode = ThemeController().themeMode;
-    _auto = mode == ThemeMode.system;
-  }
-
-  void _setMode(ThemeMode mode) {
-    ThemeController().setThemeMode(mode);
-    setState(() => _auto = mode == ThemeMode.system);
+  Future<void> _setMode(ThemeMode mode) async {
+    await ThemeController().setThemeMode(mode);
   }
 
   @override
@@ -31,6 +21,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
     return AnimatedBuilder(
       animation: controller,
       builder: (context, _) {
+        final isAuto = controller.isAuto;
         final current = controller.themeMode;
         final isDarkSelected = current == ThemeMode.dark;
         final isLightSelected = current == ThemeMode.light;
@@ -48,8 +39,8 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                     Expanded(
                       child: _ThemeCard(
                         label: 'Sang',
-                        selected: !_auto && isLightSelected,
-                        onTap: _auto ? null : () => _setMode(ThemeMode.light),
+                        selected: !isAuto && isLightSelected,
+                        onTap: isAuto ? null : () => _setMode(ThemeMode.light),
                         background: const LinearGradient(
                           colors: [Color(0xFFFFC88B), Color(0xFF6CA6FF)],
                           begin: Alignment.topCenter,
@@ -61,8 +52,8 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                     Expanded(
                       child: _ThemeCard(
                         label: 'Toi',
-                        selected: !_auto && isDarkSelected,
-                        onTap: _auto ? null : () => _setMode(ThemeMode.dark),
+                        selected: !isAuto && isDarkSelected,
+                        onTap: isAuto ? null : () => _setMode(ThemeMode.dark),
                         background: const LinearGradient(
                           colors: [Color(0xFF2B2B2B), Color(0xFF0D0D0D)],
                           begin: Alignment.topCenter,
@@ -88,7 +79,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                         ),
                       ),
                       Switch(
-                        value: _auto,
+                        value: isAuto,
                         onChanged: (value) {
                           if (value) {
                             _setMode(ThemeMode.system);
