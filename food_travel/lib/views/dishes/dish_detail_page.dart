@@ -1,11 +1,9 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 
 import '../../controller/dish/dish_detail_controller.dart';
-import '../../controller/favorite/favorite_controller.dart';
 import '../../models/dish_model.dart';
-import '../../services/food_service.dart';
-import '../../widgets/favorite_button.dart';
 
 class DishDetailPage extends StatefulWidget {
   const DishDetailPage({super.key, required this.dishId});
@@ -16,328 +14,1117 @@ class DishDetailPage extends StatefulWidget {
 }
 
 class _DishDetailPageState extends State<DishDetailPage> {
-  final _controller = DishDetailController();
-  final _favoriteController = FavoriteController();
+  bool _descExpanded = false;
+  int _pageIndex = 0;
+  late final DishDetailController _controller;
 
   @override
   void initState() {
     super.initState();
-    _controller.bind(widget.dishId);
-    final uid = FirebaseAuth.instance.currentUser?.uid;
-    _favoriteController.bindUser(uid);
+    _controller = DishDetailController()..bind(widget.dishId);
+  }
+
+  @override
+  void didUpdateWidget(covariant DishDetailPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.dishId != widget.dishId) {
+      _controller.bind(widget.dishId);
+      _pageIndex = 0;
+      _descExpanded = false;
+    }
   }
 
   @override
   void dispose() {
     _controller.dispose();
-    _favoriteController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: Listenable.merge([_controller, _favoriteController]),
-      builder: (context, _) {
-        if (_controller.isLoading) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
-        if (_controller.error != null || _controller.dish == null) {
-          return const Scaffold(
-            body: Center(child: Text('Khong tim thay mon an')),
-          );
-        }
+    return ChangeNotifierProvider.value(
+      value: _controller,
+      child: Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        body: Consumer<DishDetailController>(
+          builder: (context, c, _) {
+            if (c.isLoading) return const _LoadingView();
+            if (c.error != null) return _ErrorView(message: c.error!);
+            final dish = c.dish;
+            if (dish == null) return const _NotFoundView();
 
-        final dish = _controller.dish!;
-        final isFavorite = _favoriteController.isFavorite(dish.id);
-        final theme = Theme.of(context);
+            final images = _buildImages(dish);
 
-        return Scaffold(
-          appBar: AppBar(title: Text(dish.name)),
-          body: ListView(
-            padding: const EdgeInsets.only(bottom: 24),
-            children: [
-              _HeroImage(
-                imageUrl: dish.imageUrl,
-                name: dish.name,
-                isFavorite: isFavorite,
-                onToggle: () => _favoriteController.toggleFavorite(dish.id),
-              ),
-              const SizedBox(height: 12),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  dish.tag,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.hintColor,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    _Chip(text: 'Cay: ${dish.spicyLevel}/5'),
-                    _Chip(text: 'No: ${dish.satietyLevel}/5'),
-                    if (dish.bestTime.isNotEmpty) _Chip(text: dish.bestTime),
-                    if (dish.bestSeason.isNotEmpty) _Chip(text: dish.bestSeason),
-                    if (dish.priceRange.isNotEmpty) _Chip(text: dish.priceRange),
-                    if (dish.provinceName.isNotEmpty)
-                      _Chip(text: dish.provinceName),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-              _Section(title: 'Mo ta', text: dish.description),
-              _SectionList(title: 'Nguyen lieu', text: dish.ingredients),
-              _SectionList(title: 'Huong dan', text: dish.instructions),
-              if (dish.originStory.isNotEmpty)
-                _Section(title: 'Cau chuyen', text: dish.originStory),
-              const SizedBox(height: 8),
-              _RelatedDishes(dish: dish),
-            ],
-          ),
-        );
-      },
-    );
-  }
-}
+            return CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  pinned: true,
+                  expandedHeight: 380,
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  automaticallyImplyLeading: false,
+                  flexibleSpace: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final collapsed =
+                          constraints.biggest.height <= (kToolbarHeight + 40);
 
-class _HeroImage extends StatelessWidget {
-  const _HeroImage({
-    required this.imageUrl,
-    required this.name,
-    required this.isFavorite,
-    required this.onToggle,
-  });
-
-  final String imageUrl;
-  final String name;
-  final bool isFavorite;
-  final VoidCallback onToggle;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return SizedBox(
-      height: 220,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          imageUrl.isNotEmpty
-              ? Image.network(imageUrl, fit: BoxFit.cover)
-              : Container(
-                  color: theme.colorScheme.surfaceVariant,
-                  child: const Icon(Icons.image, size: 40),
-                ),
-          Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.black.withOpacity(0.55), Colors.transparent],
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            left: 16,
-            right: 16,
-            bottom: 16,
-            child: Text(
-              name,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.titleLarge?.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-          Positioned(
-            top: 12,
-            right: 12,
-            child: FavoriteButton(
-              isFavorite: isFavorite,
-              onTap: onToggle,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _Chip extends StatelessWidget {
-  const _Chip({required this.text});
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceVariant,
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Text(
-        text,
-        style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
-      ),
-    );
-  }
-}
-
-class _Section extends StatelessWidget {
-  const _Section({required this.title, required this.text});
-  final String title;
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    if (text.trim().isEmpty) return const SizedBox.shrink();
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title,
-              style: theme.textTheme.titleMedium
-                  ?.copyWith(fontWeight: FontWeight.w700)),
-          const SizedBox(height: 8),
-          Text(text, style: theme.textTheme.bodyMedium),
-        ],
-      ),
-    );
-  }
-}
-
-class _SectionList extends StatelessWidget {
-  const _SectionList({required this.title, required this.text});
-  final String title;
-  final String text;
-
-  List<String> _split(String raw) {
-    return raw
-        .split(RegExp(r',|\n'))
-        .map((e) => e.trim())
-        .where((e) => e.isNotEmpty)
-        .toList();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final items = _split(text);
-    if (items.isEmpty) return const SizedBox.shrink();
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title,
-              style: theme.textTheme.titleMedium
-                  ?.copyWith(fontWeight: FontWeight.w700)),
-          const SizedBox(height: 8),
-          ...items.map(
-            (e) => Padding(
-              padding: const EdgeInsets.only(bottom: 6),
-              child: Text('- $e', style: theme.textTheme.bodyMedium),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _RelatedDishes extends StatelessWidget {
-  const _RelatedDishes({required this.dish});
-  final DishModel dish;
-
-  List<String> _keys(DishModel d) {
-    return [
-      d.provinceCode,
-      d.provinceName,
-    ].where((e) => e.trim().isNotEmpty).toList();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final keys = _keys(dish);
-    if (keys.isEmpty) return const SizedBox.shrink();
-
-    return StreamBuilder<List<DishModel>>(
-      stream: FoodService().watchDishesByProvinceKeys(keys),
-      builder: (context, snapshot) {
-        final theme = Theme.of(context);
-        if (!snapshot.hasData) return const SizedBox.shrink();
-
-        final items = snapshot.data!
-            .where((e) => e.id != dish.id)
-            .toList();
-
-        if (items.isEmpty) return const SizedBox.shrink();
-
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Mon lien quan',
-                  style: theme.textTheme.titleMedium
-                      ?.copyWith(fontWeight: FontWeight.w700)),
-              const SizedBox(height: 10),
-              SizedBox(
-                height: 200,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: items.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 12),
-                  itemBuilder: (context, index) {
-                    final d = items[index];
-                    return SizedBox(
-                      width: 160,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      return Stack(
+                        fit: StackFit.expand,
                         children: [
-                          AspectRatio(
-                            aspectRatio: 4 / 3,
-                            child: d.imageUrl.isNotEmpty
-                                ? Image.network(d.imageUrl, fit: BoxFit.cover)
-                                : Container(
-                                    color: theme.colorScheme.surfaceVariant,
-                                    child: const Icon(Icons.image),
-                                  ),
+                          // Hero gallery
+                          _HeroGallery(
+                            images: images,
+                            onPageChanged: (i) => setState(() => _pageIndex = i),
                           ),
-                          const SizedBox(height: 8),
-                          Text(
-                            d.name,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.w600,
+
+                          // Gradient overlay
+                          const DecoratedBox(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.black54,
+                                  Colors.transparent,
+                                  Colors.transparent,
+                                  Colors.black54,
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          // Top bar buttons + sticky title
+                          SafeArea(
+                            bottom: false,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 10,
+                              ),
+                              child: Row(
+                                children: [
+                                  _GlassIconButton(
+                                    icon: Icons.arrow_back_rounded,
+                                    onTap: () => Navigator.of(context).pop(),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: AnimatedOpacity(
+                                      duration:
+                                          const Duration(milliseconds: 250),
+                                      opacity: collapsed ? 1 : 0,
+                                      child: Text(
+                                        dish.name,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  _GlassIconButton(
+                                    icon: Icons.share_outlined,
+                                    onTap: () {
+                                      // TODO: share_plus => Share.share(...)
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          content: Text('Share (TODO)'),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  const SizedBox(width: 10),
+                                  _FavoriteButton(
+                                    onTap: () {
+                                      // Nếu bạn muốn gắn FavoriteController:
+                                      // context.read<FavoriteController>().toggleFavorite(dish.id);
+                                      // isFavorite lấy từ controller để đổi icon.
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          content: Text('Favorite (TODO)'),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          // Pagination dots
+                          Positioned(
+                            bottom: 70,
+                            left: 0,
+                            right: 0,
+                            child: _DotsIndicator(
+                              count: math.max(1, images.length),
+                              index: _pageIndex,
                             ),
                           ),
                         ],
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
+                ),
+
+                // Main content sheet
+                SliverToBoxAdapter(
+                  child: Transform.translate(
+                    offset: const Offset(0, -24),
+                    child: _ContentSheet(
+                      dish: dish,
+                      descExpanded: _descExpanded,
+                      onToggleDesc: () =>
+                          setState(() => _descExpanded = !_descExpanded),
+                    ),
+                  ),
+                ),
+
+                // Spacer for bottom CTA overlay
+                const SliverToBoxAdapter(child: SizedBox(height: 110)),
+              ],
+            );
+          },
+        ),
+
+        // Sticky Bottom CTA (giống HTML)
+        bottomNavigationBar: Consumer<DishDetailController>(
+          builder: (context, c, _) {
+            final dish = c.dish;
+            if (dish == null) return const SizedBox.shrink();
+            return _BottomCtaBar(
+              onFavTap: () {
+                // TODO: toggle favorite thật
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Favorite (TODO)')),
+                );
+              },
+              onFindNearbyTap: () {
+                // TODO: maps / nearby restaurants
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Tìm quán gần đây (TODO)')),
+                );
+              },
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  List<String> _buildImages(DishModel dish) {
+    // Model của bạn đang có 1 imageUrl. Nếu sau này có thêm list ảnh thì thay ở đây.
+    final url = dish.imageUrl.trim();
+    if (url.isEmpty) return const [];
+    return [url];
+  }
+}
+
+/* ----------------------------- UI WIDGETS ----------------------------- */
+
+class _HeroGallery extends StatelessWidget {
+  const _HeroGallery({required this.images, required this.onPageChanged});
+  final List<String> images;
+  final ValueChanged<int> onPageChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    if (images.isEmpty) {
+      return Container(
+        color: Colors.grey.shade300,
+        child: const Center(
+          child: Icon(Icons.image_not_supported_outlined, size: 40),
+        ),
+      );
+    }
+
+    return PageView.builder(
+      itemCount: images.length,
+      onPageChanged: onPageChanged,
+      itemBuilder: (context, i) {
+        return Image.network(
+          images[i],
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => Container(
+            color: Colors.grey.shade300,
+            child: const Center(
+              child: Icon(Icons.broken_image_outlined, size: 40),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _DotsIndicator extends StatelessWidget {
+  const _DotsIndicator({required this.count, required this.index});
+  final int count;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(count, (i) {
+        final active = i == index;
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(
+            color: active ? Colors.white : Colors.white.withOpacity(0.5),
+            borderRadius: BorderRadius.circular(99),
+          ),
+        );
+      }),
+    );
+  }
+}
+
+class _GlassIconButton extends StatelessWidget {
+  const _GlassIconButton({required this.icon, required this.onTap});
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.white.withOpacity(0.18),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(999),
+        side: BorderSide(color: Colors.white.withOpacity(0.08)),
+      ),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(999),
+        child: SizedBox(
+          width: 42,
+          height: 42,
+          child: Icon(icon, color: Colors.white),
+        ),
+      ),
+    );
+  }
+}
+
+class _FavoriteButton extends StatelessWidget {
+  const _FavoriteButton({required this.onTap});
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    // Hiện tại demo icon. Nếu gắn FavoriteController thì đổi theo isFavorite.
+    return _GlassIconButton(icon: Icons.favorite_border, onTap: onTap);
+  }
+}
+
+class _ContentSheet extends StatelessWidget {
+  const _ContentSheet({
+    required this.dish,
+    required this.descExpanded,
+    required this.onToggleDesc,
+  });
+
+  final DishModel dish;
+  final bool descExpanded;
+  final VoidCallback onToggleDesc;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    final spicy = _clampLevel(dish.spicyLevel);
+    final satiety = _clampLevel(dish.satietyLevel);
+
+    final tags = _dedupeTags([
+      ...dish.tags,
+      if (dish.provinceName.isNotEmpty) dish.provinceName,
+      if (dish.tag.isNotEmpty) dish.tag,
+    ]);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 30,
+            offset: const Offset(0, -10),
+          )
+        ],
+      ),
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header info
+          Text(
+            dish.name,
+            style: theme.textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.w700,
+              letterSpacing: -0.2,
+            ),
+          ),
+          const SizedBox(height: 8),
+
+          Text(
+            dish.tag.isNotEmpty ? dish.tag : 'Món ăn đặc sản',
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurface.withOpacity(0.65),
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 10),
+
+          Row(
+            children: [
+              Icon(Icons.location_on_outlined,
+                  size: 18, color: Colors.orange.shade600),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  _buildLocationText(dish),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurface.withOpacity(0.75),
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ],
           ),
-        );
-      },
+
+          const SizedBox(height: 12),
+
+          // Tags
+          if (tags.isNotEmpty) Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: tags.map((t) {
+              final isProvince = t == dish.provinceName;
+              return _TagChip(
+                text: t,
+                highlight: isProvince,
+              );
+            }).toList(),
+          ),
+
+          const SizedBox(height: 18),
+          _DashedDivider(color: theme.dividerColor.withOpacity(0.8)),
+          const SizedBox(height: 18),
+
+          // Quick meters
+          Row(
+            children: [
+              Expanded(
+                child: _Meter(
+                  icon: Icons.local_fire_department_outlined,
+                  iconColor: Colors.red.shade500,
+                  label: 'Độ cay',
+                  level: spicy,
+                  activeColor: Colors.red.shade500,
+                  inactiveColor: isDark
+                      ? Colors.white.withOpacity(0.12)
+                      : Colors.black.withOpacity(0.10),
+                ),
+              ),
+              const SizedBox(width: 18),
+              Expanded(
+                child: _Meter(
+                  icon: Icons.emoji_food_beverage_outlined,
+                  iconColor: Colors.orange.shade600,
+                  label: 'Độ no',
+                  level: satiety,
+                  activeColor: Colors.orange.shade600,
+                  inactiveColor: isDark
+                      ? Colors.white.withOpacity(0.12)
+                      : Colors.black.withOpacity(0.10),
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 16),
+
+          // Best time cards
+          Row(
+            children: [
+              Expanded(
+                child: _InfoCard(
+                  icon: Icons.calendar_month_outlined,
+                  iconBg: Colors.blue.withOpacity(isDark ? 0.25 : 0.14),
+                  iconColor: Colors.blue.shade600,
+                  title: 'Mùa ngon nhất',
+                  value: dish.bestSeason.isNotEmpty
+                      ? dish.bestSeason
+                      : 'Chưa cập nhật',
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _InfoCard(
+                  icon: Icons.access_time_outlined,
+                  iconBg: Colors.amber.withOpacity(isDark ? 0.25 : 0.16),
+                  iconColor: Colors.amber.shade700,
+                  title: 'Thời điểm ăn',
+                  value: dish.bestTime.isNotEmpty
+                      ? dish.bestTime
+                      : 'Chưa cập nhật',
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 18),
+
+          // Description
+          _SectionTitle(title: 'Giới thiệu'),
+          const SizedBox(height: 8),
+          Text(
+            dish.description.isNotEmpty
+                ? dish.description
+                : 'Chưa có mô tả cho món ăn này.',
+            maxLines: descExpanded ? null : 3,
+            overflow: descExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              height: 1.55,
+              color: theme.colorScheme.onSurface.withOpacity(0.72),
+            ),
+          ),
+          const SizedBox(height: 6),
+          if ((dish.description).trim().isNotEmpty)
+            TextButton(
+              onPressed: onToggleDesc,
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: Text(
+                descExpanded ? 'Thu gọn' : 'Đọc thêm',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  color: Colors.orange.shade700,
+                ),
+              ),
+            ),
+
+          const SizedBox(height: 14),
+
+          // Origin story quote
+          if (dish.originStory.trim().isNotEmpty)
+            _QuoteCard(text: dish.originStory),
+
+          const SizedBox(height: 18),
+
+          // Ingredients
+          _SectionTitle(title: 'Nguyên liệu', icon: Icons.shopping_bag_outlined),
+          const SizedBox(height: 10),
+          ..._toLines(dish.ingredients).map((x) => _BulletLine(text: x)),
+
+          const SizedBox(height: 18),
+
+          // Instructions timeline
+          _SectionTitle(
+              title: 'Cách chế biến', icon: Icons.list_alt_outlined),
+          const SizedBox(height: 12),
+          _TimelineSteps(steps: _toLines(dish.instructions)),
+
+          const SizedBox(height: 18),
+
+          // Price range
+          if (dish.priceRange.trim().isNotEmpty)
+            _PriceCard(priceRange: dish.priceRange),
+        ],
+      ),
+    );
+  }
+
+  int _clampLevel(int v) => v.clamp(0, 5);
+
+  String _buildLocationText(DishModel dish) {
+    final parts = <String>[];
+    if (dish.provinceName.trim().isNotEmpty) parts.add(dish.provinceName.trim());
+    if (dish.regionCode.trim().isNotEmpty) parts.add(dish.regionCode.trim());
+    if (parts.isEmpty) return 'Chưa cập nhật';
+    return parts.join(', ');
+  }
+
+  List<String> _dedupeTags(List<String> input) {
+    final set = <String>{};
+    for (final t in input) {
+      final s = t.trim();
+      if (s.isEmpty) continue;
+      set.add(s);
+    }
+    return set.toList();
+  }
+
+  List<String> _toLines(String raw) {
+    final s = raw.trim();
+    if (s.isEmpty) return const [];
+    // Tách theo xuống dòng / dấu chấm phẩy / dấu chấm / dấu phẩy, giữ logic đơn giản
+    final parts = s
+        .split(RegExp(r'[\n;•]+'))
+        .map((e) => e.trim())
+        .where((e) => e.isNotEmpty)
+        .toList();
+
+    // Nếu vẫn chỉ có 1 dòng dài, thử tách theo ". " để ra step
+    if (parts.length == 1 && parts.first.length > 140) {
+      return parts.first
+          .split(RegExp(r'\.\s+'))
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .toList();
+    }
+    return parts;
+  }
+}
+
+class _TagChip extends StatelessWidget {
+  const _TagChip({required this.text, required this.highlight});
+  final String text;
+  final bool highlight;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final baseBg = theme.brightness == Brightness.dark
+        ? Colors.white.withOpacity(0.06)
+        : Colors.black.withOpacity(0.05);
+
+    final hlBg = theme.brightness == Brightness.dark
+        ? Colors.orange.withOpacity(0.16)
+        : Colors.orange.withOpacity(0.10);
+
+    final hlBorder = theme.brightness == Brightness.dark
+        ? Colors.orange.withOpacity(0.25)
+        : Colors.orange.withOpacity(0.18);
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+      decoration: BoxDecoration(
+        color: highlight ? hlBg : baseBg,
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(
+          color: highlight ? hlBorder : theme.dividerColor.withOpacity(0.22),
+        ),
+      ),
+      child: Text(
+        text,
+        style: theme.textTheme.labelSmall?.copyWith(
+          fontWeight: FontWeight.w700,
+          color: highlight
+              ? Colors.orange.shade700
+              : theme.colorScheme.onSurface.withOpacity(0.75),
+        ),
+      ),
+    );
+  }
+}
+
+class _Meter extends StatelessWidget {
+  const _Meter({
+    required this.icon,
+    required this.iconColor,
+    required this.label,
+    required this.level,
+    required this.activeColor,
+    required this.inactiveColor,
+  });
+
+  final IconData icon;
+  final Color iconColor;
+  final String label;
+  final int level; // 0..5
+  final Color activeColor;
+  final Color inactiveColor;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(icon, size: 18, color: iconColor),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: theme.textTheme.bodySmall?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: theme.colorScheme.onSurface.withOpacity(0.85),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Row(
+          children: List.generate(5, (i) {
+            final active = i < level;
+            return Expanded(
+              child: Container(
+                height: 6,
+                margin: EdgeInsets.only(right: i == 4 ? 0 : 6),
+                decoration: BoxDecoration(
+                  color: active ? activeColor : inactiveColor,
+                  borderRadius: BorderRadius.circular(999),
+                ),
+              ),
+            );
+          }),
+        ),
+      ],
+    );
+  }
+}
+
+class _InfoCard extends StatelessWidget {
+  const _InfoCard({
+    required this.icon,
+    required this.iconBg,
+    required this.iconColor,
+    required this.title,
+    required this.value,
+  });
+
+  final IconData icon;
+  final Color iconBg;
+  final Color iconColor;
+  final String title;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cardBg = theme.brightness == Brightness.dark
+        ? Colors.white.withOpacity(0.04)
+        : Colors.black.withOpacity(0.03);
+
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: cardBg,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: theme.dividerColor.withOpacity(0.20)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 34,
+            height: 34,
+            decoration: BoxDecoration(
+              color: iconBg,
+              borderRadius: BorderRadius.circular(999),
+            ),
+            child: Icon(icon, size: 18, color: iconColor),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            title.toUpperCase(),
+            style: theme.textTheme.labelSmall?.copyWith(
+              letterSpacing: 0.8,
+              color: theme.colorScheme.onSurface.withOpacity(0.45),
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            value,
+            style: theme.textTheme.bodySmall?.copyWith(
+              fontWeight: FontWeight.w700,
+              height: 1.35,
+              color: theme.colorScheme.onSurface.withOpacity(0.88),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle({required this.title, this.icon});
+  final String title;
+  final IconData? icon;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Row(
+      children: [
+        if (icon != null) ...[
+          Icon(icon, size: 18, color: Colors.orange.shade700),
+          const SizedBox(width: 8),
+        ],
+        Text(
+          title,
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _BulletLine extends StatelessWidget {
+  const _BulletLine({required this.text});
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final dotColor = theme.brightness == Brightness.dark
+        ? Colors.white.withOpacity(0.25)
+        : Colors.black.withOpacity(0.25);
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 6,
+            height: 6,
+            margin: const EdgeInsets.only(top: 7),
+            decoration: BoxDecoration(
+              color: dotColor,
+              borderRadius: BorderRadius.circular(99),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              text,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                height: 1.45,
+                color: theme.colorScheme.onSurface.withOpacity(0.72),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TimelineSteps extends StatelessWidget {
+  const _TimelineSteps({required this.steps});
+  final List<String> steps;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final lineColor = theme.dividerColor.withOpacity(0.4);
+
+    if (steps.isEmpty) {
+      return Text(
+        'Chưa có hướng dẫn chế biến.',
+        style: theme.textTheme.bodyMedium?.copyWith(
+          color: theme.colorScheme.onSurface.withOpacity(0.65),
+        ),
+      );
+    }
+
+    return Stack(
+      children: [
+        Positioned(
+          left: 12,
+          top: 0,
+          bottom: 0,
+          child: Container(width: 1, color: lineColor),
+        ),
+        Column(
+          children: List.generate(steps.length, (i) {
+            return Padding(
+              padding: const EdgeInsets.only(left: 0, bottom: 14),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 28,
+                    height: 28,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.surface,
+                      borderRadius: BorderRadius.circular(999),
+                      border: Border.all(color: Colors.orange.shade700, width: 2),
+                    ),
+                    child: Text(
+                      '${i + 1}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        color: Colors.orange.shade700,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Text(
+                      steps[i],
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        height: 1.55,
+                        color: theme.colorScheme.onSurface.withOpacity(0.72),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
+        ),
+      ],
+    );
+  }
+}
+
+class _QuoteCard extends StatelessWidget {
+  const _QuoteCard({required this.text});
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final bg = theme.brightness == Brightness.dark
+        ? Colors.white.withOpacity(0.05)
+        : Colors.orange.withOpacity(0.08);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: theme.brightness == Brightness.dark
+              ? Colors.white.withOpacity(0.12)
+              : Colors.orange.withOpacity(0.18),
+        ),
+      ),
+      child: Text(
+        '"$text"',
+        style: theme.textTheme.bodyMedium?.copyWith(
+          fontStyle: FontStyle.italic,
+          height: 1.55,
+          fontWeight: FontWeight.w600,
+          color: theme.colorScheme.onSurface.withOpacity(0.78),
+        ),
+      ),
+    );
+  }
+}
+
+class _PriceCard extends StatelessWidget {
+  const _PriceCard({required this.priceRange});
+  final String priceRange;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final bg = theme.brightness == Brightness.dark
+        ? Colors.white.withOpacity(0.04)
+        : Colors.black.withOpacity(0.03);
+
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: theme.dividerColor.withOpacity(0.20)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              color: Colors.green.withOpacity(
+                theme.brightness == Brightness.dark ? 0.22 : 0.12,
+              ),
+              borderRadius: BorderRadius.circular(999),
+            ),
+            child: Icon(Icons.sell_outlined, color: Colors.green.shade700),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Khoảng giá',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: theme.colorScheme.onSurface.withOpacity(0.55),
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  priceRange,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BottomCtaBar extends StatelessWidget {
+  const _BottomCtaBar({
+    required this.onFavTap,
+    required this.onFindNearbyTap,
+  });
+
+  final VoidCallback onFavTap;
+  final VoidCallback onFindNearbyTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      padding: EdgeInsets.only(
+        left: 14,
+        right: 14,
+        top: 12,
+        bottom: 12 + MediaQuery.of(context).padding.bottom,
+      ),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface.withOpacity(0.90),
+        border: Border(
+          top: BorderSide(color: theme.dividerColor.withOpacity(0.25)),
+        ),
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 56,
+            height: 48,
+            child: OutlinedButton(
+              onPressed: onFavTap,
+              style: OutlinedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
+              child: Icon(Icons.favorite_border,
+                  color: theme.colorScheme.onSurface.withOpacity(0.55)),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: SizedBox(
+              height: 48,
+              child: ElevatedButton.icon(
+                onPressed: onFindNearbyTap,
+                icon: const Icon(Icons.place_outlined),
+                label: const Text(
+                  'Tìm quán gần đây',
+                  style: TextStyle(fontWeight: FontWeight.w800),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange.shade700,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  elevation: 0,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DashedDivider extends StatelessWidget {
+  const _DashedDivider({required this.color});
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(builder: (_, c) {
+      final dashes = (c.maxWidth / 10).floor();
+      return Row(
+        children: List.generate(dashes, (i) {
+          return Expanded(
+            child: Container(
+              height: 1,
+              margin: const EdgeInsets.symmetric(horizontal: 3),
+              color: color,
+            ),
+          );
+        }),
+      );
+    });
+  }
+}
+
+class _LoadingView extends StatelessWidget {
+  const _LoadingView();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: CircularProgressIndicator());
+  }
+}
+
+class _ErrorView extends StatelessWidget {
+  const _ErrorView({required this.message});
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.error_outline, size: 34),
+            const SizedBox(height: 10),
+            Text(message, textAlign: TextAlign.center),
+            const SizedBox(height: 12),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Quay lại'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _NotFoundView extends StatelessWidget {
+  const _NotFoundView();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Padding(
+        padding: EdgeInsets.all(18),
+        child: Text('Món ăn không tồn tại hoặc đã bị xoá.'),
+      ),
     );
   }
 }
