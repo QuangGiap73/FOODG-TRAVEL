@@ -12,6 +12,7 @@ import '../../router/route_names.dart';
 import '../../controller/favorite/favorite_controller.dart';
 import '../../widgets/favorite_button.dart';
 import '../onboarding/survey_sheet.dart';
+import '../favorites/favorites_page.dart';
 import '../personal/personal.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -29,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _HomeFeed(),
     Center(child: Text('Kham pha')),
     Center(child: Text('Cong thuc')),
-    Center(child: Text('Luu')),
+    FavoritesPage(),
     PersonalPage(),
   ];
 
@@ -475,11 +476,20 @@ class _HomeFeedState extends State<_HomeFeed> {
                       itemBuilder: (context, index) {
                         final dish = filtered[index];
                         final isFavorite = favoriteIds.contains(dish.id);
-                        return _buildDishCard(
-                          dish,
-                          isFavorite: isFavorite,
-                          onToggle: () =>
-                              _favoriteController.toggleFavorite(dish.id),
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              RouteNames.dishDetail,
+                              arguments: dish.id,
+                            );
+                          },
+                          child: _buildDishCard(
+                            dish,
+                            isFavorite: isFavorite,
+                            onToggle: () =>
+                                _favoriteController.toggleFavorite(dish.id),
+                          ),
                         );
                       },
                     ),

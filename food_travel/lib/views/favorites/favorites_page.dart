@@ -44,7 +44,12 @@ class FavoritesPage extends StatelessWidget {
             ),
             itemBuilder: (context, index) {
               final dish = dishes[index];
-              return _FavoriteDishCard(dish: dish);
+              return _FavoriteDishCard(
+                dish: dish,
+                onRemove: () {
+                  FavoriteService().toggleFavorite(user.uid, dish.id);
+                },
+              );
             },
           );
         },
@@ -54,9 +59,13 @@ class FavoritesPage extends StatelessWidget {
 }
 
 class _FavoriteDishCard extends StatelessWidget {
-  const _FavoriteDishCard({required this.dish});
+  const _FavoriteDishCard({
+    required this.dish,
+    required this.onRemove,
+  });
 
   final DishModel dish;
+  final VoidCallback onRemove;
 
   @override
   Widget build(BuildContext context) {
@@ -82,12 +91,38 @@ class _FavoriteDishCard extends StatelessWidget {
           children: [
             AspectRatio(
               aspectRatio: 4 / 3,
-              child: imageUrl.isNotEmpty
-                  ? Image.network(imageUrl, fit: BoxFit.cover)
-                  : Container(
-                      color: theme.colorScheme.surfaceVariant,
-                      child: const Icon(Icons.image, size: 32),
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: imageUrl.isNotEmpty
+                        ? Image.network(imageUrl, fit: BoxFit.cover)
+                        : Container(
+                            color: theme.colorScheme.surfaceVariant,
+                            child: const Icon(Icons.image, size: 32),
+                          ),
+                  ),
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: Material(
+                      color: Colors.black.withOpacity(0.35),
+                      shape: const CircleBorder(),
+                      child: InkWell(
+                        onTap: onRemove,
+                        customBorder: const CircleBorder(),
+                        child: const Padding(
+                          padding: EdgeInsets.all(6),
+                          child: Icon(
+                            Icons.delete_outline,
+                            size: 18,
+                            color: Colors.redAccent,
+                          ),
+                        ),
+                      ),
                     ),
+                  ),
+                ],
+              ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 8, 10, 4),
@@ -106,3 +141,4 @@ class _FavoriteDishCard extends StatelessWidget {
     );
   }
 }
+

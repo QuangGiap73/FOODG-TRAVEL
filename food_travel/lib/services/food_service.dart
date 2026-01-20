@@ -52,6 +52,14 @@ class FoodService {
               .toList(),
       );
   }
+  // lắng nghe realtime từ firebase
+  Stream<DishModel?> watchDishById(String id) {
+    return _db  
+        .collection('dishes')
+        .doc(id)
+        .snapshots()
+        .map((doc) => doc.exists ? DishModel.fromDoc(doc) : null);
+  }
 
   Stream<List<DishModel>> watchDishesByProvinceKeys(
     Iterable<String> provinceKeys,

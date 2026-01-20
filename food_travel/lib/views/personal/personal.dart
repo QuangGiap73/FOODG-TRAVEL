@@ -163,6 +163,13 @@ class _PersonalScaffold extends StatelessWidget {
                   Navigator.pushNamed(context, RouteNames.survey);
                 },
               ),
+               _SectionItem(
+                icon: Icons.assignment_outlined,
+                title: t.personalSurvey,
+                onTap: (){
+                  Navigator.pushNamed(context, RouteNames.survey);
+                },
+              ),
               const SizedBox(height: 24),
             ],
           ),

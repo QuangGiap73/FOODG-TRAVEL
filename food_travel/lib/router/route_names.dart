@@ -11,5 +11,6 @@ class RouteNames {
   static const languageSettings = '/settings/language';
   static const survey = '/onboarding/survey';
   static const provinceDetail = '/province-detail';
+  static const dishDetail = '/dish-detail';
 
 }

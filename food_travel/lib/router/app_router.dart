@@ -12,6 +12,7 @@ import '../views/settings/theme_settings.dart';
 import '../views/settings/language_setting.dart';
 import '../views/onboarding/survey_page.dart';
 import '../views/provinces/province_detail_page.dart';
+import '../views/dishes/dish_detail_page.dart';
 import 'route_names.dart';
 
 class AppRouter {
@@ -50,6 +51,18 @@ class AppRouter {
         }
         return MaterialPageRoute(
           builder: (_) => ProvinceDetailPage(provinceId: provinceId),
+        );
+      case RouteNames.dishDetail:
+        final dishId = settings.arguments as String?;
+        if (dishId == null || dishId.isEmpty) {
+          return MaterialPageRoute(
+            builder: (_) => const Scaffold(
+              body: Center(child: Text('Missing dish id')),
+            ),
+          );
+        }
+        return MaterialPageRoute(
+          builder: (_) => DishDetailPage(dishId: dishId),
         );
       default:
         return MaterialPageRoute(
