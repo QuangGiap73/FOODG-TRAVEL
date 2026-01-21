@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 
 import '../../models/dish_model.dart';
 import '../../models/province_model.dart';
@@ -143,7 +144,6 @@ class _HomeFeedState extends State<_HomeFeed> {
   Timer? _autoSlideTimer;
   final ValueNotifier<int> _imageIndex = ValueNotifier<int>(0);
   String? _lastProvinceId;
-  final _favoriteController = FavoriteController();
   Stream<List<DishModel>>? _dishesStream;
 
   ProvinceModel? _selectedProvince;
@@ -157,8 +157,6 @@ class _HomeFeedState extends State<_HomeFeed> {
   void initState() {
     super.initState();
     _startProfileListener();
-    final uid = FirebaseAuth.instance.currentUser?.uid;
-    _favoriteController.bindUser(uid);
   }
 
   @override
@@ -168,7 +166,6 @@ class _HomeFeedState extends State<_HomeFeed> {
     _imageIndex.dispose();
     _pageController.dispose();
     _searchController.dispose();
-    _favoriteController.dispose();
     super.dispose();
   }
 
@@ -457,10 +454,9 @@ class _HomeFeedState extends State<_HomeFeed> {
                 return _buildEmpty('Khong tim thay mon an phu hop.');
               }
 
-              return AnimatedBuilder(
-                animation: _favoriteController,
-                builder: (context, _) {
-                  final favoriteIds = _favoriteController.favoriteIds;
+              return Consumer<FavoriteController>(
+                builder: (context, favoriteController, _) {
+                  final favoriteIds = favoriteController.favoriteIds;
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: GridView.builder(
@@ -488,7 +484,7 @@ class _HomeFeedState extends State<_HomeFeed> {
                             dish,
                             isFavorite: isFavorite,
                             onToggle: () =>
-                                _favoriteController.toggleFavorite(dish.id),
+                                favoriteController.toggleFavorite(dish.id),
                           ),
                         );
                       },

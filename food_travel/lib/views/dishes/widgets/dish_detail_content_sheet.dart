@@ -132,32 +132,35 @@ class DishDetailContentSheet extends StatelessWidget {
           const SizedBox(height: 16),
 
           // Best time cards
-          Row(
-            children: [
-              Expanded(
-                child: _InfoCard(
-                  icon: Icons.calendar_month_outlined,
-                  iconBg: Colors.blue.withOpacity(isDark ? 0.25 : 0.14),
-                  iconColor: Colors.blue.shade600,
-                  title: 'Mùa ngon nhất',
-                  value: dish.bestSeason.isNotEmpty
-                      ? dish.bestSeason
-                      : 'Chưa cập nhật',
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: _InfoCard(
+                    icon: Icons.calendar_month_outlined,
+                    iconBg: Colors.blue.withOpacity(isDark ? 0.25 : 0.14),
+                    iconColor: Colors.blue.shade600,
+                    title: 'Mùa ngon nhất',
+                    value: dish.bestSeason.isNotEmpty
+                        ? dish.bestSeason
+                        : 'Chưa cập nhật',
+                  ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _InfoCard(
-                  icon: Icons.access_time_outlined,
-                  iconBg: Colors.amber.withOpacity(isDark ? 0.25 : 0.16),
-                  iconColor: Colors.amber.shade700,
-                  title: 'Thời điểm ăn',
-                  value: dish.bestTime.isNotEmpty
-                      ? dish.bestTime
-                      : 'Chưa cập nhật',
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _InfoCard(
+                    icon: Icons.access_time_outlined,
+                    iconBg: Colors.amber.withOpacity(isDark ? 0.25 : 0.16),
+                    iconColor: Colors.amber.shade700,
+                    title: 'Thời điểm ăn',
+                    value: dish.bestTime.isNotEmpty
+                        ? dish.bestTime
+                        : 'Chưa cập nhật',
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
 
           const SizedBox(height: 18),

@@ -62,9 +62,14 @@ class DishDetailDotsIndicator extends StatelessWidget {
 }
 
 class DishDetailGlassIconButton extends StatelessWidget {
-  const DishDetailGlassIconButton({required this.icon, required this.onTap});
+  const DishDetailGlassIconButton({
+    required this.icon,
+    required this.onTap,
+    this.iconColor = Colors.white,
+  });
   final IconData icon;
   final VoidCallback onTap;
+  final Color iconColor;
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +85,7 @@ class DishDetailGlassIconButton extends StatelessWidget {
         child: SizedBox(
           width: 42,
           height: 42,
-          child: Icon(icon, color: Colors.white),
+          child: Icon(icon, color: iconColor),
         ),
       ),
     );
@@ -88,13 +93,22 @@ class DishDetailGlassIconButton extends StatelessWidget {
 }
 
 class DishDetailFavoriteButton extends StatelessWidget {
-  const DishDetailFavoriteButton({required this.onTap});
+  const DishDetailFavoriteButton({
+    required this.onTap,
+    required this.isFavorite,
+  });
   final VoidCallback onTap;
+  final bool isFavorite;
 
   @override
   Widget build(BuildContext context) {
     // Hiện tại demo icon. Nếu gắn FavoriteController thì đổi theo isFavorite.
-    return DishDetailGlassIconButton(icon: Icons.favorite_border, onTap: onTap);
+    final icon = isFavorite ? Icons.favorite : Icons.favorite_border;
+    return DishDetailGlassIconButton(
+      icon: icon,
+      iconColor: isFavorite ? Colors.redAccent : Colors.white,
+      onTap: onTap,
+    );
   }
 }
 

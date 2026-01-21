@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:food_travel/l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
+import 'controller/favorite/favorite_controller.dart';
 import 'controller/theme_controller.dart';
 import 'controller/l10n/locale_controller.dart';
 import 'firebase_options.dart';
@@ -37,20 +39,27 @@ class MyApp extends StatelessWidget {
     return AnimatedBuilder(
       animation: Listenable.merge([themeController, localeController]),
       builder: (context, _) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'FoodG Travel',
-          theme: ThemeData.light(),
-          darkTheme: ThemeData.dark(),
-          themeMode: themeController.themeMode,
-          locale: localeController.locale,
-          supportedLocales: const [
-            Locale('vi'),
-            Locale('en'),
+        return MultiProvider(
+          providers: [
+            ChangeNotifierProvider(
+              create: (_) => FavoriteController(),
+            ),
           ],
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          initialRoute: RouteNames.authGate,
-          onGenerateRoute: AppRouter.onGenerateRoute,
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'FoodG Travel',
+            theme: ThemeData.light(),
+            darkTheme: ThemeData.dark(),
+            themeMode: themeController.themeMode,
+            locale: localeController.locale,
+            supportedLocales: const [
+              Locale('vi'),
+              Locale('en'),
+            ],
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            initialRoute: RouteNames.authGate,
+            onGenerateRoute: AppRouter.onGenerateRoute,
+          ),
         );
       },
     );
