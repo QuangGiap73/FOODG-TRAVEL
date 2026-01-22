@@ -15,6 +15,7 @@ import '../../widgets/favorite_button.dart';
 import '../onboarding/survey_sheet.dart';
 import '../favorites/favorites_page.dart';
 import '../personal/personal.dart';
+import '../map/map_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -30,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _pages = const [
     _HomeFeed(),
     Center(child: Text('Kham pha')),
-    Center(child: Text('Cong thuc')),
+    MapPage(),
     FavoritesPage(),
     PersonalPage(),
   ];
@@ -112,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.menu_book_outlined),
-            label: 'Cong thuc',
+            label: 'Map',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite_border),
@@ -370,35 +371,34 @@ class _HomeFeedState extends State<_HomeFeed> {
                 const SizedBox(height: 10),
                 if (images.isEmpty)
                   _buildEmpty('Tinh nay chua co anh.')
-                  else
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: SizedBox(
-                        height: 190,
-                        child: PageView.builder(
-                          controller: _pageController,
-                          onPageChanged: (index) => _imageIndex.value = index,
-                          itemCount: images.length,
-                          itemBuilder: (context, index) {
-                            final imageUrl = images[index];
-                            return GestureDetector(
-                              onTap: (){
-                                Navigator.pushNamed(
-                                  context,
-                                  RouteNames.provinceDetail,
-                                  arguments: target.id,
-                                );
-                              },
-                              child: _buildProvinceImageSlide(
-                                imageUrl: imageUrl,
-                                name: target.name,
-                              ),
-                            );
-                            
-                          },
-                        ),
+                else
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: SizedBox(
+                      height: 190,
+                      child: PageView.builder(
+                        controller: _pageController,
+                        onPageChanged: (index) => _imageIndex.value = index,
+                        itemCount: images.length,
+                        itemBuilder: (context, index) {
+                          final imageUrl = images[index];
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                RouteNames.provinceDetail,
+                                arguments: target.id,
+                              );
+                            },
+                            child: _buildProvinceImageSlide(
+                              imageUrl: imageUrl,
+                              name: target.name,
+                            ),
+                          );
+                        },
                       ),
                     ),
+                  ),
                 const SizedBox(height: 8),
                 if (images.length > 1)
                   Center(
