@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 class DishModel {
   final String id;
   final String name;
   final String imageUrl;
+  final List<String> imageUrls;
   final String provinceCode;
   final String provinceName;
   final String regionCode;
@@ -24,6 +26,7 @@ class DishModel {
     required this.id,
     required this.name,
     required this.imageUrl,
+    this.imageUrls = const [],
     required this.provinceCode,
     required this.tag,
     required this.spicyLevel,
@@ -44,12 +47,16 @@ class DishModel {
   });
   factory DishModel.fromDoc(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
+    final imageList = 
+          _toStringList(data['Images'] ?? data['images'] ?? const []);
+    final imageUrl = (data['Img'] ?? data['imageUrl'] ?? '') as String;
     final rawTags = (data['Tags'] ?? data['tags'] ?? '') as String;
     final listTags = _toStringList(data['tags_list_vi'])..addAll(_splitTags(rawTags));
     return DishModel(
       id: doc.id,
       name: (data['Name'] ?? data['name'] ?? '') as String,
       imageUrl: (data['Img'] ?? data['imageUrl'] ?? '') as String,
+      imageUrls: _mergeImages(imageUrl, imageList),
       provinceCode: (data['province_code'] ?? data['provinceCode'] ?? '') as String,
       provinceName: (data['province_name_vi']?? data['province_name'] ?? data['province'] ?? '') as String,
       regionCode: (data['region_code'] ?? data['regionsCode'] ?? '') as String,
@@ -83,5 +90,18 @@ class DishModel {
         .map((e) => e.trim())
         .where((e) => e.isNotEmpty)
         .toList();
+  }
+  static List<String> _mergeImages(String primary, List<String> list){
+    final out = <String>[];
+    void addIf(String v) {
+      final s= v.trim();
+      if(s.isEmpty || out.contains(s)) return;
+      out.add(s);
+    }
+    addIf(primary);
+    for(final v in list){
+      addIf(v);
+    }
+    return out;
   }
 }

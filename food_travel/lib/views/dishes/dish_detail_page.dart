@@ -238,10 +238,8 @@ class _DishDetailPageState extends State<DishDetailPage> {
   }
 
   List<String> _buildImages(DishModel dish) {
-    // Model của bạn đang có 1 imageUrl. Nếu sau này có thêm list ảnh thì thay ở đây.
-    final url = dish.imageUrl.trim();
-    if (url.isEmpty) return const [];
-    return [url];
+    final urls = dish.imageUrls.isNotEmpty ? dish.imageUrls : [dish.imageUrl];
+    return urls.map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
   }
 }
 

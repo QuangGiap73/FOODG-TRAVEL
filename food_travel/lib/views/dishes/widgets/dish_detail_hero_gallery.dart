@@ -1,13 +1,78 @@
-﻿import 'package:flutter/material.dart';
-
-class DishDetailHeroGallery extends StatelessWidget {
-  const DishDetailHeroGallery({required this.images, required this.onPageChanged});
+﻿import 'dart:async';
+import 'package:flutter/material.dart';
+class DishDetailHeroGallery extends StatefulWidget {
+  const DishDetailHeroGallery({
+    super.key,
+    required this.images,
+    required this.onPageChanged,
+    this.autoPlay = true,
+    this.autoPlayInterval = const Duration(seconds: 4),
+  });
   final List<String> images;
   final ValueChanged<int> onPageChanged;
-
+  final bool autoPlay;
+  final Duration autoPlayInterval;
+  @override
+  State<DishDetailHeroGallery> createState() => _DishDetailHeroGalleryState();
+}
+class _DishDetailHeroGalleryState extends State<DishDetailHeroGallery> {
+  late final PageController _controller;
+  Timer? _timer;
+  int _index = 0;
+  @override
+  void initState() {
+    super.initState();
+    _controller = PageController();
+    _startAuto();
+  }
+  @override
+  void didUpdateWidget(covariant DishDetailHeroGallery oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.images.isEmpty) {
+      _timer?.cancel();
+      return;
+    }
+    if (_index >= widget.images.length) {
+      _index = 0;
+      if (_controller.hasClients) {
+        _controller.jumpToPage(_index);
+      }
+    }
+    if (oldWidget.images.length != widget.images.length ||
+        oldWidget.autoPlay != widget.autoPlay ||
+        oldWidget.autoPlayInterval != widget.autoPlayInterval) {
+      _restartAuto();
+    }
+  }
+  void _restartAuto() {
+    _timer?.cancel();
+    _startAuto();
+  }
+  void _startAuto() {
+    if (!widget.autoPlay || widget.images.length < 2) return;
+    _timer = Timer.periodic(widget.autoPlayInterval, (_) {
+      if (!mounted || !_controller.hasClients) return;
+      final next = (_index + 1) % widget.images.length;
+      _controller.animateToPage(
+        next,
+        duration: const Duration(milliseconds: 350),
+        curve: Curves.easeOut,
+      );
+    });
+  }
+  void _handlePageChanged(int index) {
+    _index = index;
+    widget.onPageChanged(index);
+  }
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _controller.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
-    if (images.isEmpty) {
+    if (widget.images.isEmpty) {
       return Container(
         color: Colors.grey.shade300,
         child: const Center(
@@ -15,13 +80,13 @@ class DishDetailHeroGallery extends StatelessWidget {
         ),
       );
     }
-
     return PageView.builder(
-      itemCount: images.length,
-      onPageChanged: onPageChanged,
+      controller: _controller,
+      itemCount: widget.images.length,
+      onPageChanged: _handlePageChanged,
       itemBuilder: (context, i) {
         return Image.network(
-          images[i],
+          widget.images[i],
           fit: BoxFit.cover,
           errorBuilder: (_, __, ___) => Container(
             color: Colors.grey.shade300,
@@ -34,12 +99,10 @@ class DishDetailHeroGallery extends StatelessWidget {
     );
   }
 }
-
 class DishDetailDotsIndicator extends StatelessWidget {
   const DishDetailDotsIndicator({required this.count, required this.index});
   final int count;
   final int index;
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -60,7 +123,6 @@ class DishDetailDotsIndicator extends StatelessWidget {
     );
   }
 }
-
 class DishDetailGlassIconButton extends StatelessWidget {
   const DishDetailGlassIconButton({
     required this.icon,
@@ -70,7 +132,6 @@ class DishDetailGlassIconButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
   final Color iconColor;
-
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -91,7 +152,6 @@ class DishDetailGlassIconButton extends StatelessWidget {
     );
   }
 }
-
 class DishDetailFavoriteButton extends StatelessWidget {
   const DishDetailFavoriteButton({
     required this.onTap,
@@ -99,10 +159,8 @@ class DishDetailFavoriteButton extends StatelessWidget {
   });
   final VoidCallback onTap;
   final bool isFavorite;
-
   @override
   Widget build(BuildContext context) {
-    // Hiện tại demo icon. Nếu gắn FavoriteController thì đổi theo isFavorite.
     final icon = isFavorite ? Icons.favorite : Icons.favorite_border;
     return DishDetailGlassIconButton(
       icon: icon,
@@ -111,4 +169,3 @@ class DishDetailFavoriteButton extends StatelessWidget {
     );
   }
 }
-
