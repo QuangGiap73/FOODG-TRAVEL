@@ -12,5 +12,7 @@ class RouteNames {
   static const survey = '/onboarding/survey';
   static const provinceDetail = '/province-detail';
   static const dishDetail = '/dish-detail';
+  static const locationSettings = '/settings/location';
+
 
 }

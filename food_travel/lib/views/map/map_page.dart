@@ -1,6 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import '../../config/goong_secrets.dart';
+import '../../services/location_preference_service.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -11,6 +12,7 @@ class MapPage extends StatefulWidget {
 
 class _MapPageState extends State<MapPage> {
   MapLibreMapController? _controller;
+  final _locationPrefs = LocationPreferenceService();
 
   void _onMapCreated(MapLibreMapController controller) {
     _controller = controller;
@@ -22,6 +24,11 @@ class _MapPageState extends State<MapPage> {
 
   void _zoomOut() {
     _controller?.animateCamera(CameraUpdate.zoomOut());
+  }
+  @override
+  void initState() {
+    super.initState();
+    _locationPrefs.load();
   }
 
   @override
@@ -37,15 +44,25 @@ class _MapPageState extends State<MapPage> {
       appBar: AppBar(title: const Text('Map')),
       body: Stack(
         children: [
-          MapLibreMap(
-            styleString: styleUrl,
-            initialCameraPosition: const CameraPosition(
-              target: LatLng(21.0278, 105.8342),
-              zoom: 12,
-            ),
-            onMapCreated: _onMapCreated,
-            zoomGesturesEnabled: true,
+          ValueListenableBuilder<bool>(
+            valueListenable: LocationPreferenceService.enabled,
+            builder: (context, enabled, _) {
+              return MapLibreMap(
+                styleString: styleUrl,
+                initialCameraPosition: const CameraPosition(
+                  target: LatLng(21.0278, 105.8342),
+                  zoom: 12,
+                ),
+                onMapCreated: _onMapCreated,
+                zoomGesturesEnabled: true,
+                myLocationEnabled: enabled,
+                myLocationTrackingMode: enabled
+                    ? MyLocationTrackingMode.tracking
+                    : MyLocationTrackingMode.none,
+              );
+            },
           ),
+
           Positioned(
             right: 16,
             bottom: 24,
