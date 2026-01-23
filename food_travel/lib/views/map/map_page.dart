@@ -1,8 +1,12 @@
-﻿import 'package:flutter/material.dart';
+﻿import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
 import '../../config/goong_secrets.dart';
 import '../../services/location_preference_service.dart';
+import '../../widgets/user_location_puck.dart';
 
 class _MapStyle {
   const _MapStyle(this.label, this.url);
@@ -19,7 +23,7 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
-  // Keep a style list to switch between normal/highlight/satellite.
+  // Update the Normal URL if you create your own Goong style.
   static const _styles = <_MapStyle>[
     _MapStyle(
       'Normal',
@@ -40,77 +44,110 @@ class _MapPageState extends State<MapPage> {
 
   MapLibreMapController? _controller;
   final _locationPrefs = LocationPreferenceService();
-  Circle? _userCircle;
+  UserLocationPuck? _puck;
+  StreamSubscription<Position>? _positionSub;
   bool _styleReady = false;
   bool _centeredOnUser = false;
-  UserLocation? _lastLocation;
+  bool _pulseStarted = false;
+  LatLng? _lastLatLng;
 
   void _onMapCreated(MapLibreMapController controller) {
     _controller = controller;
   }
 
-  void _onStyleLoaded() {
+  Future<void> _ensurePuckReady() async {
+    if (!_styleReady || _controller == null) return;
+    if (_puck != null) return;
+
+    _puck = UserLocationPuck(_controller!);
+    await _puck!.init();
+  }
+
+  Future<void> _onStyleLoaded() async {
     _styleReady = true;
 
-    // Re-draw the marker after style changes.
-    if (_lastLocation != null) {
-      _updateUserMarker(_lastLocation!);
+    // Style reload clears images/symbols, so we need to re-init the puck.
+    await _ensurePuckReady();
+
+    if (_lastLatLng != null) {
+      await _updateUserMarker(_lastLatLng!);
     }
   }
 
-  void _onUserLocationUpdated(UserLocation location) {
-    _lastLocation = location;
-    _updateUserMarker(location);
+  Future<void> _onUserLocationUpdated(UserLocation location) async {
+    // MapLibre can also emit user location updates.
+    _lastLatLng = location.position;
+    await _ensurePuckReady();
+    await _updateUserMarker(location.position);
   }
 
-  Future<void> _updateUserMarker(UserLocation location) async {
-    if (!_styleReady || _controller == null) return;
+  Future<void> _updateUserMarker(LatLng position) async {
+    if (!_styleReady || _controller == null || _puck == null) return;
 
-    final pos = location.position;
-
-    // Center once when we get the first valid location.
     if (!_centeredOnUser) {
       await _controller!.animateCamera(
-        CameraUpdate.newLatLngZoom(pos, 15),
+        CameraUpdate.newLatLngZoom(position, 15),
       );
       _centeredOnUser = true;
     }
 
-    // Draw a clear blue circle so the location is easy to see.
-    if (_userCircle == null) {
-      _userCircle = await _controller!.addCircle(
-        CircleOptions(
-          geometry: pos,
-          circleRadius: 10,
-          circleColor: '#2F80ED',
-          circleOpacity: 0.9,
-          circleStrokeWidth: 3,
-          circleStrokeColor: '#FFFFFF',
-        ),
-      );
-    } else {
-      await _controller!.updateCircle(
-        _userCircle!,
-        CircleOptions(geometry: pos),
-      );
+    await _puck!.setPosition(position);
+
+    if (!_pulseStarted) {
+      _puck!.startPulse();
+      _pulseStarted = true;
     }
   }
 
-  Future<void> _clearUserMarker() async {
-    if (_controller == null || _userCircle == null) return;
-    await _controller!.removeCircle(_userCircle!);
-    _userCircle = null;
-    _lastLocation = null;
+  Future<void> _clearUserMarker({bool keepLastLocation = false}) async {
+    if (_puck != null) {
+      await _puck!.dispose();
+      _puck = null;
+    }
+    _pulseStarted = false;
     _centeredOnUser = false;
+    if (!keepLastLocation) {
+      _lastLatLng = null;
+    }
   }
 
-  void _selectStyle(int index) {
+  Future<void> _startLocationStream() async {
+    if (_positionSub != null) return;
+
+    var permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      return;
+    }
+
+    _positionSub = Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 5,
+      ),
+    ).listen((pos) async {
+      final latLng = LatLng(pos.latitude, pos.longitude);
+      _lastLatLng = latLng;
+      await _ensurePuckReady();
+      await _updateUserMarker(latLng);
+    });
+  }
+
+  Future<void> _stopLocationStream() async {
+    await _positionSub?.cancel();
+    _positionSub = null;
+  }
+
+  Future<void> _selectStyle(int index) async {
     if (index == _styleIndex) return;
+
+    await _clearUserMarker(keepLastLocation: true);
     setState(() {
       _styleIndex = index;
       _styleReady = false;
-      _userCircle = null;
-      _centeredOnUser = false;
     });
   }
 
@@ -136,7 +173,7 @@ class _MapPageState extends State<MapPage> {
       return;
     }
 
-    var target = _lastLocation?.position;
+    var target = _lastLatLng;
     target ??= await _controller!.requestMyLocationLatLng();
 
     if (target == null) {
@@ -153,6 +190,14 @@ class _MapPageState extends State<MapPage> {
   void initState() {
     super.initState();
     _locationPrefs.load();
+  }
+
+  @override
+  void dispose() {
+    _stopLocationStream();
+    _puck?.dispose();
+    _controller?.dispose();
+    super.dispose();
   }
 
   @override
@@ -181,11 +226,14 @@ class _MapPageState extends State<MapPage> {
           ValueListenableBuilder<bool>(
             valueListenable: LocationPreferenceService.enabled,
             builder: (context, enabled, _) {
-              if (!enabled && _userCircle != null) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (enabled) {
+                  _startLocationStream();
+                } else {
+                  _stopLocationStream();
                   _clearUserMarker();
-                });
-              }
+                }
+              });
 
               return MapLibreMap(
                 key: ValueKey(_styleUrl),
@@ -202,7 +250,7 @@ class _MapPageState extends State<MapPage> {
                 myLocationTrackingMode: enabled
                     ? MyLocationTrackingMode.tracking
                     : MyLocationTrackingMode.none,
-                // Keep the default blue dot; we also draw a clearer circle.
+                // Keep the native blue dot; the custom puck is the pulsing image.
                 myLocationRenderMode: MyLocationRenderMode.normal,
               );
             },
@@ -213,7 +261,6 @@ class _MapPageState extends State<MapPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Recenter button (triangle arrow).
                 FloatingActionButton(
                   heroTag: 'recenter',
                   mini: true,
