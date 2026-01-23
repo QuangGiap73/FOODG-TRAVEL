@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../../services/location_preference_service.dart';
 import '../../services/location_service.dart';
 
@@ -34,7 +34,9 @@ class _LocationSettingsPageState extends State<LocationSettingsPage> {
       return;
     }
 
-    final result = await _locationService.getCurrentLocation();
+    final result = await _locationService.getCurrentLocation(
+      useLastKnown: false,
+    );
     if (!mounted) return;
 
     if (result.isSuccess) {
