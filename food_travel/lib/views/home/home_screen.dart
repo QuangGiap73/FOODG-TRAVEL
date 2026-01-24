@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../../models/dish_model.dart';
 import '../../models/province_model.dart';
@@ -16,6 +17,9 @@ import '../onboarding/survey_sheet.dart';
 import '../favorites/favorites_page.dart';
 import '../personal/personal.dart';
 import '../map/map_page.dart';
+import '../../services/location_preference_service.dart';
+import '../../services/location_service.dart';
+import '../../services/map/geocode_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -147,6 +151,16 @@ class _HomeFeedState extends State<_HomeFeed> {
   String? _lastProvinceId;
   Stream<List<DishModel>>? _dishesStream;
 
+  final _locationPrefs = LocationPreferenceService();
+  final _locationService = LocationService();
+  final _geocodeService = GeocodeService();
+  StreamSubscription<Position>? _gpsSub;
+  Position? _gpsPosition;
+  bool _gpsEnabled = false;
+  bool _gpsResolving = false;
+  String? _gpsProvinceName;
+  String? _gpsProvinceCode;
+
   ProvinceModel? _selectedProvince;
   String _query = '';
   bool _selectionInitialized = false;
@@ -158,10 +172,21 @@ class _HomeFeedState extends State<_HomeFeed> {
   void initState() {
     super.initState();
     _startProfileListener();
+
+    // Doc trang thai GPS da luu (bat/tat).
+    _locationPrefs.load();
+    _gpsEnabled = LocationPreferenceService.enabled.value;
+    LocationPreferenceService.enabled.addListener(_onLocationPrefChanged);
+
+    if (_gpsEnabled) {
+      _resolveGpsProvince();
+    }
   }
 
   @override
   void dispose() {
+    LocationPreferenceService.enabled.removeListener(_onLocationPrefChanged);
+    _stopGpsListener();
     _profileSub?.cancel();
     _autoSlideTimer?.cancel();
     _imageIndex.dispose();
@@ -230,7 +255,30 @@ class _HomeFeedState extends State<_HomeFeed> {
   }
 
   ProvinceModel? _findPreferredProvince(List<ProvinceModel> provinces) {
-    final prefCode = _preferredProvinceCode;
+    // Neu co GPS va co vi tri, uu tien chon tinh gan nhat theo centerLat/centerLng.
+    if (_gpsEnabled && _gpsPosition != null) {
+      final nearest = _findNearestProvinceByGps(provinces, _gpsPosition!);
+      if (nearest != null) {
+        return nearest;
+      }
+    }
+
+    // Uu tien GPS neu co du lieu tinh tu vi tri.
+    final gpsHasValue = _gpsEnabled &&
+        ((_gpsProvinceName?.trim().isNotEmpty ?? false) ||
+            (_gpsProvinceCode?.trim().isNotEmpty ?? false));
+
+    var prefCode =
+        gpsHasValue ? _gpsProvinceCode?.trim() : _preferredProvinceCode?.trim();
+    var prefName =
+        gpsHasValue ? _gpsProvinceName?.trim() : _preferredProvinceName?.trim();
+
+    // Neu khong co GPS va cung chua chon tinh trong khao sat -> default Ha Noi.
+    if ((prefCode == null || prefCode.isEmpty) &&
+        (prefName == null || prefName.isEmpty)) {
+      prefName = 'Ha Noi';
+    }
+
     if (prefCode != null && prefCode.isNotEmpty) {
       final normalizedPref = _normalizeKey(prefCode);
       for (final province in provinces) {
@@ -241,7 +289,6 @@ class _HomeFeedState extends State<_HomeFeed> {
         }
       }
     }
-    final prefName = _preferredProvinceName;
     if (prefName != null && prefName.isNotEmpty) {
       final prefSlug = _slugify(prefName);
       for (final province in provinces) {
@@ -264,6 +311,30 @@ class _HomeFeedState extends State<_HomeFeed> {
     return null;
   }
 
+  ProvinceModel? _findNearestProvinceByGps(
+    List<ProvinceModel> provinces,
+    Position position,
+  ) {
+    ProvinceModel? nearest;
+    double? nearestDistance;
+    for (final province in provinces) {
+      final lat = province.centerLat;
+      final lng = province.centerLng;
+      if (lat == null || lng == null) continue;
+      final distance = Geolocator.distanceBetween(
+        position.latitude,
+        position.longitude,
+        lat,
+        lng,
+      );
+      if (nearestDistance == null || distance < nearestDistance) {
+        nearestDistance = distance;
+        nearest = province;
+      }
+    }
+    return nearest;
+  }
+
   void _startImageAutoSlide(int count) {
     if (_imageCount == count) return;
     _imageCount = count;
@@ -282,6 +353,123 @@ class _HomeFeedState extends State<_HomeFeed> {
       );
     });
   }
+  // Xu ly khi nguoi dung bat/tat GPS trong cai dat.
+  void _onLocationPrefChanged() {
+    final enabled = LocationPreferenceService.enabled.value;
+    if (enabled == _gpsEnabled) return;
+
+    setState(() {
+      _gpsEnabled = enabled;
+      _selectionInitialized = false;
+      if (!enabled) {
+        _gpsPosition = null;
+        _gpsProvinceName = null;
+        _gpsProvinceCode = null;
+      }
+    });
+
+    if (enabled) {
+      _resolveGpsProvince();
+    } else {
+      _stopGpsListener();
+    }
+  }
+
+  void _startGpsListener() {
+    if (_gpsSub != null) return;
+    // Lang nghe 1 vai cap nhat vi tri de lay tinh, sau do dung lai.
+    _gpsSub = Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.medium,
+        distanceFilter: 2000,
+      ),
+    ).listen((pos) async {
+      final updated = await _updateGpsProvinceFromPosition(pos);
+      if (updated) {
+        await _gpsSub?.cancel();
+        _gpsSub = null;
+      }
+    });
+  }
+
+  void _stopGpsListener() {
+    _gpsSub?.cancel();
+    _gpsSub = null;
+  }
+
+  Future<bool> _updateGpsProvinceFromPosition(Position pos) async {
+    if (!_gpsEnabled) return false;
+    // Luu vi tri GPS hien tai de map theo centerLat/centerLng.
+    _gpsPosition = pos;
+    // Reverse geocode de lay ten tinh.
+    final rawName =
+        await _geocodeService.reverseProvinceName(pos.latitude, pos.longitude);
+    if (!mounted) return false;
+    if (rawName == null || rawName.trim().isEmpty) {
+      // Van se map theo khoang cach neu co centerLat/centerLng.
+      setState(() {
+        _selectionInitialized = false;
+      });
+      return true;
+    }
+
+    final cleaned = _cleanProvinceName(rawName);
+    final nextCode = _slugify(cleaned);
+
+    if (cleaned == _gpsProvinceName && nextCode == _gpsProvinceCode) {
+      setState(() {
+        _selectionInitialized = false;
+      });
+      return true;
+    }
+
+    setState(() {
+      _gpsProvinceName = cleaned;
+      _gpsProvinceCode = nextCode;
+      _selectionInitialized = false; // bat buoc re-chon tinh tren Home
+    });
+    return true;
+  }
+
+  Future<void> _resolveGpsProvince() async {
+    if (_gpsResolving) return;
+    _gpsResolving = true;
+    try {
+      // Lay vi tri hien tai (uu tien last known de nhanh hon).
+      final result = await _locationService.getCurrentLocation(
+        accuracy: LocationAccuracy.medium,
+        timeLimit: const Duration(seconds: 8),
+        useLastKnown: true,
+      );
+
+      if (!result.isSuccess) {
+        // Neu chua lay duoc vi tri, bat listener de cho vi tri on dinh.
+        _startGpsListener();
+        return;
+      }
+
+      final updated = await _updateGpsProvinceFromPosition(result.position!);
+      if (!updated) {
+        _startGpsListener();
+      }
+    } finally {
+      _gpsResolving = false;
+    }
+  }
+
+  String _cleanProvinceName(String name) {
+    // Loai bo tien to de de so khop voi ten tinh trong DB.
+    var result = name.trim();
+    const prefixes = ['Tinh ', 'Thanh pho ', 'TP. ', 'TP '];
+    for (final prefix in prefixes) {
+      if (result.startsWith(prefix)) {
+        result = result.substring(prefix.length);
+        break;
+      }
+    }
+    return result;
+  }
+
 
   @override
   Widget build(BuildContext context) {

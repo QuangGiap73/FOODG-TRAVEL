@@ -42,7 +42,7 @@ class _MapPageState extends State<MapPage> {
     ),
   ];
 
-  int _styleIndex = 1; // Default to Highlight (known to work).
+  int _styleIndex = 0; // Default to normal (known to work).
   String get _styleUrl => _styles[_styleIndex].url;
 
   MapLibreMapController? _controller;
