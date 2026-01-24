@@ -4,9 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
+import '../../controller/map/map_search_controller.dart';
 import '../../config/goong_secrets.dart';
+import '../../services/map/places_service.dart';
 import '../../services/location_preference_service.dart';
 import '../../widgets/user_location_puck.dart';
+import 'widgets/map_search_bar.dart';
 
 class _MapStyle {
   const _MapStyle(this.label, this.url);
@@ -44,12 +47,16 @@ class _MapPageState extends State<MapPage> {
 
   MapLibreMapController? _controller;
   final _locationPrefs = LocationPreferenceService();
+  late final MapSearchController _searchController;
+  final _searchTextController = TextEditingController();
   UserLocationPuck? _puck;
   StreamSubscription<Position>? _positionSub;
   bool _styleReady = false;
   bool _centeredOnUser = false;
   bool _pulseStarted = false;
   LatLng? _lastLatLng;
+  Circle? _searchCircle;
+  LatLng? _searchLatLng;
 
   void _onMapCreated(MapLibreMapController controller) {
     _controller = controller;
@@ -71,6 +78,10 @@ class _MapPageState extends State<MapPage> {
 
     if (_lastLatLng != null) {
       await _updateUserMarker(_lastLatLng!);
+    }
+
+    if (_searchLatLng != null) {
+      await _showSearchMarker(_searchLatLng!, animate: false);
     }
   }
 
@@ -145,6 +156,7 @@ class _MapPageState extends State<MapPage> {
     if (index == _styleIndex) return;
 
     await _clearUserMarker(keepLastLocation: true);
+    await _clearSearchMarker(keepSearch: true);
     setState(() {
       _styleIndex = index;
       _styleReady = false;
@@ -186,10 +198,78 @@ class _MapPageState extends State<MapPage> {
     );
   }
 
+  void _onSearchStateChanged() {
+    if (!mounted) return;
+    setState(() {});
+  }
+
+  void _clearSearch() {
+    _searchTextController.clear();
+    _searchController.clear();
+    _clearSearchMarker();
+  }
+
+  Future<void> _onSelectPrediction(GoongPrediction prediction) async {
+    FocusScope.of(context).unfocus();
+    final detail = await _searchController.fetchDetail(prediction);
+    if (!mounted) return;
+
+    if (detail == null) {
+      _showSnack('Place not found.');
+      return;
+    }
+
+    _searchTextController.text = prediction.description;
+    _searchController.clear();
+    await _showSearchMarker(LatLng(detail.lat, detail.lng));
+  }
+
+  Future<void> _showSearchMarker(LatLng position,
+      {bool animate = true}) async {
+    if (_controller == null) return;
+
+    _searchLatLng = position;
+    if (_searchCircle == null) {
+      _searchCircle = await _controller!.addCircle(
+        CircleOptions(
+          geometry: position,
+          circleRadius: 8,
+          circleColor: '#FF6D00',
+          circleOpacity: 0.9,
+          circleStrokeWidth: 2,
+          circleStrokeColor: '#FFFFFF',
+        ),
+      );
+    } else {
+      await _controller!.updateCircle(
+        _searchCircle!,
+        CircleOptions(geometry: position),
+      );
+    }
+
+    if (animate) {
+      await _controller!.animateCamera(
+        CameraUpdate.newLatLngZoom(position, 16),
+      );
+    }
+  }
+
+  Future<void> _clearSearchMarker({bool keepSearch = false}) async {
+    if (_controller != null && _searchCircle != null) {
+      await _controller!.removeCircle(_searchCircle!);
+    }
+    _searchCircle = null;
+    if (!keepSearch) {
+      _searchLatLng = null;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _locationPrefs.load();
+    _searchController = MapSearchController();
+    _searchController.addListener(_onSearchStateChanged);
   }
 
   @override
@@ -197,6 +277,9 @@ class _MapPageState extends State<MapPage> {
     _stopLocationStream();
     _puck?.dispose();
     _controller?.dispose();
+    _searchController.removeListener(_onSearchStateChanged);
+    _searchController.dispose();
+    _searchTextController.dispose();
     super.dispose();
   }
 
@@ -254,6 +337,21 @@ class _MapPageState extends State<MapPage> {
                 myLocationRenderMode: MyLocationRenderMode.normal,
               );
             },
+          ),
+          Positioned(
+            left: 16,
+            right: 16,
+            top: 12,
+            child: SafeArea(
+              child: MapSearchBar(
+                controller: _searchTextController,
+                loading: _searchController.loading,
+                suggestions: _searchController.suggestions,
+                onQueryChanged: _searchController.onQueryChanged,
+                onClear: _clearSearch,
+                onSelect: _onSelectPrediction,
+              ),
+            ),
           ),
           Positioned(
             right: 16,
