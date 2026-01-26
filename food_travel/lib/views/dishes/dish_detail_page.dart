@@ -10,6 +10,7 @@ import 'widgets/dish_detail_bottom_cta.dart';
 import 'widgets/dish_detail_content_sheet.dart';
 import 'widgets/dish_detail_hero_gallery.dart';
 import 'widgets/dish_detail_status_views.dart';
+import '../map/map_page.dart';
 
 class DishDetailPage extends StatefulWidget {
   const DishDetailPage({super.key, required this.dishId});
@@ -68,6 +69,12 @@ class _DishDetailPageState extends State<DishDetailPage> {
       return;
     }
     await favoriteController.toggleFavorite(dishId);
+  }
+
+  String _buildNearbyQuery(DishModel dish) {
+    final name = dish.name.trim();
+    if (name.isEmpty) return 'quan an';
+    return '$name quan an';
   }
 
   @override
@@ -225,9 +232,13 @@ class _DishDetailPageState extends State<DishDetailPage> {
                 dish.id,
               ),
               onFindNearbyTap: () {
-                // TODO: maps / nearby restaurants
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Tìm quán gần đây (TODO)')),
+                final query = _buildNearbyQuery(dish);
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => MapPage(
+                      initialNearbyQuery: query,
+                    ),
+                  ),
                 );
               },
             );

@@ -35,7 +35,8 @@ class _LocationSettingsPageState extends State<LocationSettingsPage> {
     }
 
     final result = await _locationService.getCurrentLocation(
-      useLastKnown: false,
+      useLastKnown: true,
+      timeLimit: const Duration(seconds: 20),
     );
     if (!mounted) return;
 

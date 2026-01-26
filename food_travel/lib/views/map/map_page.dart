@@ -6,10 +6,14 @@ import 'package:maplibre_gl/maplibre_gl.dart';
 
 import '../../controller/map/map_search_controller.dart';
 import '../../config/goong_secrets.dart';
+import '../../models/places_model.dart';
 import '../../services/map/places_service.dart';
+import '../../services/map/serpapi_places_service.dart';
 import '../../services/location_preference_service.dart';
 import '../../widgets/user_location_puck.dart';
 import 'widgets/map_search_bar.dart';
+import 'widgets/nearby_places_layer.dart';
+import 'widgets/nearby_places_sheet.dart';
 
 class _MapStyle {
   const _MapStyle(this.label, this.url);
@@ -18,8 +22,30 @@ class _MapStyle {
   final String url;
 }
 
+class _NearbyCategory {
+  const _NearbyCategory(this.id, this.label, this.keywords);
+
+  final String id;
+  final String label;
+  final List<String> keywords;
+}
+
+class _NearbyCacheEntry {
+  const _NearbyCacheEntry(this.at, this.places);
+
+  final DateTime at;
+  final List<GoongNearbyPlace> places;
+}
+
 class MapPage extends StatefulWidget {
-  const MapPage({super.key});
+  const MapPage({
+    super.key,
+    this.initialNearbyPlaces = const [],
+    this.initialNearbyQuery,
+  });
+
+  final List<GoongNearbyPlace> initialNearbyPlaces;
+  final String? initialNearbyQuery;
 
   @override
   State<MapPage> createState() => _MapPageState();
@@ -49,6 +75,7 @@ class _MapPageState extends State<MapPage> {
   final _locationPrefs = LocationPreferenceService();
   late final MapSearchController _searchController;
   final _searchTextController = TextEditingController();
+  final _serpService = SerpApiPlacesService();
   UserLocationPuck? _puck;
   StreamSubscription<Position>? _positionSub;
   bool _styleReady = false;
@@ -57,6 +84,74 @@ class _MapPageState extends State<MapPage> {
   LatLng? _lastLatLng;
   Circle? _searchCircle;
   LatLng? _searchLatLng;
+  // Danh sach quan gan day + layer ve marker
+  final List<GoongNearbyPlace> _nearbyPlaces = [];
+  NearbyPlacesLayer? _nearbyLayer;
+  bool _nearbyLoading = false;
+  int _selectedCategory = 0;
+  final Map<String, _NearbyCacheEntry> _nearbyCache = {};
+  String? _toastMessage;
+  Timer? _toastTimer;
+
+  static const int _nearbyRadius = 8000;
+  static const Duration _nearbyCacheTtl = Duration(seconds: 60);
+  static const _categories = <_NearbyCategory>[
+    _NearbyCategory(
+      'quan_an',
+      'Quan an',
+      [
+        'nha hang',
+        'quan an',
+        'an uong',
+        'com',
+        'bun',
+        'pho',
+        'mi',
+        'lau',
+        'nuong',
+      ],
+    ),
+    _NearbyCategory(
+      'cafe',
+      'Cafe',
+      [
+        'cafe',
+        'coffee',
+        'ca phe',
+        'tra',
+        'tra sua',
+      ],
+    ),
+    _NearbyCategory(
+      'an_vat',
+      'An vat',
+      [
+        'an vat',
+        'snack',
+        'do an vat',
+        'banh',
+      ],
+    ),
+    _NearbyCategory(
+      'fast_food',
+      'Do an nhanh',
+      [
+        'fast food',
+        'burger',
+        'pizza',
+        'ga ran',
+        'banh mi',
+      ],
+    ),
+    _NearbyCategory(
+      'hai_san',
+      'Hai san',
+      [
+        'hai san',
+        'seafood',
+      ],
+    ),
+  ];
 
   void _onMapCreated(MapLibreMapController controller) {
     _controller = controller;
@@ -70,11 +165,17 @@ class _MapPageState extends State<MapPage> {
     await _puck!.init();
   }
 
+  void _ensureNearbyLayer() {
+    if (_controller == null) return;
+    _nearbyLayer ??= NearbyPlacesLayer(_controller!);
+  }
+
   Future<void> _onStyleLoaded() async {
     _styleReady = true;
 
     // Style reload clears images/symbols, so we need to re-init the puck.
     await _ensurePuckReady();
+    _ensureNearbyLayer();
 
     if (_lastLatLng != null) {
       await _updateUserMarker(_lastLatLng!);
@@ -82,6 +183,14 @@ class _MapPageState extends State<MapPage> {
 
     if (_searchLatLng != null) {
       await _showSearchMarker(_searchLatLng!, animate: false);
+    }
+
+    if (_nearbyPlaces.isNotEmpty && _nearbyLayer != null) {
+      // Ve lai marker quan gan day khi doi style.
+      await _nearbyLayer!.showPlaces(
+        _nearbyPlaces,
+        animate: _lastLatLng == null,
+      );
     }
   }
 
@@ -157,6 +266,8 @@ class _MapPageState extends State<MapPage> {
 
     await _clearUserMarker(keepLastLocation: true);
     await _clearSearchMarker(keepSearch: true);
+    await _nearbyLayer?.clear();
+    _nearbyLayer = null;
     setState(() {
       _styleIndex = index;
       _styleReady = false;
@@ -171,10 +282,38 @@ class _MapPageState extends State<MapPage> {
     _controller?.animateCamera(CameraUpdate.zoomOut());
   }
 
+  String _cacheKey(int categoryIndex, LatLng target, {String? query}) {
+    final lat = (target.latitude * 1000).round();
+    final lng = (target.longitude * 1000).round();
+    final queryKey = query == null ? '' : _normalizeQuery(query);
+    final scope = queryKey.isEmpty ? _categories[categoryIndex].id : 'q';
+    final suffix = queryKey.isEmpty ? '' : '_$queryKey';
+    return '${scope}_${lat}_${lng}$suffix';
+  }
+
+  String _normalizeQuery(String input) {
+    final cleaned = input.trim().toLowerCase();
+    if (cleaned.isEmpty) return '';
+    return cleaned.replaceAll(RegExp(r'\s+'), '_');
+  }
+
+  String _buildSerpQuery(_NearbyCategory category) {
+    for (final keyword in category.keywords) {
+      final trimmed = keyword.trim();
+      if (trimmed.isNotEmpty) return trimmed;
+    }
+    final label = category.label.trim();
+    return label.isNotEmpty ? label : 'quan an';
+  }
+
   void _showSnack(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    if (!mounted) return;
+    _toastTimer?.cancel();
+    setState(() => _toastMessage = message);
+    _toastTimer = Timer(const Duration(seconds: 2), () {
+      if (!mounted) return;
+      setState(() => _toastMessage = null);
+    });
   }
 
   Future<void> _recenterOnUser() async {
@@ -264,19 +403,157 @@ class _MapPageState extends State<MapPage> {
     }
   }
 
+  Widget _buildCategoryChips() {
+    return SizedBox(
+      height: 36,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: _categories.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        itemBuilder: (context, index) {
+          final cat = _categories[index];
+          return ChoiceChip(
+            label: Text(cat.label),
+            selected: index == _selectedCategory,
+            onSelected: (selected) {
+              if (!selected) return;
+              setState(() => _selectedCategory = index);
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  Future<void> _focusNearbyPlace(GoongNearbyPlace place) async {
+    if (_controller == null) return;
+    await _controller!.animateCamera(
+      CameraUpdate.newLatLngZoom(
+        LatLng(place.lat, place.lng),
+        16,
+      ),
+    );
+  }
+
+  Future<void> _findNearbyFood({String? queryOverride}) async {
+    if (_nearbyLoading) return;
+    setState(() => _nearbyLoading = true);
+
+    try {
+      // Yeu cau bat GPS truoc khi tim.
+      if (!LocationPreferenceService.enabled.value) {
+        _showSnack('Hay bat GPS de tim quan.');
+        return;
+      }
+
+      var permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        _showSnack('Chua co quyen vi tri.');
+        return;
+      }
+
+      LatLng? target = _lastLatLng;
+      target ??= await _controller?.requestMyLocationLatLng();
+      if (target == null) {
+        final pos = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high,
+          timeLimit: const Duration(seconds: 12),
+        );
+        target = LatLng(pos.latitude, pos.longitude);
+      }
+      debugPrint('SerpAPI search at ${target.latitude},${target.longitude}');
+      if (target.latitude.abs() < 0.0001 &&
+          target.longitude.abs() < 0.0001) {
+        _showSnack('Vi tri GPS khong hop le.');
+        return;
+      }
+
+      final rawQuery = queryOverride?.trim();
+      final searchQuery = (rawQuery != null && rawQuery.isNotEmpty)
+          ? rawQuery
+          : _buildSerpQuery(_categories[_selectedCategory]);
+
+      final cacheKey = _cacheKey(
+        _selectedCategory,
+        target,
+        query: searchQuery,
+      );
+      final cached = _nearbyCache[cacheKey];
+      if (cached != null &&
+          DateTime.now().difference(cached.at) < _nearbyCacheTtl) {
+        _nearbyPlaces
+          ..clear()
+          ..addAll(cached.places);
+        setState(() {});
+        if (_styleReady) {
+          _ensureNearbyLayer();
+          await _nearbyLayer?.showPlaces(_nearbyPlaces, animate: true);
+        }
+        return;
+      }
+
+      final places = await _serpService.searchNearby(
+        lat: target.latitude,
+        lng: target.longitude,
+        query: searchQuery,
+        radius: _nearbyRadius,
+        limit: 12,
+      );
+
+      if (!mounted) return;
+      if (places.isEmpty) {
+        _showSnack('Khong tim thay quan gan day.');
+        return;
+      }
+
+      _nearbyPlaces
+        ..clear()
+        ..addAll(places);
+      _nearbyCache[cacheKey] = _NearbyCacheEntry(DateTime.now(), places);
+      setState(() {}); // Hien danh sach ngay ca khi marker chua ve.
+
+      if (_styleReady) {
+        _ensureNearbyLayer();
+        await _nearbyLayer?.showPlaces(_nearbyPlaces, animate: true);
+      }
+    } on TimeoutException {
+      _showSnack('Qua thoi gian lay vi tri.');
+    } catch (e, st) {
+      debugPrint('Loi tim quan: $e');
+      debugPrint('$st');
+      _showSnack('Loi tim quan: $e');
+    } finally {
+      if (mounted) setState(() => _nearbyLoading = false);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    _locationPrefs.load();
+    final loadFuture = _locationPrefs.load();
     _searchController = MapSearchController();
     _searchController.addListener(_onSearchStateChanged);
+    _nearbyPlaces.addAll(widget.initialNearbyPlaces);
+    final initialQuery = widget.initialNearbyQuery?.trim();
+    if (initialQuery != null && initialQuery.isNotEmpty) {
+      loadFuture.whenComplete(() {
+        if (!mounted) return;
+        _findNearbyFood(queryOverride: initialQuery);
+      });
+    }
   }
 
   @override
   void dispose() {
     _stopLocationStream();
+    _nearbyLayer?.clear();
     _puck?.dispose();
     _controller?.dispose();
+    _toastTimer?.cancel();
     _searchController.removeListener(_onSearchStateChanged);
     _searchController.dispose();
     _searchTextController.dispose();
@@ -343,22 +620,67 @@ class _MapPageState extends State<MapPage> {
             right: 16,
             top: 12,
             child: SafeArea(
-              child: MapSearchBar(
-                controller: _searchTextController,
-                loading: _searchController.loading,
-                suggestions: _searchController.suggestions,
-                onQueryChanged: _searchController.onQueryChanged,
-                onClear: _clearSearch,
-                onSelect: _onSelectPrediction,
+              child: Column(
+                children: [
+                  MapSearchBar(
+                    controller: _searchTextController,
+                    loading: _searchController.loading,
+                    suggestions: _searchController.suggestions,
+                    onQueryChanged: _searchController.onQueryChanged,
+                    onClear: _clearSearch,
+                    onSelect: _onSelectPrediction,
+                  ),
+                  const SizedBox(height: 8),
+                  _buildCategoryChips(),
+                ],
               ),
             ),
           ),
+          if (_toastMessage != null)
+            Positioned(
+              left: 16,
+              right: 16,
+              top: 120,
+              child: SafeArea(
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.75),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    _toastMessage!,
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+            ),
+          if (_nearbyPlaces.isNotEmpty)
+            NearbyPlacesSheet(
+              places: _nearbyPlaces,
+              userLocation: _lastLatLng,
+              onSelect: _focusNearbyPlace,
+            ),
           Positioned(
             right: 16,
             bottom: 24,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                FloatingActionButton(
+                  heroTag: 'nearby_food',
+                  mini: true,
+                  onPressed: _nearbyLoading ? null : _findNearbyFood,
+                  child: _nearbyLoading
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.restaurant),
+                ),
+                const SizedBox(height: 8),
                 FloatingActionButton(
                   heroTag: 'recenter',
                   mini: true,

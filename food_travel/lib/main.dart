@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'controller/favorite/favorite_controller.dart';
 import 'controller/theme_controller.dart';
 import 'controller/l10n/locale_controller.dart';
+import 'config/app_scaffold_messenger.dart';
 import 'firebase_options.dart';
 import 'router/app_router.dart';
 import 'router/route_names.dart';
@@ -48,6 +49,7 @@ class MyApp extends StatelessWidget {
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
             title: 'FoodG Travel',
+            scaffoldMessengerKey: appScaffoldMessengerKey,
             theme: ThemeData.light(),
             darkTheme: ThemeData.dark(),
             themeMode: themeController.themeMode,
