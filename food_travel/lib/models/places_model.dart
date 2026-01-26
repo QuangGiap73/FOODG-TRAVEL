@@ -38,9 +38,10 @@ class GoongNearbyPlace {
       photoUrl: _photoUrlFromJson(json),
     );
   }
-
+// chuyển dữ liệu serpapi về cùng 1 form nearbyplace
   factory GoongNearbyPlace.fromSerpApi(Map<String, dynamic> json) {
     final coords = json['gps_coordinates'] as Map<String, dynamic>? ?? const {};
+    // vì serpapi trả dữ liệu không ổn định , nên dưới đây là thứ tự ưu tiên.
     final lat = _parseDouble(
       coords['latitude'] ??
           coords['lat'] ??
@@ -53,7 +54,7 @@ class GoongNearbyPlace {
           json['longitude'] ??
           json['lng'],
     );
-
+  // ép kiểu, do dùng 2 API nên ưu tiên title trước name.
     return GoongNearbyPlace(
       id: _serpIdFromJson(json),
       name: _stringValue(json['title'] ?? json['name']),
@@ -66,7 +67,7 @@ class GoongNearbyPlace {
     );
   }
 }
-
+// lấy ảnh từ goong
 String _photoUrlFromJson(Map<String, dynamic> json) {
   final photos = json['photos'] as List?;
   if (photos == null || photos.isEmpty) return '';
@@ -128,7 +129,7 @@ double _parseDouble(dynamic value) {
   if (value is String) return double.tryParse(value) ?? 0;
   return 0;
 }
-
+// tìm quán ăn gần vị trí người dùng 
 extension GoongNearbyApi on GoongPlacesService {
   Future<List<GoongNearbyPlace>> nearbySearch({
     required double lat,

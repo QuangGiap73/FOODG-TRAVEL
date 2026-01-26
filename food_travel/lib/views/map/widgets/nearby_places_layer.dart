@@ -7,13 +7,13 @@ class NearbyPlacesLayer {
 
   final MapLibreMapController _controller;
   final List<Circle> _circles = [];
-
+// HÀM VẼ ĐỊA ĐIỂM
   Future<void> showPlaces(
     List<GoongNearbyPlace> places, {
     bool animate = true,
     double zoom = 14,
   }) async {
-    await clear();
+    await clear(); // MỖI LẦN TÌM KIẾM MỚI XÓA MARKER CŨ
     if (places.isEmpty) return;
 
     // Ve marker bang circle (don gian, de nhin).
@@ -30,7 +30,7 @@ class NearbyPlacesLayer {
       );
       _circles.add(circle);
     }
-
+    // zoom tới địa điểm
     if (animate) {
       final first = places.first;
       await _controller.animateCamera(
@@ -41,7 +41,7 @@ class NearbyPlacesLayer {
       );
     }
   }
-
+  // hàm dọn marker
   Future<void> clear() async {
     for (final circle in _circles) {
       await _controller.removeCircle(circle);
