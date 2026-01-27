@@ -13,6 +13,13 @@ class GoongNearbyPlace {
   final double lat;
   final double lng;
   final String photoUrl;
+  final double? rating;
+  final int? reviewCount;
+  final String? price;
+  final String? phone;
+  final String? category;
+  final bool? isOpen;
+  final String? closingTime;
 
   const GoongNearbyPlace({
     required this.id,
@@ -21,6 +28,13 @@ class GoongNearbyPlace {
     required this.lat,
     required this.lng,
     this.photoUrl = '',
+    this.rating,
+    this.reviewCount,
+    this.price,
+    this.phone,
+    this.category,
+    this.isOpen,
+    this.closingTime,
   });
 
   factory GoongNearbyPlace.fromJson(Map<String, dynamic> json) {
@@ -36,6 +50,7 @@ class GoongNearbyPlace {
       lat: lat,
       lng: lng,
       photoUrl: _photoUrlFromJson(json),
+      category: _categoryFromJson(json),
     );
   }
 // chuyển dữ liệu serpapi về cùng 1 form nearbyplace
@@ -64,6 +79,22 @@ class GoongNearbyPlace {
       lat: lat,
       lng: lng,
       photoUrl: _serpPhotoUrlFromJson(json),
+      rating: _toDoubleOrNull(json['rating']),
+      reviewCount: _toIntOrNull(
+        json['reviews'] ?? json['review_count'] ?? json['reviews_count'],
+      ),
+      price: _stringOrNull(
+        json['price'] ??
+            json['price_level'] ??
+            json['price_range'] ??
+            json['per_person'],
+      ),
+      phone: _stringOrNull(
+        json['phone'] ?? json['phone_number'] ?? json['formatted_phone_number'],
+      ),
+      category: _categoryFromJson(json),
+      isOpen: _openFromJson(json),
+      closingTime: _closingTimeFromJson(json),
     );
   }
 }
@@ -85,6 +116,12 @@ String _serpIdFromJson(Map<String, dynamic> json) {
   final raw =
       json['place_id'] ?? json['data_id'] ?? json['cid'] ?? json['id'];
   return raw == null ? '' : raw.toString();
+}
+
+String? _stringOrNull(dynamic value) {
+  if (value == null) return null;
+  final text = value.toString().trim();
+  return text.isEmpty ? null : text;
 }
 
 String _serpPhotoUrlFromJson(Map<String, dynamic> json) {
@@ -117,10 +154,81 @@ String _serpPhotoUrlFromJson(Map<String, dynamic> json) {
   return '';
 }
 
+String? _categoryFromJson(Map<String, dynamic> json) {
+  final direct = json['type'] ?? json['category'];
+  if (direct is String && direct.trim().isNotEmpty) {
+    return direct.trim();
+  }
+  final categories = json['categories'];
+  if (categories is List && categories.isNotEmpty) {
+    final first = categories.first;
+    if (first is String && first.trim().isNotEmpty) {
+      return first.trim();
+    }
+    if (first != null) {
+      final text = first.toString().trim();
+      if (text.isNotEmpty) return text;
+    }
+  }
+  final types = json['types'];
+  if (types is List && types.isNotEmpty) {
+    final first = types.first;
+    if (first is String && first.trim().isNotEmpty) {
+      return first.trim();
+    }
+  }
+  return null;
+}
+
+bool? _openFromJson(Map<String, dynamic> json) {
+  final hours = json['hours'];
+  if (hours is Map && hours['open_now'] is bool) {
+    return hours['open_now'] as bool;
+  }
+  final raw = json['open_state'] ?? json['open_now'] ?? json['is_open'];
+  if (raw is bool) return raw;
+  if (raw is String) {
+    final lower = raw.toLowerCase();
+    if (lower.contains('open')) return true;
+    if (lower.contains('close')) return false;
+  }
+  return null;
+}
+
+String? _closingTimeFromJson(Map<String, dynamic> json) {
+  final hours = json['hours'];
+  if (hours is Map) {
+    final raw =
+        hours['closes_at'] ?? hours['closing_time'] ?? hours['close_time'];
+    final text = _stringOrNull(raw);
+    if (text != null) return text;
+  }
+  return _stringOrNull(json['closing_time'] ?? json['closes_at']);
+}
+
 String _stringValue(dynamic value) {
   if (value == null) return '';
   if (value is String) return value;
   return value.toString();
+}
+
+double? _toDoubleOrNull(dynamic value) {
+  if (value == null) return null;
+  if (value is num) return value.toDouble();
+  if (value is String) return double.tryParse(value);
+  return null;
+}
+
+int? _toIntOrNull(dynamic value) {
+  if (value == null) return null;
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  if (value is String) {
+    final cleaned = value.replaceAll(RegExp(r'[^0-9]'), '');
+    if (cleaned.isEmpty) return null;
+    return int.tryParse(cleaned);
+  }
+  return null;
 }
 
 double _parseDouble(dynamic value) {

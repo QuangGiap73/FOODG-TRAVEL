@@ -14,6 +14,7 @@ import '../../widgets/user_location_puck.dart';
 import 'widgets/map_search_bar.dart';
 import 'widgets/nearby_places_layer.dart';
 import 'widgets/nearby_places_sheet.dart';
+import 'widgets/place_detail_sheet.dart';
 
 class _MapStyle {
   const _MapStyle(this.label, this.url);
@@ -435,6 +436,20 @@ class _MapPageState extends State<MapPage> {
     );
   }
 
+  Future<void> _openPlaceDetail(GoongNearbyPlace place) async {
+    await _focusNearbyPlace(place);
+    if (!mounted) return;
+    await showPlaceDetailSheet(
+      context,
+      place,
+      userLocation: _lastLatLng,
+      onDirections: () {
+        Navigator.of(context).pop();
+        _focusNearbyPlace(place);
+      },
+    );
+  }
+
   Future<void> _findNearbyFood({String? queryOverride}) async {
     if (_nearbyLoading) return;
     setState(() => _nearbyLoading = true);
@@ -660,7 +675,12 @@ class _MapPageState extends State<MapPage> {
             NearbyPlacesSheet(
               places: _nearbyPlaces,
               userLocation: _lastLatLng,
-              onSelect: _focusNearbyPlace,
+              onOpenDetail: (place) {
+                _openPlaceDetail(place);
+              },
+              onDirections: (place) {
+                _focusNearbyPlace(place);
+              },
             ),
           Positioned(
             right: 16,
