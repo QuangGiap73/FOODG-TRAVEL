@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
+import 'package:provider/provider.dart';
 
 import '../../../models/places_model.dart';
+import '../../../controller/restaurants/place_favorite_controller.dart';
 
 class NearbyPlacesSheet extends StatelessWidget {
   const NearbyPlacesSheet({
@@ -84,27 +86,34 @@ class NearbyPlacesSheet extends StatelessWidget {
     );
   }
 
-  Widget _buildFavoriteChip(ThemeData theme) {
+  Widget _buildFavoriteChip(BuildContext context, GoongNearbyPlace place) {
+    final fav = context.watch<PlaceFavoriteController>();
+    final isFav = fav.isFavorite(place);
+
     return SizedBox(
       width: 34,
       height: 34,
       child: OutlinedButton(
-        onPressed: () {},
+        // Bam tim thi toggle favorite quan
+        onPressed: () => context.read<PlaceFavoriteController>().toggle(place),
         style: OutlinedButton.styleFrom(
           padding: EdgeInsets.zero,
-          side: BorderSide(color: theme.dividerColor.withOpacity(0.4)),
+          side: BorderSide(color: Theme.of(context).dividerColor.withOpacity(0.4)),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
         ),
         child: Icon(
-          Icons.favorite_border,
+          isFav ? Icons.favorite : Icons.favorite_border,
           size: 18,
-          color: theme.colorScheme.onSurface.withOpacity(0.7),
+          color: isFav
+              ? Colors.redAccent
+              : Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
         ),
       ),
     );
   }
+
 
   Widget _buildDirectionsButton(GoongNearbyPlace place, VoidCallback? onTap) {
     return SizedBox(
@@ -254,7 +263,7 @@ class NearbyPlacesSheet extends StatelessWidget {
                     ),
                   ),
                 ),
-                _buildFavoriteChip(theme),
+                _buildFavoriteChip(context, place),
                 const SizedBox(width: 8),
                 _buildDirectionsButton(place, onDirectionsTap),
               ],

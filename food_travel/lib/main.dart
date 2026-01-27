@@ -4,6 +4,7 @@ import 'package:food_travel/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import 'controller/favorite/favorite_controller.dart';
+import 'controller/restaurants/place_favorite_controller.dart';
 import 'controller/theme_controller.dart';
 import 'controller/l10n/locale_controller.dart';
 import 'config/app_scaffold_messenger.dart';
@@ -45,6 +46,10 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProvider(
               create: (_) => FavoriteController(),
             ),
+            ChangeNotifierProvider(
+              create: (_) => PlaceFavoriteController(),
+            ),
+
           ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,

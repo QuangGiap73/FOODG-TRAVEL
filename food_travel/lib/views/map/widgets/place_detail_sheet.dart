@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
+import 'package:provider/provider.dart';
 
 import '../../../models/places_model.dart';
+import '../../../controller/restaurants/place_favorite_controller.dart';
 
 Future<void> showPlaceDetailSheet(
   BuildContext context,
@@ -235,6 +237,9 @@ class PlaceDetailSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    // Lang nghe favorite de UI tu cap nhat
+    final fav = context.watch<PlaceFavoriteController>();
+    final isFavorite = fav.isFavorite(place);
     final isDark = theme.brightness == Brightness.dark;
     final meters = _distanceMeters();
     final distance = _formatDistance(meters);
@@ -445,7 +450,9 @@ class PlaceDetailSheet extends StatelessWidget {
                                 const SizedBox(width: 10),
                                 _buildActionIcon(
                                   context,
-                                  Icons.bookmark_border,
+                                  isFavorite ? Icons.favorite : Icons.favorite_border,
+                                  // Bam tim thi toggle favorite quan
+                                  onTap: () => context.read<PlaceFavoriteController>().toggle(place),
                                 ),
                               ],
                             ),
