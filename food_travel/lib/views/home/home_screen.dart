@@ -66,7 +66,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final photoUrl = FirebaseAuth.instance.currentUser?.photoURL;
-    final showAppBar = _currentIndex != 4;
+    // An AppBar o tab "Luu" va "Toi"
+    final showAppBar = _currentIndex != 4 && _currentIndex != 3;
     return Scaffold(
       appBar: showAppBar
           ? AppBar(

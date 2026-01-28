@@ -1,218 +1,139 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../../models/dish_model.dart';
-import '../../models/places_model.dart';
-import '../../services/favorite_service.dart';
-import '../../services/restaurants/favorite_place_service.dart';
+import 'tabs/favorite_dishes_tab.dart';
+import 'tabs/favorite_places_tab.dart';
 
-// Trang yeu thich moi: gom 2 tab Mon an va Quan an
-class FavoritesTabsPage extends StatelessWidget {
+// Trang yeu thich tong: co 2 tab (Mon an / Quan an)
+class FavoritesTabsPage extends StatefulWidget {
   const FavoritesTabsPage({super.key});
+
+  @override
+  State<FavoritesTabsPage> createState() => _FavoritesTabsPageState();
+}
+
+class _FavoritesTabsPageState extends State<FavoritesTabsPage> {
+  int _tabIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
-
     if (user == null) {
       return const Scaffold(
         body: Center(child: Text('Vui long dang nhap')),
       );
     }
 
-    // DefaultTabController giup quan ly TabBar + TabBarView
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Yeu thich'),
-          bottom: const TabBar(
-            tabs: [
-              Tab(text: 'Mon an'),
-              Tab(text: 'Quan an'),
-            ],
-          ),
-        ),
-        body: TabBarView(
-          children: [
-            _FavoriteDishesTab(uid: user.uid),
-            _FavoritePlacesTab(uid: user.uid),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _FavoriteDishesTab extends StatelessWidget {
-  const _FavoriteDishesTab({required this.uid});
-
-  final String uid;
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<List<DishModel>>(
-      stream: FavoriteService().watchFavoriteDishes(uid),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const LinearProgressIndicator();
-        }
-        if (snapshot.hasError) {
-          return const Center(child: Text('Khong the tai mon yeu thich.'));
-        }
-
-        final dishes = snapshot.data ?? [];
-        if (dishes.isEmpty) {
-          return const Center(child: Text('Chua co mon yeu thich.'));
-        }
-
-        return GridView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: dishes.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            childAspectRatio: 0.75,
-          ),
-          itemBuilder: (context, index) {
-            final dish = dishes[index];
-            return _FavoriteDishCard(
-              dish: dish,
-              onRemove: () {
-                // Toggle lai de bo yeu thich mon
-                FavoriteService().toggleFavorite(uid, dish.id);
-              },
-            );
-          },
-        );
-      },
-    );
-  }
-}
-
-class _FavoritePlacesTab extends StatelessWidget {
-  const _FavoritePlacesTab({required this.uid});
-
-  final String uid;
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<List<GoongNearbyPlace>>(
-      // Lay danh sach quan yeu thich tu Firestore
-      stream: FavoritePlaceService().watchFavoritePlaces(uid),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const LinearProgressIndicator();
-        }
-        if (snapshot.hasError) {
-          return const Center(child: Text('Khong the tai quan yeu thich.'));
-        }
-
-        final places = snapshot.data ?? [];
-        if (places.isEmpty) {
-          return const Center(child: Text('Chua co quan yeu thich.'));
-        }
-
-        return ListView.separated(
-          padding: const EdgeInsets.all(16),
-          itemCount: places.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 10),
-          itemBuilder: (context, index) {
-            final place = places[index];
-            return _FavoritePlaceCard(
-              place: place,
-              onRemove: () {
-                // Tinh placeKey dung y nhu luc luu de xoa dung document
-                final placeKey = buildPlacekey(place);
-                FavoritePlaceService().toggleFavorite(
-                  uid,
-                  place,
-                  placeKey: placeKey,
-                );
-              },
-            );
-          },
-        );
-      },
-    );
-  }
-}
-
-class _FavoriteDishCard extends StatelessWidget {
-  const _FavoriteDishCard({
-    required this.dish,
-    required this.onRemove,
-  });
-
-  final DishModel dish;
-  final VoidCallback onRemove;
-
-  @override
-  Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final imageUrl = dish.imageUrl;
+    final isDark = theme.brightness == Brightness.dark;
+    final bgColor = isDark ? const Color(0xFF0F1115) : const Color(0xFFF8FAFC);
+    final textPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
+    final textSecondary =
+        isDark ? Colors.white70 : const Color(0xFF64748B);
 
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            AspectRatio(
-              aspectRatio: 4 / 3,
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: imageUrl.isNotEmpty
-                        ? Image.network(imageUrl, fit: BoxFit.cover)
-                        : Container(
-                            color: theme.colorScheme.surfaceVariant,
-                            child: const Icon(Icons.image, size: 32),
+    return Scaffold(
+      backgroundColor: bgColor,
+      body: SafeArea(
+        bottom: false,
+        child: CustomScrollView(
+          slivers: [
+            // Header sticky
+            SliverAppBar(
+              pinned: true,
+              floating: false,
+              elevation: 0,
+              backgroundColor: bgColor,
+              surfaceTintColor: bgColor,
+              // Giu header sticky nhung khong hien AppBar mac dinh
+              toolbarHeight: 0,
+              collapsedHeight: 0,
+              automaticallyImplyLeading: false,
+              bottom: PreferredSize(
+                // Tang chieu cao de khong bi overflow
+                preferredSize: const Size.fromHeight(176),
+                child: Padding(
+                  // Giam padding top de UI sat len tren
+                  padding: const EdgeInsets.fromLTRB(16, 2, 16, 12),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Title + action icon
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Da luu',
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: -0.2,
+                                    color: textPrimary,
+                                  ),
+                                ),
+                                SizedBox(height: 2),
+                                Text(
+                                  'Your favorites in one place',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: textSecondary,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                  ),
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: Material(
-                      color: Colors.black.withOpacity(0.35),
-                      shape: const CircleBorder(),
-                      child: InkWell(
-                        onTap: onRemove,
-                        customBorder: const CircleBorder(),
-                        child: const Padding(
-                          padding: EdgeInsets.all(6),
-                          child: Icon(
-                            Icons.delete_outline,
-                            size: 18,
-                            color: Colors.redAccent,
+                          _CircleIconButton(
+                            icon: Icons.search,
+                            showDot: false,
+                            onTap: () {},
                           ),
+                          const SizedBox(width: 8),
+                          _CircleIconButton(
+                            icon: Icons.tune,
+                            showDot: true,
+                            onTap: () {},
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      _TabSwitcher(
+                        index: _tabIndex,
+                        onChanged: (i) => setState(() => _tabIndex = i),
+                      ),
+                      const SizedBox(height: 10),
+                      // Filter chips (demo UI)
+                      SizedBox(
+                        height: 30,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: const [
+                            _FilterChipFilled(label: 'Central Vietnam'),
+                            SizedBox(width: 8),
+                            _FilterChipOutline(label: 'Spicy'),
+                            SizedBox(width: 8),
+                            _FilterChipOutline(label: 'Under 50k'),
+                            SizedBox(width: 8),
+                            _FilterChipOutline(label: 'Breakfast'),
+                          ],
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 8, 10, 4),
-              child: Text(
-                dish.name,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
+
+            // Body
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+              sliver: SliverToBoxAdapter(
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 250),
+                  child: _tabIndex == 0
+                      ? FavoriteDishesTab(uid: user.uid)
+                      : FavoritePlacesTab(uid: user.uid),
                 ),
               ),
             ),
@@ -223,77 +144,45 @@ class _FavoriteDishCard extends StatelessWidget {
   }
 }
 
-class _FavoritePlaceCard extends StatelessWidget {
-  const _FavoritePlaceCard({
-    required this.place,
-    required this.onRemove,
+// ----------------------- TAB SWITCHER -----------------------
+class _TabSwitcher extends StatelessWidget {
+  const _TabSwitcher({
+    required this.index,
+    required this.onChanged,
   });
 
-  final GoongNearbyPlace place;
-  final VoidCallback onRemove;
+  final int index;
+  final ValueChanged<int> onChanged;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final address = place.address.trim();
+    final isDark = theme.brightness == Brightness.dark;
+    final bgColor = isDark ? const Color(0xFF1A1D22) : const Color(0xFFE5E7EB);
 
     return Container(
-      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: theme.dividerColor.withOpacity(0.2)),
+        color: bgColor,
+        borderRadius: BorderRadius.circular(12),
       ),
+      padding: const EdgeInsets.all(4),
       child: Row(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: place.photoUrl.isNotEmpty
-                ? Image.network(
-                    place.photoUrl,
-                    width: 64,
-                    height: 64,
-                    fit: BoxFit.cover,
-                  )
-                : Container(
-                    width: 64,
-                    height: 64,
-                    color: theme.colorScheme.surfaceVariant,
-                    child: const Icon(Icons.storefront_outlined),
-                  ),
-          ),
-          const SizedBox(width: 12),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  place.name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  address.isEmpty ? 'Dang cap nhat dia chi' : address,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.hintColor,
-                    height: 1.35,
-                  ),
-                ),
-              ],
+            child: _TabButton(
+              label: 'Dishes',
+              icon: Icons.restaurant_menu,
+              active: index == 0,
+              onTap: () => onChanged(0),
             ),
           ),
-          IconButton(
-            // Bam nut nay de bo yeu thich quan
-            onPressed: onRemove,
-            icon: const Icon(Icons.favorite),
-            color: Colors.redAccent,
-            tooltip: 'Bo yeu thich',
+          Expanded(
+            child: _TabButton(
+              label: 'Restaurants',
+              icon: Icons.storefront,
+              active: index == 1,
+              onTap: () => onChanged(1),
+            ),
           ),
         ],
       ),
@@ -301,3 +190,174 @@ class _FavoritePlaceCard extends StatelessWidget {
   }
 }
 
+class _TabButton extends StatelessWidget {
+  const _TabButton({
+    required this.label,
+    required this.icon,
+    required this.active,
+    required this.onTap,
+  });
+
+  final String label;
+  final IconData icon;
+  final bool active;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final bg = active
+        ? (isDark ? const Color(0xFF22262C) : Colors.white)
+        : Colors.transparent;
+    final textColor = active
+        ? (isDark ? Colors.white : const Color(0xFF0F172A))
+        : (isDark ? Colors.white70 : const Color(0xFF64748B));
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(10),
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: active
+              ? [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(isDark ? 0.3 : 0.06),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 18, color: textColor),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: textColor,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ----------------------- SMALL WIDGETS -----------------------
+class _CircleIconButton extends StatelessWidget {
+  const _CircleIconButton({
+    required this.icon,
+    required this.showDot,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final bool showDot;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final iconColor = isDark ? Colors.white70 : const Color(0xFF475569);
+
+    return Stack(
+      children: [
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(999),
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Icon(icon, size: 22, color: iconColor),
+            ),
+          ),
+        ),
+        if (showDot)
+          Positioned(
+            top: 6,
+            right: 6,
+            child: Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                color: const Color(0xFFF97316),
+                borderRadius: BorderRadius.circular(999),
+                border: Border.all(
+                  color: isDark ? const Color(0xFF0F1115) : Colors.white,
+                  width: 2,
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _FilterChipFilled extends StatelessWidget {
+  const _FilterChipFilled({required this.label});
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final bg = isDark ? const Color(0xFF111827) : const Color(0xFF0F172A);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        label,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+}
+
+class _FilterChipOutline extends StatelessWidget {
+  const _FilterChipOutline({required this.label});
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final bg = isDark ? const Color(0xFF111827) : Colors.white;
+    final borderColor = isDark ? const Color(0xFF2A2F36) : const Color(0xFFE2E8F0);
+    final textColor = isDark ? Colors.white70 : const Color(0xFF64748B);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: borderColor),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: textColor,
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+}
