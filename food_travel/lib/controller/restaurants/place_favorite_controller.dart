@@ -14,36 +14,41 @@ class PlaceFavoriteController extends ChangeNotifier {
   Set<String> _favoriteIds = {};
 
   Set<String> get favoriteIds => _favoriteIds;
-  void bindUser(String? uid){
-    if(_uid == uid) return;
 
-    // doi user thi resset va bind lai stream
+  void bindUser(String? uid) {
+    if (_uid == uid) return;
+
+    // Khi doi user thi reset va bind lai stream
     _uid = uid;
     _sub?.cancel();
     _favoriteIds = {};
-    
-    if (uid == null){
+
+    if (uid == null) {
       notifyListeners();
       return;
     }
-    _sub = _service.watchFavoriteIds(uid).listen((ids){
+
+    _sub = _service.watchFavoriteIds(uid).listen((ids) {
       _favoriteIds = ids;
       notifyListeners();
     });
   }
+
   String keyOf(GoongNearbyPlace place) => buildPlacekey(place);
 
-  bool isFavorite(GoongNearbyPlace place){
+  bool isFavorite(GoongNearbyPlace place) {
     final key = keyOf(place);
     return _favoriteIds.contains(key);
   }
+
   Future<void> toggle(GoongNearbyPlace place) async {
     final uid = _uid;
-    if(uid == null) return;
+    if (uid == null) return;
 
     final key = keyOf(place);
     await _service.toggleFavorite(uid, place, placeKey: key);
   }
+
   @override
   void dispose() {
     _sub?.cancel();

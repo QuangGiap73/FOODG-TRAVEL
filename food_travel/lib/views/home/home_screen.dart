@@ -14,7 +14,7 @@ import '../../router/route_names.dart';
 import '../../controller/favorite/favorite_controller.dart';
 import '../../widgets/favorite_button.dart';
 import '../onboarding/survey_sheet.dart';
-import '../favorites/favorites_page.dart';
+import '../favorites/favorites_tabs_page.dart';
 import '../personal/personal.dart';
 import '../map/map_page.dart';
 import '../../services/location_preference_service.dart';
@@ -36,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _HomeFeed(),
     Center(child: Text('Kham pha')),
     MapPage(),
-    FavoritesPage(),
+    FavoritesTabsPage(),
     PersonalPage(),
   ];
 
