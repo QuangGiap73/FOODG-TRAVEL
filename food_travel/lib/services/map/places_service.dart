@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import '../../config/goong_secrets.dart';
 
 String buildGoongPhotoUrl(String reference, {int maxWidth = 400}) {
-  final encoded = Uri.encodeQueryComponent(reference);
+  final encoded = Uri.encodeQueryComponent(reference); // tránh các kí tự đặc biệt
   return 'https://rsapi.goong.io/Place/Photo'
       '?maxwidth=$maxWidth&photoreference=$encoded&api_key=$goongPlacesApiKey';
 }

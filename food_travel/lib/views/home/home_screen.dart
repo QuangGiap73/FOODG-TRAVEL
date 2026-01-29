@@ -20,6 +20,7 @@ import '../map/map_page.dart';
 import '../../services/location_preference_service.dart';
 import '../../services/location_service.dart';
 import '../../services/map/geocode_service.dart';
+import 'widgets/home_bottom_nav.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -101,34 +102,9 @@ class _HomeScreenState extends State<HomeScreen> {
         index: _currentIndex,
         children: _pages,
       ),
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: HomeBottomNav(
         currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: const Color(0xFF0B0F1A),
-        selectedItemColor: Colors.white,
-        unselectedItemColor: const Color(0xFF8A8F9A),
-        selectedLabelStyle: const TextStyle(fontSize: 12),
-        unselectedLabelStyle: const TextStyle(fontSize: 12),
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.explore_outlined),
-            label: 'Kham pha',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.menu_book_outlined),
-            label: 'Map',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite_border),
-            label: 'Luu',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            label: 'Toi',
-          ),
-        ],
+        onChanged: (index) => setState(() => _currentIndex = index),
       ),
     );
   }

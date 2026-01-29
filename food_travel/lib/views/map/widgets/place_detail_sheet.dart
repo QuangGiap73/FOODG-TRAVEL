@@ -132,7 +132,7 @@ class PlaceDetailSheet extends StatelessWidget {
     final overlayBottomOpacity = isDark ? 0.65 : 0.55;
 
     return SizedBox(
-      height: 118,
+      height:200,
       child: Stack(
         children: [
           Positioned.fill(

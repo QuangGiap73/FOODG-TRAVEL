@@ -14,6 +14,7 @@ class SerpApiPlacesService {
     int radius = 3000,
     int limit = 12,
   }) async {
+    // chuẩn hóa input
     final trimmedQuery = query.trim();
     if (trimmedQuery.isEmpty) return [];
 
@@ -28,7 +29,7 @@ class SerpApiPlacesService {
     };
 
     final uri = Uri.https('serpapi.com', '/search.json', params);
-
+    // tránh treo app
     try {
       final res = await http
           .get(uri)
@@ -39,7 +40,7 @@ class SerpApiPlacesService {
       }
 
       final data = jsonDecode(res.body) as Map<String, dynamic>;
-      final items = _extractResults(data);
+      final items = _extractResults(data); // bóc tách dữ liệu từ serpapi
       if (items.isEmpty) return [];
 
       final dedup = <String, GoongNearbyPlace>{};

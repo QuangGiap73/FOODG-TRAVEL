@@ -1,10 +1,11 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
 import '../../controller/map/map_search_controller.dart';
+import '../../controller/map/navigation_controller.dart';
 import '../../config/goong_secrets.dart';
 import '../../models/places_model.dart';
 import '../../services/map/places_service.dart';
@@ -15,6 +16,7 @@ import 'widgets/map_search_bar.dart';
 import 'widgets/nearby_places_layer.dart';
 import 'widgets/nearby_places_sheet.dart';
 import 'widgets/place_detail_sheet.dart';
+import 'widgets/route_layer.dart';
 
 class _MapStyle {
   const _MapStyle(this.label, this.url);
@@ -77,6 +79,8 @@ class _MapPageState extends State<MapPage> {
   late final MapSearchController _searchController;
   final _searchTextController = TextEditingController();
   final _serpService = SerpApiPlacesService();
+  late final NavigationController _navController;
+  RouteLayer? _routeLayer;
   UserLocationPuck? _puck;
   StreamSubscription<Position>? _positionSub;
   bool _styleReady = false;
@@ -156,6 +160,8 @@ class _MapPageState extends State<MapPage> {
 
   void _onMapCreated(MapLibreMapController controller) {
     _controller = controller;
+    // Tao layer ve route khi map duoc tao
+    _routeLayer = RouteLayer(controller);
   }
 
   Future<void> _ensurePuckReady() async {
@@ -170,6 +176,37 @@ class _MapPageState extends State<MapPage> {
     if (_controller == null) return;
     _nearbyLayer ??= NearbyPlacesLayer(_controller!);
   }
+
+  void _onNavChanged() {
+    if (!mounted) return;
+    setState(() {});
+
+    // Neu co route thi ve polyline, neu khong thi xoa
+    if (_routeLayer == null) return;
+    final route = _navController.route;
+    if (route == null) {
+      _routeLayer!.clear();
+    } else {
+      _routeLayer!.showRoute(route.points);
+    }
+  }
+
+  void _startDirections(GoongNearbyPlace place) {
+    // Bat dau dan duong den quan
+    _startDirectionsInternal(place);
+  }
+
+  Future<void> _startDirectionsInternal(GoongNearbyPlace place) async {
+    final ok = await _navController.startNavigation(
+      LatLng(place.lat, place.lng),
+    );
+    if (!ok) {
+      final msg = _navController.lastError ?? 'Khong lay duoc chi duong.';
+      _showSnack(msg);
+      _navController.clearError();
+    }
+  }
+
 
   Future<void> _onStyleLoaded() async {
     _styleReady = true;
@@ -192,6 +229,11 @@ class _MapPageState extends State<MapPage> {
         _nearbyPlaces,
         animate: _lastLatLng == null,
       );
+    }
+
+    // Ve lai route neu dang dan duong
+    if (_routeLayer != null && _navController.route != null) {
+      await _routeLayer!.showRoute(_navController.route!.points);
     }
   }
 
@@ -445,7 +487,7 @@ class _MapPageState extends State<MapPage> {
       userLocation: _lastLatLng,
       onDirections: () {
         Navigator.of(context).pop();
-        _focusNearbyPlace(place);
+        _startDirections(place);
       },
     );
   }
@@ -550,6 +592,9 @@ class _MapPageState extends State<MapPage> {
   void initState() {
     super.initState();
     final loadFuture = _locationPrefs.load();
+    // Khoi tao controller dan duong
+    _navController = NavigationController();
+    _navController.addListener(_onNavChanged);
     _searchController = MapSearchController();
     _searchController.addListener(_onSearchStateChanged);
     _nearbyPlaces.addAll(widget.initialNearbyPlaces);
@@ -569,6 +614,8 @@ class _MapPageState extends State<MapPage> {
     _puck?.dispose();
     _controller?.dispose();
     _toastTimer?.cancel();
+    _navController.removeListener(_onNavChanged);
+    _navController.dispose();
     _searchController.removeListener(_onSearchStateChanged);
     _searchController.dispose();
     _searchTextController.dispose();
@@ -679,7 +726,7 @@ class _MapPageState extends State<MapPage> {
                 _openPlaceDetail(place);
               },
               onDirections: (place) {
-                _focusNearbyPlace(place);
+                _startDirections(place);
               },
             ),
           Positioned(
