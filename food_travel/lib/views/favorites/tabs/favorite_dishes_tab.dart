@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../models/dish_model.dart';
+import '../../../router/route_names.dart';
 import '../../../services/favorite_service.dart';
 
 // Tab Mon an: hien thi danh sach mon yeu thich
@@ -41,6 +42,13 @@ class FavoriteDishesTab extends StatelessWidget {
             return _DishCard(
               dish: dish,
               onRemove: () => FavoriteService().toggleFavorite(uid, dish.id),
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  RouteNames.dishDetail,
+                  arguments: dish.id,
+                );
+              },
             );
           },
         );
@@ -53,10 +61,12 @@ class _DishCard extends StatelessWidget {
   const _DishCard({
     required this.dish,
     required this.onRemove,
+    required this.onTap,
   });
 
   final DishModel dish;
   final VoidCallback onRemove;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -77,129 +87,137 @@ class _DishCard extends StatelessWidget {
     final tag = dish.tag.trim();
     final spicy = dish.spicyLevel;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: cardBg,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: borderColor),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.35 : 0.06),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Anh mon an
-          // Dung Expanded de anh co the co gian, tranh overflow khi text dai
-          Expanded(
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                if (imageUrl.isNotEmpty)
-                  Image.network(imageUrl, fit: BoxFit.cover)
-                else
-                  Container(
-                    color: theme.colorScheme.surfaceVariant,
-                    child: const Icon(Icons.image, size: 32),
-                  ),
-                Container(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Color(0x99000000), Colors.transparent],
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
-                    ),
-                  ),
-                ),
-                // Nut bo yeu thich
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: _GlassIconButton(
-                    icon: Icons.bookmark,
-                    onTap: onRemove,
-                  ),
-                ),
-                // Badge tag (neu co)
-                if (tag.isNotEmpty)
-                  Positioned(
-                    left: 10,
-                    bottom: 10,
-                    child: ConstrainedBox(
-                      // Gioi han chieu ngang de khong tran ra ngoai anh
-                      constraints: const BoxConstraints(maxWidth: 165),
-                      child: Container(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF97316),
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                        child: Text(
-                          tag,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          softWrap: false,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w700,
-                          ),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(18),
+      child: Ink(
+        decoration: BoxDecoration(
+          color: cardBg,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: borderColor),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(isDark ? 0.35 : 0.06),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(18),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Anh mon an
+              // Dung Expanded de anh co the co gian, tranh overflow khi text dai
+              Expanded(
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    if (imageUrl.isNotEmpty)
+                      Image.network(imageUrl, fit: BoxFit.cover)
+                    else
+                      Container(
+                        color: theme.colorScheme.surfaceVariant,
+                        child: const Icon(Icons.image, size: 32),
+                      ),
+                    Container(
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Color(0x99000000), Colors.transparent],
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
                         ),
                       ),
                     ),
-                  ),
-              ],
-            ),
-          ),
-          // Noi dung
-          Padding(
-            padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  dish.name,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: textPrimary,
-                  ),
+                    // Nut bo yeu thich
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: _GlassIconButton(
+                        icon: Icons.bookmark,
+                        onTap: onRemove,
+                      ),
+                    ),
+                    // Badge tag (neu co)
+                    if (tag.isNotEmpty)
+                      Positioned(
+                        left: 10,
+                        bottom: 10,
+                        child: ConstrainedBox(
+                          // Gioi han chieu ngang de khong tran ra ngoai anh
+                          constraints: const BoxConstraints(maxWidth: 165),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF97316),
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                            child: Text(
+                              tag,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: false,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
-                const SizedBox(height: 4),
-                Row(
+              ),
+              // Noi dung
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(Icons.place, size: 12, color: textSecondary),
-                    const SizedBox(width: 4),
                     Text(
-                      provinceRegion,
-                      style: TextStyle(fontSize: 11, color: textSecondary),
+                      dish.name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Icon(Icons.place, size: 12, color: textSecondary),
+                        const SizedBox(width: 4),
+                        Text(
+                          provinceRegion,
+                          style: TextStyle(fontSize: 11, color: textSecondary),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    // Muc do cay (spicyLevel)
+                    Row(
+                      children: [
+                        const Icon(Icons.local_fire_department,
+                            size: 12, color: Color(0xFFF97316)),
+                        const SizedBox(width: 4),
+                        Text(
+                          spicy == 0 ? 'Khong cay' : 'Cay cap $spicy',
+                          style: TextStyle(fontSize: 11, color: textSecondary),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-                const SizedBox(height: 6),
-                // Muc do cay (spicyLevel)
-                Row(
-                  children: [
-                    const Icon(Icons.local_fire_department,
-                        size: 12, color: Color(0xFFF97316)),
-                    const SizedBox(width: 4),
-                    Text(
-                      spicy == 0 ? 'Khong cay' : 'Cay cap $spicy',
-                      style: TextStyle(fontSize: 11, color: textSecondary),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
