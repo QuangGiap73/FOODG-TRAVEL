@@ -6,13 +6,30 @@ import 'package:http/http.dart' as http;
 import 'package:food_travel/config/goong_secrets.dart';
 import 'package:food_travel/services/map/places_service.dart';
 
+class PlaceMenuItem {
+  const PlaceMenuItem({
+    required this.name,
+    this.price = '',
+    this.photoUrl = '',
+    this.badge = '',
+  });
+
+  final String name;
+  final String price;
+  final String photoUrl;
+  final String badge;
+}
+
 class GoongNearbyPlace {
   final String id;
+  final String serpDataId;
   final String name;
   final String address;
+  final String district;
   final double lat;
   final double lng;
   final String photoUrl;
+  final List<String> photoUrls;
   final double? rating;
   final int? reviewCount;
   final String? price;
@@ -20,14 +37,20 @@ class GoongNearbyPlace {
   final String? category;
   final bool? isOpen;
   final String? closingTime;
+  final List<String> openingHours;
+  final List<String> amenities;
+  final List<PlaceMenuItem> mustTryItems;
 
   const GoongNearbyPlace({
     required this.id,
+    this.serpDataId = '',
     required this.name,
     required this.address,
+    this.district = '',
     required this.lat,
     required this.lng,
     this.photoUrl = '',
+    this.photoUrls = const [],
     this.rating,
     this.reviewCount,
     this.price,
@@ -35,6 +58,9 @@ class GoongNearbyPlace {
     this.category,
     this.isOpen,
     this.closingTime,
+    this.openingHours = const [],
+    this.amenities = const [],
+    this.mustTryItems = const [],
   });
 
   factory GoongNearbyPlace.fromJson(Map<String, dynamic> json) {
@@ -45,18 +71,20 @@ class GoongNearbyPlace {
 
     return GoongNearbyPlace(
       id: (json['place_id'] ?? '').toString(),
+      serpDataId: (json['place_id'] ?? '').toString(),
       name: (json['name'] ?? '').toString(),
       address: (json['vicinity'] ?? json['formatted_address'] ?? '').toString(),
       lat: lat,
       lng: lng,
       photoUrl: _photoUrlFromJson(json),
+      photoUrls: _photoUrlsFromJson(json),
       category: _categoryFromJson(json),
     );
   }
-// chuyển dữ liệu serpapi về cùng 1 form nearbyplace
+
+  // Chuyen du lieu serpapi ve cung 1 form nearbyplace
   factory GoongNearbyPlace.fromSerpApi(Map<String, dynamic> json) {
     final coords = json['gps_coordinates'] as Map<String, dynamic>? ?? const {};
-    // vì serpapi trả dữ liệu không ổn định , nên dưới đây là thứ tự ưu tiên.
     final lat = _parseDouble(
       coords['latitude'] ??
           coords['lat'] ??
@@ -69,16 +97,20 @@ class GoongNearbyPlace {
           json['longitude'] ??
           json['lng'],
     );
-  // ép kiểu, do dùng 2 API nên ưu tiên title trước name.
+
+    final photos = _serpPhotoUrlsFromJson(json);
     return GoongNearbyPlace(
       id: _serpIdFromJson(json),
+      serpDataId: _serpDataIdFromJson(json),
       name: _stringValue(json['title'] ?? json['name']),
       address: _stringValue(
         json['address'] ?? json['formatted_address'] ?? json['vicinity'],
       ),
+      district: _stringValue(json['district'] ?? json['neighborhood']),
       lat: lat,
       lng: lng,
-      photoUrl: _serpPhotoUrlFromJson(json),
+      photoUrl: photos.isNotEmpty ? photos.first : _serpPhotoUrlFromJson(json),
+      photoUrls: photos,
       rating: _toDoubleOrNull(json['rating']),
       reviewCount: _toIntOrNull(
         json['reviews'] ?? json['review_count'] ?? json['reviews_count'],
@@ -95,10 +127,14 @@ class GoongNearbyPlace {
       category: _categoryFromJson(json),
       isOpen: _openFromJson(json),
       closingTime: _closingTimeFromJson(json),
+      openingHours: _openingHoursFromJson(json),
+      amenities: _amenitiesFromJson(json),
+      mustTryItems: const [],
     );
   }
 }
-// lấy ảnh từ goong
+
+// Lay anh tu Goong
 String _photoUrlFromJson(Map<String, dynamic> json) {
   final photos = json['photos'] as List?;
   if (photos == null || photos.isEmpty) return '';
@@ -112,9 +148,29 @@ String _photoUrlFromJson(Map<String, dynamic> json) {
   return '';
 }
 
+List<String> _photoUrlsFromJson(Map<String, dynamic> json) {
+  final photos = json['photos'] as List?;
+  if (photos == null || photos.isEmpty) return const [];
+  final urls = <String>[];
+  for (final item in photos) {
+    if (item is Map) {
+      final ref = item['photo_reference']?.toString();
+      if (ref != null && ref.isNotEmpty) {
+        urls.add(buildGoongPhotoUrl(ref));
+      }
+    }
+  }
+  return urls;
+}
+
 String _serpIdFromJson(Map<String, dynamic> json) {
   final raw =
       json['place_id'] ?? json['data_id'] ?? json['cid'] ?? json['id'];
+  return raw == null ? '' : raw.toString();
+}
+
+String _serpDataIdFromJson(Map<String, dynamic> json) {
+  final raw = json['data_id'] ?? json['place_id'] ?? json['cid'];
   return raw == null ? '' : raw.toString();
 }
 
@@ -152,6 +208,70 @@ String _serpPhotoUrlFromJson(Map<String, dynamic> json) {
   }
 
   return '';
+}
+
+List<String> _serpPhotoUrlsFromJson(Map<String, dynamic> json) {
+  final urls = <String>[];
+
+  void addIfString(dynamic value) {
+    if (value is String && value.trim().isNotEmpty) {
+      urls.add(value.trim());
+    }
+  }
+
+  addIfString(
+    json['thumbnail'] ?? json['thumbnail_url'] ?? json['image'] ?? json['photo'],
+  );
+
+  final photos = json['photos'];
+  if (photos is List) {
+    for (final item in photos) {
+      if (item is String) {
+        addIfString(item);
+      } else if (item is Map) {
+        addIfString(item['thumbnail'] ?? item['thumbnail_url'] ?? item['image']);
+      }
+    }
+  }
+
+  final images = json['images'];
+  if (images is List) {
+    for (final item in images) {
+      if (item is String) {
+        addIfString(item);
+      } else if (item is Map) {
+        addIfString(item['thumbnail'] ?? item['thumbnail_url'] ?? item['image']);
+      }
+    }
+  }
+
+  final seen = <String>{};
+  return urls.where((e) => seen.add(e)).toList();
+}
+
+List<String> _openingHoursFromJson(Map<String, dynamic> json) {
+  final hours = json['hours'];
+  if (hours is Map) {
+    final weekdays = hours['weekdays'];
+    if (weekdays is List) {
+      return weekdays.map((e) => e.toString()).toList();
+    }
+    final text = hours['opening_hours'] ?? hours['open_hours'];
+    if (text is List) {
+      return text.map((e) => e.toString()).toList();
+    }
+  }
+  final raw = json['opening_hours'] ?? json['hours'] ?? json['open_hours'];
+  if (raw is List) return raw.map((e) => e.toString()).toList();
+  return const [];
+}
+
+List<String> _amenitiesFromJson(Map<String, dynamic> json) {
+  final raw = json['amenities'] ?? json['features'] ?? json['services'];
+  if (raw is List) {
+    return raw.map((e) => e.toString()).where((e) => e.trim().isNotEmpty).toList();
+  }
+  return const [];
 }
 
 String? _categoryFromJson(Map<String, dynamic> json) {
@@ -237,7 +357,8 @@ double _parseDouble(dynamic value) {
   if (value is String) return double.tryParse(value) ?? 0;
   return 0;
 }
-// tìm quán ăn gần vị trí người dùng 
+
+// Tim quan an gan vi tri nguoi dung
 extension GoongNearbyApi on GoongPlacesService {
   Future<List<GoongNearbyPlace>> nearbySearch({
     required double lat,
@@ -300,8 +421,7 @@ extension GoongNearbyApi on GoongPlacesService {
       // Giu duy nhat theo place_id.
       final dedup = <String, GoongNearbyPlace>{};
       for (final p in list) {
-        final key =
-            p.id.isNotEmpty ? p.id : '${p.name}-${p.lat}-${p.lng}';
+        final key = p.id.isNotEmpty ? p.id : '${p.name}-${p.lat}-${p.lng}';
         dedup[key] = p;
       }
       return dedup.values.toList();
@@ -361,8 +481,7 @@ extension GoongNearbyApi on GoongPlacesService {
       // Giu duy nhat theo place_id.
       final dedup = <String, GoongNearbyPlace>{};
       for (final p in list) {
-        final key =
-            p.id.isNotEmpty ? p.id : '${p.name}-${p.lat}-${p.lng}';
+        final key = p.id.isNotEmpty ? p.id : '${p.name}-${p.lat}-${p.lng}';
         dedup[key] = p;
       }
       return dedup.values.toList();
