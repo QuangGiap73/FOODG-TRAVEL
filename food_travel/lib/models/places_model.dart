@@ -1,4 +1,4 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -219,30 +219,41 @@ List<String> _serpPhotoUrlsFromJson(Map<String, dynamic> json) {
     }
   }
 
-  addIfString(
-    json['thumbnail'] ?? json['thumbnail_url'] ?? json['image'] ?? json['photo'],
-  );
+  try {
+    addIfString(
+      json['thumbnail'] ??
+          json['thumbnail_url'] ??
+          json['image'] ??
+          json['photo'],
+    );
 
-  final photos = json['photos'];
-  if (photos is List) {
-    for (final item in photos) {
-      if (item is String) {
-        addIfString(item);
-      } else if (item is Map) {
-        addIfString(item['thumbnail'] ?? item['thumbnail_url'] ?? item['image']);
+    final photos = json['photos'];
+    if (photos is List) {
+      for (final item in photos) {
+        if (item is String) {
+          addIfString(item);
+        } else if (item is Map) {
+          addIfString(
+            item['thumbnail'] ?? item['thumbnail_url'] ?? item['image'],
+          );
+        }
       }
     }
-  }
 
-  final images = json['images'];
-  if (images is List) {
-    for (final item in images) {
-      if (item is String) {
-        addIfString(item);
-      } else if (item is Map) {
-        addIfString(item['thumbnail'] ?? item['thumbnail_url'] ?? item['image']);
+    final images = json['images'];
+    if (images is List) {
+      for (final item in images) {
+        if (item is String) {
+          addIfString(item);
+        } else if (item is Map) {
+          addIfString(
+            item['thumbnail'] ?? item['thumbnail_url'] ?? item['image'],
+          );
+        }
       }
     }
+  } catch (_) {
+    // Neu du lieu loi thi bo qua, tra ve danh sach hien co
   }
 
   final seen = <String>{};
@@ -250,26 +261,48 @@ List<String> _serpPhotoUrlsFromJson(Map<String, dynamic> json) {
 }
 
 List<String> _openingHoursFromJson(Map<String, dynamic> json) {
-  final hours = json['hours'];
-  if (hours is Map) {
-    final weekdays = hours['weekdays'];
-    if (weekdays is List) {
-      return weekdays.map((e) => e.toString()).toList();
+  try {
+    final hours = json['hours'];
+    if (hours is Map) {
+      final weekdays = hours['weekdays'];
+      if (weekdays is List) {
+        return weekdays.map((e) => e.toString()).toList();
+      }
+      final text = hours['opening_hours'] ?? hours['open_hours'];
+      if (text is List) {
+        return text.map((e) => e.toString()).toList();
+      }
+      if (text is String && text.trim().isNotEmpty) {
+        return [text.trim()];
+      }
     }
-    final text = hours['opening_hours'] ?? hours['open_hours'];
-    if (text is List) {
-      return text.map((e) => e.toString()).toList();
-    }
+    final raw = json['opening_hours'] ?? json['hours'] ?? json['open_hours'];
+    if (raw is List) return raw.map((e) => e.toString()).toList();
+    if (raw is String && raw.trim().isNotEmpty) return [raw.trim()];
+  } catch (_) {
+    // Neu du lieu loi thi tra ve danh sach rong
   }
-  final raw = json['opening_hours'] ?? json['hours'] ?? json['open_hours'];
-  if (raw is List) return raw.map((e) => e.toString()).toList();
   return const [];
 }
 
 List<String> _amenitiesFromJson(Map<String, dynamic> json) {
-  final raw = json['amenities'] ?? json['features'] ?? json['services'];
-  if (raw is List) {
-    return raw.map((e) => e.toString()).where((e) => e.trim().isNotEmpty).toList();
+  try {
+    final raw = json['amenities'] ?? json['features'] ?? json['services'];
+    if (raw is List) {
+      return raw
+          .map((e) => e.toString())
+          .where((e) => e.trim().isNotEmpty)
+          .toList();
+    }
+    if (raw is String && raw.trim().isNotEmpty) {
+      return raw
+          .split(',')
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .toList();
+    }
+  } catch (_) {
+    // Neu du lieu loi thi tra ve danh sach rong
   }
   return const [];
 }

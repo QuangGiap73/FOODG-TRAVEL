@@ -1,4 +1,4 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -33,7 +33,8 @@ class SerpApiPlacesService {
         debugPrint('SerpAPI reviews http=${res.statusCode} body=${res.body}');
         return const [];
       }
-      final data = jsonDecode(res.body) as Map<String, dynamic>;
+      final bodyText = utf8.decode(res.bodyBytes, allowMalformed: true);
+      final data = jsonDecode(bodyText) as Map<String, dynamic>;
       final list = data['reviews'];
       if (list is! List) return const [];
       return list
@@ -77,7 +78,8 @@ class SerpApiPlacesService {
         return [];
       }
 
-      final data = jsonDecode(res.body) as Map<String, dynamic>;
+      final bodyText = utf8.decode(res.bodyBytes, allowMalformed: true);
+      final data = jsonDecode(bodyText) as Map<String, dynamic>;
       final items = _extractResults(data); // boc tach du lieu tu serpapi
       if (items.isEmpty) return [];
 
@@ -143,7 +145,8 @@ class SerpApiPlacesService {
         debugPrint('SerpAPI detail http=${res.statusCode} body=${res.body}');
         return seed;
       }
-      final data = jsonDecode(res.body) as Map<String, dynamic>;
+      final bodyText = utf8.decode(res.bodyBytes, allowMalformed: true);
+      final data = jsonDecode(bodyText) as Map<String, dynamic>;
       final items = _extractResults(data);
       if (items.isEmpty) return seed;
 
@@ -165,6 +168,10 @@ class SerpApiPlacesService {
     final mainPhoto = detail.photoUrl.isNotEmpty
         ? detail.photoUrl
         : (mergedPhotos.isNotEmpty ? mergedPhotos.first : seed.photoUrl);
+    final mergedHours =
+        detail.openingHours.isNotEmpty ? detail.openingHours : seed.openingHours;
+    final mergedAmenities =
+        detail.amenities.isNotEmpty ? detail.amenities : seed.amenities;
 
     return GoongNearbyPlace(
       id: detail.id.isNotEmpty ? detail.id : seed.id,
@@ -173,6 +180,7 @@ class SerpApiPlacesService {
           : seed.serpDataId,
       name: detail.name.isNotEmpty ? detail.name : seed.name,
       address: detail.address.isNotEmpty ? detail.address : seed.address,
+      district: detail.district.isNotEmpty ? detail.district : seed.district,
       lat: detail.lat != 0 ? detail.lat : seed.lat,
       lng: detail.lng != 0 ? detail.lng : seed.lng,
       photoUrl: mainPhoto,
@@ -184,45 +192,80 @@ class SerpApiPlacesService {
       category: detail.category ?? seed.category,
       isOpen: detail.isOpen ?? seed.isOpen,
       closingTime: detail.closingTime ?? seed.closingTime,
+      openingHours: mergedHours,
+      amenities: mergedAmenities,
+      mustTryItems: seed.mustTryItems.isNotEmpty
+          ? seed.mustTryItems
+          : detail.mustTryItems,
     );
   }
 }
 
 class SerpApiReview {
   const SerpApiReview({
-    required this.user,
+    required this.userName,
+    required this.avatarUrl,
     required this.rating,
     required this.text,
     required this.dateText,
   });
 
-  final String user;
+  final String userName;
+  final String avatarUrl;
   final double rating;
   final String text;
   final String dateText;
 
   factory SerpApiReview.fromJson(Map<String, dynamic> json) {
-    final user = (json['user'] ??
-            json['author_name'] ??
-            json['name'] ??
-            '')
-        .toString();
+    final userObj = json['user'];
+    String userName = '';
+    String avatarUrl = '';
+    if (userObj is Map) {
+      userName = (userObj['name'] ??
+              userObj['username'] ??
+              userObj['author_name'] ??
+              '')
+          .toString();
+      avatarUrl = (userObj['thumbnail'] ??
+              userObj['photo'] ??
+              userObj['image'] ??
+              userObj['profile_photo_url'] ??
+              '')
+          .toString();
+    } else if (userObj is String) {
+      userName = userObj;
+    }
+    if (userName.isEmpty) {
+      userName = (json['author_name'] ?? json['name'] ?? '').toString();
+    }
+
     final ratingRaw = json['rating'];
     final rating = ratingRaw is num
         ? ratingRaw.toDouble()
         : double.tryParse(ratingRaw?.toString() ?? '') ?? 0;
-    final text = (json['snippet'] ??
-            json['text'] ??
-            json['content'] ??
-            '')
-        .toString();
+    String text = '';
+    final snippet = json['snippet'];
+    if (snippet is Map) {
+      text = (snippet['text'] ?? snippet['snippet'] ?? '').toString();
+    } else {
+      text = (snippet ?? '').toString();
+    }
+    if (text.isEmpty) {
+      text = (json['text'] ??
+              json['review_text'] ??
+              json['content'] ??
+              json['description'] ??
+              '')
+          .toString();
+    }
     final dateText = (json['date'] ??
             json['relative_date'] ??
             json['published_time'] ??
             '')
         .toString();
     return SerpApiReview(
-      user: user,
+      userName: userName,
+      avatarUrl: avatarUrl,
       rating: rating,
       text: text,
       dateText: dateText,
