@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../models/places_model.dart';
+import '../../map/map_page.dart'; 
+
 class PlaceSummaryCard extends StatelessWidget {
   const PlaceSummaryCard({
     super.key,
+    required this.place,
     required this.name,
     required this.category,
     required this.price,
@@ -14,6 +18,7 @@ class PlaceSummaryCard extends StatelessWidget {
     required this.phone,
   });
 
+  final GoongNearbyPlace place;
   final String name;
   final String category;
   final String price;
@@ -120,7 +125,7 @@ class PlaceSummaryCard extends StatelessWidget {
           const SizedBox(height: 12),
           _AddressRow(address: address, textSecondary: textSecondary),
           const SizedBox(height: 14),
-          _QuickActions(phone: phone, placeName: name),
+          _QuickActions(phone: phone, placeName: name, place: place),
         ],
       ),
     );
@@ -170,11 +175,11 @@ class _AddressRow extends StatelessWidget {
 }
 
 class _QuickActions extends StatefulWidget {
-  const _QuickActions({required this.phone, required this.placeName});
+  const _QuickActions({required this.phone, required this.placeName, required this.place});
 
   final String phone;
   final String placeName;
-
+  final GoongNearbyPlace place;
   @override
   State<_QuickActions> createState() => _QuickActionsState();
 }
@@ -206,7 +211,17 @@ class _QuickActionsState extends State<_QuickActions> {
           icon: Icons.navigation,
           label: 'Chi duong',
           isActive: _selected == 1,
-          onTap: () => _onSelect(1),
+          onTap: () { 
+            _onSelect(1);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => MapPage(
+                  initialPlace: widget.place,
+                ),
+              ),
+            );
+          },
         ),
         _QuickAction(
           icon: Icons.event,
@@ -342,3 +357,4 @@ void _showCallSheet(BuildContext context, String placeName, String phone) {
     },
   );
 }
+

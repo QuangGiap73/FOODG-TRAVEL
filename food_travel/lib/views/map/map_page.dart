@@ -45,10 +45,12 @@ class MapPage extends StatefulWidget {
     super.key,
     this.initialNearbyPlaces = const [],
     this.initialNearbyQuery,
+    this.initialPlace,
   });
 
   final List<GoongNearbyPlace> initialNearbyPlaces;
   final String? initialNearbyQuery;
+  final GoongNearbyPlace? initialPlace;
 
   @override
   State<MapPage> createState() => _MapPageState();
@@ -603,6 +605,11 @@ class _MapPageState extends State<MapPage> {
       loadFuture.whenComplete(() {
         if (!mounted) return;
         _findNearbyFood(queryOverride: initialQuery);
+      });
+    }
+    if (widget.initialPlace != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _startDirections(widget.initialPlace!);
       });
     }
   }

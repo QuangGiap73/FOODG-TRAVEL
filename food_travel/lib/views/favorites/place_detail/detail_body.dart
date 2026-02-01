@@ -148,6 +148,7 @@ class _PlaceDetailBodyState extends State<PlaceDetailBody> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: PlaceSummaryCard(
               name: name,
+              place: place,
               category: category,
               price: price,
               rating: rating,
@@ -217,3 +218,6 @@ class _PlaceDetailBodyState extends State<PlaceDetailBody> {
     );
   }
 }
+
+
+
