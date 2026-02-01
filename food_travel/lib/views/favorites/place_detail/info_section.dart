@@ -132,16 +132,21 @@ class AmenityChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bg = isDark ? const Color(0xFF1B2028) : const Color(0xFFF8FAFC);
+    final border = isDark ? const Color(0xFF2A323D) : const Color(0xFFE2E8F0);
+    final textColor = isDark ? Colors.white70 : const Color(0xFF64748B);
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFC),
+        color: bg,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: border),
       ),
       child: Text(
         text,
-        style: const TextStyle(fontSize: 11, color: Color(0xFF64748B)),
+        style: TextStyle(fontSize: 11, color: textColor),
       ),
     );
   }

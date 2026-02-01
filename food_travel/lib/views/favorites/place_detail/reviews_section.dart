@@ -86,6 +86,7 @@ class ReviewCard extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
     final textPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
     final textSecondary = isDark ? Colors.white70 : const Color(0xFF64748B);
+    final avatarBg = isDark ? const Color(0xFF1F2630) : const Color(0xFFE2E8F0);
     final name = review.userName.isEmpty ? 'Nguoi dung' : review.userName;
     final subtitle = review.dateText.isNotEmpty
         ? '${review.dateText} ? Da an o quan nay'
@@ -107,8 +108,11 @@ class ReviewCard extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 16,
-                backgroundColor: const Color(0xFFE2E8F0),
-                child: Text(name[0].toUpperCase()),
+                backgroundColor: avatarBg,
+                child: Text(
+                  name[0].toUpperCase(),
+                  style: TextStyle(color: textPrimary),
+                ),
               ),
               const SizedBox(width: 8),
               Expanded(

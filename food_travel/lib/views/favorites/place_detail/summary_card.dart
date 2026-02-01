@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PlaceSummaryCard extends StatelessWidget {
   const PlaceSummaryCard({
@@ -119,7 +120,7 @@ class PlaceSummaryCard extends StatelessWidget {
           const SizedBox(height: 12),
           _AddressRow(address: address, textSecondary: textSecondary),
           const SizedBox(height: 14),
-          _QuickActions(phone: phone),
+          _QuickActions(phone: phone, placeName: name),
         ],
       ),
     );
@@ -168,20 +169,57 @@ class _AddressRow extends StatelessWidget {
   }
 }
 
-class _QuickActions extends StatelessWidget {
-  const _QuickActions({required this.phone});
+class _QuickActions extends StatefulWidget {
+  const _QuickActions({required this.phone, required this.placeName});
 
   final String phone;
+  final String placeName;
+
+  @override
+  State<_QuickActions> createState() => _QuickActionsState();
+}
+
+class _QuickActionsState extends State<_QuickActions> {
+  int _selected = 0;
+
+  void _onSelect(int index) {
+    setState(() {
+      _selected = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: const [
-        _QuickAction(icon: Icons.call, label: 'Goi dien'),
-        _QuickAction(icon: Icons.navigation, label: 'Chi duong'),
-        _QuickAction(icon: Icons.event, label: 'Dat ban', highlight: true),
-        _QuickAction(icon: Icons.group, label: 'Moi ban'),
+      children: [
+        _QuickAction(
+          icon: Icons.call,
+          label: 'Goi dien',
+          isActive: _selected == 0,
+          onTap: () {
+            _onSelect(0);
+            _showCallSheet(context, widget.placeName, widget.phone);
+          },
+        ),
+        _QuickAction(
+          icon: Icons.navigation,
+          label: 'Chi duong',
+          isActive: _selected == 1,
+          onTap: () => _onSelect(1),
+        ),
+        _QuickAction(
+          icon: Icons.event,
+          label: 'Dat ban',
+          isActive: _selected == 2,
+          onTap: () => _onSelect(2),
+        ),
+        _QuickAction(
+          icon: Icons.group,
+          label: 'Moi ban',
+          isActive: _selected == 3,
+          onTap: () => _onSelect(3),
+        ),
       ],
     );
   }
@@ -191,33 +229,116 @@ class _QuickAction extends StatelessWidget {
   const _QuickAction({
     required this.icon,
     required this.label,
-    this.highlight = false,
+    required this.isActive,
+    required this.onTap,
   });
 
   final IconData icon;
   final String label;
-  final bool highlight;
+  final bool isActive;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final bg = highlight ? const Color(0xFFFFF3E6) : const Color(0xFFF8FAFC);
-    final border = highlight ? const Color(0xFFFFE0C2) : const Color(0xFFE2E8F0);
-    final color = highlight ? const Color(0xFFFF6A00) : const Color(0xFF64748B);
-    return Column(
-      children: [
-        Container(
-          width: 46,
-          height: 46,
-          decoration: BoxDecoration(
-            color: bg,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: border),
+    final activeColor = const Color(0xFFFF6A00);
+    final bg = isActive ? const Color(0xFFFFF3E6) : const Color(0xFF1B2028);
+    final border = isActive ? activeColor : const Color(0xFF2B3442);
+    final textColor = isActive ? activeColor : Colors.white70;
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            width: 46,
+            height: 46,
+            decoration: BoxDecoration(
+              color: bg,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: border),
+            ),
+            child: Icon(icon, color: textColor),
           ),
-          child: Icon(icon, color: color),
-        ),
-        const SizedBox(height: 6),
-        Text(label, style: const TextStyle(fontSize: 11, color: Color(0xFF64748B))),
-      ],
+          const SizedBox(height: 6),
+          Text(label, style: TextStyle(fontSize: 11, color: textColor)),
+        ],
+      ),
     );
   }
+}
+
+// ham mo bottom sheet goi dien
+void _showCallSheet(BuildContext context, String placeName, String phone) {
+  if (phone.trim().isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Quan chua co so dien')),
+    );
+    return;
+  }
+
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.transparent,
+    isScrollControlled: false,
+    builder: (context) {
+      final isDark = Theme.of(context).brightness == Brightness.dark;
+      final bg = isDark ? const Color(0xFF15181E) : Colors.white;
+      final textPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
+      final textSecondary = isDark ? Colors.white70 : const Color(0xFF64748B);
+
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 40,
+              height: 4,
+              margin: const EdgeInsets.only(bottom: 12),
+              decoration: BoxDecoration(
+                color: textSecondary.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(999),
+              ),
+            ),
+            Text(
+              placeName,
+              style: TextStyle(color: textPrimary, fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 6),
+            Text(phone, style: TextStyle(color: textSecondary)),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Huy'),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      final url = Uri.parse('tel:$phone');
+                      if (await canLaunchUrl(url)) {
+                        await launchUrl(url);
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFFF6A00),
+                      foregroundColor: Colors.white,
+                    ),
+                    child: const Text('Goi ngay'),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    },
+  );
 }
