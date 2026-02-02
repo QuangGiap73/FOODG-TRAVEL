@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../models/places_model.dart';
-import '../../map/map_page.dart'; 
+import '../../map/map_page.dart';
+import 'place_detail_typography.dart';
 
 class PlaceSummaryCard extends StatelessWidget {
   const PlaceSummaryCard({
@@ -61,20 +62,13 @@ class PlaceSummaryCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      name,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                        color: textPrimary,
-                      ),
-                    ),
+                    Text(name, style: PlaceDetailTypography.title(textPrimary)),
                     if (category.isNotEmpty)
                       Padding(
-                        padding: const EdgeInsets.only(top: 4),
+                        padding: const EdgeInsets.only(top: 6),
                         child: Text(
                           category,
-                          style: TextStyle(color: textSecondary, fontSize: 12),
+                          style: PlaceDetailTypography.body(textSecondary),
                         ),
                       ),
                   ],
@@ -95,17 +89,14 @@ class PlaceSummaryCard extends StatelessWidget {
                         const SizedBox(width: 4),
                         Text(
                           rating.isEmpty ? 'N/A' : rating,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFFFF6A00),
-                          ),
+                          style: PlaceDetailTypography.bodyStrong(const Color(0xFFFF6A00)),
                         ),
                       ],
                     ),
                     if (reviewCount != null)
                       Text(
                         '(${reviewCount!})',
-                        style: const TextStyle(fontSize: 10, color: Colors.black54),
+                        style: PlaceDetailTypography.caption(Colors.black54),
                       ),
                   ],
                 ),
@@ -116,10 +107,10 @@ class PlaceSummaryCard extends StatelessWidget {
           Row(
             children: [
               if (price.isNotEmpty)
-                Text(price, style: TextStyle(color: textPrimary, fontSize: 13)),
+                Text(price, style: PlaceDetailTypography.bodyStrong(textPrimary)),
               if (price.isNotEmpty) _Dot(textSecondary: textSecondary),
               if (district.isNotEmpty)
-                Text(district, style: TextStyle(color: textSecondary, fontSize: 13)),
+                Text(district, style: PlaceDetailTypography.body(textSecondary)),
             ],
           ),
           const SizedBox(height: 12),
@@ -165,7 +156,7 @@ class _AddressRow extends StatelessWidget {
             address,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: textSecondary),
+            style: PlaceDetailTypography.body(textSecondary),
           ),
         ),
         const Icon(Icons.chevron_right, size: 18, color: Colors.grey),
@@ -175,11 +166,16 @@ class _AddressRow extends StatelessWidget {
 }
 
 class _QuickActions extends StatefulWidget {
-  const _QuickActions({required this.phone, required this.placeName, required this.place});
+  const _QuickActions({
+    required this.phone,
+    required this.placeName,
+    required this.place,
+  });
 
   final String phone;
   final String placeName;
   final GoongNearbyPlace place;
+
   @override
   State<_QuickActions> createState() => _QuickActionsState();
 }
@@ -211,14 +207,12 @@ class _QuickActionsState extends State<_QuickActions> {
           icon: Icons.navigation,
           label: 'Chi duong',
           isActive: _selected == 1,
-          onTap: () { 
+          onTap: () {
             _onSelect(1);
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => MapPage(
-                  initialPlace: widget.place,
-                ),
+                builder: (_) => MapPage(initialPlace: widget.place),
               ),
             );
           },
@@ -257,7 +251,6 @@ class _QuickAction extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final activeColor = const Color(0xFFFF6A00);
-    // Mau nhat giong mockup: active cam nhat, inactive xam nhat (light mode).
     final bg = isActive
         ? const Color(0xFFFFF3E8)
         : (isDark ? const Color(0xFF1B2028) : const Color(0xFFF3F4F6));
@@ -266,6 +259,7 @@ class _QuickAction extends StatelessWidget {
         : (isDark ? const Color(0xFF2B3442) : const Color(0xFFE5E7EB));
     final textColor =
         isActive ? activeColor : (isDark ? const Color(0xFFB8C1CC) : const Color(0xFF64748B));
+
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -283,9 +277,7 @@ class _QuickAction extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             label,
-            style: TextStyle(
-              fontSize: 11,
-              color: textColor,
+            style: PlaceDetailTypography.chip(textColor).copyWith(
               fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
             ),
           ),
@@ -295,7 +287,6 @@ class _QuickAction extends StatelessWidget {
   }
 }
 
-// ham mo bottom sheet goi dien
 void _showCallSheet(BuildContext context, String placeName, String phone) {
   if (phone.trim().isEmpty) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -332,12 +323,9 @@ void _showCallSheet(BuildContext context, String placeName, String phone) {
                 borderRadius: BorderRadius.circular(999),
               ),
             ),
-            Text(
-              placeName,
-              style: TextStyle(color: textPrimary, fontWeight: FontWeight.w700),
-            ),
+            Text(placeName, style: PlaceDetailTypography.sectionTitle(textPrimary)),
             const SizedBox(height: 6),
-            Text(phone, style: TextStyle(color: textSecondary)),
+            Text(phone, style: PlaceDetailTypography.body(textSecondary)),
             const SizedBox(height: 16),
             Row(
               children: [
@@ -371,5 +359,3 @@ void _showCallSheet(BuildContext context, String placeName, String phone) {
     },
   );
 }
-
-

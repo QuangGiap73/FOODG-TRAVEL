@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../models/places_model.dart';
+import 'place_detail_typography.dart';
 
 class SectionHeader extends StatelessWidget {
   const SectionHeader({super.key, required this.title, required this.actionText});
@@ -11,6 +12,9 @@ class SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
       child: Row(
@@ -27,13 +31,13 @@ class SectionHeader extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              Text(
-                title,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-              ),
+              Text(title, style: PlaceDetailTypography.sectionTitle(textPrimary)),
             ],
           ),
-          Text(actionText, style: const TextStyle(fontSize: 12, color: Color(0xFFFF6A00))),
+          Text(
+            actionText,
+            style: PlaceDetailTypography.bodyStrong(const Color(0xFFFF6A00)).copyWith(fontSize: 12),
+          ),
         ],
       ),
     );
@@ -89,15 +93,18 @@ class MenuHighlightsSection extends StatelessWidget {
           .collection('items')
           .limit(12)
           .get();
-      return snap.docs.map((doc) {
-        final data = doc.data();
-        return PlaceMenuItem(
-          name: (data['name'] ?? '').toString(),
-          price: (data['price'] ?? '').toString(),
-          photoUrl: (data['photoUrl'] ?? '').toString(),
-          badge: (data['badge'] ?? '').toString(),
-        );
-      }).where((e) => e.name.isNotEmpty).toList();
+      return snap.docs
+          .map((doc) {
+            final data = doc.data();
+            return PlaceMenuItem(
+              name: (data['name'] ?? '').toString(),
+              price: (data['price'] ?? '').toString(),
+              photoUrl: (data['photoUrl'] ?? '').toString(),
+              badge: (data['badge'] ?? '').toString(),
+            );
+          })
+          .where((e) => e.name.isNotEmpty)
+          .toList();
     } catch (_) {
       return const [];
     }
@@ -118,7 +125,7 @@ class MenuHighlightsSection extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                 child: Text(
                   'Dang cap nhat mon nen thu.',
-                  style: TextStyle(color: textSecondary),
+                  style: PlaceDetailTypography.body(textSecondary),
                 ),
               ),
             ],
@@ -137,6 +144,9 @@ class MenuCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
+
     return SizedBox(
       width: 150,
       child: Column(
@@ -156,12 +166,12 @@ class MenuCard extends StatelessWidget {
             item.name,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontWeight: FontWeight.w600),
+            style: PlaceDetailTypography.bodyStrong(textPrimary),
           ),
           const SizedBox(height: 4),
           Text(
             item.price,
-            style: const TextStyle(color: Color(0xFFFF6A00), fontWeight: FontWeight.w700),
+            style: PlaceDetailTypography.bodyStrong(const Color(0xFFFF6A00)),
           ),
         ],
       ),

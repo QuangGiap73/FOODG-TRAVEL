@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -266,23 +266,53 @@ List<String> _openingHoursFromJson(Map<String, dynamic> json) {
     if (hours is Map) {
       final weekdays = hours['weekdays'];
       if (weekdays is List) {
-        return weekdays.map((e) => e.toString()).toList();
+        final lines = weekdays
+            .map((e) => _cleanOpenHourText(e.toString()))
+            .where((e) => e.isNotEmpty)
+            .toList();
+        if (lines.isNotEmpty) return lines;
       }
       final text = hours['opening_hours'] ?? hours['open_hours'];
       if (text is List) {
-        return text.map((e) => e.toString()).toList();
+        final lines = text
+            .map((e) => _cleanOpenHourText(e.toString()))
+            .where((e) => e.isNotEmpty)
+            .toList();
+        if (lines.isNotEmpty) return lines;
       }
       if (text is String && text.trim().isNotEmpty) {
-        return [text.trim()];
+        final clean = _cleanOpenHourText(text);
+        if (clean.isNotEmpty) return [clean];
       }
     }
+
     final raw = json['opening_hours'] ?? json['hours'] ?? json['open_hours'];
-    if (raw is List) return raw.map((e) => e.toString()).toList();
-    if (raw is String && raw.trim().isNotEmpty) return [raw.trim()];
+    if (raw is List) {
+      return raw
+          .map((e) => _cleanOpenHourText(e.toString()))
+          .where((e) => e.isNotEmpty)
+          .toList();
+    }
+    if (raw is String && raw.trim().isNotEmpty) {
+      final clean = _cleanOpenHourText(raw);
+      if (clean.isNotEmpty) return [clean];
+    }
   } catch (_) {
     // Neu du lieu loi thi tra ve danh sach rong
   }
   return const [];
+}
+
+String _cleanOpenHourText(String raw) {
+  return raw
+      .replaceAll('{', '')
+      .replaceAll('}', '')
+      .replaceAll('[', '')
+      .replaceAll(']', '')
+      .replaceAll('"', '')
+      .replaceAll("'", '')
+      .replaceAll(' ,', ',')
+      .trim();
 }
 
 List<String> _amenitiesFromJson(Map<String, dynamic> json) {
@@ -524,3 +554,4 @@ extension GoongNearbyApi on GoongPlacesService {
     }
   }
 }
+

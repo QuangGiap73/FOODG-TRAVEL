@@ -1,12 +1,13 @@
+﻿import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../../models/place_review_model.dart';
 import '../../../models/places_model.dart';
 import '../../../services/map/serpapi_places_service.dart';
 import '../../../services/restaurants/place_review_service.dart';
+import 'place_detail_typography.dart';
 
-class PlaceReviewsSection extends StatelessWidget {
+class PlaceReviewsSection extends StatefulWidget {
   const PlaceReviewsSection({
     super.key,
     required this.place,
@@ -25,6 +26,13 @@ class PlaceReviewsSection extends StatelessWidget {
   final Color textPrimary;
   final Color textSecondary;
   final VoidCallback onWriteReview;
+
+  @override
+  State<PlaceReviewsSection> createState() => _PlaceReviewsSectionState();
+}
+
+class _PlaceReviewsSectionState extends State<PlaceReviewsSection> {
+  bool _showAll = false;
 
   Future<void> _confirmDeleteReview(
     BuildContext context,
@@ -52,9 +60,8 @@ class PlaceReviewsSection extends StatelessWidget {
 
     if (ok != true) return;
 
-    // Xoa review trong Firestore, stream se tu cap nhat lai UI.
     final service = PlaceReviewService();
-    final placeId = service.placeIdOf(place);
+    final placeId = service.placeIdOf(widget.place);
     await service.deleteMyReview(
       placeId: placeId,
       userId: review.userId,
@@ -65,84 +72,89 @@ class PlaceReviewsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final currentUid = FirebaseAuth.instance.currentUser?.uid ?? '';
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Danh gia ($fallbackCount)',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                color: textPrimary,
-              ),
+    return StreamBuilder<List<PlaceReviewModel>>(
+      stream: PlaceReviewService().watchReviews(
+        PlaceReviewService().placeIdOf(widget.place),
+      ),
+      builder: (context, snap) {
+        final firebaseReviews = snap.data ?? const <PlaceReviewModel>[];
+        final reviewCount = firebaseReviews.length + widget.reviews.length;
+
+        final cards = <Widget>[
+          ...firebaseReviews.map(
+            (r) => FirebaseReviewCard(
+              review: r,
+              cardBg: widget.cardBg,
+              borderColor: widget.borderColor,
+              canDelete: r.userId == currentUid,
+              onDelete: () => _confirmDeleteReview(context, r),
             ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFF3E6),
-                borderRadius: BorderRadius.circular(999),
-                border: Border.all(color: const Color(0xFFFFE0C2)),
-              ),
-              child: InkWell(
-                onTap: onWriteReview,
-                borderRadius: BorderRadius.circular(999),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-                  child: Text(
-                    'Viet danh gia',
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: Color(0xFFFF6A00),
-                      fontWeight: FontWeight.w700,
+          ),
+          ...widget.reviews.map(
+            (r) => ReviewCard(
+              review: r,
+              cardBg: widget.cardBg,
+              borderColor: widget.borderColor,
+            ),
+          ),
+        ];
+
+        final hasMore = cards.length > 5;
+        final visibleCards = _showAll ? cards : cards.take(5).toList();
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Danh gia ($reviewCount)',
+                  style: PlaceDetailTypography.sectionTitle(widget.textPrimary),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFF3E6),
+                    borderRadius: BorderRadius.circular(999),
+                    border: Border.all(color: const Color(0xFFFFE0C2)),
+                  ),
+                  child: InkWell(
+                    onTap: widget.onWriteReview,
+                    borderRadius: BorderRadius.circular(999),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                      child: Text(
+                        'Viet danh gia',
+                        style: PlaceDetailTypography.chip(const Color(0xFFFF6A00)).copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 10),
-
-        // Uu tien review Firebase len tren, sau do fallback SerpAPI.
-        StreamBuilder<List<PlaceReviewModel>>(
-          stream: PlaceReviewService().watchReviews(
-            PlaceReviewService().placeIdOf(place),
-          ),
-          builder: (context, snap) {
-            final firebaseReviews = snap.data ?? const <PlaceReviewModel>[];
-            if (firebaseReviews.isEmpty && reviews.isEmpty) {
-              return Text(
-                'Chua co bai danh gia.',
-                style: TextStyle(color: textSecondary),
-              );
-            }
-
-            return Column(
-              children: [
-                ...firebaseReviews.map(
-                  (r) => FirebaseReviewCard(
-                    review: r,
-                    cardBg: cardBg,
-                    borderColor: borderColor,
-                    canDelete: r.userId == currentUid,
-                    onDelete: () => _confirmDeleteReview(context, r),
-                  ),
-                ),
-                ...reviews.map(
-                  (r) => ReviewCard(
-                    review: r,
-                    cardBg: cardBg,
-                    borderColor: borderColor,
-                  ),
-                ),
               ],
-            );
-          },
-        ),
-      ],
+            ),
+            const SizedBox(height: 10),
+            if (cards.isEmpty)
+              Text(
+                'Chua co bai danh gia.',
+                style: PlaceDetailTypography.body(widget.textSecondary),
+              )
+            else ...[
+              ...visibleCards,
+              if (hasMore)
+                Align(
+                  alignment: Alignment.center,
+                  child: TextButton(
+                    onPressed: () => setState(() => _showAll = !_showAll),
+                    child: Text(_showAll ? 'Thu gon' : 'Xem them'),
+                  ),
+                ),
+            ],
+          ],
+        );
+      },
     );
   }
 }
@@ -182,9 +194,8 @@ class ReviewCard extends StatelessWidget {
     final avatarBg = isDark ? const Color(0xFF1F2630) : const Color(0xFFE2E8F0);
     final name = review.userName.isEmpty ? 'Nguoi dung' : review.userName;
     final subtitle = review.dateText.isNotEmpty
-        ? '${review.dateText} ? Da an o quan nay'
+        ? '${review.dateText} - Da an o quan nay'
         : 'Da an o quan nay';
-    final rating = review.rating;
 
     return Container(
       margin: const EdgeInsets.only(top: 10),
@@ -204,7 +215,7 @@ class ReviewCard extends StatelessWidget {
                 backgroundColor: avatarBg,
                 child: Text(
                   name[0].toUpperCase(),
-                  style: TextStyle(color: textPrimary),
+                  style: PlaceDetailTypography.chip(textPrimary),
                 ),
               ),
               const SizedBox(width: 8),
@@ -212,28 +223,16 @@ class ReviewCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      name,
-                      style: TextStyle(
-                        color: textPrimary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Text(
-                      subtitle,
-                      style: TextStyle(color: textSecondary, fontSize: 11),
-                    ),
+                    Text(name, style: PlaceDetailTypography.bodyStrong(textPrimary)),
+                    Text(subtitle, style: PlaceDetailTypography.caption(textSecondary)),
                   ],
                 ),
               ),
-              Row(children: _buildStars(rating)),
+              Row(children: _buildStars(review.rating)),
             ],
           ),
           const SizedBox(height: 8),
-          Text(
-            review.text,
-            style: TextStyle(color: textSecondary, height: 1.4),
-          ),
+          Text(review.text, style: PlaceDetailTypography.body(textSecondary)),
         ],
       ),
     );
@@ -299,7 +298,7 @@ class FirebaseReviewCard extends StatelessWidget {
                 backgroundColor: avatarBg,
                 child: Text(
                   name[0].toUpperCase(),
-                  style: TextStyle(color: textPrimary),
+                  style: PlaceDetailTypography.chip(textPrimary),
                 ),
               ),
               const SizedBox(width: 8),
@@ -307,16 +306,10 @@ class FirebaseReviewCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Text(name, style: PlaceDetailTypography.bodyStrong(textPrimary)),
                     Text(
-                      name,
-                      style: TextStyle(
-                        color: textPrimary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Text(
-                      '$dateText ? Danh gia tu nguoi dung',
-                      style: TextStyle(color: textSecondary, fontSize: 11),
+                      '$dateText - Danh gia tu nguoi dung',
+                      style: PlaceDetailTypography.caption(textSecondary),
                     ),
                   ],
                 ),
@@ -334,10 +327,7 @@ class FirebaseReviewCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          Text(
-            review.comment,
-            style: TextStyle(color: textSecondary, height: 1.4),
-          ),
+          Text(review.comment, style: PlaceDetailTypography.body(textSecondary)),
         ],
       ),
     );

@@ -44,7 +44,7 @@ class PlaceStickyActionBar extends StatelessWidget {
             child: ElevatedButton.icon(
               onPressed: () {},
               icon: const Icon(Icons.shopping_bag_outlined, size: 18),
-              label: const Text('Dat mon ngay'),
+              label: const Text('Lên lịch'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFFF6A00),
                 foregroundColor: Colors.white,

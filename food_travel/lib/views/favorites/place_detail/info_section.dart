@@ -1,4 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
+
+import 'place_detail_typography.dart';
 
 class PlaceInfoSection extends StatelessWidget {
   const PlaceInfoSection({
@@ -34,7 +36,7 @@ class PlaceInfoSection extends StatelessWidget {
             children: [
               const Icon(Icons.info_outline, color: Color(0xFFFF6A00)),
               const SizedBox(width: 8),
-              Text('Thong tin quan', style: TextStyle(color: textPrimary, fontWeight: FontWeight.w700)),
+              Text('Thong tin quan', style: PlaceDetailTypography.sectionTitle(textPrimary)),
             ],
           ),
           const SizedBox(height: 12),
@@ -80,9 +82,22 @@ class HoursRow extends StatefulWidget {
 class _HoursRowState extends State<HoursRow> {
   bool _expanded = false;
 
+  // Lam sach text gio mo cua de bo {} [] va dau phay du.
+  String _cleanHourText(String raw) {
+    return raw
+        .replaceAll('{', '')
+        .replaceAll('}', '')
+        .replaceAll('[', '')
+        .replaceAll(']', '')
+        .replaceAll('"', '')
+        .replaceAll("'", '')
+        .replaceAll(' ,', ',')
+        .trim();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final hours = widget.hours;
+    final hours = widget.hours.map(_cleanHourText).where((e) => e.isNotEmpty).toList();
     final compact = hours.isEmpty ? 'Dang cap nhat gio mo cua' : hours.first;
     final canExpand = hours.length > 1;
 
@@ -96,7 +111,7 @@ class _HoursRowState extends State<HoursRow> {
             padding: const EdgeInsets.symmetric(vertical: 4),
             child: Row(
               children: [
-                Text('Gio mo cua', style: TextStyle(color: widget.textSecondary, fontSize: 12)),
+                Text('Gio mo cua', style: PlaceDetailTypography.caption(widget.textSecondary)),
                 const Spacer(),
                 Icon(
                   _expanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
@@ -107,16 +122,13 @@ class _HoursRowState extends State<HoursRow> {
             ),
           ),
         ),
-        Text(
-          compact,
-          style: TextStyle(color: widget.textPrimary, fontWeight: FontWeight.w600),
-        ),
+        Text(compact, style: PlaceDetailTypography.bodyStrong(widget.textPrimary)),
         if (_expanded && canExpand) ...[
           const SizedBox(height: 6),
           ...hours.skip(1).map(
                 (e) => Padding(
                   padding: const EdgeInsets.only(top: 4),
-                  child: Text(e, style: TextStyle(color: widget.textSecondary)),
+                  child: Text(e, style: PlaceDetailTypography.body(widget.textSecondary)),
                 ),
               ),
         ],
@@ -144,10 +156,7 @@ class AmenityChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: border),
       ),
-      child: Text(
-        text,
-        style: TextStyle(fontSize: 11, color: textColor),
-      ),
+      child: Text(text, style: PlaceDetailTypography.chip(textColor)),
     );
   }
 }

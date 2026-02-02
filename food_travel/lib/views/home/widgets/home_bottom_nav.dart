@@ -26,7 +26,8 @@ class HomeBottomNav extends StatelessWidget {
     final bgColor = isDark ? const Color(0xFF0F131A) : Colors.white.withOpacity(0.95);
     final shadowColor = isDark ? Colors.black.withOpacity(0.6) : Colors.black12;
     final borderColor = isDark ? const Color(0xFF0F131A) : Colors.white;
-    final inactive = isDark ? const Color(0xFF9AA3AF) : Colors.grey.shade400;
+    // Tang do ro cho item chua chon de de nhin hon.
+    final inactive = isDark ? const Color(0xFFB3BDC9) : const Color(0xFF667085);
 
     return Container(
       padding: const EdgeInsets.only(top: 8, bottom: 16),
@@ -83,7 +84,7 @@ class HomeBottomNav extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: 11,
-              fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+              fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
               color: isActive ? activeColor : inactive,
             ),
           ),
@@ -141,3 +142,4 @@ class HomeBottomNav extends StatelessWidget {
     );
   }
 }
+
