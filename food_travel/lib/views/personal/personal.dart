@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../controller/personal_controller.dart';
 import '../../router/route_names.dart';
+import '../../services/auth_service.dart';
 import 'edit_personal.dart';
 import 'package:food_travel/l10n/app_localizations.dart';
 
@@ -29,6 +30,31 @@ class _PersonalPageState extends State<PersonalPage> {
     super.dispose();
   }
 
+  Future<void> _logout() async {
+    // Hoi lai de tranh bam nham nut dang xuat.
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Dang xuat'),
+          content: const Text('Ban co chac muon dang xuat khong?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, false),
+              child: const Text('Huy'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(dialogContext, true),
+              child: const Text('Dang xuat'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (ok != true) return;
+    await AuthService().logout();
+  }
   Future<void> _openEdit() async {
     bool? result;
     try {
@@ -57,6 +83,7 @@ class _PersonalPageState extends State<PersonalPage> {
           viewData: _controller.viewData,
           isLoading: _controller.isLoading,
           onEditProfile: _openEdit,
+          onLogout: _logout,
         );
       },
     );
@@ -68,11 +95,13 @@ class _PersonalScaffold extends StatelessWidget {
     required this.viewData,
     required this.isLoading,
     required this.onEditProfile,
+    required this.onLogout,
   });
 
   final PersonalViewData viewData;
   final bool isLoading;
   final VoidCallback onEditProfile;
+  final VoidCallback onLogout;
 
   @override
   Widget build(BuildContext context) {
@@ -170,6 +199,11 @@ class _PersonalScaffold extends StatelessWidget {
                 onTap: () {
                   Navigator.pushNamed(context, RouteNames.locationSettings);
                 },
+              ),
+              _SectionItem(
+                icon: Icons.logout_rounded,
+                title: 'Dang xuat',
+                onTap: onLogout,
               ),
 
               const SizedBox(height: 24),
@@ -590,3 +624,8 @@ class _SectionItem extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
