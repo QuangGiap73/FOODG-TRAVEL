@@ -255,10 +255,17 @@ class _QuickAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final activeColor = const Color(0xFFFF6A00);
-    final bg = isActive ? const Color(0xFFFFF3E6) : const Color(0xFF1B2028);
-    final border = isActive ? activeColor : const Color(0xFF2B3442);
-    final textColor = isActive ? activeColor : Colors.white70;
+    // Mau nhat giong mockup: active cam nhat, inactive xam nhat (light mode).
+    final bg = isActive
+        ? const Color(0xFFFFF3E8)
+        : (isDark ? const Color(0xFF1B2028) : const Color(0xFFF3F4F6));
+    final border = isActive
+        ? const Color(0xFFFFD8BF)
+        : (isDark ? const Color(0xFF2B3442) : const Color(0xFFE5E7EB));
+    final textColor =
+        isActive ? activeColor : (isDark ? const Color(0xFFB8C1CC) : const Color(0xFF64748B));
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -274,7 +281,14 @@ class _QuickAction extends StatelessWidget {
             child: Icon(icon, color: textColor),
           ),
           const SizedBox(height: 6),
-          Text(label, style: TextStyle(fontSize: 11, color: textColor)),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              color: textColor,
+              fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+            ),
+          ),
         ],
       ),
     );
@@ -357,4 +371,5 @@ void _showCallSheet(BuildContext context, String placeName, String phone) {
     },
   );
 }
+
 

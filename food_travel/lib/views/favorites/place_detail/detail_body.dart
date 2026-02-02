@@ -113,8 +113,44 @@ class _PlaceDetailBodyState extends State<PlaceDetailBody> {
       return;
     }
 
-    double rating = 5;
-    final commentCtrl = TextEditingController();
+    final placeId = _reviewService.placeIdOf(place);
+    // Kiem tra user da danh gia quan nay chua.
+    final myOldReview = await _reviewService.getMyReview(
+      placeId: placeId,
+      userId: user.uid,
+    );
+
+    if (!mounted) return;
+
+    // Neu da co review thi hoi co muon sua hay khong.
+    if (myOldReview != null) {
+      final shouldEdit = await showDialog<bool>(
+        context: context,
+        builder: (dialogContext) {
+          return AlertDialog(
+            title: const Text('Ban da danh gia'),
+            content: const Text(
+              'Ban da danh gia quan nay truoc do. Ban muon chinh sua danh gia khong?',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(dialogContext, false),
+                child: const Text('Khong'),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(dialogContext, true),
+                child: const Text('Co, chinh sua'),
+              ),
+            ],
+          );
+        },
+      );
+      if (shouldEdit != true) return;
+    }
+
+    // Neu da co review thi do san rating/comment de user sua nhanh.
+    double rating = myOldReview?.rating ?? 5;
+    final commentCtrl = TextEditingController(text: myOldReview?.comment ?? '');
 
     await showModalBottomSheet<void>(
       context: context,
@@ -191,7 +227,7 @@ class _PlaceDetailBodyState extends State<PlaceDetailBody> {
                                   final comment = commentCtrl.text.trim();
                                   if (comment.isEmpty) return;
 
-                                  await _reviewService.addReview(
+                                  await _reviewService.upsertMyReview(
                                     place: place,
                                     userId: user.uid,
                                     userName: user.displayName ?? 'Nguoi dung',

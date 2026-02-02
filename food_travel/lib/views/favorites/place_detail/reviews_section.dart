@@ -55,9 +55,9 @@ class PlaceReviewsSection extends StatelessWidget {
     // Xoa review trong Firestore, stream se tu cap nhat lai UI.
     final service = PlaceReviewService();
     final placeId = service.placeIdOf(place);
-    await service.deleteReview(
+    await service.deleteMyReview(
       placeId: placeId,
-      reviewId: review.id,
+      userId: review.userId,
     );
   }
 
@@ -72,7 +72,7 @@ class PlaceReviewsSection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Danh gia',
+              'Danh gia ($fallbackCount)',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,

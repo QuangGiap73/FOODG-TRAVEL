@@ -43,8 +43,22 @@ class PlaceReviewService {
         .map((s) => s.docs.map(PlaceReviewModel.fromDoc).toList());
   }
 
-  // Them review moi va cap nhat avg_rating/review_count.
-  Future<void> addReview({
+  // Lay review hien tai cua user cho 1 quan (neu da danh gia truoc do).
+  Future<PlaceReviewModel?> getMyReview({
+    required String placeId,
+    required String userId,
+  }) async {
+    final doc = await _places
+        .doc(placeId)
+        .collection('reviews')
+        .doc(userId)
+        .get();
+    if (!doc.exists) return null;
+    return PlaceReviewModel.fromDoc(doc);
+  }
+
+  // Them review moi va cap nhat avg_rating/review_count., 1 user chỉ 1review/quán 
+  Future<void> upsertMyReview({
     required GoongNearbyPlace place,
     required String userId,
     required String userName,
@@ -54,54 +68,70 @@ class PlaceReviewService {
   }) async {
     final placeId = placeIdOf(place);
     final placeRef = _places.doc(placeId);
-    final reviewRef = placeRef.collection('reviews').doc();
+    final reviewRef = placeRef.collection('reviews').doc(userId);
 
-    final review = PlaceReviewModel(
-      id: reviewRef.id,
-      userId: userId,
-      userName: userName,
-      userAvatar: userAvatar,
-      rating: rating,
-      comment: comment,
-      createdAt: DateTime.now(),
-    );
+    await _db.runTransaction((tx) async{
+      final placeSnap = await tx.get(placeRef);
+      final reviewSnap = await tx.get(reviewRef);
 
-    await _db.runTransaction((tx) async {
-      final snap = await tx.get(placeRef);
-      final data = snap.data() ?? {};
+      final placeData = placeSnap.data() ?? {};
+      final oldCount = (placeData['review_count'] as num?)?.toInt() ?? 0;
+      final oldAvg = (placeData['avg_rating'] as num?)?.toDouble() ?? 0.0;
 
-      final oldCount = (data['review_count'] as num?)?.toInt() ?? 0;
-      final oldAvg = (data['avg_rating'] as num?)?.toDouble() ?? 0.0;
-      final newCount = oldCount + 1;
-      final newAvg = ((oldAvg * oldCount) + rating) / newCount;
+      final existed = reviewSnap.exists;
+      final oldRating = existed
+          ? (reviewSnap.data()?['rating'] as num?)?.toDouble() ?? 0.0
+          : 0.0;
+      late final int newCount;
+      late final double newAvg;
 
-      tx.set(reviewRef, review.toJson());
-      tx.set(
-        placeRef,
-        {
-          'name': place.name,
-          'address': place.address,
-          'lat': place.lat,
-          'lng': place.lng,
-          'phone': place.phone ?? '',
-          'category': place.category ?? '',
-          'photoUrl': place.photoUrl,
-          'avg_rating': newAvg,
-          'review_count': newCount,
-          'createdAt': data['createdAt'] ?? FieldValue.serverTimestamp(),
-        },
-        SetOptions(merge: true),
-      );
+      if(existed){
+        newCount = oldCount;
+        if (oldCount <=0){
+          newAvg = rating;
+        }else{
+          newAvg = ((oldAvg * oldCount) - oldRating + rating) / oldCount;
+        }
+      }else {
+        newCount = oldCount + 1;
+        newAvg = ((oldAvg * oldCount) + rating) / newCount;
+      }
+      tx.set(reviewRef, {
+      'userId': userId,
+      'userName': userName,
+      'userAvatar': userAvatar,
+      'rating': rating,
+      'comment': comment,
+      'createdAt': existed
+          ? (reviewSnap.data()?['createdAt'] ?? FieldValue.serverTimestamp())
+          : FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
+    tx.set(placeRef, {
+      'name': place.name,
+      'address': place.address,
+      'lat': place.lat,
+      'lng': place.lng,
+      'phone': place.phone ?? '',
+      'category': place.category ?? '',
+      'photoUrl': place.photoUrl,
+      'avg_rating': newAvg < 0 ? 0.0 : newAvg,
+      'review_count': newCount < 0 ? 0 : newCount,
+      'createdAt': placeData['createdAt'] ?? FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
     });
   }
 
+    
+
   // Xoa review va cap nhat lai avg_rating/review_count trong 1 transaction.
-  Future<void> deleteReview({
+  Future<void> deleteMyReview({
     required String placeId,
-    required String reviewId,
+    required String userId,
   }) async {
     final placeRef = _places.doc(placeId);
-    final reviewRef = placeRef.collection('reviews').doc(reviewId);
+    final reviewRef = placeRef.collection('reviews').doc(userId);
 
     await _db.runTransaction((tx) async {
       final placeSnap = await tx.get(placeRef);
@@ -116,21 +146,16 @@ class PlaceReviewService {
       final removedRating = (reviewData['rating'] as num?)?.toDouble() ?? 0.0;
 
       final newCount = oldCount - 1;
-      double newAvg = 0.0;
-      if (newCount > 0) {
-        newAvg = ((oldAvg * oldCount) - removedRating) / newCount;
-        if (newAvg < 0) newAvg = 0.0;
-      }
-
+      final newAvg = newCount > 0
+          ? ((oldAvg * oldCount) - removedRating) / newCount
+          : 0.0;
       tx.delete(reviewRef);
-      tx.set(
-        placeRef,
-        {
-          'avg_rating': newAvg,
-          'review_count': newCount < 0 ? 0 : newCount,
-        },
-        SetOptions(merge: true),
-      );
+      tx.set(placeRef,{
+        'avg_rating': newAvg < 0 ? 0.0 : newAvg,
+        'review_count': newCount < 0 ? 0 : newCount,
+        'updatedAt' : FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+      
     });
   }
 }
