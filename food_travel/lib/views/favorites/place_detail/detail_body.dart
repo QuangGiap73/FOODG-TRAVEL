@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../models/places_model.dart';
 import '../../../services/map/serpapi_places_service.dart';
+import '../../../controller/restaurants/place_favorite_controller.dart';
 import 'hero_header.dart';
 import 'summary_card.dart';
 import 'photo_thumb_list.dart';
@@ -109,6 +111,9 @@ class _PlaceDetailBodyState extends State<PlaceDetailBody> {
     final place = widget.place;
     final reviews = widget.reviews;
 
+    final fav = context.watch<PlaceFavoriteController>(); // yeu thich mon ăn
+    final isFavorive = fav.isFavorite(place);
+
     final name = place.name.trim().isEmpty ? 'Quan an' : place.name.trim();
     final category = place.category?.trim() ?? '';
     final address = place.address.trim().isEmpty
@@ -131,93 +136,151 @@ class _PlaceDetailBodyState extends State<PlaceDetailBody> {
         ? place.id.trim()
         : place.serpDataId.trim();
 
-    return ListView(
-      padding: EdgeInsets.zero,
+    return Stack(
       children: [
-        PlaceHeroHeader(
-          photoUrls: photos,
-          isOpen: isOpen,
-          closingTime: closingTime,
-          controller: _pageController,
-          onIndexChanged: (idx) => setState(() => _pageIndex = idx),
-          onTapImage: (idx) => _openGallery(context, photos, idx),
+        ListView(
+          padding: EdgeInsets.zero,
+            children: [
+              PlaceHeroHeader(
+                photoUrls: photos,
+                isOpen: isOpen,
+                closingTime: closingTime,
+                controller: _pageController,
+                onIndexChanged: (idx) => setState(() => _pageIndex = idx),
+                onTapImage: (idx) => _openGallery(context, photos, idx),
+                isFavorite: isFavorive,
+                onToggleFavorite: () => fav.toggle(place),
+              ),
+              Transform.translate(
+                offset: const Offset(0, -24),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: PlaceSummaryCard(
+                    name: name,
+                    place: place,
+                    category: category,
+                    price: price,
+                    rating: rating,
+                    reviewCount: reviewCount,
+                    district: district,
+                    address: address,
+                    phone: phone,
+                  ),
+                ),
+              ),
+              if (photos.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                  child: PhotoThumbList(
+                    photoUrls: photos,
+                    currentIndex: _pageIndex,
+                    onTap: (idx) {
+                      _pageController.animateToPage(
+                        idx,
+                        duration: const Duration(milliseconds: 250),
+                        curve: Curves.easeOut,
+                      );
+                      _openGallery(context, photos, idx);
+                    },
+                  ),
+                ),
+              const SizedBox(height: 6),
+              if (mustTry.isNotEmpty)
+                MustTrySection(items: mustTry)
+              else
+                MenuHighlightsSection(
+                  placeKey: placeKey,
+                  textSecondary: textSecondary,
+                ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                child: PlaceInfoSection(
+                  hours: hours,
+                  amenities: amenities,
+                  cardBg: cardBg,
+                  borderColor: borderColor,
+                  textPrimary: textPrimary,
+                  textSecondary: textSecondary,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                child: PlaceMiniMapCard(
+                  cardBg: cardBg,
+                  borderColor: borderColor,
+                  lat: place.lat,
+                  lng: place.lng,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                child: PlaceReviewsSection(
+                  reviews: reviews,
+                  cardBg: cardBg,
+                  borderColor: borderColor,
+                  textPrimary: textPrimary,
+                  textSecondary: textSecondary,
+                ),
+              ),
+              const SizedBox(height: 110),
+            ],
         ),
-        Transform.translate(
-          offset: const Offset(0, -24),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: PlaceSummaryCard(
-              name: name,
-              place: place,
-              category: category,
-              price: price,
-              rating: rating,
-              reviewCount: reviewCount,
-              district: district,
-              address: address,
-              phone: phone,
-            ),
+        // thanh icon cố định phía trên
+        Positioned(
+          top: MediaQuery.of(context).padding.top + 8,
+          left: 16,
+          right: 16,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _CircleIcon(
+                icon: Icons.arrow_back,
+                onTap: () => Navigator.pop(context),
+              ),
+              Row(
+                children: [
+                  _CircleIcon(icon: Icons.share_outlined, onTap: () {}),
+                  const SizedBox(width: 10),
+                  _CircleIcon(
+                    icon: isFavorive ? Icons.favorite : Icons.favorite_border,
+                    color: isFavorive ? Colors.red : Colors.white,
+                    onTap: () => fav.toggle(place),
+
+                  ),
+                ],
+              )
+            ],
           ),
-        ),
-        if (photos.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: PhotoThumbList(
-              photoUrls: photos,
-              currentIndex: _pageIndex,
-              onTap: (idx) {
-                _pageController.animateToPage(
-                  idx,
-                  duration: const Duration(milliseconds: 250),
-                  curve: Curves.easeOut,
-                );
-                _openGallery(context, photos, idx);
-              },
-            ),
-          ),
-        const SizedBox(height: 6),
-        if (mustTry.isNotEmpty)
-          MustTrySection(items: mustTry)
-        else
-          MenuHighlightsSection(
-            placeKey: placeKey,
-            textSecondary: textSecondary,
-          ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-          child: PlaceInfoSection(
-            hours: hours,
-            amenities: amenities,
-            cardBg: cardBg,
-            borderColor: borderColor,
-            textPrimary: textPrimary,
-            textSecondary: textSecondary,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-          child: PlaceMiniMapCard(
-            cardBg: cardBg,
-            borderColor: borderColor,
-            lat: place.lat,
-            lng: place.lng,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-          child: PlaceReviewsSection(
-            reviews: reviews,
-            cardBg: cardBg,
-            borderColor: borderColor,
-            textPrimary: textPrimary,
-            textSecondary: textSecondary,
-          ),
-        ),
-        const SizedBox(height: 110),
+        )
       ],
     );
   }
 }
+class _CircleIcon extends StatelessWidget {
+  const _CircleIcon({required this.icon, required this.onTap, this.color = Colors.white});
+  final IconData icon;
+  final VoidCallback onTap;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(999),
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.18),
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(color: Colors.white.withOpacity(0.15)),
+        ),
+        child: Icon(icon, color: color),
+      ),
+    );
+  }
+}
+
 
 
 

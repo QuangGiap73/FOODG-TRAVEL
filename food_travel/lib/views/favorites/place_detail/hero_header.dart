@@ -9,6 +9,8 @@ class PlaceHeroHeader extends StatelessWidget {
     required this.controller,
     required this.onIndexChanged,
     required this.onTapImage,
+    required this.isFavorite,
+    required this.onToggleFavorite,
   });
 
   final List<String> photoUrls;
@@ -17,6 +19,8 @@ class PlaceHeroHeader extends StatelessWidget {
   final PageController controller;
   final ValueChanged<int> onIndexChanged;
   final ValueChanged<int> onTapImage;
+  final bool isFavorite;
+  final VoidCallback onToggleFavorite;
 
   @override
   Widget build(BuildContext context) {
@@ -51,27 +55,7 @@ class PlaceHeroHeader extends StatelessWidget {
               ),
             ),
           ),
-          Positioned(
-            top: MediaQuery.of(context).padding.top + 8,
-            left: 16,
-            right: 16,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _CircleIcon(
-                  icon: Icons.arrow_back,
-                  onTap: () => Navigator.pop(context),
-                ),
-                Row(
-                  children: [
-                    _CircleIcon(icon: Icons.share_outlined, onTap: () {}),
-                    const SizedBox(width: 10),
-                    _CircleIcon(icon: Icons.favorite_border, onTap: () {}),
-                  ],
-                ),
-              ],
-            ),
-          ),
+          
           Positioned(
             left: 16,
             bottom: 24,
@@ -83,30 +67,30 @@ class PlaceHeroHeader extends StatelessWidget {
   }
 }
 
-class _CircleIcon extends StatelessWidget {
-  const _CircleIcon({required this.icon, required this.onTap});
+// class _CircleIcon extends StatelessWidget {
+//   const _CircleIcon({required this.icon, required this.onTap});
 
-  final IconData icon;
-  final VoidCallback onTap;
+//   final IconData icon;
+//   final VoidCallback onTap;
 
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(999),
-      child: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.18),
-          borderRadius: BorderRadius.circular(999),
-          border: Border.all(color: Colors.white.withOpacity(0.15)),
-        ),
-        child: Icon(icon, color: Colors.white),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return InkWell(
+//       onTap: onTap,
+//       borderRadius: BorderRadius.circular(999),
+//       child: Container(
+//         width: 40,
+//         height: 40,
+//         decoration: BoxDecoration(
+//           color: Colors.white.withOpacity(0.18),
+//           borderRadius: BorderRadius.circular(999),
+//           border: Border.all(color: Colors.white.withOpacity(0.15)),
+//         ),
+//         child: Icon(icon, color: Colors.white),
+//       ),
+//     );
+//   }
+// }
 
 class _StatusChip extends StatelessWidget {
   const _StatusChip({required this.isOpen, required this.closingTime});
