@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../../models/place_review_model.dart';
 import '../../../models/places_model.dart';
@@ -25,15 +26,59 @@ class PlaceReviewsSection extends StatelessWidget {
   final Color textSecondary;
   final VoidCallback onWriteReview;
 
+  Future<void> _confirmDeleteReview(
+    BuildContext context,
+    PlaceReviewModel review,
+  ) async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Xoa binh luan'),
+          content: const Text('Ban chac chan muon xoa binh luan nay?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, false),
+              child: const Text('Huy'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(dialogContext, true),
+              child: const Text('Xoa'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (ok != true) return;
+
+    // Xoa review trong Firestore, stream se tu cap nhat lai UI.
+    final service = PlaceReviewService();
+    final placeId = service.placeIdOf(place);
+    await service.deleteReview(
+      placeId: placeId,
+      reviewId: review.id,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final currentUid = FirebaseAuth.instance.currentUser?.uid ?? '';
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Danh gia', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: textPrimary)),
+            Text(
+              'Danh gia',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: textPrimary,
+              ),
+            ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
@@ -60,7 +105,8 @@ class PlaceReviewsSection extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 10),
-        // Uu tien review Firebase len tren, sau do den review SerpAPI.
+
+        // Uu tien review Firebase len tren, sau do fallback SerpAPI.
         StreamBuilder<List<PlaceReviewModel>>(
           stream: PlaceReviewService().watchReviews(
             PlaceReviewService().placeIdOf(place),
@@ -81,6 +127,8 @@ class PlaceReviewsSection extends StatelessWidget {
                     review: r,
                     cardBg: cardBg,
                     borderColor: borderColor,
+                    canDelete: r.userId == currentUid,
+                    onDelete: () => _confirmDeleteReview(context, r),
                   ),
                 ),
                 ...reviews.map(
@@ -166,7 +214,10 @@ class ReviewCard extends StatelessWidget {
                   children: [
                     Text(
                       name,
-                      style: TextStyle(color: textPrimary, fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                        color: textPrimary,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     Text(
                       subtitle,
@@ -195,11 +246,15 @@ class FirebaseReviewCard extends StatelessWidget {
     required this.review,
     required this.cardBg,
     required this.borderColor,
+    required this.canDelete,
+    this.onDelete,
   });
 
   final PlaceReviewModel review;
   final Color cardBg;
   final Color borderColor;
+  final VoidCallback? onDelete;
+  final bool canDelete;
 
   List<Widget> _buildStars(double rating) {
     final out = <Widget>[];
@@ -254,15 +309,27 @@ class FirebaseReviewCard extends StatelessWidget {
                   children: [
                     Text(
                       name,
-                      style: TextStyle(color: textPrimary, fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                        color: textPrimary,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     Text(
-                      '$dateText • Danh gia tu nguoi dung',
+                      '$dateText ? Danh gia tu nguoi dung',
                       style: TextStyle(color: textSecondary, fontSize: 11),
                     ),
                   ],
                 ),
               ),
+              if (canDelete)
+                IconButton(
+                  onPressed: onDelete,
+                  icon: const Icon(
+                    Icons.delete_outline,
+                    color: Colors.redAccent,
+                    size: 18,
+                  ),
+                ),
               Row(children: _buildStars(review.rating)),
             ],
           ),
