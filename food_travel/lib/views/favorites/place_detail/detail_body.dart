@@ -1,11 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/places_model.dart';
 import '../../../services/map/serpapi_places_service.dart';
 import '../../../controller/restaurants/place_favorite_controller.dart';
+import '../../../services/restaurants/place_review_service.dart';
 import 'hero_header.dart';
 import 'summary_card.dart';
 import 'photo_thumb_list.dart';
@@ -28,11 +30,17 @@ class _PlaceDetailBodyState extends State<PlaceDetailBody> {
   late final PageController _pageController;
   int _pageIndex = 0;
   Timer? _autoSlideTimer;
+  final _reviewService = PlaceReviewService();
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
+
+    // Luu thong tin quan vao Firestore ngay khi mo trang chi tiet.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _reviewService.upsertPlaceFromApi(widget.place);
+    });
 
     // Tu dong chuyen anh tren cung
     _autoSlideTimer = Timer.periodic(const Duration(seconds: 3), (_) {
@@ -93,6 +101,125 @@ class _PlaceDetailBodyState extends State<PlaceDetailBody> {
                 ),
               ),
             ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _showWriteReviewSheet(GoongNearbyPlace place) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return;
+    }
+
+    double rating = 5;
+    final commentCtrl = TextEditingController();
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) {
+        final isDark = Theme.of(sheetContext).brightness == Brightness.dark;
+        final bg = isDark ? const Color(0xFF15181E) : Colors.white;
+
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(sheetContext).viewInsets.bottom,
+          ),
+          child: StatefulBuilder(
+            builder: (localContext, setLocalState) {
+              return Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: bg,
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(20)),
+                ),
+                child: SafeArea(
+                  top: false,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text(
+                          'Viet danh gia',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(5, (i) {
+                            final star = i + 1;
+                            return IconButton(
+                              onPressed: () {
+                                setLocalState(() => rating = star.toDouble());
+                              },
+                              icon: Icon(
+                                star <= rating ? Icons.star : Icons.star_border,
+                                color: const Color(0xFFFF6A00),
+                              ),
+                            );
+                          }),
+                        ),
+                        TextField(
+                          controller: commentCtrl,
+                          minLines: 2,
+                          maxLines: 4,
+                          decoration: const InputDecoration(
+                            hintText: 'Nhap nhan xet cua ban...',
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: () => Navigator.pop(sheetContext),
+                                child: const Text('Huy'),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  final comment = commentCtrl.text.trim();
+                                  if (comment.isEmpty) return;
+
+                                  await _reviewService.addReview(
+                                    place: place,
+                                    userId: user.uid,
+                                    userName: user.displayName ?? 'Nguoi dung',
+                                    userAvatar: user.photoURL ?? '',
+                                    rating: rating,
+                                    comment: comment,
+                                  );
+                                  if (!mounted) return;
+                                  // Dong ban phim truoc khi dong sheet de tranh loi
+                                  // "TextEditingController used after disposed".
+                                  FocusScope.of(sheetContext).unfocus();
+                                  Navigator.pop(sheetContext);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFFFF6A00),
+                                  foregroundColor: Colors.white,
+                                ),
+                                child: const Text('Gui'),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         );
       },
@@ -215,11 +342,13 @@ class _PlaceDetailBodyState extends State<PlaceDetailBody> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                 child: PlaceReviewsSection(
+                  place: place,
                   reviews: reviews,
                   cardBg: cardBg,
                   borderColor: borderColor,
                   textPrimary: textPrimary,
                   textSecondary: textSecondary,
+                  onWriteReview: () => _showWriteReviewSheet(place),
                 ),
               ),
               const SizedBox(height: 110),
