@@ -20,6 +20,7 @@ import '../../services/location_preference_service.dart';
 import '../../services/location_service.dart';
 import '../../services/map/geocode_service.dart';
 import 'widgets/home_bottom_nav.dart';
+import 'widgets/today_eat_section.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -86,112 +87,117 @@ class _HomeScreenState extends State<HomeScreen> {
     final photoUrl = FirebaseAuth.instance.currentUser?.photoURL;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     // Neu da xac dinh duoc tinh thi dong tren doi thanh 'Dang o'.
-    final hasProvince = _appBarProvinceText.trim().isNotEmpty &&
+    final hasProvince =
+        _appBarProvinceText.trim().isNotEmpty &&
         _appBarProvinceText.trim().toLowerCase() != 'ban o dau?';
     final topLocationText = hasProvince ? 'Dang o' : 'Ban dang o dau?';
 
     // An AppBar o tab "Luu" va "Toi"
     final showAppBar = _currentIndex != 4 && _currentIndex != 3;
     return Scaffold(
-      appBar: showAppBar
-          ? AppBar(
-              toolbarHeight: 72,
-              elevation: 0,
-              scrolledUnderElevation: 0,
-              backgroundColor: isDark ? const Color(0xFF0F131A) : Colors.white,
-              leadingWidth: 64,
-              leading: Padding(
-                padding: const EdgeInsets.only(left: 14, top: 12, bottom: 12),
-                child: CircleAvatar(
-                  radius: 18,
-                  backgroundImage:
-                      photoUrl != null ? NetworkImage(photoUrl) : null,
-                  child: photoUrl == null ? const Icon(Icons.person) : null,
+      appBar:
+          showAppBar
+              ? AppBar(
+                toolbarHeight: 72,
+                elevation: 0,
+                scrolledUnderElevation: 0,
+                backgroundColor:
+                    isDark ? const Color(0xFF0F131A) : Colors.white,
+                leadingWidth: 64,
+                leading: Padding(
+                  padding: const EdgeInsets.only(left: 14, top: 12, bottom: 12),
+                  child: CircleAvatar(
+                    radius: 18,
+                    backgroundImage:
+                        photoUrl != null ? NetworkImage(photoUrl) : null,
+                    child: photoUrl == null ? const Icon(Icons.person) : null,
+                  ),
                 ),
-              ),
-              titleSpacing: 0,
-              centerTitle: true,
-              title: Align(
-                alignment: Alignment.center,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(12),
-                  onTap: () {
-                    if (_currentIndex != 0) {
-                      setState(() => _currentIndex = 0);
-                      return;
-                    }
-                    // Mo danh sach tinh ngay tren app bar (chi khi dang o Home).
-                    _openProvincePickerFromHome?.call();
-                  },
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          topLocationText,
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w500,
-                            color:
-                                isDark ? Colors.white54 : const Color(0xFF98A2B3),
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(
-                              Icons.location_on_outlined,
-                              size: 16,
-                              color: Color(0xFFFF6A00),
+                titleSpacing: 0,
+                centerTitle: true,
+                title: Align(
+                  alignment: Alignment.center,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: () {
+                      if (_currentIndex != 0) {
+                        setState(() => _currentIndex = 0);
+                        return;
+                      }
+                      // Mo danh sach tinh ngay tren app bar (chi khi dang o Home).
+                      _openProvincePickerFromHome?.call();
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 4,
+                        horizontal: 2,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            topLocationText,
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w500,
+                              color:
+                                  isDark
+                                      ? Colors.white54
+                                      : const Color(0xFF98A2B3),
                             ),
-                            const SizedBox(width: 2),
-                            Text(
-                              _appBarProvinceText,
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
+                          ),
+                          const SizedBox(height: 2),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.location_on_outlined,
+                                size: 16,
                                 color: Color(0xFFFF6A00),
                               ),
-                            ),
-                            Icon(
-                              Icons.keyboard_arrow_down_rounded,
-                              size: 18,
-                              color: isDark
-                                  ? Colors.white54
-                                  : const Color(0xFF98A2B3),
-                            ),
-                          ],
-                        ),
-                      ],
+                              const SizedBox(width: 2),
+                              Text(
+                                _appBarProvinceText,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xFFFF6A00),
+                                ),
+                              ),
+                              Icon(
+                                Icons.keyboard_arrow_down_rounded,
+                                size: 18,
+                                color:
+                                    isDark
+                                        ? Colors.white54
+                                        : const Color(0xFF98A2B3),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.notifications_none_rounded),
-                  onPressed: () {},
-                  tooltip: 'Thong bao',
-                  visualDensity: VisualDensity.compact,
-                ),
-                // IconButton(
-                //   icon: const Icon(Icons.favorite_border_rounded),
-                //   onPressed: () => setState(() => _currentIndex = 3),
-                //   tooltip: 'Yeu thich',
-                //   visualDensity: VisualDensity.compact,
-                // ),
-                const SizedBox(width: 6),
-              ],
-            )
-          : null,
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _buildPages(),
-      ),
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.notifications_none_rounded),
+                    onPressed: () {},
+                    tooltip: 'Thong bao',
+                    visualDensity: VisualDensity.compact,
+                  ),
+                  // IconButton(
+                  //   icon: const Icon(Icons.favorite_border_rounded),
+                  //   onPressed: () => setState(() => _currentIndex = 3),
+                  //   tooltip: 'Yeu thich',
+                  //   visualDensity: VisualDensity.compact,
+                  // ),
+                  const SizedBox(width: 6),
+                ],
+              )
+              : null,
+      body: IndexedStack(index: _currentIndex, children: _buildPages()),
       bottomNavigationBar: HomeBottomNav(
         currentIndex: _currentIndex,
         onChanged: (index) => setState(() => _currentIndex = index),
@@ -215,6 +221,7 @@ class _HomeFeed extends StatefulWidget {
   @override
   State<_HomeFeed> createState() => _HomeFeedState();
 }
+
 class _HomeFeedState extends State<_HomeFeed> {
   final _service = FoodService();
   final _pageController = PageController();
@@ -246,7 +253,7 @@ class _HomeFeedState extends State<_HomeFeed> {
   String? _preferredProvinceName;
   int _imageCount = 0;
   // Cache danh sach tinh de mo picker tu app bar.
-  List<ProvinceModel> _cachedProvinces = const []; 
+  List<ProvinceModel> _cachedProvinces = const [];
 
   @override
   void initState() {
@@ -312,18 +319,15 @@ class _HomeFeedState extends State<_HomeFeed> {
     }
     setState(() {
       _selectedProvince = province;
-      _dishesStream =
-          _service.watchDishesByProvinceKeys(_provinceQueryKeys(province));
+      _dishesStream = _service.watchDishesByProvinceKeys(
+        _provinceQueryKeys(province),
+      );
     });
     _imageIndex.value = 0;
   }
 
   List<String> _provinceQueryKeys(ProvinceModel province) {
-    return [
-      province.code,
-      province.name,
-      province.id,
-    ]
+    return [province.code, province.name, province.id]
         .map((value) => value.trim())
         .where((value) => value.isNotEmpty)
         .toSet()
@@ -342,11 +346,12 @@ class _HomeFeedState extends State<_HomeFeed> {
     return raw.trim().toLowerCase().replaceAll('-', '_');
   }
 
-    ProvinceModel? _findPreferredProvince(List<ProvinceModel> provinces) {
+  ProvinceModel? _findPreferredProvince(List<ProvinceModel> provinces) {
     // 0) Neu user chon tay o app bar thi uu tien trong session hien tai.
     final manualCode = _manualProvinceCode?.trim();
     final manualName = _manualProvinceName?.trim();
-    if ((manualCode?.isNotEmpty ?? false) || (manualName?.isNotEmpty ?? false)) {
+    if ((manualCode?.isNotEmpty ?? false) ||
+        (manualName?.isNotEmpty ?? false)) {
       if (manualCode != null && manualCode.isNotEmpty) {
         final normalizedManual = _normalizeKey(manualCode);
         for (final province in provinces) {
@@ -379,7 +384,8 @@ class _HomeFeedState extends State<_HomeFeed> {
     }
 
     // Uu tien GPS neu co du lieu tinh tu vi tri.
-    final gpsHasValue = _gpsEnabled &&
+    final gpsHasValue =
+        _gpsEnabled &&
         ((_gpsProvinceName?.trim().isNotEmpty ?? false) ||
             (_gpsProvinceCode?.trim().isNotEmpty ?? false));
 
@@ -468,6 +474,7 @@ class _HomeFeedState extends State<_HomeFeed> {
       );
     });
   }
+
   // Xu ly khi nguoi dung bat/tat GPS trong cai dat.
   void _onLocationPrefChanged() {
     final enabled = LocationPreferenceService.enabled.value;
@@ -517,8 +524,10 @@ class _HomeFeedState extends State<_HomeFeed> {
     // Luu vi tri GPS hien tai de map theo centerLat/centerLng.
     _gpsPosition = pos;
     // Reverse geocode de lay ten tinh.
-    final rawName =
-        await _geocodeService.reverseProvinceName(pos.latitude, pos.longitude);
+    final rawName = await _geocodeService.reverseProvinceName(
+      pos.latitude,
+      pos.longitude,
+    );
     if (!mounted) return false;
     if (rawName == null || rawName.trim().isEmpty) {
       // Van se map theo khoang cach neu co centerLat/centerLng.
@@ -606,13 +615,14 @@ class _HomeFeedState extends State<_HomeFeed> {
         return StatefulBuilder(
           builder: (context, setSheetState) {
             final q = query.trim().toLowerCase();
-            final filtered = q.isEmpty
-                ? _cachedProvinces
-                : _cachedProvinces.where((p) {
-                    final name = p.name.toLowerCase();
-                    final code = p.code.toLowerCase();
-                    return name.contains(q) || code.contains(q);
-                  }).toList();
+            final filtered =
+                q.isEmpty
+                    ? _cachedProvinces
+                    : _cachedProvinces.where((p) {
+                      final name = p.name.toLowerCase();
+                      final code = p.code.toLowerCase();
+                      return name.contains(q) || code.contains(q);
+                    }).toList();
 
             return SafeArea(
               top: false,
@@ -621,8 +631,9 @@ class _HomeFeedState extends State<_HomeFeed> {
                 padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
                 decoration: BoxDecoration(
                   color: bg,
-                  borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(24)),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(24),
+                  ),
                   border: Border.all(color: border),
                 ),
                 child: Column(
@@ -652,9 +663,10 @@ class _HomeFeedState extends State<_HomeFeed> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       decoration: BoxDecoration(
-                        color: isDark
-                            ? const Color(0xFF171D27)
-                            : const Color(0xFFF8FAFC),
+                        color:
+                            isDark
+                                ? const Color(0xFF171D27)
+                                : const Color(0xFFF8FAFC),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: border),
                       ),
@@ -677,103 +689,108 @@ class _HomeFeedState extends State<_HomeFeed> {
                     ),
                     const SizedBox(height: 12),
                     Expanded(
-                      child: filtered.isEmpty
-                          ? Center(
-                              child: Text(
-                                'Khong tim thay tinh phu hop.',
-                                style: TextStyle(color: textSecondary),
-                              ),
-                            )
-                          : ListView.separated(
-                              itemCount: filtered.length,
-                              separatorBuilder: (_, __) =>
-                                  const SizedBox(height: 8),
-                              itemBuilder: (_, i) {
-                                final p = filtered[i];
-                                final isSelected = _selectedProvince?.id == p.id;
-                                return InkWell(
-                                  onTap: () => Navigator.pop(ctx, p),
-                                  borderRadius: BorderRadius.circular(14),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 11,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(14),
-                                      color: isSelected
-                                          ? const Color(0xFFFFF3E8)
-                                          : (isDark
-                                              ? const Color(0xFF171D27)
-                                              : const Color(0xFFFCFCFD)),
-                                      border: Border.all(
-                                        color: isSelected
-                                            ? const Color(0xFFFFC999)
-                                            : border,
+                      child:
+                          filtered.isEmpty
+                              ? Center(
+                                child: Text(
+                                  'Khong tim thay tinh phu hop.',
+                                  style: TextStyle(color: textSecondary),
+                                ),
+                              )
+                              : ListView.separated(
+                                itemCount: filtered.length,
+                                separatorBuilder:
+                                    (_, __) => const SizedBox(height: 8),
+                                itemBuilder: (_, i) {
+                                  final p = filtered[i];
+                                  final isSelected =
+                                      _selectedProvince?.id == p.id;
+                                  return InkWell(
+                                    onTap: () => Navigator.pop(ctx, p),
+                                    borderRadius: BorderRadius.circular(14),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 11,
                                       ),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.location_on_outlined,
-                                          size: 18,
-                                          color: Color(0xFFFF6A00),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(14),
+                                        color:
+                                            isSelected
+                                                ? const Color(0xFFFFF3E8)
+                                                : (isDark
+                                                    ? const Color(0xFF171D27)
+                                                    : const Color(0xFFFCFCFD)),
+                                        border: Border.all(
+                                          color:
+                                              isSelected
+                                                  ? const Color(0xFFFFC999)
+                                                  : border,
                                         ),
-                                        const SizedBox(width: 10),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                p.name,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.location_on_outlined,
+                                            size: 18,
+                                            color: Color(0xFFFF6A00),
+                                          ),
+                                          const SizedBox(width: 10),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  p.name,
+                                                  style: TextStyle(
+                                                    color: textPrimary,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 2),
+                                                Text(
+                                                  p.code,
+                                                  style: TextStyle(
+                                                    color: textSecondary,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          if (isSelected)
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 8,
+                                                    vertical: 4,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                color: const Color(0xFFFF6A00),
+                                                borderRadius:
+                                                    BorderRadius.circular(999),
+                                              ),
+                                              child: const Text(
+                                                'Dang chon',
                                                 style: TextStyle(
-                                                  color: textPrimary,
+                                                  color: Colors.white,
+                                                  fontSize: 11,
                                                   fontWeight: FontWeight.w600,
                                                 ),
                                               ),
-                                              const SizedBox(height: 2),
-                                              Text(
-                                                p.code,
-                                                style: TextStyle(
-                                                  color: textSecondary,
-                                                  fontSize: 12,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        if (isSelected)
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 8,
-                                              vertical: 4,
+                                            )
+                                          else
+                                            Icon(
+                                              Icons.chevron_right,
+                                              color: textSecondary,
                                             ),
-                                            decoration: BoxDecoration(
-                                              color: const Color(0xFFFF6A00),
-                                              borderRadius:
-                                                  BorderRadius.circular(999),
-                                            ),
-                                            child: const Text(
-                                              'Dang chon',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 11,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                          )
-                                        else
-                                          Icon(
-                                            Icons.chevron_right,
-                                            color: textSecondary,
-                                          ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                );
-                              },
-                            ),
+                                  );
+                                },
+                              ),
                     ),
                   ],
                 ),
@@ -794,6 +811,7 @@ class _HomeFeedState extends State<_HomeFeed> {
     _setProvince(picked);
     widget.onProvinceLabelChanged(picked.name);
   }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -811,6 +829,45 @@ class _HomeFeedState extends State<_HomeFeed> {
           child: _buildSearchField(theme),
         ),
         const SizedBox(height: 16),
+        if (_selectedProvince != null && _dishesStream != null)
+          StreamBuilder<List<DishModel>>(
+            stream: _dishesStream,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const SizedBox.shrink();
+              }
+              if (snapshot.hasError) {
+                return _buildEmpty('Khong the tai mon goi y hom nay.');
+              }
+
+              final dishes = snapshot.data ?? [];
+              final filtered = _filterDishes(dishes);
+              if (filtered.isEmpty) {
+                return const SizedBox.shrink();
+              }
+
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  children: [
+                    // Muc goi y 3 mon dat ngay duoi thanh tim kiem.
+                    TodayEatSection(
+                      dishes: dishes,
+                      provinceSeed: _selectedProvince?.id ?? '',
+                      onTapDish: (dish) {
+                        Navigator.pushNamed(
+                          context,
+                          RouteNames.dishDetail,
+                          arguments: dish.id,
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ),
+              );
+            },
+          ),
         StreamBuilder<List<ProvinceModel>>(
           stream: _service.watchProvinces(),
           builder: (context, snapshot) {
@@ -837,16 +894,18 @@ class _HomeFeedState extends State<_HomeFeed> {
             widget.onProvincePickerReady(_openProvincePicker);
 
             final selected = _selectedProvince;
-            final selectedInList = selected != null &&
-                provinces.any((p) => p.id == selected.id);
+            final selectedInList =
+                selected != null && provinces.any((p) => p.id == selected.id);
             if (!selectedInList) {
               _selectionInitialized = false;
             }
 
             final preferred = _findPreferredProvince(provinces);
-            final target = (!_selectionInitialized && preferred != null)
-                ? preferred
-                : (selectedInList ? selected! : (preferred ?? provinces.first));
+            final selectedProvince = selectedInList ? selected : null;
+            final target =
+                (!_selectionInitialized && preferred != null)
+                    ? preferred
+                    : (selectedProvince ?? preferred ?? provinces.first);
 
             // Luon cap nhat label app bar theo tinh dang su dung.
             widget.onProvinceLabelChanged(target.name);
@@ -862,11 +921,12 @@ class _HomeFeedState extends State<_HomeFeed> {
               });
             }
 
-            final images = target.imageUrls.isNotEmpty
-                ? target.imageUrls
-                : (target.imageUrl.isNotEmpty
-                    ? [target.imageUrl]
-                    : const <String>[]);
+            final images =
+                target.imageUrls.isNotEmpty
+                    ? target.imageUrls
+                    : (target.imageUrl.isNotEmpty
+                        ? [target.imageUrl]
+                        : const <String>[]);
 
             if (_lastProvinceId != target.id) {
               _lastProvinceId = target.id;
@@ -943,19 +1003,7 @@ class _HomeFeedState extends State<_HomeFeed> {
             );
           },
         ),
-        const SizedBox(height: 20),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Text(
-            'Dac san theo tinh',
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ),
-        const SizedBox(height: 10),
-        if (_selectedProvince == null)
-          _buildEmpty('Chon tinh de xem mon an.'),
+        if (_selectedProvince == null) _buildEmpty('Chon tinh de xem mon an.'),
         if (_selectedProvince != null && _dishesStream != null)
           StreamBuilder<List<DishModel>>(
             stream: _dishesStream,
@@ -971,14 +1019,7 @@ class _HomeFeedState extends State<_HomeFeed> {
               }
 
               final dishes = snapshot.data ?? [];
-              final query = _query.toLowerCase();
-              final filtered = query.isEmpty
-                  ? dishes
-                  : dishes.where((dish) {
-                      final name = dish.name.toLowerCase();
-                      final tag = dish.tag.toLowerCase();
-                      return name.contains(query) || tag.contains(query);
-                    }).toList();
+              final filtered = _filterDishes(dishes);
 
               if (filtered.isEmpty) {
                 return _buildEmpty('Khong tim thay mon an phu hop.');
@@ -989,36 +1030,51 @@ class _HomeFeedState extends State<_HomeFeed> {
                   final favoriteIds = favoriteController.favoriteIds;
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: filtered.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: crossAxisCount,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                        // Card nho gon hon de hien thi duoc nhieu item tren man hinh.
-                        childAspectRatio: 0.92,
-                      ),
-                      itemBuilder: (context, index) {
-                        final dish = filtered[index];
-                        final isFavorite = favoriteIds.contains(dish.id);
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(
-                              context,
-                              RouteNames.dishDetail,
-                              arguments: dish.id,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 20),
+                        Text(
+                          'Dac san theo tinh',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: filtered.length,
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: crossAxisCount,
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 10,
+                            // Card nho gon hon de hien thi duoc nhieu item tren man hinh.
+                            childAspectRatio: 0.92,
+                          ),
+                          itemBuilder: (context, index) {
+                            final dish = filtered[index];
+                            final isFavorite = favoriteIds.contains(dish.id);
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  RouteNames.dishDetail,
+                                  arguments: dish.id,
+                                );
+                              },
+                              child: _buildDishCard(
+                                dish,
+                                isFavorite: isFavorite,
+                                onToggle:
+                                    () => favoriteController.toggleFavorite(
+                                      dish.id,
+                                    ),
+                              ),
                             );
                           },
-                          child: _buildDishCard(
-                            dish,
-                            isFavorite: isFavorite,
-                            onToggle: () =>
-                                favoriteController.toggleFavorite(dish.id),
-                          ),
-                        );
-                      },
+                        ),
+                      ],
                     ),
                   );
                 },
@@ -1027,6 +1083,18 @@ class _HomeFeedState extends State<_HomeFeed> {
           ),
       ],
     );
+  }
+
+  List<DishModel> _filterDishes(List<DishModel> dishes) {
+    final query = _query.toLowerCase();
+    if (query.isEmpty) {
+      return dishes;
+    }
+    return dishes.where((dish) {
+      final name = dish.name.toLowerCase();
+      final tag = dish.tag.toLowerCase();
+      return name.contains(query) || tag.contains(query);
+    }).toList();
   }
 
   Widget _buildSearchField(ThemeData theme) {
@@ -1070,10 +1138,11 @@ class _HomeFeedState extends State<_HomeFeed> {
             imageUrl,
             fit: BoxFit.cover,
             gaplessPlayback: true,
-            errorBuilder: (_, __, ___) => Container(
-              color: theme.colorScheme.surfaceVariant,
-              child: const Icon(Icons.image, size: 32),
-            ),
+            errorBuilder:
+                (_, __, ___) => Container(
+                  color: theme.colorScheme.surfaceVariant,
+                  child: const Icon(Icons.image, size: 32),
+                ),
           ),
           Positioned.fill(
             child: DecoratedBox(
@@ -1117,8 +1186,7 @@ class _HomeFeedState extends State<_HomeFeed> {
     // Mau vien cam theo yeu cau, nhat hon o light mode de nhin "sach".
     final borderColor =
         isDark ? const Color(0xFF8A4B14) : const Color(0xFFFFC999);
-    final cardBg =
-        isDark ? const Color(0xFF15181E) : theme.colorScheme.surface;
+    final cardBg = isDark ? const Color(0xFF15181E) : theme.colorScheme.surface;
     final titleColor = isDark ? Colors.white : const Color(0xFF1F2937);
     final subColor = isDark ? Colors.white70 : const Color(0xFF6B7280);
 
@@ -1146,21 +1214,22 @@ class _HomeFeedState extends State<_HomeFeed> {
               child: Stack(
                 children: [
                   Positioned.fill(
-                    child: imageUrl.isNotEmpty
-                        ? Image.network(
-                            imageUrl,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                color: theme.colorScheme.surfaceVariant,
-                                child: const Icon(Icons.image, size: 24),
-                              );
-                            },
-                          )
-                        : Container(
-                            color: theme.colorScheme.surfaceVariant,
-                            child: const Icon(Icons.image, size: 24),
-                          ),
+                    child:
+                        imageUrl.isNotEmpty
+                            ? Image.network(
+                              imageUrl,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  color: theme.colorScheme.surfaceVariant,
+                                  child: const Icon(Icons.image, size: 24),
+                                );
+                              },
+                            )
+                            : Container(
+                              color: theme.colorScheme.surfaceVariant,
+                              child: const Icon(Icons.image, size: 24),
+                            ),
                   ),
                   Positioned(
                     top: 6,
@@ -1226,6 +1295,7 @@ class _HomeFeedState extends State<_HomeFeed> {
       ),
     );
   }
+
   Widget _buildDots(int count, int activeIndex) {
     final theme = Theme.of(context);
     return Row(
@@ -1249,42 +1319,7 @@ class _HomeFeedState extends State<_HomeFeed> {
   Widget _buildEmpty(String text) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: Text(
-        text,
-        style: TextStyle(color: Theme.of(context).hintColor),
-      ),
+      child: Text(text, style: TextStyle(color: Theme.of(context).hintColor)),
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
