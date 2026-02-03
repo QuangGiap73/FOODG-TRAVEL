@@ -7,7 +7,6 @@ import 'package:geolocator/geolocator.dart';
 
 import '../../models/dish_model.dart';
 import '../../models/province_model.dart';
-import '../../services/auth_service.dart';
 import '../../services/food_service.dart';
 import '../../services/user_service.dart';
 import '../../router/route_names.dart';
@@ -32,14 +31,32 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
   bool _checkedSurvey = false;
+  // Ten tinh dang hien thi tren app bar (duoc HomeFeed cap nhat theo GPS/khao sat).
+  String _appBarProvinceText = 'Ban o dau?';
+  // Callback de app bar goi mo danh sach tinh trong HomeFeed.
+  VoidCallback? _openProvincePickerFromHome;
 
-  final List<Widget> _pages = const [
-    _HomeFeed(),
-    Center(child: Text('Kham pha')),
-    MapPage(),
-    FavoritesTabsPage(),
-    PersonalPage(),
-  ];
+  List<Widget> _buildPages() {
+    return [
+      _HomeFeed(
+        onProvinceLabelChanged: (value) {
+          if (!mounted || value == _appBarProvinceText) return;
+          // Tranh setState trung luc cay widget dang build.
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted || value == _appBarProvinceText) return;
+            setState(() => _appBarProvinceText = value);
+          });
+        },
+        onProvincePickerReady: (callback) {
+          _openProvincePickerFromHome = callback;
+        },
+      ),
+      const Center(child: Text('Kham pha')),
+      const MapPage(),
+      const FavoritesTabsPage(),
+      const PersonalPage(),
+    ];
+  }
 
   @override
   void initState() {
@@ -68,6 +85,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final photoUrl = FirebaseAuth.instance.currentUser?.photoURL;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    // Neu da xac dinh duoc tinh thi dong tren doi thanh 'Dang o'.
+    final hasProvince = _appBarProvinceText.trim().isNotEmpty &&
+        _appBarProvinceText.trim().toLowerCase() != 'ban o dau?';
+    final topLocationText = hasProvince ? 'Dang o' : 'Ban dang o dau?';
 
     // An AppBar o tab "Luu" va "Toi"
     final showAppBar = _currentIndex != 4 && _currentIndex != 3;
@@ -97,17 +118,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   onTap: () {
                     if (_currentIndex != 0) {
                       setState(() => _currentIndex = 0);
+                      return;
                     }
+                    // Mo danh sach tinh ngay tren app bar (chi khi dang o Home).
+                    _openProvincePickerFromHome?.call();
                   },
                   child: Padding(
                     padding:
                         const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Ban dang o dau?',
+                          topLocationText,
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w500,
@@ -125,8 +149,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               color: Color(0xFFFF6A00),
                             ),
                             const SizedBox(width: 2),
-                            const Text(
-                              'Chon khu vuc',
+                            Text(
+                              _appBarProvinceText,
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
@@ -154,19 +178,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   tooltip: 'Thong bao',
                   visualDensity: VisualDensity.compact,
                 ),
-                IconButton(
-                  icon: const Icon(Icons.favorite_border_rounded),
-                  onPressed: () => setState(() => _currentIndex = 3),
-                  tooltip: 'Yeu thich',
-                  visualDensity: VisualDensity.compact,
-                ),
+                // IconButton(
+                //   icon: const Icon(Icons.favorite_border_rounded),
+                //   onPressed: () => setState(() => _currentIndex = 3),
+                //   tooltip: 'Yeu thich',
+                //   visualDensity: VisualDensity.compact,
+                // ),
                 const SizedBox(width: 6),
               ],
             )
           : null,
       body: IndexedStack(
         index: _currentIndex,
-        children: _pages,
+        children: _buildPages(),
       ),
       bottomNavigationBar: HomeBottomNav(
         currentIndex: _currentIndex,
@@ -177,12 +201,20 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class _HomeFeed extends StatefulWidget {
-  const _HomeFeed({super.key});
+  const _HomeFeed({
+    super.key,
+    required this.onProvinceLabelChanged,
+    required this.onProvincePickerReady,
+  });
+
+  // HomeFeed gui ten tinh hien tai cho app bar o HomeScreen.
+  final ValueChanged<String> onProvinceLabelChanged;
+  // HomeFeed gui callback de app bar mo bottom sheet chon tinh.
+  final ValueChanged<VoidCallback?> onProvincePickerReady;
 
   @override
   State<_HomeFeed> createState() => _HomeFeedState();
 }
-
 class _HomeFeedState extends State<_HomeFeed> {
   final _service = FoodService();
   final _pageController = PageController();
@@ -203,6 +235,9 @@ class _HomeFeedState extends State<_HomeFeed> {
   bool _gpsResolving = false;
   String? _gpsProvinceName;
   String? _gpsProvinceCode;
+  // Tinh user chon tay o app bar (chi ton tai trong session).
+  String? _manualProvinceName;
+  String? _manualProvinceCode;
 
   ProvinceModel? _selectedProvince;
   String _query = '';
@@ -210,6 +245,8 @@ class _HomeFeedState extends State<_HomeFeed> {
   String? _preferredProvinceCode;
   String? _preferredProvinceName;
   int _imageCount = 0;
+  // Cache danh sach tinh de mo picker tu app bar.
+  List<ProvinceModel> _cachedProvinces = const []; 
 
   @override
   void initState() {
@@ -228,6 +265,8 @@ class _HomeFeedState extends State<_HomeFeed> {
 
   @override
   void dispose() {
+    // Huy callback o HomeScreen de tranh goi vao state da dispose.
+    widget.onProvincePickerReady(null);
     LocationPreferenceService.enabled.removeListener(_onLocationPrefChanged);
     _stopGpsListener();
     _profileSub?.cancel();
@@ -258,6 +297,12 @@ class _HomeFeedState extends State<_HomeFeed> {
         _preferredProvinceName = nextName;
         _selectionInitialized = false;
       });
+      // Neu chua co GPS va chua chon tay, hien tam ten tinh tu khao sat len app bar.
+      if ((_manualProvinceName == null || _manualProvinceName!.isEmpty) &&
+          (_gpsProvinceName == null || _gpsProvinceName!.isEmpty) &&
+          (nextName != null && nextName.isNotEmpty)) {
+        widget.onProvinceLabelChanged(nextName);
+      }
     });
   }
 
@@ -297,7 +342,34 @@ class _HomeFeedState extends State<_HomeFeed> {
     return raw.trim().toLowerCase().replaceAll('-', '_');
   }
 
-  ProvinceModel? _findPreferredProvince(List<ProvinceModel> provinces) {
+    ProvinceModel? _findPreferredProvince(List<ProvinceModel> provinces) {
+    // 0) Neu user chon tay o app bar thi uu tien trong session hien tai.
+    final manualCode = _manualProvinceCode?.trim();
+    final manualName = _manualProvinceName?.trim();
+    if ((manualCode?.isNotEmpty ?? false) || (manualName?.isNotEmpty ?? false)) {
+      if (manualCode != null && manualCode.isNotEmpty) {
+        final normalizedManual = _normalizeKey(manualCode);
+        for (final province in provinces) {
+          final codeKey = _normalizeKey(province.code);
+          final idKey = _normalizeKey(province.id);
+          if (codeKey == normalizedManual || idKey == normalizedManual) {
+            return province;
+          }
+        }
+      }
+      if (manualName != null && manualName.isNotEmpty) {
+        final manualSlug = _slugify(manualName);
+        for (final province in provinces) {
+          if (province.name == manualName) {
+            return province;
+          }
+          if (manualSlug.isNotEmpty && _slugify(province.name) == manualSlug) {
+            return province;
+          }
+        }
+      }
+    }
+
     // Neu co GPS va co vi tri, uu tien chon tinh gan nhat theo centerLat/centerLng.
     if (_gpsEnabled && _gpsPosition != null) {
       final nearest = _findNearestProvinceByGps(provinces, _gpsPosition!);
@@ -471,6 +543,8 @@ class _HomeFeedState extends State<_HomeFeed> {
       _gpsProvinceCode = nextCode;
       _selectionInitialized = false; // bat buoc re-chon tinh tren Home
     });
+    // Co GPS thi uu tien hien ten tinh GPS len app bar.
+    widget.onProvinceLabelChanged(cleaned);
     return true;
   }
 
@@ -513,12 +587,221 @@ class _HomeFeedState extends State<_HomeFeed> {
     return result;
   }
 
+  Future<void> _openProvincePicker() async {
+    if (_cachedProvinces.isEmpty) return;
 
+    String query = '';
+    final picked = await showModalBottomSheet<ProvinceModel>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        final isDark = Theme.of(ctx).brightness == Brightness.dark;
+        final bg = isDark ? const Color(0xFF10141B) : Colors.white;
+        final border =
+            isDark ? const Color(0xFF27303B) : const Color(0xFFE5E7EB);
+        final textPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
+        final textSecondary = isDark ? Colors.white70 : const Color(0xFF64748B);
+
+        return StatefulBuilder(
+          builder: (context, setSheetState) {
+            final q = query.trim().toLowerCase();
+            final filtered = q.isEmpty
+                ? _cachedProvinces
+                : _cachedProvinces.where((p) {
+                    final name = p.name.toLowerCase();
+                    final code = p.code.toLowerCase();
+                    return name.contains(q) || code.contains(q);
+                  }).toList();
+
+            return SafeArea(
+              top: false,
+              child: Container(
+                height: MediaQuery.of(ctx).size.height * 0.78,
+                padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
+                decoration: BoxDecoration(
+                  color: bg,
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(24)),
+                  border: Border.all(color: border),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 42,
+                        height: 4,
+                        margin: const EdgeInsets.only(bottom: 12),
+                        decoration: BoxDecoration(
+                          color: textSecondary.withOpacity(0.35),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                      ),
+                    ),
+                    Text(
+                      'Chon tinh thanh',
+                      style: TextStyle(
+                        color: textPrimary,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    // O tim kiem nhanh theo ten hoac ma tinh.
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        color: isDark
+                            ? const Color(0xFF171D27)
+                            : const Color(0xFFF8FAFC),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: border),
+                      ),
+                      child: TextField(
+                        onChanged: (value) {
+                          setSheetState(() => query = value);
+                        },
+                        style: TextStyle(color: textPrimary),
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          icon: Icon(
+                            Icons.search,
+                            color: textSecondary,
+                            size: 20,
+                          ),
+                          hintText: 'Tim tinh... (VD: Ha Noi, DN, ...)',
+                          hintStyle: TextStyle(color: textSecondary),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Expanded(
+                      child: filtered.isEmpty
+                          ? Center(
+                              child: Text(
+                                'Khong tim thay tinh phu hop.',
+                                style: TextStyle(color: textSecondary),
+                              ),
+                            )
+                          : ListView.separated(
+                              itemCount: filtered.length,
+                              separatorBuilder: (_, __) =>
+                                  const SizedBox(height: 8),
+                              itemBuilder: (_, i) {
+                                final p = filtered[i];
+                                final isSelected = _selectedProvince?.id == p.id;
+                                return InkWell(
+                                  onTap: () => Navigator.pop(ctx, p),
+                                  borderRadius: BorderRadius.circular(14),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 11,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(14),
+                                      color: isSelected
+                                          ? const Color(0xFFFFF3E8)
+                                          : (isDark
+                                              ? const Color(0xFF171D27)
+                                              : const Color(0xFFFCFCFD)),
+                                      border: Border.all(
+                                        color: isSelected
+                                            ? const Color(0xFFFFC999)
+                                            : border,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.location_on_outlined,
+                                          size: 18,
+                                          color: Color(0xFFFF6A00),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                p.name,
+                                                style: TextStyle(
+                                                  color: textPrimary,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 2),
+                                              Text(
+                                                p.code,
+                                                style: TextStyle(
+                                                  color: textSecondary,
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        if (isSelected)
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 8,
+                                              vertical: 4,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFFFF6A00),
+                                              borderRadius:
+                                                  BorderRadius.circular(999),
+                                            ),
+                                            child: const Text(
+                                              'Dang chon',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          )
+                                        else
+                                          Icon(
+                                            Icons.chevron_right,
+                                            color: textSecondary,
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+
+    if (picked == null || !mounted) return;
+    setState(() {
+      // Luu lua chon tay cho session hien tai.
+      _manualProvinceCode = picked.code.trim();
+      _manualProvinceName = picked.name.trim();
+      _selectionInitialized = false;
+    });
+    _setProvince(picked);
+    widget.onProvinceLabelChanged(picked.name);
+  }
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final width = MediaQuery.of(context).size.width;
     final crossAxisCount = width >= 720 ? 3 : 2;
+    // Tu dong lay thang hien tai de hien thi tieu de theo lich.
+    final now = DateTime.now();
+    final monthlyDestinationTitle = 'Diem den thang ${now.month}';
 
     return ListView(
       padding: const EdgeInsets.only(top: 12, bottom: 24),
@@ -543,8 +826,15 @@ class _HomeFeedState extends State<_HomeFeed> {
 
             final provinces = snapshot.data ?? [];
             if (provinces.isEmpty) {
+              // Khong co du lieu tinh -> app bar hien placeholder.
+              widget.onProvinceLabelChanged('Ban o dau?');
+              widget.onProvincePickerReady(null);
               return _buildEmpty('Chua co tinh thanh.');
             }
+
+            // Cache list tinh hien tai de mo picker tu app bar.
+            _cachedProvinces = provinces;
+            widget.onProvincePickerReady(_openProvincePicker);
 
             final selected = _selectedProvince;
             final selectedInList = selected != null &&
@@ -557,6 +847,9 @@ class _HomeFeedState extends State<_HomeFeed> {
             final target = (!_selectionInitialized && preferred != null)
                 ? preferred
                 : (selectedInList ? selected! : (preferred ?? provinces.first));
+
+            // Luon cap nhat label app bar theo tinh dang su dung.
+            widget.onProvinceLabelChanged(target.name);
 
             if (!_selectionInitialized || !selectedInList) {
               _selectionInitialized = true;
@@ -577,6 +870,8 @@ class _HomeFeedState extends State<_HomeFeed> {
 
             if (_lastProvinceId != target.id) {
               _lastProvinceId = target.id;
+              // Dong bo ten tinh len app bar.
+              widget.onProvinceLabelChanged(target.name);
               _imageIndex.value = 0;
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 for (final url in images) {
@@ -588,14 +883,18 @@ class _HomeFeedState extends State<_HomeFeed> {
             _startImageAutoSlide(images.length);
 
             return Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    'Tinh noi bat',
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      monthlyDestinationTitle,
+                      textAlign: TextAlign.left,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                 ),
@@ -696,9 +995,10 @@ class _HomeFeedState extends State<_HomeFeed> {
                       itemCount: filtered.length,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: crossAxisCount,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 0.75,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                        // Card nho gon hon de hien thi duoc nhieu item tren man hinh.
+                        childAspectRatio: 0.92,
                       ),
                       itemBuilder: (context, index) {
                         final dish = filtered[index];
@@ -811,27 +1111,38 @@ class _HomeFeedState extends State<_HomeFeed> {
     required VoidCallback onToggle,
   }) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final imageUrl = dish.imageUrl;
+
+    // Mau vien cam theo yeu cau, nhat hon o light mode de nhin "sach".
+    final borderColor =
+        isDark ? const Color(0xFF8A4B14) : const Color(0xFFFFC999);
+    final cardBg =
+        isDark ? const Color(0xFF15181E) : theme.colorScheme.surface;
+    final titleColor = isDark ? Colors.white : const Color(0xFF1F2937);
+    final subColor = isDark ? Colors.white70 : const Color(0xFF6B7280);
 
     return Container(
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(14),
+        color: cardBg,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: borderColor, width: 1.2),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 8,
+            color: const Color(0xFFFF6A00).withOpacity(isDark ? 0.16 : 0.12),
+            blurRadius: 10,
             offset: const Offset(0, 4),
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(12),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             AspectRatio(
-              aspectRatio: 4 / 3,
+              // Giam chieu cao anh de card gon lai.
+              aspectRatio: 16 / 10,
               child: Stack(
                 children: [
                   Positioned.fill(
@@ -842,18 +1153,18 @@ class _HomeFeedState extends State<_HomeFeed> {
                             errorBuilder: (context, error, stackTrace) {
                               return Container(
                                 color: theme.colorScheme.surfaceVariant,
-                                child: const Icon(Icons.image, size: 32),
+                                child: const Icon(Icons.image, size: 24),
                               );
                             },
                           )
                         : Container(
                             color: theme.colorScheme.surfaceVariant,
-                            child: const Icon(Icons.image, size: 32),
+                            child: const Icon(Icons.image, size: 24),
                           ),
                   ),
                   Positioned(
-                    top: 8,
-                    right: 8,
+                    top: 6,
+                    right: 6,
                     child: FavoriteButton(
                       isFavorite: isFavorite,
                       onTap: onToggle,
@@ -863,42 +1174,49 @@ class _HomeFeedState extends State<_HomeFeed> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(10, 8, 10, 4),
+              padding: const EdgeInsets.fromLTRB(8, 7, 8, 2),
               child: Text(
                 dish.name,
-                maxLines: 2,
+                maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: titleColor,
+                  fontWeight: FontWeight.w700,
+                  height: 1.2,
                 ),
               ),
             ),
             if (dish.tag.isNotEmpty)
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: Text(
                   dish.tag,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.hintColor,
+                    color: subColor,
+                    fontSize: 11,
                   ),
                 ),
               ),
             const Spacer(),
             Padding(
-              padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+              padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
               child: Row(
                 children: [
                   const Icon(
                     Icons.local_fire_department,
-                    size: 16,
-                    color: Colors.deepOrange,
+                    size: 14,
+                    color: Color(0xFFFF6A00),
                   ),
-                  const SizedBox(width: 4),
+                  const SizedBox(width: 3),
                   Text(
                     '${dish.spicyLevel}/5',
-                    style: theme.textTheme.bodySmall,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: subColor,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 11,
+                    ),
                   ),
                 ],
               ),
@@ -908,7 +1226,6 @@ class _HomeFeedState extends State<_HomeFeed> {
       ),
     );
   }
-
   Widget _buildDots(int count, int activeIndex) {
     final theme = Theme.of(context);
     return Row(
@@ -939,6 +1256,32 @@ class _HomeFeedState extends State<_HomeFeed> {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
