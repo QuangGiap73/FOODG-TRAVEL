@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -67,34 +67,100 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final photoUrl = FirebaseAuth.instance.currentUser?.photoURL;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     // An AppBar o tab "Luu" va "Toi"
     final showAppBar = _currentIndex != 4 && _currentIndex != 3;
     return Scaffold(
       appBar: showAppBar
           ? AppBar(
+              toolbarHeight: 72,
+              elevation: 0,
+              scrolledUnderElevation: 0,
+              backgroundColor: isDark ? const Color(0xFF0F131A) : Colors.white,
+              leadingWidth: 64,
               leading: Padding(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.only(left: 14, top: 12, bottom: 12),
                 child: CircleAvatar(
+                  radius: 18,
                   backgroundImage:
                       photoUrl != null ? NetworkImage(photoUrl) : null,
                   child: photoUrl == null ? const Icon(Icons.person) : null,
                 ),
               ),
-              title: const Text('FoodG Travel'),
+              titleSpacing: 0,
+              centerTitle: true,
+              title: Align(
+                alignment: Alignment.center,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(12),
+                  onTap: () {
+                    if (_currentIndex != 0) {
+                      setState(() => _currentIndex = 0);
+                    }
+                  },
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Ban dang o dau?',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                            color:
+                                isDark ? Colors.white54 : const Color(0xFF98A2B3),
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.location_on_outlined,
+                              size: 16,
+                              color: Color(0xFFFF6A00),
+                            ),
+                            const SizedBox(width: 2),
+                            const Text(
+                              'Chon khu vuc',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFFFF6A00),
+                              ),
+                            ),
+                            Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              size: 18,
+                              color: isDark
+                                  ? Colors.white54
+                                  : const Color(0xFF98A2B3),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
               actions: [
                 IconButton(
-                  icon: const Icon(Icons.logout),
-                  onPressed: () async {
-                    await AuthService().logout();
-                    if (!context.mounted) return;
-                    Navigator.pushNamedAndRemoveUntil(
-                      context,
-                      RouteNames.login,
-                      (_) => false,
-                    );
-                  },
-                  tooltip: 'Logout',
+                  icon: const Icon(Icons.notifications_none_rounded),
+                  onPressed: () {},
+                  tooltip: 'Thong bao',
+                  visualDensity: VisualDensity.compact,
                 ),
+                IconButton(
+                  icon: const Icon(Icons.favorite_border_rounded),
+                  onPressed: () => setState(() => _currentIndex = 3),
+                  tooltip: 'Yeu thich',
+                  visualDensity: VisualDensity.compact,
+                ),
+                const SizedBox(width: 6),
               ],
             )
           : null,
@@ -522,7 +588,7 @@ class _HomeFeedState extends State<_HomeFeed> {
             _startImageAutoSlide(images.length);
 
             return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -762,7 +828,7 @@ class _HomeFeedState extends State<_HomeFeed> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(14),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             AspectRatio(
               aspectRatio: 4 / 3,
@@ -873,3 +939,9 @@ class _HomeFeedState extends State<_HomeFeed> {
     );
   }
 }
+
+
+
+
+
+
