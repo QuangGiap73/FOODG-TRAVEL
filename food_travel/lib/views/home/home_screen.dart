@@ -11,6 +11,7 @@ import '../../services/food_service.dart';
 import '../../services/user_service.dart';
 import '../../router/route_names.dart';
 import '../../controller/favorite/favorite_controller.dart';
+import '../../controller/home/nearby_home_controlled.dart';
 import '../../widgets/favorite_button.dart';
 import '../onboarding/survey_sheet.dart';
 import '../favorites/favorites_tabs_page.dart';
@@ -20,6 +21,7 @@ import '../../services/location_preference_service.dart';
 import '../../services/location_service.dart';
 import '../../services/map/geocode_service.dart';
 import 'widgets/home_bottom_nav.dart';
+import 'widgets/nearby_places_section.dart';
 import 'widgets/today_eat_section.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -236,6 +238,8 @@ class _HomeFeedState extends State<_HomeFeed> {
   final _locationPrefs = LocationPreferenceService();
   final _locationService = LocationService();
   final _geocodeService = GeocodeService();
+  // Controller rieng cho section "Quan ngon gan ban" tren Home.
+  late final NearbyHomeController _nearbyHomeController;
   StreamSubscription<Position>? _gpsSub;
   Position? _gpsPosition;
   bool _gpsEnabled = false;
@@ -258,6 +262,8 @@ class _HomeFeedState extends State<_HomeFeed> {
   @override
   void initState() {
     super.initState();
+    // Tai san du lieu quan gan day ngay khi vao Home.
+    _nearbyHomeController = NearbyHomeController()..load();
     _startProfileListener();
 
     // Doc trang thai GPS da luu (bat/tat).
@@ -281,6 +287,7 @@ class _HomeFeedState extends State<_HomeFeed> {
     _imageIndex.dispose();
     _pageController.dispose();
     _searchController.dispose();
+    _nearbyHomeController.dispose();
     super.dispose();
   }
 
@@ -868,6 +875,39 @@ class _HomeFeedState extends State<_HomeFeed> {
               );
             },
           ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: NearbyPlacesSection(
+            controller: _nearbyHomeController,
+            onTapMap: () {
+              // Mo Map va truyen san danh sach de hien thi nhanh hon.
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (_) => MapPage(
+                        initialNearbyPlaces: _nearbyHomeController.places,
+                        initialNearbyQuery: 'quan an',
+                      ),
+                ),
+              );
+            },
+            onTapPlace: (place) {
+              // Mo Map va focus diem quan nguoi dung vua chon.
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (_) => MapPage(
+                        initialNearbyPlaces: _nearbyHomeController.places,
+                        initialPlace: place,
+                      ),
+                ),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 8),
         StreamBuilder<List<ProvinceModel>>(
           stream: _service.watchProvinces(),
           builder: (context, snapshot) {
