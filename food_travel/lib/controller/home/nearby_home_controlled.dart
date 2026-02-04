@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
@@ -24,9 +26,11 @@ class NearbyHomeController extends ChangeNotifier {
 
   final SerpApiPlacesService _placesService;
   final LocationService _locationService;
+  final Random _random = Random();
 
   static const Duration _cacheTtl = Duration(minutes: 8);
   static const int _radius = 8000;
+  static const List<int> _radiusSteps = [6000, 10000, 15000];
   static const int _limit = 12;
 
   final Map<String, _NearbyCacheEntry> _cache = {};
@@ -35,6 +39,7 @@ class NearbyHomeController extends ChangeNotifier {
   NearbyHomeStatus _status = NearbyHomeStatus.idle;
   String? _errorMessage;
   LatLng? _userLatLng;
+  String? _lastPickedQuery;
 
   NearbyHomeStatus get status => _status;
   String? get errorMessage => _errorMessage;
@@ -71,6 +76,7 @@ class NearbyHomeController extends ChangeNotifier {
     _userLatLng = LatLng(pos.latitude, pos.longitude);
     final cacheKey = _buildCacheKey(_userLatLng!);
     final cached = _cache[cacheKey];
+
     // Neu cache con han thi dung lai de giam goi API.
     if (!force &&
         cached != null &&
@@ -85,16 +91,16 @@ class NearbyHomeController extends ChangeNotifier {
     }
 
     try {
-      // Tim "quan an" quanh vi tri hien tai.
-      final result = await _placesService.searchNearby(
+      // Thu nhieu query theo khung gio + mo rong ban kinh de tang ty le co ket qua.
+      final queries = _queryCandidatesByHour(DateTime.now());
+      final places = await _searchFirstNonEmpty(
         lat: pos.latitude,
         lng: pos.longitude,
-        query: 'quan an',
-        radius: _radius,
-        limit: _limit,
+        queries: queries,
       );
+
       final sorted = _sortPlaces(
-        result,
+        places,
         userLat: pos.latitude,
         userLng: pos.longitude,
       );
@@ -110,6 +116,126 @@ class NearbyHomeController extends ChangeNotifier {
       _errorMessage = 'Khong tai duoc danh sach quan an gan day.';
       notifyListeners();
     }
+  }
+
+  String _pickQueryByHour(DateTime now) {
+    final hour = now.hour;
+    List<String> pool;
+
+    if (hour >= 5 && hour < 11) {
+      pool = ['an sang', 'quan an', 'pho', 'bun', 'banh mi'];
+    } else if (hour >= 11 && hour < 14) {
+      pool = ['an trua', 'quan an', 'com van phong', 'com tam', 'bun cha'];
+    } else if (hour >= 14 && hour < 17) {
+      pool = ['an vat', 'quan an', 'tra sua', 'cafe', 'banh ngot'];
+    } else if (hour >= 17 && hour < 22) {
+      pool = ['an toi', 'quan an', 'lau', 'nuong', 'nha hang'];
+    } else {
+      pool = ['an dem', 'quan mo khuya', 'do an dem', 'quan an'];
+    }
+
+    // Tranh lap query vua dung (neu co the).
+    if (pool.length > 1 && _lastPickedQuery != null) {
+      pool = pool.where((q) => q != _lastPickedQuery).toList();
+    }
+
+    final picked = pool[_random.nextInt(pool.length)];
+    _lastPickedQuery = picked;
+    return picked;
+  }
+
+  List<String> _queryCandidatesByHour(DateTime now) {
+    final picked = _pickQueryByHour(now);
+    final hour = now.hour;
+    List<String> base;
+
+    if (hour >= 5 && hour < 11) {
+      base = [
+        'quan an',
+        'quan an sang',
+        'an sang',
+        'pho',
+        'bun',
+        'banh mi',
+        picked,
+      ];
+    } else if (hour >= 11 && hour < 14) {
+      base = [
+        'quan an',
+        'quan an trua',
+        'an trua',
+        'com van phong',
+        'com tam',
+        'bun cha',
+        picked,
+      ];
+    } else if (hour >= 14 && hour < 17) {
+      base = [
+        'quan an',
+        'quan an vat',
+        'an vat',
+        'tra sua',
+        'cafe',
+        'banh ngot',
+        picked,
+      ];
+    } else if (hour >= 17 && hour < 22) {
+      base = [
+        'quan an',
+        'quan an toi',
+        'an toi',
+        'lau',
+        'nuong',
+        'nha hang',
+        picked,
+      ];
+    } else {
+      base = [
+        'quan an',
+        'quan an dem',
+        'an dem',
+        'quan mo khuya',
+        'do an dem',
+        picked,
+      ];
+    }
+
+    // Fallback rong de dam bao moi khung gio deu co co hoi co quan.
+    base.addAll(const ['quan an', 'nha hang', 'an uong']);
+
+    final seen = <String>{};
+    return base
+        .map((e) => e.trim())
+        .where((e) => e.isNotEmpty && seen.add(e))
+        .toList();
+  }
+
+  Future<List<GoongNearbyPlace>> _searchFirstNonEmpty({
+    required double lat,
+    required double lng,
+    required List<String> queries,
+  }) async {
+    for (final radius in _radiusSteps) {
+      for (final query in queries) {
+        final result = await _placesService.searchNearby(
+          lat: lat,
+          lng: lng,
+          query: query,
+          radius: radius,
+          limit: _limit,
+        );
+        if (result.isNotEmpty) return result;
+      }
+    }
+
+    // Fallback cuoi cung.
+    return _placesService.searchNearby(
+      lat: lat,
+      lng: lng,
+      query: 'quan an',
+      radius: _radius,
+      limit: _limit,
+    );
   }
 
   List<GoongNearbyPlace> _sortPlaces(

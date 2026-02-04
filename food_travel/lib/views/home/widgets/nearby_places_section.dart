@@ -22,11 +22,11 @@ class NearbyPlacesSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      // Rebuild UI khi controller thay doi state.
+      // Rebuild UI khi controller thay đổi state.
       animation: controller,
       builder: (context, _) {
         final status = controller.status;
-        // Gioi han so card de Home gon va nhanh.
+        // Giới hạn số card để Home gọn và nhanh.
         final places = controller.places.take(8).toList();
 
         return Column(
@@ -35,7 +35,7 @@ class NearbyPlacesSection extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  'Quan ngon gan ban',
+                  'Quán ngon gần bạn',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w800,
                   ),
@@ -43,23 +43,24 @@ class NearbyPlacesSection extends StatelessWidget {
                 const Spacer(),
                 TextButton(
                   onPressed: places.isEmpty ? null : onTapMap,
-                  child: const Text('Xem ban do >>'),
+                  child: const Text('Xem bản đồ >>'),
                 ),
               ],
             ),
             const SizedBox(height: 8),
             if (status == NearbyHomeStatus.loading) _buildLoading(),
             if (status == NearbyHomeStatus.locationDisabled)
-              _buildMessage('Hay bat vi tri de xem quan gan ban.'),
+              _buildMessage('Hãy bật vị trí để xem quán gần bạn.'),
             if (status == NearbyHomeStatus.error)
-              _buildMessage(controller.errorMessage ?? 'Khong tai du lieu.'),
+              _buildMessage(
+                controller.errorMessage ?? 'Không tải được dữ liệu.',
+              ),
             if (status == NearbyHomeStatus.empty)
-              _buildMessage('Chua tim thay quan phu hop.'),
+              _buildMessage('Chưa tìm thấy quán phù hợp.'),
             if (status == NearbyHomeStatus.success && places.isNotEmpty)
               SizedBox(
                 height: 220,
                 child: ListView.separated(
-                  // Danh sach card ngang theo mock Home.
                   scrollDirection: Axis.horizontal,
                   itemCount: places.length,
                   separatorBuilder: (_, __) => const SizedBox(width: 12),
@@ -107,9 +108,21 @@ class _PlaceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Distance + price duoc tinh san cho dong thong tin ben duoi.
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final distance = _distanceText(place, userLocation);
     final priceText = _priceText(place.price);
+    final cardBg = isDark ? const Color(0xFF08122A) : Colors.white;
+    final titleColor = isDark ? Colors.white : const Color(0xFF111827);
+    final infoColor = isDark ? Colors.white70 : const Color(0xFF6B7280);
+    final distanceColor =
+        isDark ? const Color(0xFF8AB4F8) : const Color(0xFF2563EB);
+    final borderColor =
+        isDark ? const Color(0x1AFFFFFF) : const Color(0x1A000000);
+    final shadowColor =
+        isDark
+            ? Colors.black.withValues(alpha: 0.30)
+            : Colors.black.withValues(alpha: 0.08);
 
     return InkWell(
       borderRadius: BorderRadius.circular(16),
@@ -117,7 +130,15 @@ class _PlaceCard extends StatelessWidget {
       child: Ink(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color: const Color(0xFF08122A),
+          color: cardBg,
+          border: Border.all(color: borderColor),
+          boxShadow: [
+            BoxShadow(
+              color: shadowColor,
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -137,11 +158,21 @@ class _PlaceCard extends StatelessWidget {
                         place.photoUrl,
                         fit: BoxFit.cover,
                         errorBuilder: (_, __, ___) {
-                          return Container(color: const Color(0xFF1A2233));
+                          return Container(
+                            color:
+                                isDark
+                                    ? const Color(0xFF1A2233)
+                                    : const Color(0xFFE5E7EB),
+                          );
                         },
                       )
                     else
-                      Container(color: const Color(0xFF1A2233)),
+                      Container(
+                        color:
+                            isDark
+                                ? const Color(0xFF1A2233)
+                                : const Color(0xFFE5E7EB),
+                      ),
                     Positioned(
                       left: 10,
                       top: 10,
@@ -166,7 +197,7 @@ class _PlaceCard extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
-                            '${place.rating!.toStringAsFixed(1)}',
+                            place.rating!.toStringAsFixed(1),
                             style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w700,
@@ -184,8 +215,8 @@ class _PlaceCard extends StatelessWidget {
                 place.name,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: titleColor,
                   fontWeight: FontWeight.w700,
                   fontSize: 20,
                 ),
@@ -197,17 +228,14 @@ class _PlaceCard extends StatelessWidget {
                 children: [
                   Text(
                     distance,
-                    style: const TextStyle(
-                      color: Color(0xFF8AB4F8),
-                      fontSize: 16,
-                    ),
+                    style: TextStyle(color: distanceColor, fontSize: 16),
                   ),
                   const SizedBox(width: 6),
-                  const Icon(Icons.circle, size: 4, color: Colors.white70),
+                  Icon(Icons.circle, size: 4, color: infoColor),
                   const SizedBox(width: 6),
                   Text(
                     priceText,
-                    style: const TextStyle(color: Colors.white70, fontSize: 16),
+                    style: TextStyle(color: infoColor, fontSize: 16),
                   ),
                 ],
               ),
@@ -258,7 +286,7 @@ class _OpenBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
-        open ? 'Dang mo' : 'Dang dong',
+        open ? 'Đang mở' : 'Đang đóng',
         style: const TextStyle(
           color: Colors.white,
           fontSize: 12,
@@ -291,7 +319,7 @@ class _FavoriteHeart extends StatelessWidget {
           child: Icon(
             isFavorite ? Icons.favorite : Icons.favorite_border,
             size: 16,
-            color: Colors.red,
+            color: isFavorite ? Colors.red : Colors.white,
           ),
         ),
       ),

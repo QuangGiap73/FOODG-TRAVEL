@@ -120,7 +120,7 @@ class _TodayEatSectionState extends State<TodayEatSection> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Hom nay an gi?',
+                    'Hôm nay ăn gì?',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 30,
@@ -239,7 +239,7 @@ class _RefreshButton extends StatelessWidget {
               Icon(Icons.autorenew_rounded, size: 16, color: Colors.white),
               SizedBox(width: 6),
               Text(
-                'Doi goi y',
+                'Đổi gợi ý',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 13,
@@ -257,7 +257,7 @@ class _RefreshButton extends StatelessWidget {
 String _twoWordLabel(String name) {
   final words =
       name.trim().split(RegExp(r'\s+')).where((w) => w.isNotEmpty).toList();
-  if (words.isEmpty) return 'Mon';
+  if (words.isEmpty) return 'Món';
   if (words.length == 1) return words.first;
   return '${words[0]} ${words[1]}';
 }

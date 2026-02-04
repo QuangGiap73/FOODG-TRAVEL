@@ -36,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
   bool _checkedSurvey = false;
   // Ten tinh dang hien thi tren app bar (duoc HomeFeed cap nhat theo GPS/khao sat).
-  String _appBarProvinceText = 'Ban o dau?';
+  String _appBarProvinceText = 'Bạn ở đâu?';
   // Callback de app bar goi mo danh sach tinh trong HomeFeed.
   VoidCallback? _openProvincePickerFromHome;
 
@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
           _openProvincePickerFromHome = callback;
         },
       ),
-      const Center(child: Text('Kham pha')),
+      const Center(child: Text('Khám phá')),
       const MapPage(),
       const FavoritesTabsPage(),
       const PersonalPage(),
@@ -92,8 +92,8 @@ class _HomeScreenState extends State<HomeScreen> {
     // Neu da xac dinh duoc tinh thi dong tren doi thanh 'Dang o'.
     final hasProvince =
         _appBarProvinceText.trim().isNotEmpty &&
-        _appBarProvinceText.trim().toLowerCase() != 'ban o dau?';
-    final topLocationText = hasProvince ? 'Dang o' : 'Ban dang o dau?';
+        _appBarProvinceText.trim().toLowerCase() != 'bạn ở đâu?';
+    final topLocationText = hasProvince ? 'Đang ở' : 'Bạn đang ở đâu?';
 
     // An AppBar o tab "Luu" va "Toi"
     final showAppBar = _currentIndex != 4 && _currentIndex != 3;
@@ -137,10 +137,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
                             topLocationText,
+                            textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w500,
@@ -187,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   IconButton(
                     icon: const Icon(Icons.notifications_none_rounded),
                     onPressed: () {},
-                    tooltip: 'Thong bao',
+                    tooltip: 'Thông báo',
                     visualDensity: VisualDensity.compact,
                   ),
                   // IconButton(
@@ -659,7 +660,7 @@ class _HomeFeedState extends State<_HomeFeed> {
                       ),
                     ),
                     Text(
-                      'Chon tinh thanh',
+                      'Chọn tỉnh thành',
                       style: TextStyle(
                         color: textPrimary,
                         fontSize: 18,
@@ -690,7 +691,7 @@ class _HomeFeedState extends State<_HomeFeed> {
                             color: textSecondary,
                             size: 20,
                           ),
-                          hintText: 'Tim tinh... (VD: Ha Noi, DN, ...)',
+                          hintText: 'Tìm tỉnh... (VD: Hà Nội, ĐN, ...)',
                           hintStyle: TextStyle(color: textSecondary),
                         ),
                       ),
@@ -701,7 +702,7 @@ class _HomeFeedState extends State<_HomeFeed> {
                           filtered.isEmpty
                               ? Center(
                                 child: Text(
-                                  'Khong tim thay tinh phu hop.',
+                                  'Không tìm thấy tỉnh phù hợp.',
                                   style: TextStyle(color: textSecondary),
                                 ),
                               )
@@ -780,7 +781,7 @@ class _HomeFeedState extends State<_HomeFeed> {
                                                     BorderRadius.circular(999),
                                               ),
                                               child: const Text(
-                                                'Dang chon',
+                                                'Đang chọn',
                                                 style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 11,
@@ -827,7 +828,7 @@ class _HomeFeedState extends State<_HomeFeed> {
     final crossAxisCount = width >= 720 ? 3 : 2;
     // Tu dong lay thang hien tai de hien thi tieu de theo lich.
     final now = DateTime.now();
-    final monthlyDestinationTitle = 'Diem den thang ${now.month}';
+    final monthlyDestinationTitle = 'Điểm đến tháng ${now.month}';
 
     return ListView(
       padding: const EdgeInsets.only(top: 12, bottom: 24),
@@ -845,7 +846,7 @@ class _HomeFeedState extends State<_HomeFeed> {
                 return const SizedBox.shrink();
               }
               if (snapshot.hasError) {
-                return _buildEmpty('Khong the tai mon goi y hom nay.');
+                return _buildEmpty('Không thể tải món gợi ý hôm nay.');
               }
 
               final dishes = snapshot.data ?? [];
@@ -876,36 +877,6 @@ class _HomeFeedState extends State<_HomeFeed> {
               );
             },
           ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: NearbyPlacesSection(
-            controller: _nearbyHomeController,
-            onTapMap: () {
-              // Mo Map va truyen san danh sach de hien thi nhanh hon.
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder:
-                      (_) => MapPage(
-                        initialNearbyPlaces: _nearbyHomeController.places,
-                        initialNearbyQuery: 'quan an',
-                      ),
-                ),
-              );
-            },
-            onTapPlace: (place) {
-              // Mo chi tiết quán ăn  va focus diem quan nguoi dung vua chon.
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder:
-                      (_) => FavoritePlaceDetailPage(place: place),
-                ),
-              );
-            },
-          ),
-        ),
-        const SizedBox(height: 8),
         StreamBuilder<List<ProvinceModel>>(
           stream: _service.watchProvinces(),
           builder: (context, snapshot) {
@@ -916,15 +887,15 @@ class _HomeFeedState extends State<_HomeFeed> {
               );
             }
             if (snapshot.hasError) {
-              return _buildEmpty('Khong the tai danh sach tinh.');
+              return _buildEmpty('Không thể tải danh sách tỉnh.');
             }
 
             final provinces = snapshot.data ?? [];
             if (provinces.isEmpty) {
               // Khong co du lieu tinh -> app bar hien placeholder.
-              widget.onProvinceLabelChanged('Ban o dau?');
+              widget.onProvinceLabelChanged('Bạn ở đâu?');
               widget.onProvincePickerReady(null);
-              return _buildEmpty('Chua co tinh thanh.');
+              return _buildEmpty('Chưa có tỉnh thành.');
             }
 
             // Cache list tinh hien tai de mo picker tu app bar.
@@ -998,7 +969,7 @@ class _HomeFeedState extends State<_HomeFeed> {
                 ),
                 const SizedBox(height: 10),
                 if (images.isEmpty)
-                  _buildEmpty('Tinh nay chua co anh.')
+                  _buildEmpty('Tỉnh này chưa có ảnh.')
                 else
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -1041,7 +1012,36 @@ class _HomeFeedState extends State<_HomeFeed> {
             );
           },
         ),
-        if (_selectedProvince == null) _buildEmpty('Chon tinh de xem mon an.'),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: NearbyPlacesSection(
+            controller: _nearbyHomeController,
+            onTapMap: () {
+              // Mo Map va truyen san danh sach de hien thi nhanh hon.
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (_) => MapPage(
+                        initialNearbyPlaces: _nearbyHomeController.places,
+                        initialNearbyQuery: 'quan an',
+                      ),
+                ),
+              );
+            },
+            onTapPlace: (place) {
+              // Mo chi tiet quan an khi bam vao card.
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => FavoritePlaceDetailPage(place: place),
+                ),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 8),
+        if (_selectedProvince == null) _buildEmpty('Chọn tỉnh để xem món ăn.'),
         if (_selectedProvince != null && _dishesStream != null)
           StreamBuilder<List<DishModel>>(
             stream: _dishesStream,
@@ -1053,14 +1053,14 @@ class _HomeFeedState extends State<_HomeFeed> {
                 );
               }
               if (snapshot.hasError) {
-                return _buildEmpty('Khong the tai danh sach mon.');
+                return _buildEmpty('Không thể tải danh sách món.');
               }
 
               final dishes = snapshot.data ?? [];
               final filtered = _filterDishes(dishes);
 
               if (filtered.isEmpty) {
-                return _buildEmpty('Khong tim thay mon an phu hop.');
+                return _buildEmpty('Không tìm thấy món ăn phù hợp.');
               }
 
               return Consumer<FavoriteController>(
@@ -1073,7 +1073,7 @@ class _HomeFeedState extends State<_HomeFeed> {
                       children: [
                         const SizedBox(height: 20),
                         Text(
-                          'Dac san theo tinh',
+                          'Đặc sản theo tỉnh',
                           style: theme.textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.w700,
                           ),
@@ -1155,7 +1155,7 @@ class _HomeFeedState extends State<_HomeFeed> {
         onChanged: (value) => setState(() => _query = value.trim()),
         decoration: const InputDecoration(
           icon: Icon(Icons.search),
-          hintText: 'Tim mon an, nguyen lieu...',
+          hintText: 'Tìm món ăn, nguyên liệu...',
           border: InputBorder.none,
         ),
       ),
