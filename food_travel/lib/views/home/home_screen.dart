@@ -20,6 +20,7 @@ import '../map/map_page.dart';
 import '../../services/location_preference_service.dart';
 import '../../services/location_service.dart';
 import '../../services/map/geocode_service.dart';
+import '../favorites/place_detail_page.dart';
 import 'widgets/home_bottom_nav.dart';
 import 'widgets/nearby_places_section.dart';
 import 'widgets/today_eat_section.dart';
@@ -893,15 +894,12 @@ class _HomeFeedState extends State<_HomeFeed> {
               );
             },
             onTapPlace: (place) {
-              // Mo Map va focus diem quan nguoi dung vua chon.
+              // Mo chi tiết quán ăn  va focus diem quan nguoi dung vua chon.
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder:
-                      (_) => MapPage(
-                        initialNearbyPlaces: _nearbyHomeController.places,
-                        initialPlace: place,
-                      ),
+                      (_) => FavoritePlaceDetailPage(place: place),
                 ),
               );
             },

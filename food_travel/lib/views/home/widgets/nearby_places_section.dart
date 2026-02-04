@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
+import 'package:provider/provider.dart';
 
 import '../../../controller/home/nearby_home_controlled.dart';
+import '../../../controller/restaurants/place_favorite_controller.dart';
 import '../../../models/places_model.dart';
 
 class NearbyPlacesSection extends StatelessWidget {
@@ -145,19 +147,33 @@ class _PlaceCard extends StatelessWidget {
                       top: 10,
                       child: _OpenBadge(isOpen: place.isOpen),
                     ),
-                    const Positioned(
+                    Positioned(
                       right: 10,
                       top: 10,
-                      child: CircleAvatar(
-                        radius: 14,
-                        backgroundColor: Color(0x66000000),
-                        child: Icon(
-                          Icons.favorite_border,
-                          size: 16,
-                          color: Colors.white,
+                      child: _FavoriteHeart(place: place),
+                    ),
+                    if (place.rating != null)
+                      Positioned(
+                        right: 10,
+                        bottom: 10,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF233B6B),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            '${place.rating!.toStringAsFixed(1)}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
                   ],
                 ),
               ),
@@ -187,31 +203,12 @@ class _PlaceCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 6),
-                  const Text('.', style: TextStyle(color: Colors.white70)),
+                  const Icon(Icons.circle, size: 4, color: Colors.white70),
                   const SizedBox(width: 6),
                   Text(
                     priceText,
                     style: const TextStyle(color: Colors.white70, fontSize: 16),
                   ),
-                  const Spacer(),
-                  if (place.rating != null)
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF233B6B),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        '* ${place.rating!.toStringAsFixed(1)}',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
                 ],
               ),
             ),
@@ -266,6 +263,36 @@ class _OpenBadge extends StatelessWidget {
           color: Colors.white,
           fontSize: 12,
           fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
+  }
+}
+
+class _FavoriteHeart extends StatelessWidget {
+  const _FavoriteHeart({required this.place});
+
+  final GoongNearbyPlace place;
+
+  @override
+  Widget build(BuildContext context) {
+    final fav = context.watch<PlaceFavoriteController>();
+    final isFavorite = fav.isFavorite(place);
+    return Material(
+      color: const Color(0x66000000),
+      shape: const CircleBorder(),
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: () {
+          context.read<PlaceFavoriteController>().toggle(place);
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(6),
+          child: Icon(
+            isFavorite ? Icons.favorite : Icons.favorite_border,
+            size: 16,
+            color: Colors.red,
+          ),
         ),
       ),
     );
