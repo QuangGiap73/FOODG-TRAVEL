@@ -254,6 +254,8 @@ class _HomeFeedState extends State<_HomeFeed> {
 
   ProvinceModel? _selectedProvince;
   String _query = '';
+  bool _showAllSpecialties = false;
+  List<DishModel> _todayDishesCache = const <DishModel>[];
   bool _selectionInitialized = false;
   String? _preferredProvinceCode;
   String? _preferredProvinceName;
@@ -842,16 +844,17 @@ class _HomeFeedState extends State<_HomeFeed> {
           StreamBuilder<List<DishModel>>(
             stream: _dishesStream,
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const SizedBox.shrink();
-              }
               if (snapshot.hasError) {
                 return _buildEmpty('Không thể tải món gợi ý hôm nay.');
               }
 
-              final dishes = snapshot.data ?? [];
-              final filtered = _filterDishes(dishes);
-              if (filtered.isEmpty) {
+              final liveDishes = snapshot.data ?? const <DishModel>[];
+              if (liveDishes.isNotEmpty) {
+                _todayDishesCache = liveDishes;
+              }
+              final dishes =
+                  liveDishes.isNotEmpty ? liveDishes : _todayDishesCache;
+              if (dishes.isEmpty) {
                 return const SizedBox.shrink();
               }
 
@@ -1072,46 +1075,99 @@ class _HomeFeedState extends State<_HomeFeed> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 20),
-                        Text(
-                          'Đặc sản theo tỉnh',
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'Đặc sản phải thử',
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  _showAllSpecialties = !_showAllSpecialties;
+                                });
+                              },
+                              child: Text(
+                                _showAllSpecialties ? 'Thu gọn' : 'Xem tất cả',
+                              ),
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 10),
-                        GridView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: filtered.length,
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: crossAxisCount,
-                            crossAxisSpacing: 10,
-                            mainAxisSpacing: 10,
-                            // Card nho gon hon de hien thi duoc nhieu item tren man hinh.
-                            childAspectRatio: 0.92,
-                          ),
-                          itemBuilder: (context, index) {
-                            final dish = filtered[index];
-                            final isFavorite = favoriteIds.contains(dish.id);
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  RouteNames.dishDetail,
-                                  arguments: dish.id,
+                        if (_showAllSpecialties)
+                          GridView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: filtered.length,
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: crossAxisCount,
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
+                              // Card nho gon hon de hien thi duoc nhieu item tren man hinh.
+                              childAspectRatio: 0.92,
+                            ),
+                            itemBuilder: (context, index) {
+                              final dish = filtered[index];
+                              final isFavorite = favoriteIds.contains(dish.id);
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    RouteNames.dishDetail,
+                                    arguments: dish.id,
+                                  );
+                                },
+                                child: _buildDishCard(
+                                  dish,
+                                  isFavorite: isFavorite,
+                                  onToggle:
+                                      () => favoriteController.toggleFavorite(
+                                        dish.id,
+                                      ),
+                                ),
+                              );
+                            },
+                          )
+                        else
+                          SizedBox(
+                            height: 220,
+                            child: ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: filtered.length,
+                              separatorBuilder:
+                                  (_, __) => const SizedBox(width: 10),
+                              itemBuilder: (context, index) {
+                                final dish = filtered[index];
+                                final isFavorite = favoriteIds.contains(
+                                  dish.id,
+                                );
+                                return SizedBox(
+                                  width: 190,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.pushNamed(
+                                        context,
+                                        RouteNames.dishDetail,
+                                        arguments: dish.id,
+                                      );
+                                    },
+                                    child: _buildDishCard(
+                                      dish,
+                                      compact: true,
+                                      isFavorite: isFavorite,
+                                      onToggle:
+                                          () => favoriteController
+                                              .toggleFavorite(dish.id),
+                                    ),
+                                  ),
                                 );
                               },
-                              child: _buildDishCard(
-                                dish,
-                                isFavorite: isFavorite,
-                                onToggle:
-                                    () => favoriteController.toggleFavorite(
-                                      dish.id,
-                                    ),
-                              ),
-                            );
-                          },
-                        ),
+                            ),
+                          ),
                       ],
                     ),
                   );
@@ -1214,6 +1270,7 @@ class _HomeFeedState extends State<_HomeFeed> {
 
   Widget _buildDishCard(
     DishModel dish, {
+    bool compact = false,
     required bool isFavorite,
     required VoidCallback onToggle,
   }) {
@@ -1248,7 +1305,7 @@ class _HomeFeedState extends State<_HomeFeed> {
           children: [
             AspectRatio(
               // Giam chieu cao anh de card gon lai.
-              aspectRatio: 16 / 10,
+              aspectRatio: compact ? 16 / 10 : 16 / 11,
               child: Stack(
                 children: [
                   Positioned.fill(
@@ -1298,7 +1355,7 @@ class _HomeFeedState extends State<_HomeFeed> {
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: Text(
                   dish.tag,
-                  maxLines: 1,
+                  maxLines: compact ? 2 : 1,
                   overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: subColor,
@@ -1306,7 +1363,7 @@ class _HomeFeedState extends State<_HomeFeed> {
                   ),
                 ),
               ),
-            const Spacer(),
+            if (compact) const SizedBox(height: 6) else const Spacer(),
             Padding(
               padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
               child: Row(
