@@ -256,6 +256,9 @@ class _HomeFeedState extends State<_HomeFeed> {
   String _query = '';
   bool _showAllSpecialties = false;
   List<DishModel> _todayDishesCache = const <DishModel>[];
+  bool _bootResolved = false;
+  String? _bootTargetProvinceId;
+  Timer? _bootTimer;
   bool _selectionInitialized = false;
   String? _preferredProvinceCode;
   String? _preferredProvinceName;
@@ -269,6 +272,12 @@ class _HomeFeedState extends State<_HomeFeed> {
     // Tai san du lieu quan gan day ngay khi vao Home.
     _nearbyHomeController = NearbyHomeController()..load();
     _startProfileListener();
+    _bootTimer = Timer(const Duration(milliseconds: 1200), () {
+      if (!mounted) return;
+      setState(() {
+        _bootResolved = true;
+      });
+    });
 
     // Doc trang thai GPS da luu (bat/tat).
     _locationPrefs.load();
@@ -288,6 +297,7 @@ class _HomeFeedState extends State<_HomeFeed> {
     _stopGpsListener();
     _profileSub?.cancel();
     _autoSlideTimer?.cancel();
+    _bootTimer?.cancel();
     _imageIndex.dispose();
     _pageController.dispose();
     _searchController.dispose();
@@ -315,12 +325,6 @@ class _HomeFeedState extends State<_HomeFeed> {
         _preferredProvinceName = nextName;
         _selectionInitialized = false;
       });
-      // Neu chua co GPS va chua chon tay, hien tam ten tinh tu khao sat len app bar.
-      if ((_manualProvinceName == null || _manualProvinceName!.isEmpty) &&
-          (_gpsProvinceName == null || _gpsProvinceName!.isEmpty) &&
-          (nextName != null && nextName.isNotEmpty)) {
-        widget.onProvinceLabelChanged(nextName);
-      }
     });
   }
 
@@ -563,8 +567,6 @@ class _HomeFeedState extends State<_HomeFeed> {
       _gpsProvinceCode = nextCode;
       _selectionInitialized = false; // bat buoc re-chon tinh tren Home
     });
-    // Co GPS thi uu tien hien ten tinh GPS len app bar.
-    widget.onProvinceLabelChanged(cleaned);
     return true;
   }
 
@@ -817,6 +819,8 @@ class _HomeFeedState extends State<_HomeFeed> {
       // Luu lua chon tay cho session hien tai.
       _manualProvinceCode = picked.code.trim();
       _manualProvinceName = picked.name.trim();
+      _bootResolved = true;
+      _bootTargetProvinceId = picked.id;
       _selectionInitialized = false;
     });
     _setProvince(picked);
@@ -914,10 +918,20 @@ class _HomeFeedState extends State<_HomeFeed> {
 
             final preferred = _findPreferredProvince(provinces);
             final selectedProvince = selectedInList ? selected : null;
-            final target =
-                (!_selectionInitialized && preferred != null)
-                    ? preferred
-                    : (selectedProvince ?? preferred ?? provinces.first);
+            ProvinceModel target;
+            if (!_bootResolved) {
+              final bootCandidate = selectedProvince ?? preferred ?? provinces.first;
+              _bootTargetProvinceId ??= bootCandidate.id;
+              target = provinces.firstWhere(
+                (p) => p.id == _bootTargetProvinceId,
+                orElse: () => bootCandidate,
+              );
+            } else {
+              target =
+                  (!_selectionInitialized && preferred != null)
+                      ? preferred
+                      : (selectedProvince ?? preferred ?? provinces.first);
+            }
 
             // Luon cap nhat label app bar theo tinh dang su dung.
             widget.onProvinceLabelChanged(target.name);
