@@ -14,6 +14,7 @@ import '../../controller/favorite/favorite_controller.dart';
 import '../../controller/home/nearby_home_controlled.dart';
 import '../../widgets/favorite_button.dart';
 import '../onboarding/survey_sheet.dart';
+import '../community/community_feed_page.dart';
 import '../favorites/favorites_tabs_page.dart';
 import '../personal/personal.dart';
 import '../map/map_page.dart';
@@ -55,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
           _openProvincePickerFromHome = callback;
         },
       ),
-      const Center(child: Text('Khám phá')),
+      const CommunityFeedPage(),
       const MapPage(),
       const FavoritesTabsPage(),
       const PersonalPage(),
