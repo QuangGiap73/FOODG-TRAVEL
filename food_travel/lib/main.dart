@@ -4,6 +4,7 @@ import 'package:food_travel/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import 'controller/favorite/favorite_controller.dart';
+import 'controller/community/post_like_controller.dart';
 import 'controller/restaurants/place_favorite_controller.dart';
 import 'controller/theme_controller.dart';
 import 'controller/l10n/locale_controller.dart';
@@ -45,6 +46,10 @@ class MyApp extends StatelessWidget {
           providers: [
             ChangeNotifierProvider(
               create: (_) => FavoriteController(),
+            ),
+            ChangeNotifierProvider(
+              // Like bai viet cong dong
+              create: (_) => PostLikeController(),
             ),
             ChangeNotifierProvider(
               create: (_) => PlaceFavoriteController(),

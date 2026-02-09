@@ -1,14 +1,18 @@
 ﻿import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../cloudinary_config.dart';
 import '../../controller/map/map_search_controller.dart';
 import '../../models/community/community_post.dart';
+import '../../models/places_model.dart';
 import '../../services/cloudinary_service.dart';
 import '../../services/community/community_service.dart';
+import '../../services/location_service.dart';
 import '../../services/map/places_service.dart';
+import '../../services/map/serpapi_places_service.dart';
 
 class CommunityCreatePostPage extends StatefulWidget {
   const CommunityCreatePostPage({super.key});
@@ -74,6 +78,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
   }
 
   Future<void> _openMediaPicker() async {
+    // Bottom sheet chon nguon anh
     await showModalBottomSheet<void>(
       context: context,
       builder: (ctx) {
@@ -105,23 +110,24 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
   }
 
   Future<void> _openPlaceSearch() async {
-    final detail = await showModalBottomSheet<GoongPlaceDetail>(
+    // Mo sheet tim dia diem (Goong + fallback SerpAPI)
+    final result = await showModalBottomSheet<_PlacePickResult>(
       context: context,
       isScrollControlled: true,
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+          ? const Color(0xFF0F1115)
+          : Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
       builder: (_) => const _PlaceSearchSheet(),
     );
-    if (detail == null) return;
+    if (result == null) return;
 
     setState(() {
-      _place = PlaceSnapshot(
-        name: detail.name,
-        address: detail.address,
-        lat: detail.lat,
-        lng: detail.lng,
-        photoUrl: detail.photoUrl,
-      );
-      _placeId = detail.placeId;
-      _placeSource = 'goong';
+      _place = result.place;
+      _placeId = result.placeId;
+      _placeSource = result.source;
     });
   }
 
@@ -132,6 +138,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
     try {
       final text = _textController.text;
 
+      // Upload anh len Cloudinary neu co
       final media = <PostMedia>[];
       if (_media.isNotEmpty) {
         setState(() => _isUploading = true);
@@ -147,6 +154,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
         }
       }
 
+      // Tao bai viet Firestore
       await _service.createPost(
         text: text,
         media: media,
@@ -174,76 +182,147 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final bg = isDark ? const Color(0xFF0F1115) : Colors.white;
+    final primaryText = isDark ? Colors.white : const Color(0xFF0F172A);
+    final hintText = isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8);
+
+    final user = FirebaseAuth.instance.currentUser;
+    final userName = (user?.displayName?.trim().isNotEmpty ?? false)
+        ? user!.displayName!
+        : (user?.email?.trim().isNotEmpty ?? false)
+            ? user!.email!
+            : 'FoodG User';
+    final avatarUrl = user?.photoURL ?? '';
+
     final canPost = !_isPosting &&
         (_textController.text.trim().isNotEmpty ||
             _media.isNotEmpty ||
             _place != null);
 
     return Scaffold(
+      backgroundColor: bg,
       appBar: AppBar(
-        title: const Text('Tao bai viet'),
+        backgroundColor: bg,
+        surfaceTintColor: bg,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        foregroundColor: primaryText,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          'Tao bai viet',
+          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+        ),
         actions: [
-          TextButton(
-            onPressed: canPost ? _submit : null,
-            child: _isPosting
-                ? const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Text('Dang'),
+          Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: TextButton(
+              onPressed: canPost ? _submit : null,
+              style: TextButton.styleFrom(
+                backgroundColor: canPost
+                    ? const Color(0xFFF97316)
+                    : (isDark
+                        ? const Color(0xFF2A303A)
+                        : Colors.grey.shade300),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+              ),
+              child: _isPosting
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Dang'),
+            ),
           ),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          TextField(
-            controller: _textController,
-            maxLines: null,
-            decoration: const InputDecoration(
-              hintText: 'Ban dang cam thay the nao?',
-              border: OutlineInputBorder(),
-            ),
-            onChanged: (_) => setState(() {}),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // User info
+              Row(
+                children: [
+                  CircleAvatar(
+                    radius: 20,
+                    backgroundColor:
+                        isDark ? const Color(0xFF1F2630) : const Color(0xFFE2E8F0),
+                    backgroundImage: avatarUrl.isNotEmpty
+                        ? NetworkImage(avatarUrl)
+                        : null,
+                    child: avatarUrl.isEmpty
+                        ? const Icon(Icons.person, size: 18)
+                        : null,
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    userName,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 13,
+                      color: primaryText,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 14),
+
+              // Text area
+              TextField(
+                controller: _textController,
+                minLines: 4,
+                maxLines: null,
+                style: TextStyle(color: primaryText),
+                decoration: InputDecoration(
+                  hintText: 'Ban dang cam thay the nao ve mon an hom nay?',
+                  hintStyle: TextStyle(color: hintText),
+                  border: InputBorder.none,
+                ),
+                onChanged: (_) => setState(() {}),
+              ),
+              const SizedBox(height: 12),
+
+              // Media grid + add button
+              _MediaGrid(
+                items: _media,
+                maxCount: _maxPhotos,
+                onRemove: (i) => setState(() => _media.removeAt(i)),
+                onAdd: _openMediaPicker,
+              ),
+
+              if (_isUploading) ...[
+                const SizedBox(height: 12),
+                const LinearProgressIndicator(),
+                const SizedBox(height: 6),
+                const Text('Dang tai anh...'),
+              ],
+
+              const SizedBox(height: 18),
+
+              // Place section
+              _PlaceSelector(
+                place: _place,
+                onPick: _openPlaceSearch,
+                onClear: () => setState(() {
+                  _place = null;
+                  _placeId = null;
+                  _placeSource = null;
+                }),
+              ),
+            ],
           ),
-          const SizedBox(height: 16),
-
-          if (_media.isNotEmpty)
-            _MediaGrid(
-              items: _media,
-              onRemove: (i) => setState(() => _media.removeAt(i)),
-            ),
-          if (_media.isNotEmpty) const SizedBox(height: 12),
-
-          OutlinedButton.icon(
-            onPressed: _openMediaPicker,
-            icon: const Icon(Icons.add_photo_alternate_outlined),
-            label: Text(
-              _media.isEmpty
-                  ? 'Them anh'
-                  : 'Them anh (${_media.length}/$_maxPhotos)',
-            ),
-          ),
-          const SizedBox(height: 20),
-
-          _PlaceSelector(
-            place: _place,
-            onPick: _openPlaceSearch,
-            onClear: () => setState(() {
-              _place = null;
-              _placeId = null;
-              _placeSource = null;
-            }),
-          ),
-
-          if (_isUploading) ...[
-            const SizedBox(height: 16),
-            const LinearProgressIndicator(),
-            const SizedBox(height: 4),
-            const Text('Dang tai anh...'),
-          ],
-        ],
+        ),
       ),
     );
   }
@@ -256,49 +335,96 @@ class _LocalMedia {
 }
 
 class _MediaGrid extends StatelessWidget {
-  const _MediaGrid({required this.items, required this.onRemove});
+  const _MediaGrid({
+    required this.items,
+    required this.maxCount,
+    required this.onRemove,
+    required this.onAdd,
+  });
 
   final List<_LocalMedia> items;
+  final int maxCount;
   final ValueChanged<int> onRemove;
+  final VoidCallback onAdd;
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final tileBg = isDark ? const Color(0xFF1A1F27) : const Color(0xFFF8FAFC);
+    final borderColor =
+        isDark ? const Color(0xFF2A303A) : const Color(0xFFE2E8F0);
+    final iconColor = const Color(0xFF94A3B8);
+
+    final canAdd = items.length < maxCount;
+    final total = items.length + (canAdd ? 1 : 0);
+
     return GridView.builder(
-      itemCount: items.length,
+      itemCount: total,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        crossAxisSpacing: 6,
-        mainAxisSpacing: 6,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
       ),
       itemBuilder: (context, index) {
-        final item = items[index];
-        return Stack(
-          children: [
-            Positioned.fill(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.file(item.file, fit: BoxFit.cover),
-              ),
-            ),
-            Positioned(
-              top: 4,
-              right: 4,
-              child: InkWell(
-                onTap: () => onRemove(index),
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: const BoxDecoration(
-                    color: Colors.black54,
-                    shape: BoxShape.circle,
-                  ),
-                  child:
-                      const Icon(Icons.close, size: 14, color: Colors.white),
+        if (index < items.length) {
+          final item = items[index];
+          return Stack(
+            children: [
+              Positioned.fill(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.file(item.file, fit: BoxFit.cover),
                 ),
               ),
+              Positioned(
+                top: 6,
+                right: 6,
+                child: InkWell(
+                  onTap: () => onRemove(index),
+                  child: Container(
+                    width: 24,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.5),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.close,
+                        size: 14, color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
+          );
+        }
+
+        // Add tile
+        return InkWell(
+          onTap: onAdd,
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: borderColor, width: 1.5),
+              color: tileBg,
             ),
-          ],
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.camera_alt_outlined, color: iconColor),
+                const SizedBox(height: 6),
+                Text(
+                  '${items.length}/$maxCount',
+                  style: const TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF94A3B8),
+                  ),
+                ),
+              ],
+            ),
+          ),
         );
       },
     );
@@ -318,49 +444,103 @@ class _PlaceSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg = isDark ? const Color(0xFF1A1F27) : const Color(0xFFF8FAFC);
+    final borderColor =
+        isDark ? const Color(0xFF2A303A) : const Color(0xFFE2E8F0);
+    final iconBg = isDark ? const Color(0xFF2A1D12) : const Color(0xFFFFEDD5);
+    final iconColor = isDark ? const Color(0xFFF59E0B) : const Color(0xFFEA580C);
+    final textColor = isDark ? Colors.white : const Color(0xFF0F172A);
+    final subText = isDark ? Colors.white70 : const Color(0xFF64748B);
+
     if (place == null) {
-      return OutlinedButton.icon(
-        onPressed: onPick,
-        icon: const Icon(Icons.place_outlined),
-        label: const Text('Them dia diem'),
+      return InkWell(
+        onTap: onPick,
+        borderRadius: BorderRadius.circular(14),
+        child: Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            color: cardBg,
+            border: Border.all(color: borderColor),
+          ),
+          child: Row(
+            children: [
+              Icon(Icons.place, color: iconColor),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  'Them dia diem',
+                  style: TextStyle(fontWeight: FontWeight.w600, color: textColor),
+                ),
+              ),
+              Icon(Icons.chevron_right, color: subText),
+            ],
+          ),
+        ),
       );
     }
 
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Theme.of(context).dividerColor),
+        borderRadius: BorderRadius.circular(14),
+        color: cardBg,
+        border: Border.all(color: borderColor),
       ),
       child: Row(
         children: [
-          const Icon(Icons.place, color: Color(0xFFFF6A00)),
-          const SizedBox(width: 8),
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: iconBg,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(Icons.place, color: iconColor),
+          ),
+          const SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   place!.name,
-                  style: const TextStyle(fontWeight: FontWeight.w700),
+                  style: TextStyle(fontWeight: FontWeight.w700, color: textColor),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   place!.address,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: subText,
+                    fontSize: 12,
+                  ),
                 ),
               ],
             ),
           ),
           IconButton(
             onPressed: onClear,
-            icon: const Icon(Icons.close),
+            icon: Icon(Icons.close, color: subText),
           ),
         ],
       ),
     );
   }
+}
+
+class _PlacePickResult {
+  const _PlacePickResult({
+    required this.place,
+    required this.placeId,
+    required this.source,
+  });
+
+  final PlaceSnapshot place;
+  final String placeId;
+  final String source; // goong | serpapi
 }
 
 class _PlaceSearchSheet extends StatefulWidget {
@@ -373,15 +553,92 @@ class _PlaceSearchSheet extends StatefulWidget {
 class _PlaceSearchSheetState extends State<_PlaceSearchSheet> {
   final _controller = MapSearchController();
   final _textController = TextEditingController();
+  final _serpService = SerpApiPlacesService();
+  final _locationService = LocationService();
+
+  String _query = '';
+  String? _lastFallbackQuery;
+  List<GoongNearbyPlace> _fallbackResults = [];
+  bool _fallbackLoading = false;
+  double? _userLat;
+  double? _userLng;
 
   bool _loadingDetail = false;
   String? _error;
 
   @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_onControllerChanged);
+    _resolveLocation();
+  }
+
+  @override
   void dispose() {
+    _controller.removeListener(_onControllerChanged);
     _controller.dispose();
     _textController.dispose();
     super.dispose();
+  }
+
+  Future<void> _resolveLocation() async {
+    final result = await _locationService.getCurrentLocation(
+      useLastKnown: true,
+      timeLimit: const Duration(seconds: 8),
+    );
+    if (!mounted) return;
+    final pos = result.position;
+    if (result.isSuccess && pos != null) {
+      _userLat = pos.latitude;
+      _userLng = pos.longitude;
+      _controller.setBias(lat: _userLat, lng: _userLng, radius: 5000);
+    }
+  }
+
+  void _onQueryChanged(String value) {
+    _query = value.trim();
+    _fallbackResults = [];
+    _fallbackLoading = false;
+    _lastFallbackQuery = null;
+    _controller.onQueryChanged(value);
+    setState(() {});
+  }
+
+  void _onControllerChanged() {
+    if (!mounted) return;
+    if (_controller.loading) return;
+    if (_controller.suggestions.isNotEmpty) return;
+    if (_query.length < 2) return;
+    if (_fallbackLoading) return;
+    if (_userLat == null || _userLng == null) return;
+    if (_lastFallbackQuery == _query) return;
+    _fetchFallback();
+  }
+
+  Future<void> _fetchFallback() async {
+    setState(() {
+      _fallbackLoading = true;
+      _lastFallbackQuery = _query;
+    });
+    try {
+      final results = await _serpService.searchNearby(
+        lat: _userLat!,
+        lng: _userLng!,
+        query: _query,
+        radius: 5000,
+        limit: 10,
+      );
+      if (!mounted) return;
+      setState(() {
+        _fallbackResults = results;
+        _fallbackLoading = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _fallbackLoading = false;
+      });
+    }
   }
 
   Future<void> _select(GoongPrediction prediction) async {
@@ -401,65 +658,333 @@ class _PlaceSearchSheetState extends State<_PlaceSearchSheet> {
       return;
     }
 
-    Navigator.pop(context, detail);
+    final place = PlaceSnapshot(
+      name: detail.name,
+      address: detail.address,
+      lat: detail.lat,
+      lng: detail.lng,
+      photoUrl: detail.photoUrl,
+    );
+    final placeId = _buildPlaceIdFromDetail(detail);
+    Navigator.pop(
+      context,
+      _PlacePickResult(place: place, placeId: placeId, source: 'goong'),
+    );
+  }
+
+  void _selectFallback(GoongNearbyPlace place) {
+    final placeId = _buildPlaceIdFromFallback(place);
+    final snap = PlaceSnapshot(
+      name: place.name,
+      address: place.address,
+      lat: place.lat,
+      lng: place.lng,
+      photoUrl: place.photoUrl,
+    );
+    Navigator.pop(
+      context,
+      _PlacePickResult(place: snap, placeId: placeId, source: 'serpapi'),
+    );
+  }
+
+  String _buildPlaceIdFromDetail(GoongPlaceDetail detail) {
+    final raw = detail.placeId.trim();
+    if (raw.isNotEmpty) return raw;
+    final name = detail.name.trim().isNotEmpty ? detail.name.trim() : 'place';
+    return '${name}_${detail.lat}_${detail.lng}'.replaceAll(' ', '_');
+  }
+
+  String _buildPlaceIdFromFallback(GoongNearbyPlace place) {
+    final serp = place.serpDataId.trim();
+    if (serp.isNotEmpty) return serp;
+    final id = place.id.trim();
+    if (id.isNotEmpty) return id;
+    return '${place.name.trim()}_${place.lat}_${place.lng}'.replaceAll(' ', '_');
   }
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height * 0.8;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bg = isDark ? const Color(0xFF0F1115) : Colors.white;
+    final fieldBg = isDark ? const Color(0xFF15181E) : const Color(0xFFF8FAFC);
+    final borderColor =
+        isDark ? const Color(0xFF2A303A) : const Color(0xFFF1F5F9);
+    final textColor = isDark ? Colors.white : const Color(0xFF0F172A);
+    final subText = isDark ? Colors.white70 : const Color(0xFF64748B);
 
-    return SizedBox(
+    final height = MediaQuery.of(context).size.height * 0.85;
+
+    return Container(
       height: height,
-      child: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-              child: TextField(
-                controller: _textController,
-                decoration: const InputDecoration(
-                  hintText: 'Tim quan an...',
-                  prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: _controller.onQueryChanged,
-              ),
+      color: bg,
+      child: Column(
+        children: [
+          const SizedBox(height: 10),
+          // Drag handle
+          Container(
+            width: 40,
+            height: 5,
+            decoration: BoxDecoration(
+              color:
+                  isDark ? const Color(0xFF2A303A) : const Color(0xFFE2E8F0),
+              borderRadius: BorderRadius.circular(999),
             ),
-            if (_loadingDetail) const LinearProgressIndicator(minHeight: 2),
-            if (_error != null)
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: Text(_error!, style: const TextStyle(color: Colors.red)),
+          ),
+          const SizedBox(height: 10),
+
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: TextField(
+              controller: _textController,
+              style: TextStyle(color: textColor),
+              decoration: InputDecoration(
+                hintText: 'Tim quan an, cafe...',
+                hintStyle: TextStyle(color: subText),
+                prefixIcon: Icon(Icons.search, color: subText),
+                filled: true,
+                fillColor: fieldBg,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: BorderSide.none,
+                ),
               ),
-            Expanded(
-              child: AnimatedBuilder(
-                animation: _controller,
-                builder: (context, _) {
-                  final items = _controller.suggestions;
-                  if (_controller.loading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (items.isEmpty) {
-                    return const Center(child: Text('Khong co ket qua.'));
-                  }
+              onChanged: _onQueryChanged,
+            ),
+          ),
+
+          if (_loadingDetail) const LinearProgressIndicator(minHeight: 2),
+          if (_error != null)
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Text(_error!, style: const TextStyle(color: Colors.red)),
+            ),
+
+          Expanded(
+            child: AnimatedBuilder(
+              animation: _controller,
+              builder: (context, _) {
+                final items = _controller.suggestions;
+                if (_controller.loading) {
+                  return const _PlaceSkeleton();
+                }
+                if (items.isNotEmpty) {
                   return ListView.separated(
+                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 16),
                     itemCount: items.length,
-                    separatorBuilder: (_, __) => const Divider(height: 1),
+                    separatorBuilder: (_, __) => const SizedBox(height: 6),
                     itemBuilder: (context, index) {
                       final item = items[index];
-                      return ListTile(
-                        leading: const Icon(Icons.place_outlined),
-                        title: Text(item.description),
+                      final parts = item.description.split(',');
+                      final title = parts.isNotEmpty
+                          ? parts.first.trim()
+                          : item.description;
+                      final subtitle = parts.length > 1
+                          ? parts.sublist(1).join(',').trim()
+                          : item.description;
+                      return InkWell(
                         onTap: () => _select(item),
+                        borderRadius: BorderRadius.circular(14),
+                        child: Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(14),
+                            color: fieldBg,
+                            border: Border.all(color: borderColor),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: isDark
+                                      ? const Color(0xFF1F2630)
+                                      : const Color(0xFFE2E8F0),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Icon(Icons.storefront, color: subText),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      title,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        color: textColor,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      subtitle,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color: subText,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       );
                     },
                   );
-                },
-              ),
+                }
+                if (_fallbackLoading) {
+                  return const _PlaceSkeleton();
+                }
+                if (_fallbackResults.isNotEmpty) {
+                  return ListView.separated(
+                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 16),
+                    itemCount: _fallbackResults.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 6),
+                    itemBuilder: (context, index) {
+                      final place = _fallbackResults[index];
+                      final title = place.name.trim().isEmpty
+                          ? 'Quan an'
+                          : place.name.trim();
+                      final subtitle = place.address.trim();
+                      return InkWell(
+                        onTap: () => _selectFallback(place),
+                        borderRadius: BorderRadius.circular(14),
+                        child: Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(14),
+                            color: fieldBg,
+                            border: Border.all(color: borderColor),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: isDark
+                                      ? const Color(0xFF1F2630)
+                                      : const Color(0xFFE2E8F0),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Icon(Icons.storefront, color: subText),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      title,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        color: textColor,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      subtitle.isNotEmpty
+                                          ? subtitle
+                                          : 'Dang cap nhat dia chi',
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color: subText,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                }
+                if (_query.length >= 2 && _userLat == null) {
+                  return const Center(
+                    child: Text('Bat GPS de tim gan ban.'),
+                  );
+                }
+                return const Center(child: Text('Khong co ket qua.'));
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
+    );
+  }
+}
+
+class _PlaceSkeleton extends StatelessWidget {
+  const _PlaceSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final skeleton = isDark ? const Color(0xFF1F2630) : const Color(0xFFE2E8F0);
+    final cardBg = isDark ? const Color(0xFF15181E) : const Color(0xFFF8FAFC);
+
+    return ListView.builder(
+      padding: const EdgeInsets.fromLTRB(12, 12, 12, 16),
+      itemCount: 4,
+      itemBuilder: (context, index) {
+        return Container(
+          margin: const EdgeInsets.only(bottom: 10),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            color: cardBg,
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: skeleton,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: 10,
+                      width: 140,
+                      decoration: BoxDecoration(
+                        color: skeleton,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Container(
+                      height: 8,
+                      width: 180,
+                      decoration: BoxDecoration(
+                        color: skeleton,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

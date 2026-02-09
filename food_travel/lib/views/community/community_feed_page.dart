@@ -1,11 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+﻿import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../controller/community/post_like_controller.dart';
 import '../../models/community/community_post.dart';
 import '../../services/community/community_service.dart';
 import 'community_create_post_page.dart';
 
-// Trang feed cong dong
 class CommunityFeedPage extends StatefulWidget {
   const CommunityFeedPage({super.key});
 
@@ -17,12 +18,10 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
   final _service = CommunityService();
 
   Future<void> _openCreatePost() async {
-    // Mo trang tao bai viet
     final posted = await Navigator.of(context).push<bool>(
       MaterialPageRoute(builder: (_) => const CommunityCreatePostPage()),
     );
 
-    // Neu vua dang bai thanh cong thi rebuild UI
     if (posted == true) {
       setState(() {});
     }
@@ -30,45 +29,64 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        // StreamBuilder lay feed tu Firestore
-        StreamBuilder<List<CommunityPost>>(
-          stream: _service.watchLatestPosts(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (snapshot.hasError) {
-              return _buildEmpty('Khong the tai bai viet.');
-            }
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final bg = isDark ? const Color(0xFF0F1115) : const Color(0xFFF8FAFC);
+    final appBarBg = isDark ? const Color(0xFF0F1115) : Colors.white;
+    final titleColor = isDark ? Colors.white : const Color(0xFF0F172A);
 
-            final posts = snapshot.data ?? const <CommunityPost>[];
-            if (posts.isEmpty) {
-              return _buildEmpty('Chua co bai viet nao.');
-            }
-
-            return ListView.separated(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 100),
-              itemCount: posts.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 12),
-              itemBuilder: (context, index) {
-                return _PostCard(post: posts[index]);
-              },
-            );
-          },
+    return Scaffold(
+      backgroundColor: bg,
+      appBar: AppBar(
+        backgroundColor: appBarBg,
+        surfaceTintColor: appBarBg,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        title: Text(
+          'Cong dong',
+          style: TextStyle(fontWeight: FontWeight.w700, color: titleColor),
         ),
+        actions: [
+          _ActionIcon(icon: Icons.search_rounded, onTap: () {}),
+          const SizedBox(width: 6),
+          _ActionIcon(icon: Icons.tune_rounded, onTap: () {}),
+          const SizedBox(width: 10),
+        ],
+      ),
+      body: StreamBuilder<List<CommunityPost>>(
+        stream: _service.watchLatestPosts(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const _FeedSkeleton();
+          }
+          if (snapshot.hasError) {
+            return _buildEmpty('Khong the tai bai viet.');
+          }
 
-        // Nut tao bai viet (floating)
-        Positioned(
-          right: 16,
-          bottom: 16,
-          child: FloatingActionButton(
-            onPressed: _openCreatePost,
-            child: const Icon(Icons.add),
-          ),
+          final posts = snapshot.data ?? const <CommunityPost>[];
+          if (posts.isEmpty) {
+            return _buildEmpty('Chua co bai viet nao.');
+          }
+
+          return ListView.separated(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 120),
+            itemCount: posts.length,
+            separatorBuilder: (_, __) => const SizedBox(height: 12),
+            itemBuilder: (context, index) {
+              return _PostCard(post: posts[index]);
+            },
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: const Color(0xFFF97316),
+        onPressed: _openCreatePost,
+        icon: const Icon(Icons.edit_rounded, size: 22),
+        label: const Text(
+          'Dang bai',
+          style: TextStyle(fontWeight: FontWeight.w700),
         ),
-      ],
+      ),
     );
   }
 
@@ -79,139 +97,164 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
   }
 }
 
-// ---------- Post card ----------
-class _PostCard extends StatelessWidget {
+class _PostCard extends StatefulWidget {
   const _PostCard({required this.post});
 
   final CommunityPost post;
 
   @override
+  State<_PostCard> createState() => _PostCardState();
+}
+
+class _PostCardState extends State<_PostCard> {
+  bool _expanded = false;
+
+  @override
   Widget build(BuildContext context) {
+    final post = widget.post;
     final media = post.media;
     final place = post.place;
-    final hasText = post.text.trim().isNotEmpty;
+    final text = post.text.trim();
+    final hasText = text.isNotEmpty;
+    final canExpand = text.length > 140;
+    final likeController = context.watch<PostLikeController>();
+    final isLiked = likeController.isLiked(post.id);
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg = isDark ? const Color(0xFF15181E) : Colors.white;
+    final borderColor =
+        isDark ? const Color(0xFF232A33) : const Color(0xFFF1F5F9);
+    final shadowColor = isDark
+        ? Colors.black.withOpacity(0.35)
+        : Colors.black.withOpacity(0.04);
+    final primaryText = isDark ? Colors.white : const Color(0xFF0F172A);
+    final secondaryText = isDark ? Colors.white70 : const Color(0xFF475569);
+    final timeColor = const Color(0xFF94A3B8);
+    final actionColor = isDark ? Colors.white70 : const Color(0xFF64748B);
 
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        color: cardBg,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Theme.of(context).dividerColor),
+        border: Border.all(color: borderColor.withOpacity(0.8)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
+            color: shadowColor,
+            blurRadius: 14,
+            offset: const Offset(0, 6),
           )
         ],
       ),
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.fromLTRB(12, 12, 12, 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (media.isNotEmpty)
+            _MediaHero(
+              media: media,
+              place: place,
+            ),
+
+          const SizedBox(height: 10),
+
           // Header: avatar + name + time
           Row(
             children: [
               CircleAvatar(
                 radius: 18,
+                backgroundColor:
+                    isDark ? const Color(0xFF1F2630) : const Color(0xFFE2E8F0),
                 backgroundImage: post.authorPhoto.trim().isNotEmpty
                     ? NetworkImage(post.authorPhoto)
                     : null,
                 child: post.authorPhoto.trim().isEmpty
-                    ? const Icon(Icons.person, size: 18)
+                    ? const Icon(Icons.person, size: 16)
                     : null,
               ),
               const SizedBox(width: 10),
               Expanded(
-                child: Text(
-                  post.authorName.isNotEmpty ? post.authorName : 'FoodG User',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-              Text(
-                _formatTime(post.createdAt),
-                style: TextStyle(
-                  color: Theme.of(context).hintColor,
-                  fontSize: 12,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      post.authorName.isNotEmpty
+                          ? post.authorName
+                          : 'FoodG User',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 13,
+                        color: primaryText,
+                      ),
+                    ),
+                    Text(
+                      _formatTime(post.createdAt),
+                      style: TextStyle(
+                        color: timeColor,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
-          if (hasText) ...[
-            const SizedBox(height: 10),
-            Text(
-              post.text,
-              style: const TextStyle(height: 1.4),
-            ),
-          ],
 
-          // Media preview (hien 1 anh dai dien)
-          if (media.isNotEmpty) ...[
-            const SizedBox(height: 10),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Stack(
-                children: [
-                  AspectRatio(
-                    aspectRatio: 4 / 3,
-                    child: Image.network(
-                      media.first.url,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) {
-                        return Container(
-                          color: Theme.of(context).colorScheme.surfaceVariant,
-                          child: const Icon(Icons.image, size: 32),
-                        );
-                      },
-                    ),
-                  ),
-                  if (media.length > 1)
-                    Positioned(
-                      right: 8,
-                      top: 8,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.6),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          '1/${media.length}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
+          if (hasText) ...[
+            const SizedBox(height: 8),
+            Text(
+              text,
+              maxLines: _expanded ? null : 3,
+              overflow: _expanded ? TextOverflow.visible : TextOverflow.ellipsis,
+              style: TextStyle(
+                color: secondaryText,
+                height: 1.45,
+                fontSize: 13,
               ),
             ),
+            if (canExpand)
+              TextButton(
+                onPressed: () => setState(() => _expanded = !_expanded),
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: Text(
+                  _expanded ? 'Thu gon' : 'Xem them',
+                  style: const TextStyle(fontWeight: FontWeight.w700),
+                ),
+              ),
           ],
 
-          // Place card
-          if (place != null) ...[
+          if (media.isEmpty && place != null) ...[
             const SizedBox(height: 10),
-            _PlaceCard(place: place),
+            _InlinePlace(place: place),
           ],
 
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
 
-          // Footer: like / comment count (UI only)
+          // Footer actions
           Row(
             children: [
-              const Icon(Icons.favorite_border, size: 18),
-              const SizedBox(width: 6),
-              Text(post.likeCount.toString()),
+              _ActionButton(
+                icon: isLiked ? Icons.favorite : Icons.favorite_border,
+                label: 'Thich',
+                count: post.likeCount,
+                color: isLiked ? const Color(0xFFEF4444) : actionColor,
+                onTap: () {
+                  // Bam tim -> toggle like
+                  likeController.toggleLike(post.id);
+                },
+              ),
               const SizedBox(width: 16),
-              const Icon(Icons.chat_bubble_outline, size: 18),
-              const SizedBox(width: 6),
-              Text(post.commentCount.toString()),
+              _ActionButton(
+                icon: Icons.chat_bubble_outline,
+                label: 'Binh luan',
+                count: post.commentCount,
+                color: actionColor,
+              ),
+              const Spacer(),
+              Icon(Icons.share_outlined, size: 18, color: actionColor),
             ],
           ),
         ],
@@ -220,24 +263,195 @@ class _PostCard extends StatelessWidget {
   }
 }
 
-// ---------- Place card ----------
-class _PlaceCard extends StatelessWidget {
-  const _PlaceCard({required this.place});
+class _MediaHero extends StatefulWidget {
+  const _MediaHero({required this.media, required this.place});
+
+  final List<PostMedia> media;
+  final PlaceSnapshot? place;
+
+  @override
+  State<_MediaHero> createState() => _MediaHeroState();
+}
+
+class _MediaHeroState extends State<_MediaHero> {
+  late final PageController _controller;
+  int _index = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = PageController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final media = widget.media;
+    final place = widget.place;
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(14),
+      child: Stack(
+        children: [
+          AspectRatio(
+            aspectRatio: 4 / 5,
+            child: PageView.builder(
+              controller: _controller,
+              itemCount: media.length,
+              onPageChanged: (i) => setState(() => _index = i),
+              itemBuilder: (context, i) {
+                return Image.network(
+                  media[i].url,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) {
+                    return Container(
+                      color: _imageFallbackBg(context),
+                      child: const Icon(Icons.image, size: 32),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+          Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.black.withOpacity(0.45),
+                    Colors.transparent,
+                    Colors.transparent,
+                    Colors.black.withOpacity(0.25),
+                  ],
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                ),
+              ),
+            ),
+          ),
+          if (media.length > 1)
+            Positioned(
+              right: 10,
+              top: 10,
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.6),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  '${_index + 1}/${media.length}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          if (place != null)
+            Positioned(
+              left: 10,
+              bottom: 10,
+              child: _PlaceChip(place: place),
+            ),
+          if (media.length > 1)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 10,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(media.length, (i) {
+                  final active = i == _index;
+                  return AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    margin: const EdgeInsets.symmetric(horizontal: 3),
+                    width: active ? 14 : 6,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: active
+                          ? Colors.white
+                          : Colors.white.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                  );
+                }),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PlaceChip extends StatelessWidget {
+  const _PlaceChip({required this.place});
 
   final PlaceSnapshot place;
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.6),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.place, size: 14, color: Colors.white),
+          const SizedBox(width: 6),
+          SizedBox(
+            width: 160,
+            child: Text(
+              place.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _InlinePlace extends StatelessWidget {
+  const _InlinePlace({required this.place});
+
+  final PlaceSnapshot place;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bg = isDark ? const Color(0xFF1A1F27) : const Color(0xFFF8FAFC);
+    final border =
+        isDark ? const Color(0xFF2A303A) : const Color(0xFFF1F5F9);
+    final text = isDark ? Colors.white : const Color(0xFF0F172A);
+    final subText = isDark ? Colors.white70 : const Color(0xFF64748B);
+
+    return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.6),
-        border: Border.all(color: Theme.of(context).dividerColor),
+        color: bg,
+        border: Border.all(color: border),
       ),
       child: Row(
         children: [
-          const Icon(Icons.place, color: Color(0xFFFF6A00)),
+          Icon(Icons.place, color: subText, size: 18),
           const SizedBox(width: 8),
           Expanded(
             child: Column(
@@ -245,14 +459,18 @@ class _PlaceCard extends StatelessWidget {
               children: [
                 Text(
                   place.name,
-                  style: const TextStyle(fontWeight: FontWeight.w700),
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 12,
+                    color: text,
+                  ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   place.address,
-                  maxLines: 2,
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: Theme.of(context).hintColor),
+                  style: TextStyle(color: subText, fontSize: 11),
                 ),
               ],
             ),
@@ -263,7 +481,172 @@ class _PlaceCard extends StatelessWidget {
   }
 }
 
-// ---------- Helper time ----------
+class _ActionButton extends StatelessWidget {
+  const _ActionButton({
+    required this.icon,
+    required this.label,
+    required this.count,
+    required this.color,
+    this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final int count;
+  final Color color;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      // Cho phep tap de like/comment
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
+        child: Row(
+          children: [
+            Icon(icon, size: 18, color: color),
+            const SizedBox(width: 6),
+            Text(
+              count.toString(),
+              style: TextStyle(fontSize: 12, color: color),
+            ),
+            const SizedBox(width: 4),
+            Text(
+              label,
+              style: TextStyle(fontSize: 11, color: color),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ActionIcon extends StatelessWidget {
+  const _ActionIcon({required this.icon, required this.onTap});
+
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bg = isDark ? const Color(0xFF1A1F27) : const Color(0xFFF8FAFC);
+    final fg = isDark ? Colors.white70 : const Color(0xFF64748B);
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(20),
+      onTap: onTap,
+      child: Container(
+        width: 36,
+        height: 36,
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Icon(icon, color: fg, size: 20),
+      ),
+    );
+  }
+}
+
+class _FeedSkeleton extends StatelessWidget {
+  const _FeedSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg = isDark ? const Color(0xFF15181E) : Colors.white;
+    final skeleton = isDark ? const Color(0xFF1F2630) : const Color(0xFFE2E8F0);
+    final borderColor =
+        isDark ? const Color(0xFF232A33) : const Color(0xFFF1F5F9);
+
+    return ListView.separated(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 120),
+      itemCount: 3,
+      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      itemBuilder: (context, index) {
+        return Container(
+          decoration: BoxDecoration(
+            color: cardBg,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: borderColor),
+          ),
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: 220,
+                decoration: BoxDecoration(
+                  color: skeleton,
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: skeleton,
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        height: 10,
+                        width: 120,
+                        decoration: BoxDecoration(
+                          color: skeleton,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Container(
+                        height: 8,
+                        width: 80,
+                        decoration: BoxDecoration(
+                          color: skeleton,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Container(
+                height: 10,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: skeleton,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+              ),
+              const SizedBox(height: 6),
+              Container(
+                height: 10,
+                width: 180,
+                decoration: BoxDecoration(
+                  color: skeleton,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
 String _formatTime(Timestamp? ts) {
   if (ts == null) return 'vua xong';
   final now = DateTime.now();
@@ -275,4 +658,9 @@ String _formatTime(Timestamp? ts) {
   if (diff.inHours < 24) return '${diff.inHours} gio truoc';
   if (diff.inDays < 7) return '${diff.inDays} ngay truoc';
   return '${dt.day}/${dt.month}/${dt.year}';
+}
+
+Color _imageFallbackBg(BuildContext context) {
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+  return isDark ? const Color(0xFF1F2630) : const Color(0xFFE2E8F0);
 }

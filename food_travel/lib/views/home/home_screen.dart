@@ -97,7 +97,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final topLocationText = hasProvince ? 'Đang ở' : 'Bạn đang ở đâu?';
 
     // An AppBar o tab "Luu" va "Toi"
-    final showAppBar = _currentIndex != 4 && _currentIndex != 3;
+    final showAppBar =
+        _currentIndex != 4 && _currentIndex != 3 && _currentIndex != 1;
     return Scaffold(
       appBar:
           showAppBar

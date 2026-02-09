@@ -12,10 +12,19 @@ class MapSearchController extends ChangeNotifier {
   final List<GoongPrediction> _suggestions = [];
   Timer? _debounce;
   bool _loading = false;
+  double? _biasLat;
+  double? _biasLng;
+  int _biasRadius = 5000;
 
   bool get loading => _loading;
 
   List<GoongPrediction> get suggestions => List.unmodifiable(_suggestions);
+
+  void setBias({double? lat, double? lng, int radius = 5000}) {
+    _biasLat = lat;
+    _biasLng = lng;
+    _biasRadius = radius;
+  }
 
   // Called on every text change; debounce before hitting the API.
   void onQueryChanged(String input) {
@@ -31,7 +40,12 @@ class MapSearchController extends ChangeNotifier {
     notifyListeners();
 
     _debounce = Timer(const Duration(milliseconds: 350), () async {
-      final results = await _service.autocomplete(query);
+      final results = await _service.autocomplete(
+        query,
+        lat: _biasLat,
+        lng: _biasLng,
+        radius: _biasRadius,
+      );
       _suggestions
         ..clear()
         ..addAll(results);

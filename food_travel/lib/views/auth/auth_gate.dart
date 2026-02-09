@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 
 import '../../controller/favorite/favorite_controller.dart';
+import '../../controller/community/post_like_controller.dart';
 import '../../controller/restaurants/place_favorite_controller.dart';
 import '../home/home_screen.dart';
 import '../onboarding/welcome_screen.dart';
@@ -16,6 +17,8 @@ class AuthGate extends StatelessWidget {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         context.read<FavoriteController>().bindUser(snapshot.data?.uid);
+        // Bind user cho like bai viet
+        context.read<PostLikeController>().bindUser(snapshot.data?.uid);
         context.read<PlaceFavoriteController>().bindUser(snapshot.data?.uid);
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
