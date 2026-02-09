@@ -4,8 +4,11 @@ import 'package:provider/provider.dart';
 
 import '../../controller/community/post_like_controller.dart';
 import '../../models/community/community_post.dart';
+import '../../models/places_model.dart';
 import '../../services/community/community_service.dart';
 import 'community_create_post_page.dart';
+import 'post_comments_sheet.dart';
+import '../favorites/place_detail_page.dart';
 
 class CommunityFeedPage extends StatefulWidget {
   const CommunityFeedPage({super.key});
@@ -109,6 +112,32 @@ class _PostCard extends StatefulWidget {
 class _PostCardState extends State<_PostCard> {
   bool _expanded = false;
 
+  void _openPlaceDetail(CommunityPost post) {
+    final place = post.place;
+    if (place == null) return;
+
+    // Tao seed place tu snapshot de mo trang chi tiet
+    final rawId = (post.placeId ?? '').trim();
+    final safeId = rawId.isNotEmpty
+        ? rawId
+        : '${place.name}_${place.lat}_${place.lng}'.replaceAll(' ', '_');
+
+    final seed = GoongNearbyPlace(
+      id: safeId,
+      // Chi set serpDataId khi co data_id that (se duoc resolve tu SerpAPI)
+      serpDataId: '',
+      name: place.name,
+      address: place.address,
+      lat: place.lat,
+      lng: place.lng,
+      photoUrl: place.photoUrl,
+    );
+
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => FavoritePlaceDetailPage(place: seed)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final post = widget.post;
@@ -153,6 +182,7 @@ class _PostCardState extends State<_PostCard> {
             _MediaHero(
               media: media,
               place: place,
+              onPlaceTap: () => _openPlaceDetail(post),
             ),
 
           const SizedBox(height: 10),
@@ -228,7 +258,10 @@ class _PostCardState extends State<_PostCard> {
 
           if (media.isEmpty && place != null) ...[
             const SizedBox(height: 10),
-            _InlinePlace(place: place),
+            _InlinePlace(
+              place: place,
+              onTap: () => _openPlaceDetail(post),
+            ),
           ],
 
           const SizedBox(height: 6),
@@ -252,6 +285,10 @@ class _PostCardState extends State<_PostCard> {
                 label: 'Binh luan',
                 count: post.commentCount,
                 color: actionColor,
+                onTap: () {
+                  // Mo bottom sheet binh luan
+                  showPostCommentsSheet(context, post);
+                },
               ),
               const Spacer(),
               Icon(Icons.share_outlined, size: 18, color: actionColor),
@@ -264,10 +301,15 @@ class _PostCardState extends State<_PostCard> {
 }
 
 class _MediaHero extends StatefulWidget {
-  const _MediaHero({required this.media, required this.place});
+  const _MediaHero({
+    required this.media,
+    required this.place,
+    this.onPlaceTap,
+  });
 
   final List<PostMedia> media;
   final PlaceSnapshot? place;
+  final VoidCallback? onPlaceTap;
 
   @override
   State<_MediaHero> createState() => _MediaHeroState();
@@ -359,7 +401,10 @@ class _MediaHeroState extends State<_MediaHero> {
             Positioned(
               left: 10,
               bottom: 10,
-              child: _PlaceChip(place: place),
+              child: _PlaceChip(
+                place: place,
+                onTap: widget.onPlaceTap,
+              ),
             ),
           if (media.length > 1)
             Positioned(
@@ -392,46 +437,53 @@ class _MediaHeroState extends State<_MediaHero> {
 }
 
 class _PlaceChip extends StatelessWidget {
-  const _PlaceChip({required this.place});
+  const _PlaceChip({required this.place, this.onTap});
 
   final PlaceSnapshot place;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.6),
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.place, size: 14, color: Colors.white),
-          const SizedBox(width: 6),
-          SizedBox(
-            width: 160,
-            child: Text(
-              place.name,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
+    return InkWell(
+      // Bam vao chip de mo trang chi tiet quan
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(999),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: Colors.black.withOpacity(0.6),
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.place, size: 14, color: Colors.white),
+            const SizedBox(width: 6),
+            SizedBox(
+              width: 160,
+              child: Text(
+                place.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
 
 class _InlinePlace extends StatelessWidget {
-  const _InlinePlace({required this.place});
+  const _InlinePlace({required this.place, this.onTap});
 
   final PlaceSnapshot place;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -442,40 +494,45 @@ class _InlinePlace extends StatelessWidget {
     final text = isDark ? Colors.white : const Color(0xFF0F172A);
     final subText = isDark ? Colors.white70 : const Color(0xFF64748B);
 
-    return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: bg,
-        border: Border.all(color: border),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.place, color: subText, size: 18),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  place.name,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 12,
-                    color: text,
+    return InkWell(
+      // Bam vao khung dia diem de mo trang chi tiet
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: bg,
+          border: Border.all(color: border),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.place, color: subText, size: 18),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    place.name,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 12,
+                      color: text,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  place.address,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: subText, fontSize: 11),
-                ),
-              ],
+                  const SizedBox(height: 2),
+                  Text(
+                    place.address,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: subText, fontSize: 11),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

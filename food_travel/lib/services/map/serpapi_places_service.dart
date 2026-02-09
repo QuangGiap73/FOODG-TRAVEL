@@ -174,7 +174,8 @@ class SerpApiPlacesService {
         detail.amenities.isNotEmpty ? detail.amenities : seed.amenities;
 
     return GoongNearbyPlace(
-      id: detail.id.isNotEmpty ? detail.id : seed.id,
+      // Giu place id goc (seed) de khong bi lech Firestore review path
+      id: seed.id.isNotEmpty ? seed.id : detail.id,
       serpDataId: detail.serpDataId.isNotEmpty
           ? detail.serpDataId
           : seed.serpDataId,

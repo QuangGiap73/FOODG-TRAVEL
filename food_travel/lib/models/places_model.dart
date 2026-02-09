@@ -71,7 +71,8 @@ class GoongNearbyPlace {
 
     return GoongNearbyPlace(
       id: (json['place_id'] ?? '').toString(),
-      serpDataId: (json['place_id'] ?? '').toString(),
+      // Goong place_id khong phai SerpAPI data_id
+      serpDataId: '',
       name: (json['name'] ?? '').toString(),
       address: (json['vicinity'] ?? json['formatted_address'] ?? '').toString(),
       lat: lat,
@@ -170,7 +171,8 @@ String _serpIdFromJson(Map<String, dynamic> json) {
 }
 
 String _serpDataIdFromJson(Map<String, dynamic> json) {
-  final raw = json['data_id'] ?? json['place_id'] ?? json['cid'];
+  // SerpAPI reviews can data_id (uu tien), cid la fallback tot hon place_id
+  final raw = json['data_id'] ?? json['cid'];
   return raw == null ? '' : raw.toString();
 }
 

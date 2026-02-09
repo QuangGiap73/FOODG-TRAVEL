@@ -12,8 +12,9 @@ class PlaceReviewService {
       _db.collection('places');
 
   String placeIdOf(GoongNearbyPlace p) {
-    if (p.serpDataId.trim().isNotEmpty) return p.serpDataId.trim();
+    // Uu tien id de on dinh path review (tranh thay doi khi co serpDataId)
     if (p.id.trim().isNotEmpty) return p.id.trim();
+    if (p.serpDataId.trim().isNotEmpty) return p.serpDataId.trim();
     return '${p.name.trim()}_${p.lat}_${p.lng}'.replaceAll(' ', '_');
   }
 
