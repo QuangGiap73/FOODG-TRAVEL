@@ -140,6 +140,10 @@ class _PersonalScaffold extends StatelessWidget {
                       icon: Icons.verified_rounded,
                       color: Color(0xFFFFC857),
                       label: t.personalMembership,
+                      onTap: () {
+                        // Mo trang quan ly bai viet cua toi
+                        Navigator.pushNamed(context, RouteNames.myPosts);
+                      },
                     ),
                     SizedBox(width: 12),
                     _QuickAction(
@@ -484,11 +488,13 @@ class _QuickAction extends StatelessWidget {
     required this.icon,
     required this.color,
     required this.label,
+    this.onTap,
   });
 
   final IconData icon;
   final Color color;
   final String label;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -498,41 +504,48 @@ class _QuickAction extends StatelessWidget {
         : Colors.black.withOpacity(0.06);
     final labelColor = theme.colorScheme.onSurface;
     return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14),
-        decoration: BoxDecoration(
-          color: theme.colorScheme.surface,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
           borderRadius: BorderRadius.circular(18),
-          boxShadow: [
-            BoxShadow(
-              color: shadowColor,
-              blurRadius: 10,
-              offset: const Offset(0, 6),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surface,
+              borderRadius: BorderRadius.circular(18),
+              boxShadow: [
+                BoxShadow(
+                  color: shadowColor,
+                  blurRadius: 10,
+                  offset: const Offset(0, 6),
+                ),
+              ],
             ),
-          ],
-        ),
-        child: Column(
-          children: [
-            Container(
-              width: 42,
-              height: 42,
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.18),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(icon, color: color),
+            child: Column(
+              children: [
+                Container(
+                  width: 42,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.18),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(icon, color: color),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                    color: labelColor,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 12,
-                color: labelColor,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
+          ),
         ),
       ),
     );

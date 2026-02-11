@@ -13,6 +13,7 @@ class RouteNames {
   static const provinceDetail = '/province-detail';
   static const dishDetail = '/dish-detail';
   static const locationSettings = '/settings/location';
+  static const myPosts = '/community/my-posts';
 
 
 }

@@ -82,11 +82,13 @@ class CommunityPost {
     required this.authorPhoto,
     required this.text,
     required this.media,
+    this.placeId,
+    this.place,
+    this.placeSource,
+    this.status = 'active', // Trang thai bai viet (default active)
     required this.likeCount,
     required this.commentCount,
     required this.createdAt,
-    this.placeId,
-    this.place,
   });
 
   final String id;
@@ -97,6 +99,8 @@ class CommunityPost {
   final List<PostMedia> media;
   final String? placeId;
   final PlaceSnapshot? place;
+  final String? placeSource; // serpapi
+  final String status; // active | deleted
   final int likeCount;
   final int commentCount;
   final Timestamp? createdAt;
@@ -128,6 +132,8 @@ class CommunityPost {
       media: mediaList,
       placeId: data['placeId']?.toString(),
       place: place,
+      placeSource: data['placeSource']?.toString(),
+      status: (data['status'] ?? 'active').toString(),
       likeCount: _toInt(data['likeCount']),
       commentCount: _toInt(data['commentCount']),
       createdAt:

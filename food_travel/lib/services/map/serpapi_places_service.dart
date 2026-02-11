@@ -105,6 +105,57 @@ class SerpApiPlacesService {
     }
   }
 
+  // Tim dia diem theo text (khong can toa do)
+  Future<List<GoongNearbyPlace>> searchText({
+    required String query,
+    int limit = 12,
+  }) async {
+    final trimmedQuery = query.trim();
+    if (trimmedQuery.isEmpty) return [];
+
+    final params = <String, String>{
+      'engine': 'google_maps',
+      'api_key': serpapiKey,
+      'q': trimmedQuery,
+      'hl': 'vi',
+      'gl': 'vn',
+    };
+
+    final uri = Uri.https('serpapi.com', '/search.json', params);
+    try {
+      final res = await http.get(uri).timeout(const Duration(seconds: 12));
+      if (res.statusCode != 200) {
+        debugPrint('SerpAPI text http=${res.statusCode} body=${res.body}');
+        return [];
+      }
+
+      final bodyText = utf8.decode(res.bodyBytes, allowMalformed: true);
+      final data = jsonDecode(bodyText) as Map<String, dynamic>;
+      final items = _extractResults(data);
+      if (items.isEmpty) return [];
+
+      final dedup = <String, GoongNearbyPlace>{};
+      for (final item in items) {
+        if (item is! Map) continue;
+        final place =
+            GoongNearbyPlace.fromSerpApi(Map<String, dynamic>.from(item));
+        if (place.name.isEmpty || place.lat == 0 || place.lng == 0) {
+          continue;
+        }
+        final key = place.id.isNotEmpty
+            ? place.id
+            : '${place.name}-${place.lat}-${place.lng}';
+        if (dedup.containsKey(key)) continue;
+        dedup[key] = place;
+        if (dedup.length >= limit) break;
+      }
+      return dedup.values.toList();
+    } catch (e) {
+      debugPrint('SerpAPI text error: $e');
+      return [];
+    }
+  }
+
   List<dynamic> _extractResults(Map<String, dynamic> data) {
     final candidates = [
       data['local_results'],

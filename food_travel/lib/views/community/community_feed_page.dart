@@ -1,4 +1,5 @@
-﻿import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -86,7 +87,7 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
         onPressed: _openCreatePost,
         icon: const Icon(Icons.edit_rounded, size: 22),
         label: const Text(
-          'Dang bai',
+          '',
           style: TextStyle(fontWeight: FontWeight.w700),
         ),
       ),
@@ -111,6 +112,72 @@ class _PostCard extends StatefulWidget {
 
 class _PostCardState extends State<_PostCard> {
   bool _expanded = false;
+  final _postService = CommunityService();
+
+  Future<void> _openPostMenu(BuildContext context, CommunityPost post) async {
+    // Menu 3 cham: sua / xoa
+    final action = await showModalBottomSheet<String>(
+      context: context,
+      builder: (ctx) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.edit_outlined),
+                title: const Text('Sua bai viet'),
+                onTap: () => Navigator.pop(ctx, 'edit'),
+              ),
+              ListTile(
+                leading: const Icon(Icons.delete_outline, color: Colors.red),
+                title: const Text('Xoa bai viet'),
+                onTap: () => Navigator.pop(ctx, 'delete'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    if (action == 'edit') {
+      // Mo man sua (dung lai trang tao bai)
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => CommunityCreatePostPage(post: post),
+        ),
+      );
+    }
+
+    if (action == 'delete') {
+      final ok = await _confirmDelete(context);
+      if (ok == true) {
+        await _postService.softDeletePost(post.id);
+      }
+    }
+  }
+
+  Future<bool?> _confirmDelete(BuildContext context) {
+    // Xac nhan truoc khi xoa mem
+    return showDialog<bool>(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: const Text('Xoa bai viet'),
+          content: const Text('Ban chac chan muon xoa bai viet nay?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Huy'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('Xoa'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void _openPlaceDetail(CommunityPost post) {
     final place = post.place;
@@ -148,6 +215,8 @@ class _PostCardState extends State<_PostCard> {
     final canExpand = text.length > 140;
     final likeController = context.watch<PostLikeController>();
     final isLiked = likeController.isLiked(post.id);
+    final currentUid = FirebaseAuth.instance.currentUser?.uid;
+    final isOwner = currentUid != null && currentUid == post.authorId;
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cardBg = isDark ? const Color(0xFF15181E) : Colors.white;
@@ -226,6 +295,12 @@ class _PostCardState extends State<_PostCard> {
                   ],
                 ),
               ),
+              if (isOwner)
+                IconButton(
+                  // Mo menu sua/xoa
+                  onPressed: () => _openPostMenu(context, post),
+                  icon: Icon(Icons.more_vert, size: 20, color: timeColor),
+                ),
             ],
           ),
 
@@ -361,17 +436,20 @@ class _MediaHeroState extends State<_MediaHero> {
             ),
           ),
           Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.black.withOpacity(0.45),
-                    Colors.transparent,
-                    Colors.transparent,
-                    Colors.black.withOpacity(0.25),
-                  ],
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
+            child: IgnorePointer(
+              // Cho phep swipe anh (overlay chi de trang tri)
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.black.withOpacity(0.45),
+                      Colors.transparent,
+                      Colors.transparent,
+                      Colors.black.withOpacity(0.25),
+                    ],
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                  ),
                 ),
               ),
             ),
@@ -380,19 +458,22 @@ class _MediaHeroState extends State<_MediaHero> {
             Positioned(
               right: 10,
               top: 10,
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.6),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  '${_index + 1}/${media.length}',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
+              child: IgnorePointer(
+                // Khong chan swipe
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.6),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    '${_index + 1}/${media.length}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),
@@ -411,23 +492,26 @@ class _MediaHeroState extends State<_MediaHero> {
               left: 0,
               right: 0,
               bottom: 10,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(media.length, (i) {
-                  final active = i == _index;
-                  return AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    margin: const EdgeInsets.symmetric(horizontal: 3),
-                    width: active ? 14 : 6,
-                    height: 6,
-                    decoration: BoxDecoration(
-                      color: active
-                          ? Colors.white
-                          : Colors.white.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                  );
-                }),
+              child: IgnorePointer(
+                // Dots chi la trang tri, khong chan swipe
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(media.length, (i) {
+                    final active = i == _index;
+                    return AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      margin: const EdgeInsets.symmetric(horizontal: 3),
+                      width: active ? 14 : 6,
+                      height: 6,
+                      decoration: BoxDecoration(
+                        color: active
+                            ? Colors.white
+                            : Colors.white.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                    );
+                  }),
+                ),
               ),
             ),
         ],
@@ -721,3 +805,5 @@ Color _imageFallbackBg(BuildContext context) {
   final isDark = Theme.of(context).brightness == Brightness.dark;
   return isDark ? const Color(0xFF1F2630) : const Color(0xFFE2E8F0);
 }
+
+

@@ -14,6 +14,7 @@ import '../views/onboarding/survey_page.dart';
 import '../views/provinces/province_detail_page.dart';
 import '../views/dishes/dish_detail_page.dart';
 import '../views/settings/location_settings_page.dart';
+import '../views/community/community_my_posts_page.dart';
 import 'route_names.dart';
 
 class AppRouter {
@@ -67,6 +68,8 @@ class AppRouter {
         );
       case RouteNames.locationSettings:
         return MaterialPageRoute(builder: (_) => const LocationSettingsPage());
+      case RouteNames.myPosts:
+        return MaterialPageRoute(builder: (_) => const CommunityMyPostsPage());
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(

@@ -20,7 +20,32 @@ class CommunityService {
         .orderBy('createdAt', descending: true)
         .limit(limit)
         .snapshots()
-        .map((snap) => snap.docs.map((d) => CommunityPost.fromDoc(d)).toList());
+        .map((snap) {
+          final list = snap.docs.map((d) => CommunityPost.fromDoc(d)).toList();
+          // Loc bai da bi xoa mem (status = deleted)
+          return list.where((p) => p.status != 'deleted').toList();
+        });
+  }
+
+  // Stream bai viet cua chinh user
+  Stream<List<CommunityPost>> watchMyPosts(String uid, {int limit = 200}) {
+    return _posts
+        .where('authorId', isEqualTo: uid)
+        // Khong orderBy de tranh loi thieu index (se sort o client)
+        .limit(limit)
+        .snapshots()
+        .map((snap) {
+          final list = snap.docs.map((d) => CommunityPost.fromDoc(d)).toList();
+          // An bai da xoa mem
+          final visible = list.where((p) => p.status != 'deleted').toList();
+          // Sap xep moi nhat o client (createdAt co the null)
+          visible.sort((a, b) {
+            final ta = a.createdAt?.millisecondsSinceEpoch ?? 0;
+            final tb = b.createdAt?.millisecondsSinceEpoch ?? 0;
+            return tb.compareTo(ta);
+          });
+          return visible;
+        });
   }
 
   // Create a new post
@@ -59,12 +84,56 @@ class CommunityService {
       'placeSource': placeSource,
       'likeCount': 0,
       'commentCount': 0,
-      'status': 'active',
+      'status': 'active', // Tao moi luon active
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
     };
 
     final doc = await _posts.add(payload);
     return doc.id;
+  }
+
+  // Sua bai viet: text + dia diem (giu nguyen media)
+  Future<void> updatePost({
+    required String postId,
+    required String text,
+    PlaceSnapshot? place,
+    String? placeId,
+    String? placeSource,
+    List<PostMedia>? media,
+  }) async {
+    final trimmed = text.trim();
+    final data = <String, dynamic>{
+      'text': trimmed,
+      'updatedAt': FieldValue.serverTimestamp(),
+    };
+
+    if (media != null) {
+      // Cap nhat danh sach media moi (sau khi sua)
+      data['media'] = media.map((e) => e.toMap()).toList();
+    }
+
+    if (place == null) {
+      // User bo chon dia diem -> xoa fields lien quan
+      data['placeId'] = FieldValue.delete();
+      data['placeSnapshot'] = FieldValue.delete();
+      data['placeSource'] = FieldValue.delete();
+    } else {
+      // Cap nhat dia diem moi
+      data['placeId'] = placeId;
+      data['placeSnapshot'] = place.toMap();
+      data['placeSource'] = placeSource;
+    }
+
+    await _posts.doc(postId).set(data, SetOptions(merge: true));
+  }
+
+  // Xoa mem: doi status, khong xoa du lieu that
+  Future<void> softDeletePost(String postId) async {
+    await _posts.doc(postId).set({
+      'status': 'deleted',
+      'deletedAt': FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
   }
 }

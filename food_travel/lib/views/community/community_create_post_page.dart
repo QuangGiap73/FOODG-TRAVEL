@@ -1,21 +1,22 @@
-﻿import 'dart:io';
+import 'dart:async';
+import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../cloudinary_config.dart';
-import '../../controller/map/map_search_controller.dart';
 import '../../models/community/community_post.dart';
 import '../../models/places_model.dart';
 import '../../services/cloudinary_service.dart';
 import '../../services/community/community_service.dart';
 import '../../services/location_service.dart';
-import '../../services/map/places_service.dart';
 import '../../services/map/serpapi_places_service.dart';
 
 class CommunityCreatePostPage extends StatefulWidget {
-  const CommunityCreatePostPage({super.key});
+  const CommunityCreatePostPage({super.key, this.post});
+
+  final CommunityPost? post; // Neu co post -> che do sua
 
   @override
   State<CommunityCreatePostPage> createState() =>
@@ -30,6 +31,8 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
   bool _isPosting = false;
   bool _isUploading = false;
 
+  // Anh cu (da co tren Firestore)
+  final List<PostMedia> _existingMedia = [];
   final List<_LocalMedia> _media = [];
 
   PlaceSnapshot? _place;
@@ -39,14 +42,32 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
   static const int _maxPhotos = 4;
 
   @override
+  void initState() {
+    super.initState();
+    if (widget.post != null) {
+      // Prefill du lieu khi sua bai viet
+      _textController.text = widget.post!.text;
+      _place = widget.post!.place;
+      _placeId = widget.post!.placeId;
+      _placeSource = widget.post!.placeSource;
+      _existingMedia.addAll(widget.post!.media);
+    }
+  }
+
+  @override
   void dispose() {
     _textController.dispose();
     super.dispose();
   }
 
+  int _currentMediaCount() {
+    // Tong so anh (cu + moi)
+    return _existingMedia.length + _media.length;
+  }
+
   Future<void> _pickFromGallery() async {
-    if (_media.length >= _maxPhotos) return;
-    final remaining = _maxPhotos - _media.length;
+    if (_currentMediaCount() >= _maxPhotos) return;
+    final remaining = _maxPhotos - _currentMediaCount();
 
     final picks = await _imagePicker.pickMultiImage(
       imageQuality: 85,
@@ -63,7 +84,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
   }
 
   Future<void> _pickFromCamera() async {
-    if (_media.length >= _maxPhotos) return;
+    if (_currentMediaCount() >= _maxPhotos) return;
 
     final pick = await _imagePicker.pickImage(
       source: ImageSource.camera,
@@ -137,6 +158,44 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
 
     try {
       final text = _textController.text;
+      final isEdit = widget.post != null;
+
+      if (isEdit) {
+        // Neu co anh moi -> upload len Cloudinary
+        final newMedia = <PostMedia>[];
+        if (_media.isNotEmpty) {
+          setState(() => _isUploading = true);
+          final cloud = CloudinaryService(
+            cloudName: cloudinaryCloudName,
+            uploadPreset: cloudinaryUploadPreset,
+            folder: cloudinaryFolder,
+          );
+          for (final item in _media) {
+            final url = await cloud.uploadImage(item.file);
+            newMedia.add(PostMedia(url: url, type: 'image'));
+          }
+        }
+
+        // Media moi = anh cu con lai + anh vua upload
+        final mergedMedia = <PostMedia>[
+          ..._existingMedia,
+          ...newMedia,
+        ];
+
+        // Sua bai viet: update text + dia diem + media
+        await _service.updatePost(
+          postId: widget.post!.id,
+          text: text,
+          place: _place,
+          placeId: _placeId,
+          placeSource: _placeSource,
+          media: mergedMedia,
+        );
+
+        if (!mounted) return;
+        Navigator.pop(context, true);
+        return;
+      }
 
       // Upload anh len Cloudinary neu co
       final media = <PostMedia>[];
@@ -187,6 +246,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
     final bg = isDark ? const Color(0xFF0F1115) : Colors.white;
     final primaryText = isDark ? Colors.white : const Color(0xFF0F172A);
     final hintText = isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8);
+    final isEdit = widget.post != null; // Co post => che do sua
 
     final user = FirebaseAuth.instance.currentUser;
     final userName = (user?.displayName?.trim().isNotEmpty ?? false)
@@ -198,7 +258,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
 
     final canPost = !_isPosting &&
         (_textController.text.trim().isNotEmpty ||
-            _media.isNotEmpty ||
+            _currentMediaCount() > 0 ||
             _place != null);
 
     return Scaffold(
@@ -213,9 +273,9 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
-          'Tao bai viet',
-          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+        title: Text(
+          isEdit ? 'Sua bai viet' : 'Tao bai viet',
+          style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
         ),
         actions: [
           Padding(
@@ -240,7 +300,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
                       height: 16,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : const Text('Dang'),
+                  : Text(isEdit ? 'Luu' : 'Dang'),
             ),
           ),
         ],
@@ -293,11 +353,14 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
               ),
               const SizedBox(height: 12),
 
-              // Media grid + add button
+              // Media grid + add button (cho ca tao moi & sua)
               _MediaGrid(
-                items: _media,
+                existing: _existingMedia,
+                local: _media,
                 maxCount: _maxPhotos,
-                onRemove: (i) => setState(() => _media.removeAt(i)),
+                onRemoveExisting: (i) =>
+                    setState(() => _existingMedia.removeAt(i)),
+                onRemoveLocal: (i) => setState(() => _media.removeAt(i)),
                 onAdd: _openMediaPicker,
               ),
 
@@ -336,15 +399,19 @@ class _LocalMedia {
 
 class _MediaGrid extends StatelessWidget {
   const _MediaGrid({
-    required this.items,
+    required this.existing,
+    required this.local,
     required this.maxCount,
-    required this.onRemove,
+    required this.onRemoveExisting,
+    required this.onRemoveLocal,
     required this.onAdd,
   });
 
-  final List<_LocalMedia> items;
+  final List<PostMedia> existing;
+  final List<_LocalMedia> local;
   final int maxCount;
-  final ValueChanged<int> onRemove;
+  final ValueChanged<int> onRemoveExisting;
+  final ValueChanged<int> onRemoveLocal;
   final VoidCallback onAdd;
 
   @override
@@ -355,8 +422,9 @@ class _MediaGrid extends StatelessWidget {
         isDark ? const Color(0xFF2A303A) : const Color(0xFFE2E8F0);
     final iconColor = const Color(0xFF94A3B8);
 
-    final canAdd = items.length < maxCount;
-    final total = items.length + (canAdd ? 1 : 0);
+    final totalMedia = existing.length + local.length;
+    final canAdd = totalMedia < maxCount;
+    final total = totalMedia + (canAdd ? 1 : 0);
 
     return GridView.builder(
       itemCount: total,
@@ -368,8 +436,43 @@ class _MediaGrid extends StatelessWidget {
         mainAxisSpacing: 8,
       ),
       itemBuilder: (context, index) {
-        if (index < items.length) {
-          final item = items[index];
+        if (index < existing.length) {
+          final item = existing[index];
+          // Anh cu (da upload)
+          return Stack(
+            children: [
+              Positioned.fill(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.network(item.url, fit: BoxFit.cover),
+                ),
+              ),
+              Positioned(
+                top: 6,
+                right: 6,
+                child: InkWell(
+                  // Xoa anh cu khoi bai viet (khong xoa tren Cloudinary)
+                  onTap: () => onRemoveExisting(index),
+                  child: Container(
+                    width: 24,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.5),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.close,
+                        size: 14, color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
+          );
+        }
+
+        if (index < existing.length + local.length) {
+          final localIndex = index - existing.length;
+          final item = local[localIndex];
+          // Anh moi (local)
           return Stack(
             children: [
               Positioned.fill(
@@ -382,7 +485,8 @@ class _MediaGrid extends StatelessWidget {
                 top: 6,
                 right: 6,
                 child: InkWell(
-                  onTap: () => onRemove(index),
+                  // Xoa anh vua chon (local)
+                  onTap: () => onRemoveLocal(localIndex),
                   child: Container(
                     width: 24,
                     height: 24,
@@ -415,7 +519,7 @@ class _MediaGrid extends StatelessWidget {
                 Icon(Icons.camera_alt_outlined, color: iconColor),
                 const SizedBox(height: 6),
                 Text(
-                  '${items.length}/$maxCount',
+                  '$totalMedia/$maxCount',
                   style: const TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
@@ -540,7 +644,7 @@ class _PlacePickResult {
 
   final PlaceSnapshot place;
   final String placeId;
-  final String source; // goong | serpapi
+  final String source; // serpapi
 }
 
 class _PlaceSearchSheet extends StatefulWidget {
@@ -551,32 +655,27 @@ class _PlaceSearchSheet extends StatefulWidget {
 }
 
 class _PlaceSearchSheetState extends State<_PlaceSearchSheet> {
-  final _controller = MapSearchController();
   final _textController = TextEditingController();
   final _serpService = SerpApiPlacesService();
   final _locationService = LocationService();
 
+  Timer? _debounce;
   String _query = '';
-  String? _lastFallbackQuery;
-  List<GoongNearbyPlace> _fallbackResults = [];
-  bool _fallbackLoading = false;
+  List<GoongNearbyPlace> _results = [];
+  bool _loading = false;
   double? _userLat;
   double? _userLng;
-
-  bool _loadingDetail = false;
   String? _error;
 
   @override
   void initState() {
     super.initState();
-    _controller.addListener(_onControllerChanged);
     _resolveLocation();
   }
 
   @override
   void dispose() {
-    _controller.removeListener(_onControllerChanged);
-    _controller.dispose();
+    _debounce?.cancel();
     _textController.dispose();
     super.dispose();
   }
@@ -591,89 +690,62 @@ class _PlaceSearchSheetState extends State<_PlaceSearchSheet> {
     if (result.isSuccess && pos != null) {
       _userLat = pos.latitude;
       _userLng = pos.longitude;
-      _controller.setBias(lat: _userLat, lng: _userLng, radius: 5000);
     }
   }
 
   void _onQueryChanged(String value) {
     _query = value.trim();
-    _fallbackResults = [];
-    _fallbackLoading = false;
-    _lastFallbackQuery = null;
-    _controller.onQueryChanged(value);
-    setState(() {});
-  }
-
-  void _onControllerChanged() {
-    if (!mounted) return;
-    if (_controller.loading) return;
-    if (_controller.suggestions.isNotEmpty) return;
-    if (_query.length < 2) return;
-    if (_fallbackLoading) return;
-    if (_userLat == null || _userLng == null) return;
-    if (_lastFallbackQuery == _query) return;
-    _fetchFallback();
-  }
-
-  Future<void> _fetchFallback() async {
-    setState(() {
-      _fallbackLoading = true;
-      _lastFallbackQuery = _query;
-    });
-    try {
-      final results = await _serpService.searchNearby(
-        lat: _userLat!,
-        lng: _userLng!,
-        query: _query,
-        radius: 5000,
-        limit: 10,
-      );
-      if (!mounted) return;
+    _error = null;
+    if (_query.length < 2) {
       setState(() {
-        _fallbackResults = results;
-        _fallbackLoading = false;
-      });
-    } catch (_) {
-      if (!mounted) return;
-      setState(() {
-        _fallbackLoading = false;
-      });
-    }
-  }
-
-  Future<void> _select(GoongPrediction prediction) async {
-    setState(() {
-      _loadingDetail = true;
-      _error = null;
-    });
-
-    final detail = await _controller.fetchDetail(prediction);
-    if (!mounted) return;
-
-    if (detail == null) {
-      setState(() {
-        _loadingDetail = false;
-        _error = 'Khong lay duoc thong tin dia diem.';
+        _results = [];
+        _loading = false;
       });
       return;
     }
 
-    final place = PlaceSnapshot(
-      name: detail.name,
-      address: detail.address,
-      lat: detail.lat,
-      lng: detail.lng,
-      photoUrl: detail.photoUrl,
-    );
-    final placeId = _buildPlaceIdFromDetail(detail);
-    Navigator.pop(
-      context,
-      _PlacePickResult(place: place, placeId: placeId, source: 'goong'),
-    );
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 350), _search);
+    setState(() {});
   }
 
-  void _selectFallback(GoongNearbyPlace place) {
-    final placeId = _buildPlaceIdFromFallback(place);
+  Future<void> _search() async {
+    final q = _query.trim();
+    if (q.length < 2) return;
+    setState(() => _loading = true);
+    try {
+      List<GoongNearbyPlace> results;
+      if (_userLat != null && _userLng != null) {
+        results = await _serpService.searchNearby(
+          lat: _userLat!,
+          lng: _userLng!,
+          query: q,
+          radius: 5000,
+          limit: 12,
+        );
+      } else {
+        results = await _serpService.searchText(
+          query: q,
+          limit: 12,
+        );
+      }
+
+      if (!mounted) return;
+      setState(() {
+        _results = results;
+        _loading = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _loading = false;
+        _error = 'Khong tim duoc dia diem.';
+      });
+    }
+  }
+
+  void _selectPlace(GoongNearbyPlace place) {
+    final placeId = _buildPlaceIdFromSerp(place);
     final snap = PlaceSnapshot(
       name: place.name,
       address: place.address,
@@ -687,14 +759,7 @@ class _PlaceSearchSheetState extends State<_PlaceSearchSheet> {
     );
   }
 
-  String _buildPlaceIdFromDetail(GoongPlaceDetail detail) {
-    final raw = detail.placeId.trim();
-    if (raw.isNotEmpty) return raw;
-    final name = detail.name.trim().isNotEmpty ? detail.name.trim() : 'place';
-    return '${name}_${detail.lat}_${detail.lng}'.replaceAll(' ', '_');
-  }
-
-  String _buildPlaceIdFromFallback(GoongNearbyPlace place) {
+  String _buildPlaceIdFromSerp(GoongNearbyPlace place) {
     final serp = place.serpDataId.trim();
     if (serp.isNotEmpty) return serp;
     final id = place.id.trim();
@@ -752,7 +817,7 @@ class _PlaceSearchSheetState extends State<_PlaceSearchSheet> {
             ),
           ),
 
-          if (_loadingDetail) const LinearProgressIndicator(minHeight: 2),
+          if (_loading) const LinearProgressIndicator(minHeight: 2),
           if (_error != null)
             Padding(
               padding: const EdgeInsets.all(8),
@@ -760,100 +825,24 @@ class _PlaceSearchSheetState extends State<_PlaceSearchSheet> {
             ),
 
           Expanded(
-            child: AnimatedBuilder(
-              animation: _controller,
-              builder: (context, _) {
-                final items = _controller.suggestions;
-                if (_controller.loading) {
+            child: Builder(
+              builder: (context) {
+                if (_loading) {
                   return const _PlaceSkeleton();
                 }
-                if (items.isNotEmpty) {
+                if (_results.isNotEmpty) {
                   return ListView.separated(
                     padding: const EdgeInsets.fromLTRB(12, 8, 12, 16),
-                    itemCount: items.length,
+                    itemCount: _results.length,
                     separatorBuilder: (_, __) => const SizedBox(height: 6),
                     itemBuilder: (context, index) {
-                      final item = items[index];
-                      final parts = item.description.split(',');
-                      final title = parts.isNotEmpty
-                          ? parts.first.trim()
-                          : item.description;
-                      final subtitle = parts.length > 1
-                          ? parts.sublist(1).join(',').trim()
-                          : item.description;
-                      return InkWell(
-                        onTap: () => _select(item),
-                        borderRadius: BorderRadius.circular(14),
-                        child: Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(14),
-                            color: fieldBg,
-                            border: Border.all(color: borderColor),
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  color: isDark
-                                      ? const Color(0xFF1F2630)
-                                      : const Color(0xFFE2E8F0),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Icon(Icons.storefront, color: subText),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      title,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        color: textColor,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      subtitle,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        color: subText,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                }
-                if (_fallbackLoading) {
-                  return const _PlaceSkeleton();
-                }
-                if (_fallbackResults.isNotEmpty) {
-                  return ListView.separated(
-                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 16),
-                    itemCount: _fallbackResults.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 6),
-                    itemBuilder: (context, index) {
-                      final place = _fallbackResults[index];
+                      final place = _results[index];
                       final title = place.name.trim().isEmpty
                           ? 'Quan an'
                           : place.name.trim();
                       final subtitle = place.address.trim();
                       return InkWell(
-                        onTap: () => _selectFallback(place),
+                        onTap: () => _selectPlace(place),
                         borderRadius: BorderRadius.circular(14),
                         child: Container(
                           padding: const EdgeInsets.all(12),
@@ -911,11 +900,11 @@ class _PlaceSearchSheetState extends State<_PlaceSearchSheet> {
                     },
                   );
                 }
-                if (_query.length >= 2 && _userLat == null) {
-                  return const Center(
-                    child: Text('Bat GPS de tim gan ban.'),
-                  );
+
+                if (_query.length < 2) {
+                  return const Center(child: Text('Nhap ten quan de tim.'));
                 }
+
                 return const Center(child: Text('Khong co ket qua.'));
               },
             ),
@@ -988,3 +977,6 @@ class _PlaceSkeleton extends StatelessWidget {
     );
   }
 }
+
+
+

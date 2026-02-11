@@ -137,7 +137,7 @@ abstract class AppLocalizations {
   /// No description provided for @personalMembership.
   ///
   /// In en, this message translates to:
-  /// **'Membership'**
+  /// **'My posts'**
   String get personalMembership;
 
   /// No description provided for @personalStore.

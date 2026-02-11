@@ -27,7 +27,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get save => 'Luu';
 
   @override
-  String get personalMembership => 'Hoi vien';
+  String get personalMembership => 'Bai viet';
 
   @override
   String get personalStore => 'Cua hang';

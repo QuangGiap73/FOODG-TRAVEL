@@ -27,7 +27,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get save => 'Save';
 
   @override
-  String get personalMembership => 'Membership';
+  String get personalMembership => 'My posts';
 
   @override
   String get personalStore => 'Store';
