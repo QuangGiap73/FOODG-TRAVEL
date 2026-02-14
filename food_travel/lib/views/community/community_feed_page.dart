@@ -1,12 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../controller/community/post_like_controller.dart';
 import '../../models/community/community_post.dart';
+import '../../models/province_model.dart';
 import '../../models/places_model.dart';
 import '../../services/community/community_service.dart';
+import '../../services/food_service.dart';
+import '../../services/location_service.dart';
 import 'community_create_post_page.dart';
 import 'post_comments_sheet.dart';
 import '../favorites/place_detail_page.dart';
@@ -20,6 +26,13 @@ class CommunityFeedPage extends StatefulWidget {
 
 class _CommunityFeedPageState extends State<CommunityFeedPage> {
   final _service = CommunityService();
+  final _locationService = LocationService();
+  final _foodService = FoodService();
+
+  double? _userLat;
+  double? _userLng;
+  bool _locLoading = false;
+  ProvinceModel? _selectedProvince;
 
   Future<void> _openCreatePost() async {
     final posted = await Navigator.of(context).push<bool>(
@@ -32,6 +45,103 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _resolveLocation();
+  }
+
+  Future<void> _resolveLocation() async {
+    if (_locLoading) return;
+    setState(() => _locLoading = true);
+
+    // Lay vi tri hien tai (neu co)
+    final result = await _locationService.getCurrentLocation(
+      useLastKnown: true,
+      timeLimit: const Duration(seconds: 8),
+    );
+    if (!mounted) return;
+    final pos = result.position;
+    if (result.isSuccess && pos != null) {
+      _userLat = pos.latitude;
+      _userLng = pos.longitude;
+    }
+    setState(() => _locLoading = false);
+  }
+
+  Future<void> _pickProvince() async {
+    // Chon tinh tu danh sach Firebase
+    final picked = await showModalBottomSheet<ProvinceModel>(
+      context: context,
+      isScrollControlled: true,
+      builder: (ctx) {
+        return SafeArea(
+          child: StreamBuilder<List<ProvinceModel>>(
+            stream: _foodService.watchProvinces(),
+            builder: (context, snapshot) {
+              final items = snapshot.data ?? const <ProvinceModel>[];
+              if (items.isEmpty) {
+                return const SizedBox(
+                  height: 200,
+                  child: Center(child: Text('Khong co danh sach tinh.')),
+                );
+              }
+              return SizedBox(
+                height: MediaQuery.of(context).size.height * 0.6,
+                child: ListView.separated(
+                  itemCount: items.length,
+                  separatorBuilder: (_, __) => const Divider(height: 1),
+                  itemBuilder: (context, index) {
+                    final p = items[index];
+                    return ListTile(
+                      title: Text(p.name),
+                      onTap: () => Navigator.pop(ctx, p),
+                    );
+                  },
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+
+    if (picked != null) {
+      setState(() => _selectedProvince = picked);
+    }
+  }
+
+  // Tinh khoang cach (km) bang Haversine
+  double _distanceKm(double lat1, double lng1, double lat2, double lng2) {
+    const earthRadius = 6371.0; // km
+    final dLat = _deg2rad(lat2 - lat1);
+    final dLng = _deg2rad(lng2 - lng1);
+    final a = sin(dLat / 2) * sin(dLat / 2) +
+        cos(_deg2rad(lat1)) *
+            cos(_deg2rad(lat2)) *
+            sin(dLng / 2) *
+            sin(dLng / 2);
+    final c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    return earthRadius * c;
+  }
+
+  double _deg2rad(double deg) => deg * (pi / 180.0);
+
+  int _engagementScore(CommunityPost p) {
+    // Diem noi bat: uu tien like + comment
+    return (p.likeCount * 2) + p.commentCount;
+  }
+
+  bool _matchProvince(CommunityPost p, ProvinceModel province) {
+    // Tam thoi match theo dia chi text (muon chinh xac can luu provinceId)
+    final address = p.place?.address.toLowerCase() ?? '';
+    final name = province.name.toLowerCase();
+    if (address.contains(name)) return true;
+    final slug = province.slug?.toLowerCase();
+    if (slug != null && slug.isNotEmpty && address.contains(slug)) return true;
+    return false;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
@@ -39,58 +149,203 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
     final appBarBg = isDark ? const Color(0xFF0F1115) : Colors.white;
     final titleColor = isDark ? Colors.white : const Color(0xFF0F172A);
 
-    return Scaffold(
-      backgroundColor: bg,
-      appBar: AppBar(
-        backgroundColor: appBarBg,
-        surfaceTintColor: appBarBg,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        title: Text(
-          'Cong dong',
-          style: TextStyle(fontWeight: FontWeight.w700, color: titleColor),
-        ),
-        actions: [
+    return DefaultTabController(
+      length: 4,
+      child: Scaffold(
+        backgroundColor: bg,
+        appBar: AppBar(
+          backgroundColor: appBarBg,
+          surfaceTintColor: appBarBg,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          title: Text(
+            'Cong dong',
+            style: TextStyle(fontWeight: FontWeight.w700, color: titleColor),
+          ),
+          actions: [
           _ActionIcon(icon: Icons.search_rounded, onTap: () {}),
-          const SizedBox(width: 6),
-          _ActionIcon(icon: Icons.tune_rounded, onTap: () {}),
-          const SizedBox(width: 10),
-        ],
-      ),
-      body: StreamBuilder<List<CommunityPost>>(
-        stream: _service.watchLatestPosts(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const _FeedSkeleton();
-          }
-          if (snapshot.hasError) {
-            return _buildEmpty('Khong the tai bai viet.');
-          }
-
-          final posts = snapshot.data ?? const <CommunityPost>[];
-          if (posts.isEmpty) {
-            return _buildEmpty('Chua co bai viet nao.');
-          }
-
-          return ListView.separated(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 120),
-            itemCount: posts.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 12),
-            itemBuilder: (context, index) {
-              return _PostCard(post: posts[index]);
-            },
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: const Color(0xFFF97316),
-        onPressed: _openCreatePost,
-        icon: const Icon(Icons.edit_rounded, size: 22),
-        label: const Text(
-          '',
-          style: TextStyle(fontWeight: FontWeight.w700),
+            const SizedBox(width: 6),
+            _ActionIcon(icon: Icons.notifications_none_rounded, onTap: () {}),
+            const SizedBox(width: 10),
+          ],
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(48),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: TabBar(
+                isScrollable: true,
+                labelColor: isDark ? Colors.white : const Color(0xFF0F172A),
+                unselectedLabelColor:
+                    isDark ? Colors.white60 : const Color(0xFF94A3B8),
+                indicatorColor: const Color(0xFFF97316),
+                tabs: const [
+                  Tab(text: 'Moi nhat'),
+                  Tab(text: 'Noi bat'),
+                  Tab(text: 'Gan ban'),
+                  Tab(text: 'Theo tinh'),
+                ],
+              ),
+            ),
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            _buildNewestTab(),
+            _buildTrendingTab(),
+            _buildNearYouTab(),
+            _buildProvinceTab(),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          backgroundColor: const Color(0xFFF97316),
+          onPressed: _openCreatePost,
+          icon: const Icon(Icons.edit_rounded, size: 22),
+          label: const Text(
+            'Dang bai',
+            style: TextStyle(fontWeight: FontWeight.w700),
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _buildNewestTab() {
+    return StreamBuilder<List<CommunityPost>>(
+      stream: _service.watchLatestPosts(limit: 50),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const _FeedSkeleton();
+        }
+        if (snapshot.hasError) {
+          return _buildEmpty('Khong the tai bai viet.');
+        }
+        final posts = snapshot.data ?? const <CommunityPost>[];
+        return _buildPostsList(posts, emptyText: 'Chua co bai viet nao.');
+      },
+    );
+  }
+
+  Widget _buildTrendingTab() {
+    return StreamBuilder<List<CommunityPost>>(
+      stream: _service.watchLatestPosts(limit: 120),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const _FeedSkeleton();
+        }
+        if (snapshot.hasError) {
+          return _buildEmpty('Khong the tai bai viet.');
+        }
+        final raw = snapshot.data ?? const <CommunityPost>[];
+        final posts = [...raw];
+        // Sap xep theo diem noi bat (like + comment)
+        posts.sort((a, b) => _engagementScore(b).compareTo(_engagementScore(a)));
+        return _buildPostsList(posts, emptyText: 'Chua co bai viet noi bat.');
+      },
+    );
+  }
+
+  Widget _buildNearYouTab() {
+    if (_userLat == null || _userLng == null) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Bat GPS de tim bai viet gan ban.'),
+            const SizedBox(height: 8),
+            OutlinedButton(
+              // Thu xin vi tri lai
+              onPressed: _locLoading ? null : _resolveLocation,
+              child: Text(_locLoading ? 'Dang tai...' : 'Mo GPS'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return StreamBuilder<List<CommunityPost>>(
+      stream: _service.watchLatestPosts(limit: 120),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const _FeedSkeleton();
+        }
+        if (snapshot.hasError) {
+          return _buildEmpty('Khong the tai bai viet.');
+        }
+        final raw = snapshot.data ?? const <CommunityPost>[];
+        // Loc bai trong ban kinh 10km
+        final posts = raw.where((p) {
+          final place = p.place;
+          if (place == null) return false;
+          final d = _distanceKm(_userLat!, _userLng!, place.lat, place.lng);
+          return d <= 10;
+        }).toList();
+        return _buildPostsList(posts, emptyText: 'Khong co bai viet gan ban.');
+      },
+    );
+  }
+
+  Widget _buildProvinceTab() {
+    final selected = _selectedProvince;
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  selected == null ? 'Chon tinh' : selected.name,
+                  style: const TextStyle(fontWeight: FontWeight.w700),
+                ),
+              ),
+              TextButton(
+                // Chon tinh
+                onPressed: _pickProvince,
+                child: const Text('Doi tinh'),
+              ),
+            ],
+          ),
+        ),
+        const Divider(height: 1),
+        Expanded(
+          child: selected == null
+              ? _buildEmpty('Chon tinh de xem bai viet.')
+              : StreamBuilder<List<CommunityPost>>(
+                  stream: _service.watchLatestPosts(limit: 150),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const _FeedSkeleton();
+                    }
+                    if (snapshot.hasError) {
+                      return _buildEmpty('Khong the tai bai viet.');
+                    }
+                    final raw = snapshot.data ?? const <CommunityPost>[];
+                    final posts =
+                        raw.where((p) => _matchProvince(p, selected)).toList();
+                    return _buildPostsList(
+                      posts,
+                      emptyText: 'Khong co bai viet theo tinh.',
+                    );
+                  },
+                ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPostsList(List<CommunityPost> posts,
+      {required String emptyText}) {
+    if (posts.isEmpty) {
+      return _buildEmpty(emptyText);
+    }
+
+    return ListView.separated(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 120),
+      itemCount: posts.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      itemBuilder: (context, index) {
+        return _PostCard(post: posts[index]);
+      },
     );
   }
 
