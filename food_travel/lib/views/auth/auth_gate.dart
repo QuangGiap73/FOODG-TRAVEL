@@ -21,7 +21,10 @@ class AuthGate extends StatelessWidget {
         // Bind user cho like bai viet
         context.read<PostLikeController>().bindUser(snapshot.data?.uid);
         context.read<PlaceFavoriteController>().bindUser(snapshot.data?.uid);
-        // Bind user cho thong bao (luu FCM token)
+        // Bind user cho thong bao:
+        // - xin quyen
+        // - lay token
+        // - luu vao Firestore
         NotificationService().bindUser(snapshot.data?.uid);
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(

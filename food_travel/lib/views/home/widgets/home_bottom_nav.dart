@@ -17,9 +17,8 @@ class HomeBottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Lay chu theo da ngon ngu (neu thieu key thi fallback bang text co san).
-    final t = AppLocalizations.of(context);
-    final isVi = Localizations.localeOf(context).languageCode == 'vi';
+    // Lay chu theo da ngon ngu
+    final t = AppLocalizations.of(context)!;
 
     // Mau sac theo che do sang/toi.
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -45,11 +44,11 @@ class HomeBottomNav extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildItem(0, Icons.home_outlined, t?.personalHome ?? (isVi ? "Home" : "Home"), inactive),
-          _buildItem(1, Icons.explore_outlined, isVi ? "Kham pha" : "Explore", inactive),
-          _buildCenterMapButton(2, inactive, borderColor),
-          _buildItem(3, Icons.favorite_border, t?.save ?? (isVi ? "Luu" : "Saved"), inactive),
-          _buildItem(4, Icons.person_outline, isVi ? "Toi" : "Profile", inactive),
+          _buildItem(0, Icons.home_outlined, t.navHome, inactive),
+          _buildItem(1, Icons.explore_outlined, t.navExplore, inactive),
+          _buildCenterMapButton(context, 2, inactive, borderColor),
+          _buildItem(3, Icons.favorite_border, t.navSaved, inactive),
+          _buildItem(4, Icons.person_outline, t.navProfile, inactive),
         ],
       ),
     );
@@ -93,8 +92,14 @@ class HomeBottomNav extends StatelessWidget {
     );
   }
 
-  Widget _buildCenterMapButton(int index, Color inactive, Color borderColor) {
+  Widget _buildCenterMapButton(
+    BuildContext context,
+    int index,
+    Color inactive,
+    Color borderColor,
+  ) {
     final bool isActive = currentIndex == index;
+    final t = AppLocalizations.of(context)!;
 
     return GestureDetector(
       onTap: () => onChanged(index),
@@ -130,7 +135,7 @@ class HomeBottomNav extends StatelessWidget {
             ),
           ),
           Text(
-            "Map",
+            t.navMap,
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w500,

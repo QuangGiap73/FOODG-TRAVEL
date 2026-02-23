@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../../models/dish_model.dart';
 
@@ -26,6 +27,7 @@ class _TodayEatSectionState extends State<TodayEatSection> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final picks = _pickThreeDishes(
       dishes: widget.dishes,
       provinceSeed: widget.provinceSeed,
@@ -101,9 +103,10 @@ class _TodayEatSectionState extends State<TodayEatSection> {
               top: 12,
               right: 12,
               child: _RefreshButton(
+                label: t.homeTodayRefresh,
                 onTap: () {
                   setState(() {
-                    // Nhấn "Đổi gợi ý" => random 3 món mới
+                    // Nhan "Doi goi y" => random 3 mon moi
                     _refreshVersion++;
                     _selectedIndex = 0;
                   });
@@ -119,9 +122,9 @@ class _TodayEatSectionState extends State<TodayEatSection> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Hôm nay ăn gì?',
-                    style: TextStyle(
+                  Text(
+                    t.homeTodayEatTitle,
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 30,
                       fontWeight: FontWeight.w800,
@@ -134,7 +137,7 @@ class _TodayEatSectionState extends State<TodayEatSection> {
                     children: List.generate(picks.length, (index) {
                       final dish = picks[index];
                       return _DishTabChip(
-                        label: _twoWordLabel(dish.name),
+                        label: _twoWordLabel(dish.name, t),
                         isActive: selected == index,
                         onTap: () {
                           setState(() => _selectedIndex = index);
@@ -215,9 +218,10 @@ class _DishTabChip extends StatelessWidget {
 }
 
 class _RefreshButton extends StatelessWidget {
-  const _RefreshButton({required this.onTap});
+  const _RefreshButton({required this.onTap, required this.label});
 
   final VoidCallback onTap;
+  final String label;
 
   @override
   Widget build(BuildContext context) {
@@ -233,14 +237,14 @@ class _RefreshButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(18),
             border: Border.all(color: const Color(0x66FFFFFF)),
           ),
-          child: const Row(
+          child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.autorenew_rounded, size: 16, color: Colors.white),
-              SizedBox(width: 6),
+              const Icon(Icons.autorenew_rounded, size: 16, color: Colors.white),
+              const SizedBox(width: 6),
               Text(
-                'Đổi gợi ý',
-                style: TextStyle(
+                label,
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
@@ -254,10 +258,10 @@ class _RefreshButton extends StatelessWidget {
   }
 }
 
-String _twoWordLabel(String name) {
+String _twoWordLabel(String name, AppLocalizations t) {
   final words =
       name.trim().split(RegExp(r'\s+')).where((w) => w.isNotEmpty).toList();
-  if (words.isEmpty) return 'Món';
+  if (words.isEmpty) return t.homeDishFallback;
   if (words.length == 1) return words.first;
   return '${words[0]} ${words[1]}';
 }

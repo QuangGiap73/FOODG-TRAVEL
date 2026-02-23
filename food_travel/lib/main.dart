@@ -15,6 +15,7 @@ import 'router/app_router.dart';
 import 'router/route_names.dart';
 
 // Handler khi push den luc app dang background/terminated
+// (bat buoc de FCM xu ly dung khi app tat)
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -26,7 +27,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  // Dang ky handler background
+  // Dang ky handler background (truoc khi runApp)
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   final themeController = ThemeController();
   await themeController.load();

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:provider/provider.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../../controller/home/nearby_home_controlled.dart';
 import '../../../controller/restaurants/place_favorite_controller.dart';
@@ -21,6 +22,7 @@ class NearbyPlacesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return AnimatedBuilder(
       // Rebuild UI khi controller thay đổi state.
       animation: controller,
@@ -35,7 +37,7 @@ class NearbyPlacesSection extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  'Quán ngon gần bạn',
+                  t.homeNearbyTitle,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w800,
                   ),
@@ -43,20 +45,20 @@ class NearbyPlacesSection extends StatelessWidget {
                 const Spacer(),
                 TextButton(
                   onPressed: places.isEmpty ? null : onTapMap,
-                  child: const Text('Xem bản đồ >>'),
+                  child: Text(t.homeNearbyViewMap),
                 ),
               ],
             ),
             const SizedBox(height: 8),
             if (status == NearbyHomeStatus.loading) _buildLoading(),
             if (status == NearbyHomeStatus.locationDisabled)
-              _buildMessage('Hãy bật vị trí để xem quán gần bạn.'),
+              _buildMessage(t.homeNearbyEnableLocation),
             if (status == NearbyHomeStatus.error)
               _buildMessage(
-                controller.errorMessage ?? 'Không tải được dữ liệu.',
+                controller.errorMessage ?? t.homeNearbyLoadError,
               ),
             if (status == NearbyHomeStatus.empty)
-              _buildMessage('Chưa tìm thấy quán phù hợp.'),
+              _buildMessage(t.homeNearbyEmpty),
             if (status == NearbyHomeStatus.success && places.isNotEmpty)
               SizedBox(
                 height: 220,
@@ -278,6 +280,7 @@ class _OpenBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final open = isOpen == true;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
@@ -286,7 +289,7 @@ class _OpenBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
-        open ? 'Đang mở' : 'Đang đóng',
+        open ? t.homeOpenNow : t.homeClosed,
         style: const TextStyle(
           color: Colors.white,
           fontSize: 12,

@@ -3,7 +3,7 @@ import {setGlobalOptions} from "firebase-functions";
 import {onDocumentCreated} from "firebase-functions/v2/firestore";
 import * as logger from "firebase-functions/logger";
 
-// Khoi tao Firebase Admin
+// Khoi tao Firebase Admin (bat buoc de dung Firestore + FCM)
 admin.initializeApp();
 
 // Gioi han so instance (giam chi phi)
@@ -13,8 +13,7 @@ const db = admin.firestore();
 
 /**
  * Lay danh sach FCM token cua user.
- * @param uid User id.
- * @return Danh sach token.
+ * - Token duoc luu o users/{uid}/fcmTokens/{token}
  */
 async function getUserTokens(uid: string): Promise<string[]> {
   const snap = await db
@@ -27,7 +26,7 @@ async function getUserTokens(uid: string): Promise<string[]> {
 
 /**
  * Tao thong bao trong Firestore.
- * @param params Thong tin thong bao.
+ * - Luu o users/{ownerId}/notifications
  */
 async function createNotification(params: {
   ownerId: string;
@@ -58,10 +57,8 @@ async function createNotification(params: {
 
 /**
  * Gui push notification ve may.
- * @param ownerId Chu bai viet.
- * @param title Tieu de push.
- * @param body Noi dung push.
- * @param data Du lieu them kem.
+ * - Lay token cua ownerId
+ * - Gui push toi tat ca token do
  */
 async function sendPush(
   ownerId: string,
@@ -69,6 +66,7 @@ async function sendPush(
   body: string,
   data: Record<string, string>,
 ) {
+  // Lay danh sach token cua chu bai viet
   const tokens = await getUserTokens(ownerId);
   if (tokens.length === 0) return;
 
@@ -85,10 +83,12 @@ async function sendPush(
 export const onPostLikeCreate = onDocumentCreated(
   "posts/{postId}/likes/{uid}",
   async (event) => {
+    // postId: bai viet bi like
     const postId = event.params.postId as string;
+    // actorId: nguoi da like
     const actorId = event.params.uid as string;
 
-    // Lay bai viet
+    // Lay bai viet de biet chu bai (authorId)
     const postSnap = await db.collection("posts").doc(postId).get();
     if (!postSnap.exists) return;
     const post = postSnap.data() || {};
@@ -113,7 +113,7 @@ export const onPostLikeCreate = onDocumentCreated(
       actorPhoto,
     });
 
-    // Gui push
+    // Gui push toi chu bai viet
     await sendPush(
       ownerId,
       "Co nguoi thich bai viet",
@@ -136,10 +136,11 @@ export const onPostCommentCreate = onDocumentCreated(
   "posts/{postId}/comments/{commentId}",
   async (event) => {
     const postId = event.params.postId as string;
+    // Du lieu comment vua tao
     const data = event.data?.data() || {};
     const actorId = (data.authorId || "") as string;
 
-    // Lay bai viet
+    // Lay bai viet de biet chu bai (authorId)
     const postSnap = await db.collection("posts").doc(postId).get();
     if (!postSnap.exists) return;
     const post = postSnap.data() || {};
@@ -163,7 +164,7 @@ export const onPostCommentCreate = onDocumentCreated(
       snippet,
     });
 
-    // Gui push
+    // Gui push toi chu bai viet
     await sendPush(
       ownerId,
       "Co binh luan moi",

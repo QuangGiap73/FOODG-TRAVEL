@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../models/dish_model.dart';
 import '../../models/province_model.dart';
@@ -37,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
   bool _checkedSurvey = false;
   // Ten tinh dang hien thi tren app bar (duoc HomeFeed cap nhat theo GPS/khao sat).
-  String _appBarProvinceText = 'Bạn ở đâu?';
+  String _appBarProvinceText = '';
   // Callback de app bar goi mo danh sach tinh trong HomeFeed.
   VoidCallback? _openProvincePickerFromHome;
 
@@ -88,13 +89,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final photoUrl = FirebaseAuth.instance.currentUser?.photoURL;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     // Neu da xac dinh duoc tinh thi dong tren doi thanh 'Dang o'.
-    final hasProvince =
-        _appBarProvinceText.trim().isNotEmpty &&
-        _appBarProvinceText.trim().toLowerCase() != 'bạn ở đâu?';
-    final topLocationText = hasProvince ? 'Đang ở' : 'Bạn đang ở đâu?';
+    final hasProvince = _appBarProvinceText.trim().isNotEmpty;
+    final topLocationText =
+        hasProvince ? t.homeLocationLabel : t.homeLocationPrompt;
+    final provinceText =
+        hasProvince ? _appBarProvinceText : t.homeProvinceUnknown;
 
     // An AppBar o tab "Luu" va "Toi"
     final showAppBar =
@@ -164,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               const SizedBox(width: 2),
                               Text(
-                                _appBarProvinceText,
+                                provinceText,
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w700,
@@ -190,7 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   IconButton(
                     icon: const Icon(Icons.notifications_none_rounded),
                     onPressed: () {},
-                    tooltip: 'Thông báo',
+                    tooltip: t.notificationsTitle,
                     visualDensity: VisualDensity.compact,
                   ),
                   // IconButton(
@@ -613,6 +616,7 @@ class _HomeFeedState extends State<_HomeFeed> {
 
   Future<void> _openProvincePicker() async {
     if (_cachedProvinces.isEmpty) return;
+    final t = AppLocalizations.of(context)!;
 
     String query = '';
     final picked = await showModalBottomSheet<ProvinceModel>(
@@ -666,7 +670,7 @@ class _HomeFeedState extends State<_HomeFeed> {
                       ),
                     ),
                     Text(
-                      'Chọn tỉnh thành',
+                      t.homeProvincePickerTitle,
                       style: TextStyle(
                         color: textPrimary,
                         fontSize: 18,
@@ -697,7 +701,7 @@ class _HomeFeedState extends State<_HomeFeed> {
                             color: textSecondary,
                             size: 20,
                           ),
-                          hintText: 'Tìm tỉnh... (VD: Hà Nội, ĐN, ...)',
+                          hintText: t.homeProvincePickerSearchHint,
                           hintStyle: TextStyle(color: textSecondary),
                         ),
                       ),
@@ -708,7 +712,7 @@ class _HomeFeedState extends State<_HomeFeed> {
                           filtered.isEmpty
                               ? Center(
                                 child: Text(
-                                  'Không tìm thấy tỉnh phù hợp.',
+                                  t.homeProvinceNotFound,
                                   style: TextStyle(color: textSecondary),
                                 ),
                               )
@@ -786,9 +790,9 @@ class _HomeFeedState extends State<_HomeFeed> {
                                                 borderRadius:
                                                     BorderRadius.circular(999),
                                               ),
-                                              child: const Text(
-                                                'Đang chọn',
-                                                style: TextStyle(
+                                              child: Text(
+                                                t.homeProvinceSelected,
+                                                style: const TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 11,
                                                   fontWeight: FontWeight.w600,
@@ -832,18 +836,19 @@ class _HomeFeedState extends State<_HomeFeed> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final t = AppLocalizations.of(context)!;
     final width = MediaQuery.of(context).size.width;
     final crossAxisCount = width >= 720 ? 3 : 2;
     // Tu dong lay thang hien tai de hien thi tieu de theo lich.
     final now = DateTime.now();
-    final monthlyDestinationTitle = 'Điểm đến tháng ${now.month}';
+    final monthlyDestinationTitle = t.homeMonthlyDestinationTitle(now.month);
 
     return ListView(
       padding: const EdgeInsets.only(top: 12, bottom: 24),
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: _buildSearchField(theme),
+          child: _buildSearchField(theme, t),
         ),
         const SizedBox(height: 16),
         if (_selectedProvince != null && _dishesStream != null)
@@ -851,7 +856,7 @@ class _HomeFeedState extends State<_HomeFeed> {
             stream: _dishesStream,
             builder: (context, snapshot) {
               if (snapshot.hasError) {
-                return _buildEmpty('Không thể tải món gợi ý hôm nay.');
+                return _buildEmpty(t.homeTodaySuggestionError);
               }
 
               final liveDishes = snapshot.data ?? const <DishModel>[];
@@ -896,15 +901,15 @@ class _HomeFeedState extends State<_HomeFeed> {
               );
             }
             if (snapshot.hasError) {
-              return _buildEmpty('Không thể tải danh sách tỉnh.');
+              return _buildEmpty(t.homeProvinceLoadError);
             }
 
             final provinces = snapshot.data ?? [];
             if (provinces.isEmpty) {
               // Khong co du lieu tinh -> app bar hien placeholder.
-              widget.onProvinceLabelChanged('Bạn ở đâu?');
+              widget.onProvinceLabelChanged('');
               widget.onProvincePickerReady(null);
-              return _buildEmpty('Chưa có tỉnh thành.');
+              return _buildEmpty(t.homeProvinceEmpty);
             }
 
             // Cache list tinh hien tai de mo picker tu app bar.
@@ -988,7 +993,7 @@ class _HomeFeedState extends State<_HomeFeed> {
                 ),
                 const SizedBox(height: 10),
                 if (images.isEmpty)
-                  _buildEmpty('Tỉnh này chưa có ảnh.')
+                  _buildEmpty(t.homeProvinceNoImage)
                 else
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -1043,7 +1048,7 @@ class _HomeFeedState extends State<_HomeFeed> {
                   builder:
                       (_) => MapPage(
                         initialNearbyPlaces: _nearbyHomeController.places,
-                        initialNearbyQuery: 'quan an',
+                        initialNearbyQuery: t.homeNearbyQuery,
                       ),
                 ),
               );
@@ -1060,7 +1065,8 @@ class _HomeFeedState extends State<_HomeFeed> {
           ),
         ),
         const SizedBox(height: 8),
-        if (_selectedProvince == null) _buildEmpty('Chọn tỉnh để xem món ăn.'),
+        if (_selectedProvince == null)
+          _buildEmpty(t.homeSelectProvinceToSeeDishes),
         if (_selectedProvince != null && _dishesStream != null)
           StreamBuilder<List<DishModel>>(
             stream: _dishesStream,
@@ -1072,14 +1078,14 @@ class _HomeFeedState extends State<_HomeFeed> {
                 );
               }
               if (snapshot.hasError) {
-                return _buildEmpty('Không thể tải danh sách món.');
+                return _buildEmpty(t.homeDishListLoadError);
               }
 
               final dishes = snapshot.data ?? [];
               final filtered = _filterDishes(dishes);
 
               if (filtered.isEmpty) {
-                return _buildEmpty('Không tìm thấy món ăn phù hợp.');
+                return _buildEmpty(t.homeDishNotFound);
               }
 
               return Consumer<FavoriteController>(
@@ -1095,7 +1101,7 @@ class _HomeFeedState extends State<_HomeFeed> {
                           children: [
                             Expanded(
                               child: Text(
-                                'Đặc sản phải thử',
+                                t.homeSpecialtiesTitle,
                                 style: theme.textTheme.titleMedium?.copyWith(
                                   fontWeight: FontWeight.w700,
                                 ),
@@ -1108,7 +1114,9 @@ class _HomeFeedState extends State<_HomeFeed> {
                                 });
                               },
                               child: Text(
-                                _showAllSpecialties ? 'Thu gọn' : 'Xem tất cả',
+                                _showAllSpecialties
+                                    ? t.homeSpecialtiesCollapse
+                                    : t.homeSpecialtiesSeeAll,
                               ),
                             ),
                           ],
@@ -1207,7 +1215,7 @@ class _HomeFeedState extends State<_HomeFeed> {
     }).toList();
   }
 
-  Widget _buildSearchField(ThemeData theme) {
+  Widget _buildSearchField(ThemeData theme, AppLocalizations t) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
@@ -1225,9 +1233,9 @@ class _HomeFeedState extends State<_HomeFeed> {
       child: TextField(
         controller: _searchController,
         onChanged: (value) => setState(() => _query = value.trim()),
-        decoration: const InputDecoration(
-          icon: Icon(Icons.search),
-          hintText: 'Tìm món ăn, nguyên liệu...',
+        decoration: InputDecoration(
+          icon: const Icon(Icons.search),
+          hintText: t.homeSearchHint,
           border: InputBorder.none,
         ),
       ),

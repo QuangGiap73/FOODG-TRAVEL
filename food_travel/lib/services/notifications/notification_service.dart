@@ -12,7 +12,9 @@ class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
   factory NotificationService() => _instance;
 
+  // Firestore de luu token + thong bao
   final _db = FirebaseFirestore.instance;
+  // Firebase Messaging de lay token + nhan push
   final _messaging = FirebaseMessaging.instance;
 
   String? _boundUid;
@@ -55,6 +57,7 @@ class NotificationService {
   }
 
   Future<void> _saveToken(String uid, String token) async {
+    // Luu token vao users/{uid}/fcmTokens/{token}
     await _db
         .collection('users')
         .doc(uid)
@@ -67,7 +70,7 @@ class NotificationService {
     });
   }
 
-  // Stream danh sach thong bao
+  // Stream danh sach thong bao (users/{uid}/notifications)
   Stream<List<UserNotification>> watchNotifications(
     String uid, {
     int limit = 50,

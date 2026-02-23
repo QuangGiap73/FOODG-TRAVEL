@@ -48,6 +48,16 @@ class CommunityService {
         });
   }
 
+  // Stream 1 bai viet theo postId (null neu khong ton tai / bi xoa mem)
+  Stream<CommunityPost?> watchPost(String postId) {
+    return _posts.doc(postId).snapshots().map((doc) {
+      if (!doc.exists) return null;
+      final post = CommunityPost.fromDoc(doc);
+      if (post.status == 'deleted') return null;
+      return post;
+    });
+  }
+
   // Create a new post
   Future<String> createPost({
     required String text,
