@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../../services/map/places_service.dart';
 
@@ -23,6 +24,7 @@ class MapSearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final t = AppLocalizations.of(context)!;
 
     return Column(
       children: [
@@ -34,7 +36,7 @@ class MapSearchBar extends StatelessWidget {
             controller: controller,
             onChanged: onQueryChanged,
             decoration: InputDecoration(
-              hintText: 'Search place...',
+              hintText: t.mapSearchHint,
               prefixIcon: const Icon(Icons.search),
               suffixIcon: loading
                   ? const Padding(

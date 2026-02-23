@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../cloudinary_config.dart';
 import '../../models/community/community_post.dart';
@@ -99,6 +100,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
   }
 
   Future<void> _openMediaPicker() async {
+    final t = AppLocalizations.of(context)!;
     // Bottom sheet chon nguon anh
     await showModalBottomSheet<void>(
       context: context,
@@ -109,7 +111,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
             children: [
               ListTile(
                 leading: const Icon(Icons.photo_library_outlined),
-                title: const Text('Chon tu thu vien'),
+                title: Text(t.postPickFromGallery),
                 onTap: () {
                   Navigator.pop(ctx);
                   _pickFromGallery();
@@ -117,7 +119,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
               ),
               ListTile(
                 leading: const Icon(Icons.photo_camera_outlined),
-                title: const Text('Chup anh'),
+                title: Text(t.postPickFromCamera),
                 onTap: () {
                   Navigator.pop(ctx);
                   _pickFromCamera();
@@ -227,7 +229,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Dang bai that bai: $e')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.postSubmitFailed(e.toString()))),
       );
     } finally {
       if (mounted) {
@@ -241,6 +243,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final bg = isDark ? const Color(0xFF0F1115) : Colors.white;
@@ -253,7 +256,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
         ? user!.displayName!
         : (user?.email?.trim().isNotEmpty ?? false)
             ? user!.email!
-            : 'FoodG User';
+            : t.commonUserFallback;
     final avatarUrl = user?.photoURL ?? '';
 
     final canPost = !_isPosting &&
@@ -274,7 +277,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          isEdit ? 'Sua bai viet' : 'Tao bai viet',
+          isEdit ? t.postEditTitle : t.postCreateTitle,
           style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
         ),
         actions: [
@@ -300,7 +303,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
                       height: 16,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : Text(isEdit ? 'Luu' : 'Dang'),
+                  : Text(isEdit ? t.save : t.postPublish),
             ),
           ),
         ],
@@ -345,7 +348,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
                 maxLines: null,
                 style: TextStyle(color: primaryText),
                 decoration: InputDecoration(
-                  hintText: 'Ban dang cam thay the nao ve mon an hom nay?',
+                  hintText: t.postTextHint,
                   hintStyle: TextStyle(color: hintText),
                   border: InputBorder.none,
                 ),
@@ -368,7 +371,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
                 const SizedBox(height: 12),
                 const LinearProgressIndicator(),
                 const SizedBox(height: 6),
-                const Text('Dang tai anh...'),
+                Text(t.postUploading),
               ],
 
               const SizedBox(height: 18),
@@ -416,6 +419,7 @@ class _MediaGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final tileBg = isDark ? const Color(0xFF1A1F27) : const Color(0xFFF8FAFC);
     final borderColor =
@@ -548,6 +552,7 @@ class _PlaceSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cardBg = isDark ? const Color(0xFF1A1F27) : const Color(0xFFF8FAFC);
     final borderColor =
@@ -574,7 +579,7 @@ class _PlaceSelector extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  'Them dia diem',
+                  t.postAddPlace,
                   style: TextStyle(fontWeight: FontWeight.w600, color: textColor),
                 ),
               ),
@@ -739,7 +744,7 @@ class _PlaceSearchSheetState extends State<_PlaceSearchSheet> {
       if (!mounted) return;
       setState(() {
         _loading = false;
-        _error = 'Khong tim duoc dia diem.';
+        _error = AppLocalizations.of(context)!.postPlaceSearchError;
       });
     }
   }
@@ -769,6 +774,7 @@ class _PlaceSearchSheetState extends State<_PlaceSearchSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bg = isDark ? const Color(0xFF0F1115) : Colors.white;
     final fieldBg = isDark ? const Color(0xFF15181E) : const Color(0xFFF8FAFC);
@@ -803,7 +809,7 @@ class _PlaceSearchSheetState extends State<_PlaceSearchSheet> {
               controller: _textController,
               style: TextStyle(color: textColor),
               decoration: InputDecoration(
-                hintText: 'Tim quan an, cafe...',
+                hintText: t.postPlaceSearchHint,
                 hintStyle: TextStyle(color: subText),
                 prefixIcon: Icon(Icons.search, color: subText),
                 filled: true,
@@ -838,7 +844,7 @@ class _PlaceSearchSheetState extends State<_PlaceSearchSheet> {
                     itemBuilder: (context, index) {
                       final place = _results[index];
                       final title = place.name.trim().isEmpty
-                          ? 'Quan an'
+                          ? t.postPlaceFallbackTitle
                           : place.name.trim();
                       final subtitle = place.address.trim();
                       return InkWell(
@@ -882,7 +888,7 @@ class _PlaceSearchSheetState extends State<_PlaceSearchSheet> {
                                     Text(
                                       subtitle.isNotEmpty
                                           ? subtitle
-                                          : 'Dang cap nhat dia chi',
+                                          : t.postPlaceFallbackAddress,
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
@@ -902,10 +908,10 @@ class _PlaceSearchSheetState extends State<_PlaceSearchSheet> {
                 }
 
                 if (_query.length < 2) {
-                  return const Center(child: Text('Nhap ten quan de tim.'));
+                  return Center(child: Text(t.postPlaceSearchPrompt));
                 }
 
-                return const Center(child: Text('Khong co ket qua.'));
+                return Center(child: Text(t.postPlaceSearchEmpty));
               },
             ),
           ),

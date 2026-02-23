@@ -1,5 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../models/user_model.dart';
 import '../../services/auth_service.dart';
@@ -55,6 +56,30 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  String _mapLoginError(AppLocalizations t, FirebaseAuthException e) {
+    switch (e.code) {
+      case 'user-not-found':
+        return t.authLoginUserNotFound;
+      case 'wrong-password':
+        return t.authLoginWrongPassword;
+      case 'invalid-email':
+        return t.authEmailInvalid;
+      default:
+        return t.authLoginFailed;
+    }
+  }
+
+  String _mapGoogleError(AppLocalizations t, FirebaseAuthException e) {
+    switch (e.code) {
+      case 'account-exists-with-different-credential':
+        return t.authGoogleAccountExists;
+      case 'invalid-credential':
+        return t.authGoogleInvalidCredential;
+      default:
+        return t.authGoogleFailed;
+    }
+  }
+
   Future<void> _handleLogin() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -72,22 +97,20 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, RouteNames.authGate);
     } on FirebaseAuthException catch (e) {
-      String message = 'Ã„ÂÃ„Æ’ng nhÃ¡ÂºÂ­p thÃ¡ÂºÂ¥t bÃ¡ÂºÂ¡i';
-      if (e.code == 'user-not-found') {
-        message = 'TÃƒÂ i khoÃ¡ÂºÂ£n khÃƒÂ´ng tÃ¡Â»â€œn tÃ¡ÂºÂ¡i';
-      } else if (e.code == 'wrong-password') {
-        message = 'MÃ¡ÂºÂ­t khÃ¡ÂºÂ©u khÃƒÂ´ng Ã„â€˜ÃƒÂºng';
-      } else if (e.code == 'invalid-email') {
-        message = 'Email khÃƒÂ´ng hÃ¡Â»Â£p lÃ¡Â»â€¡';
-      }
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+      final t = AppLocalizations.of(context)!;
+      final message = _mapLoginError(t, e);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
     } catch (e) {
+      final t = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('LÃ¡Â»â€”i: $e')));
+          .showSnackBar(SnackBar(content: Text(t.authError(e.toString()))));
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
   }
+
   Future<void> _handleGoogleLogin() async {
     setState(() => _isLoading = true);
     try {
@@ -100,24 +123,22 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, RouteNames.authGate);
     } on FirebaseAuthException catch (e) {
-      if (e.code == "sign_in_canceled") {
+      if (e.code == 'sign_in_canceled') {
         return;
       }
-      String message = "Google sign-in failed";
-      if (e.code == "account-exists-with-different-credential") {
-        message = "Account exists with a different sign-in method";
-      } else if (e.code == "invalid-credential") {
-        message = "Invalid Google credential";
-      }
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+      final t = AppLocalizations.of(context)!;
+      final message = _mapGoogleError(t, e);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
     } catch (e) {
+      final t = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Error: $e")));
+          .showSnackBar(SnackBar(content: Text(t.authError(e.toString()))));
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
   }
-
 
   @override
   void dispose() {
@@ -128,6 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -135,7 +157,6 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Ã¡ÂºÂ¢nh mÃƒÂ³n Ã„Æ’n
               Container(
                 height: 280,
                 decoration: const BoxDecoration(
@@ -148,14 +169,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 30),
-              const Text(
-                'Welcome Back!',
-                style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+              Text(
+                t.authLoginTitle,
+                style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
-              const Text(
-                'Login to your food account',
-                style: TextStyle(color: Colors.grey),
+              Text(
+                t.authLoginSubtitle,
+                style: const TextStyle(color: Colors.grey),
               ),
               const SizedBox(height: 30),
               Padding(
@@ -167,7 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       TextFormField(
                         controller: _emailController,
                         decoration: InputDecoration(
-                          labelText: 'Email',
+                          labelText: t.authEmailLabel,
                           prefixIcon: const Icon(Icons.email),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -176,10 +197,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
-                            return 'Vui long dang nhap email';
+                            return t.authEmailRequired;
                           }
                           if (!value.contains('@')) {
-                            return 'Email khong hop le';
+                            return t.authEmailInvalid;
                           }
                           return null;
                         },
@@ -189,7 +210,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         controller: _passwordController,
                         obscureText: _obscurePassword,
                         decoration: InputDecoration(
-                          labelText: 'Password',
+                          labelText: t.authPasswordLabel,
                           prefixIcon: const Icon(Icons.lock),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -209,7 +230,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
-                            return 'Vui long nhap mat khau khac';
+                            return t.authPasswordRequired;
                           }
                           return null;
                         },
@@ -230,24 +251,29 @@ class _LoginScreenState extends State<LoginScreen> {
                               ? const SizedBox(
                                   width: 22,
                                   height: 22,
-                                  child:
-                                      CircularProgressIndicator(strokeWidth: 2),
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
                                 )
-                              : const Text(
-                                  'Login',
-                                  style: TextStyle(fontSize: 18),
+                              : Text(
+                                  t.authLoginAction,
+                                  style: const TextStyle(fontSize: 18),
                                 ),
                         ),
                       ),
                       const SizedBox(height: 20),
                       Row(
-                        children: const [
-                          Expanded(child: Divider(color: Color(0xFFE0E0E0))),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 12),
-                            child: Text("or"),
+                        children: [
+                          const Expanded(
+                            child: Divider(color: Color(0xFFE0E0E0)),
                           ),
-                          Expanded(child: Divider(color: Color(0xFFE0E0E0))),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Text(t.authOr),
+                          ),
+                          const Expanded(
+                            child: Divider(color: Color(0xFFE0E0E0)),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 16),
@@ -257,7 +283,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: OutlinedButton.icon(
                           onPressed: _isLoading ? null : _handleGoogleLogin,
                           icon: const Icon(Icons.g_mobiledata, size: 24),
-                          label: const Text("Continue with Google"),
+                          label: Text(t.authContinueGoogle),
                           style: OutlinedButton.styleFrom(
                             side: const BorderSide(color: Color(0xFFE0E0E0)),
                             shape: RoundedRectangleBorder(
@@ -270,7 +296,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text("Don't have an account? "),
+                          Text(t.authNoAccount),
                           GestureDetector(
                             onTap: () {
                               Navigator.pushReplacementNamed(
@@ -278,9 +304,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 RouteNames.register,
                               );
                             },
-                            child: const Text(
-                              'Register',
-                              style: TextStyle(
+                            child: Text(
+                              t.authRegisterAction,
+                              style: const TextStyle(
                                 color: Colors.orange,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -300,4 +326,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-

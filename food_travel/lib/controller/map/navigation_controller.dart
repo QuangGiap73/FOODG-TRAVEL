@@ -11,6 +11,10 @@ import '../../services/map/route_utils.dart';
 class NavigationController extends ChangeNotifier {
   NavigationController(): _directions = DirectionsService();
 
+  static const errorPermissionDenied = 'permission_denied';
+  static const errorRouteUnavailable = 'route_unavailable';
+  static const errorRouteFailed = 'route_failed';
+
   final DirectionsService _directions;
   // router hien tai
   RouteInfo? _route;
@@ -29,11 +33,11 @@ class NavigationController extends ChangeNotifier {
   int _offRouteHits = 0;
   // Stream postition 
   StreamSubscription<Position>? _posSub;
-  String? _lastError;
-  String? get lastError => _lastError;
+  String? _lastErrorCode;
+  String? get lastErrorCode => _lastErrorCode;
 
   void clearError() {
-    _lastError = null;
+    _lastErrorCode = null;
   }
 
   // bat dau dan duong
@@ -46,7 +50,7 @@ class NavigationController extends ChangeNotifier {
       }
       if (permission == LocationPermission.denied ||
           permission == LocationPermission.deniedForever) {
-        _lastError = 'Chua co quyen vi tri.';
+        _lastErrorCode = errorPermissionDenied;
         notifyListeners();
         return false;
       }
@@ -69,7 +73,7 @@ class NavigationController extends ChangeNotifier {
       );
 
       if (_route == null) {
-        _lastError = 'Khong lay duoc chi duong.';
+        _lastErrorCode = errorRouteUnavailable;
         notifyListeners();
         return false;
       }
@@ -79,7 +83,7 @@ class NavigationController extends ChangeNotifier {
       _startPositionStream();
       return true;
     } catch (e) {
-      _lastError = 'Loi chi duong: $e';
+      _lastErrorCode = errorRouteFailed;
       notifyListeners();
       return false;
     }

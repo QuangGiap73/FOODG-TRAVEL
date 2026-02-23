@@ -1,5 +1,6 @@
 ﻿import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../../models/place_review_model.dart';
 import '../../../models/places_model.dart';
@@ -41,17 +42,18 @@ class _PlaceReviewsSectionState extends State<PlaceReviewsSection> {
     final ok = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
+        final t = AppLocalizations.of(dialogContext)!;
         return AlertDialog(
-          title: const Text('Xoa binh luan'),
-          content: const Text('Ban chac chan muon xoa binh luan nay?'),
+          title: Text(t.reviewDeleteTitle),
+          content: Text(t.reviewDeleteConfirm),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext, false),
-              child: const Text('Huy'),
+              child: Text(t.commonCancel),
             ),
             ElevatedButton(
               onPressed: () => Navigator.pop(dialogContext, true),
-              child: const Text('Xoa'),
+              child: Text(t.commonDelete),
             ),
           ],
         );
@@ -70,6 +72,7 @@ class _PlaceReviewsSectionState extends State<PlaceReviewsSection> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final currentUid = FirebaseAuth.instance.currentUser?.uid ?? '';
 
     return StreamBuilder<List<PlaceReviewModel>>(
@@ -109,7 +112,7 @@ class _PlaceReviewsSectionState extends State<PlaceReviewsSection> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Danh gia ($reviewCount)',
+                  t.reviewSectionTitle(reviewCount),
                   style: PlaceDetailTypography.sectionTitle(widget.textPrimary),
                 ),
                 Container(
@@ -125,7 +128,7 @@ class _PlaceReviewsSectionState extends State<PlaceReviewsSection> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                       child: Text(
-                        'Viet danh gia',
+                        t.reviewWriteTitle,
                         style: PlaceDetailTypography.chip(const Color(0xFFFF6A00)).copyWith(
                           fontWeight: FontWeight.w700,
                         ),
@@ -138,7 +141,7 @@ class _PlaceReviewsSectionState extends State<PlaceReviewsSection> {
             const SizedBox(height: 10),
             if (cards.isEmpty)
               Text(
-                'Chua co bai danh gia.',
+                t.reviewEmpty,
                 style: PlaceDetailTypography.body(widget.textSecondary),
               )
             else ...[
@@ -148,7 +151,7 @@ class _PlaceReviewsSectionState extends State<PlaceReviewsSection> {
                   alignment: Alignment.center,
                   child: TextButton(
                     onPressed: () => setState(() => _showAll = !_showAll),
-                    child: Text(_showAll ? 'Thu gon' : 'Xem them'),
+                    child: Text(_showAll ? t.commonCollapse : t.commonSeeMore),
                   ),
                 ),
             ],
@@ -187,15 +190,16 @@ class ReviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final textPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
     final textSecondary = isDark ? Colors.white70 : const Color(0xFF64748B);
     final avatarBg = isDark ? const Color(0xFF1F2630) : const Color(0xFFE2E8F0);
-    final name = review.userName.isEmpty ? 'Nguoi dung' : review.userName;
+    final name = review.userName.isEmpty ? t.commonUserFallback : review.userName;
     final subtitle = review.dateText.isNotEmpty
-        ? '${review.dateText} - Da an o quan nay'
-        : 'Da an o quan nay';
+        ? t.reviewDinedHereWithDate(review.dateText)
+        : t.reviewDinedHere;
 
     return Container(
       margin: const EdgeInsets.only(top: 10),
@@ -271,12 +275,13 @@ class FirebaseReviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final textPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
     final textSecondary = isDark ? Colors.white70 : const Color(0xFF64748B);
     final avatarBg = isDark ? const Color(0xFF1F2630) : const Color(0xFFE2E8F0);
-    final name = review.userName.isEmpty ? 'Nguoi dung' : review.userName;
+    final name = review.userName.isEmpty ? t.commonUserFallback : review.userName;
     final dateText =
         '${review.createdAt.day}/${review.createdAt.month}/${review.createdAt.year}';
 
@@ -308,7 +313,7 @@ class FirebaseReviewCard extends StatelessWidget {
                   children: [
                     Text(name, style: PlaceDetailTypography.bodyStrong(textPrimary)),
                     Text(
-                      '$dateText - Danh gia tu nguoi dung',
+                      t.reviewFromUserWithDate(dateText),
                       style: PlaceDetailTypography.caption(textSecondary),
                     ),
                   ],

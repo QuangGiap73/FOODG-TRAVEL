@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../../models/places_model.dart';
 import '../../../services/restaurants/favorite_place_service.dart';
@@ -12,6 +13,7 @@ class FavoritePlacesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return StreamBuilder<List<GoongNearbyPlace>>(
       stream: FavoritePlaceService().watchFavoritePlaces(uid),
       builder: (context, snapshot) {
@@ -19,12 +21,12 @@ class FavoritePlacesTab extends StatelessWidget {
           return const LinearProgressIndicator();
         }
         if (snapshot.hasError) {
-          return const Center(child: Text('Khong the tai quan yeu thich.'));
+          return Center(child: Text(t.favoritePlacesLoadError));
         }
 
         final places = snapshot.data ?? [];
         if (places.isEmpty) {
-          return const Center(child: Text('Chua co quan yeu thich.'));
+          return Center(child: Text(t.favoritePlacesEmpty));
         }
 
         return ListView.separated(
@@ -74,6 +76,7 @@ class _RestaurantCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final cardBg = isDark ? const Color(0xFF15181E) : Colors.white;
@@ -138,7 +141,9 @@ class _RestaurantCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
-                        isOpen ? 'OPEN' : 'CLOSED',
+                        isOpen
+                            ? t.homeOpenNow.toUpperCase()
+                            : t.homeClosed.toUpperCase(),
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 9,
@@ -177,7 +182,7 @@ class _RestaurantCard extends StatelessWidget {
                     ],
                   ),
                   Text(
-                    price.isEmpty ? 'Quan an' : price,
+                    price.isEmpty ? t.favoritePlaceCategoryFallback : price,
                     style: TextStyle(fontSize: 11, color: textSecondary),
                   ),
                   const SizedBox(height: 6),
@@ -186,7 +191,7 @@ class _RestaurantCard extends StatelessWidget {
                       const Icon(Icons.star, size: 12, color: Color(0xFFF97316)),
                       const SizedBox(width: 4),
                       Text(
-                        rating.isEmpty ? 'No rating' : rating,
+                        rating.isEmpty ? t.favoritePlaceNoRating : rating,
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
@@ -202,7 +207,9 @@ class _RestaurantCard extends StatelessWidget {
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
-                          address.isEmpty ? 'Dang cap nhat dia chi' : address,
+                          address.isEmpty
+                              ? t.favoritePlaceAddressFallback
+                              : address,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(fontSize: 11, color: textSecondary),

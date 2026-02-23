@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../models/dish_model.dart';
 import '../../services/favorite_service.dart';
@@ -9,15 +10,16 @@ class FavoritesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      return const Scaffold(
-        body: Center(child: Text('Please login')),
+      return Scaffold(
+        body: Center(child: Text(t.favoritesLoginRequired)),
       );
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Yeu thich')),
+      appBar: AppBar(title: Text(t.favoritesTitle)),
       body: StreamBuilder<List<DishModel>>(
         stream: FavoriteService().watchFavoriteDishes(user.uid),
         builder: (context, snapshot) {
@@ -25,12 +27,12 @@ class FavoritesPage extends StatelessWidget {
             return const LinearProgressIndicator();
           }
           if (snapshot.hasError) {
-            return const Center(child: Text('Khong the tai danh sach.'));
+            return Center(child: Text(t.favoritesLoadError));
           }
 
           final dishes = snapshot.data ?? [];
           if (dishes.isEmpty) {
-            return const Center(child: Text('Chua co mon yeu thich.'));
+            return Center(child: Text(t.favoriteDishesEmpty));
           }
 
           return GridView.builder(

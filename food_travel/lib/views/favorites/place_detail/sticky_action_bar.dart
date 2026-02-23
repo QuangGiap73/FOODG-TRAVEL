@@ -1,10 +1,12 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 class PlaceStickyActionBar extends StatelessWidget {
   const PlaceStickyActionBar({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bg = isDark ? const Color(0xFF0F131A) : Colors.white;
     final border = isDark ? const Color(0xFF1F2530) : const Color(0xFFE2E8F0);
@@ -31,7 +33,7 @@ class PlaceStickyActionBar extends StatelessWidget {
             child: OutlinedButton.icon(
               onPressed: () {},
               icon: const Icon(Icons.bookmark_border, size: 18),
-              label: const Text('Luu'),
+              label: Text(t.save),
               style: OutlinedButton.styleFrom(
                 foregroundColor: outlineText,
                 side: BorderSide(color: outlineColor),
@@ -44,7 +46,7 @@ class PlaceStickyActionBar extends StatelessWidget {
             child: ElevatedButton.icon(
               onPressed: () {},
               icon: const Icon(Icons.shopping_bag_outlined, size: 18),
-              label: const Text('Lên lịch'),
+              label: Text(t.placeSchedule),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFFF6A00),
                 foregroundColor: Colors.white,
@@ -60,3 +62,4 @@ class PlaceStickyActionBar extends StatelessWidget {
     );
   }
 }
+

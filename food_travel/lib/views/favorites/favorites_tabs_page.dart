@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 import 'tabs/favorite_dishes_tab.dart';
 import 'tabs/favorite_places_tab.dart';
@@ -17,10 +18,11 @@ class _FavoritesTabsPageState extends State<FavoritesTabsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      return const Scaffold(
-        body: Center(child: Text('Vui long dang nhap')),
+      return Scaffold(
+        body: Center(child: Text(t.favoritesLoginRequired)),
       );
     }
 
@@ -65,7 +67,7 @@ class _FavoritesTabsPageState extends State<FavoritesTabsPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Da luu',
+                                  t.favoritesTitle,
                                   style: TextStyle(
                                     fontSize: 24,
                                     fontWeight: FontWeight.w600,
@@ -75,7 +77,7 @@ class _FavoritesTabsPageState extends State<FavoritesTabsPage> {
                                 ),
                                 SizedBox(height: 2),
                                 Text(
-                                  'Your favorites in one place',
+                                  t.favoritesSubtitle,
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: textSecondary,
@@ -108,14 +110,14 @@ class _FavoritesTabsPageState extends State<FavoritesTabsPage> {
                         height: 30,
                         child: ListView(
                           scrollDirection: Axis.horizontal,
-                          children: const [
-                            _FilterChipFilled(label: 'Central Vietnam'),
-                            SizedBox(width: 8),
-                            _FilterChipOutline(label: 'Spicy'),
-                            SizedBox(width: 8),
-                            _FilterChipOutline(label: 'Under 50k'),
-                            SizedBox(width: 8),
-                            _FilterChipOutline(label: 'Breakfast'),
+                          children: [
+                            _FilterChipFilled(label: t.favoritesFilterCentral),
+                            const SizedBox(width: 8),
+                            _FilterChipOutline(label: t.favoritesFilterSpicy),
+                            const SizedBox(width: 8),
+                            _FilterChipOutline(label: t.favoritesFilterBudget),
+                            const SizedBox(width: 8),
+                            _FilterChipOutline(label: t.favoritesFilterBreakfast),
                           ],
                         ),
                       ),
@@ -156,6 +158,7 @@ class _TabSwitcher extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final bgColor = isDark ? const Color(0xFF1A1D22) : const Color(0xFFE5E7EB);
@@ -170,7 +173,7 @@ class _TabSwitcher extends StatelessWidget {
         children: [
           Expanded(
             child: _TabButton(
-              label: 'Dishes',
+              label: t.favoritesTabDishes,
               icon: Icons.restaurant_menu,
               active: index == 0,
               onTap: () => onChanged(0),
@@ -178,7 +181,7 @@ class _TabSwitcher extends StatelessWidget {
           ),
           Expanded(
             child: _TabButton(
-              label: 'Restaurants',
+              label: t.favoritesTabPlaces,
               icon: Icons.storefront,
               active: index == 1,
               onTap: () => onChanged(1),

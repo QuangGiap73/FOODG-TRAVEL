@@ -35,17 +35,18 @@ class _PersonalPageState extends State<PersonalPage> {
     final ok = await showDialog<bool>(
       context: context,
       builder: (dialogContext) {
+        final t = AppLocalizations.of(dialogContext)!;
         return AlertDialog(
-          title: const Text('Dang xuat'),
-          content: const Text('Ban co chac muon dang xuat khong?'),
+          title: Text(t.logoutTitle),
+          content: Text(t.logoutConfirm),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext, false),
-              child: const Text('Huy'),
+              child: Text(t.commonCancel),
             ),
             ElevatedButton(
               onPressed: () => Navigator.pop(dialogContext, true),
-              child: const Text('Dang xuat'),
+              child: Text(t.logoutAction),
             ),
           ],
         );
@@ -199,14 +200,14 @@ class _PersonalScaffold extends StatelessWidget {
               
               _SectionItem(
                 icon: Icons.my_location_outlined,
-                title: 'Vi tri',
+                title: t.personalLocation,
                 onTap: () {
                   Navigator.pushNamed(context, RouteNames.locationSettings);
                 },
               ),
               _SectionItem(
                 icon: Icons.logout_rounded,
-                title: 'Dang xuat',
+                title: t.logoutAction,
                 onTap: onLogout,
               ),
 

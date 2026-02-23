@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 import '../../models/dish_model.dart';
 import '../../models/province_model.dart';
 import '../../services/food_service.dart';
@@ -62,6 +63,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage>{
   }
   @override
   Widget build(BuildContext context){
+    final t = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     return StreamBuilder<ProvinceModel?>(
       stream: _service.watchProvinceById(widget.provinceId), // goi du lieu
@@ -73,14 +75,14 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage>{
           );
         }
         if (snapshot.hasError){
-          return const Scaffold(
-            body: Center(child: Text('Khong the tai tinh thanh.')),
+          return Scaffold(
+            body: Center(child: Text(t.provinceLoadError)),
           );
         }
         final province = snapshot.data;
         if(province == null){
-          return const Scaffold(
-            body: Center(child: Text('Khong tim thay tinh.')),
+          return Scaffold(
+            body: Center(child: Text(t.provinceNotFound)),
           );
         }
         final images = province.imageUrls.isNotEmpty
@@ -118,7 +120,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage>{
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
-                  'Gioi thieu',
+                  t.provinceIntroTitle,
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
@@ -140,7 +142,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage>{
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        desc.isEmpty ? 'Chua co mo ta.' : desc,
+                        desc.isEmpty ? t.provinceNoDescription : desc,
                         maxLines: _expanded ? null : 4,
                         overflow: _expanded
                             ? TextOverflow.visible
@@ -153,7 +155,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage>{
                           child: TextButton(
                             onPressed: () =>
                                 setState(() => _expanded = !_expanded),
-                            child: Text(_expanded ? 'Thu gon' : 'Xem them'),
+                            child: Text(_expanded ? t.commonCollapse : t.commonSeeMore),
                           ),
                         ),
                     ],
@@ -164,7 +166,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage>{
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
-                  'Dac san tieu bieu',
+                  t.provinceSpecialtiesTitle,
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
@@ -183,16 +185,16 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage>{
                     );
                   }
                   if (dishSnap.hasError) {
-                    return const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: Text('Khong the tai mon an.'),
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(t.provinceDishesLoadError),
                     );
                   }
                   final dishes = dishSnap.data ?? [];
                   if (dishes.isEmpty) {
-                    return const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: Text('Chua co mon an cho tinh nay.'),
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(t.provinceNoDishes),
                     );
                   }
                   return SizedBox(

@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../controller/community/post_like_controller.dart';
 import '../../models/community/community_post.dart';
@@ -82,9 +83,10 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
             builder: (context, snapshot) {
               final items = snapshot.data ?? const <ProvinceModel>[];
               if (items.isEmpty) {
-                return const SizedBox(
+                final t = AppLocalizations.of(context)!;
+                return SizedBox(
                   height: 200,
-                  child: Center(child: Text('Khong co danh sach tinh.')),
+                  child: Center(child: Text(t.communityProvinceListEmpty)),
                 );
               }
               return SizedBox(
@@ -145,6 +147,7 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final bg = isDark ? const Color(0xFF0F1115) : const Color(0xFFF8FAFC);
@@ -161,7 +164,7 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
           elevation: 0,
           scrolledUnderElevation: 0,
           title: Text(
-            'Cong dong',
+            t.communityTitle,
             style: TextStyle(fontWeight: FontWeight.w700, color: titleColor),
           ),
           actions: [
@@ -174,22 +177,22 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
             preferredSize: const Size.fromHeight(48),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: TabBar(
-                isScrollable: true,
-                labelColor: isDark ? Colors.white : const Color(0xFF0F172A),
-                unselectedLabelColor:
-                    isDark ? Colors.white60 : const Color(0xFF94A3B8),
-                indicatorColor: const Color(0xFFF97316),
-                tabs: const [
-                  Tab(text: 'Moi nhat'),
-                  Tab(text: 'Noi bat'),
-                  Tab(text: 'Gan ban'),
-                  Tab(text: 'Theo tinh'),
-                ],
+                child: TabBar(
+                  isScrollable: true,
+                  labelColor: isDark ? Colors.white : const Color(0xFF0F172A),
+                  unselectedLabelColor:
+                      isDark ? Colors.white60 : const Color(0xFF94A3B8),
+                  indicatorColor: const Color(0xFFF97316),
+                  tabs: [
+                    Tab(text: t.communityTabNewest),
+                    Tab(text: t.communityTabTrending),
+                    Tab(text: t.communityTabNear),
+                    Tab(text: t.communityTabProvince),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
         body: TabBarView(
           children: [
             _buildNewestTab(),
@@ -202,9 +205,9 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
           backgroundColor: const Color(0xFFF97316),
           onPressed: _openCreatePost,
           icon: const Icon(Icons.edit_rounded, size: 22),
-          label: const Text(
-            'Dang bai',
-            style: TextStyle(fontWeight: FontWeight.w700),
+          label: Text(
+            t.communityPostButton,
+            style: const TextStyle(fontWeight: FontWeight.w700),
           ),
         ),
       ),
@@ -212,6 +215,7 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
   }
 
   Widget _buildNewestTab() {
+    final t = AppLocalizations.of(context)!;
     return StreamBuilder<List<CommunityPost>>(
       stream: _service.watchLatestPosts(limit: 50),
       builder: (context, snapshot) {
@@ -219,15 +223,16 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
           return const _FeedSkeleton();
         }
         if (snapshot.hasError) {
-          return _buildEmpty('Khong the tai bai viet.');
+          return _buildEmpty(t.communityLoadError);
         }
         final posts = snapshot.data ?? const <CommunityPost>[];
-        return _buildPostsList(posts, emptyText: 'Chua co bai viet nao.');
+        return _buildPostsList(posts, emptyText: t.communityEmptyNewest);
       },
     );
   }
 
   Widget _buildTrendingTab() {
+    final t = AppLocalizations.of(context)!;
     return StreamBuilder<List<CommunityPost>>(
       stream: _service.watchLatestPosts(limit: 120),
       builder: (context, snapshot) {
@@ -235,29 +240,34 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
           return const _FeedSkeleton();
         }
         if (snapshot.hasError) {
-          return _buildEmpty('Khong the tai bai viet.');
+          return _buildEmpty(t.communityLoadError);
         }
         final raw = snapshot.data ?? const <CommunityPost>[];
         final posts = [...raw];
         // Sap xep theo diem noi bat (like + comment)
         posts.sort((a, b) => _engagementScore(b).compareTo(_engagementScore(a)));
-        return _buildPostsList(posts, emptyText: 'Chua co bai viet noi bat.');
+        return _buildPostsList(posts, emptyText: t.communityEmptyTrending);
       },
     );
   }
 
   Widget _buildNearYouTab() {
+    final t = AppLocalizations.of(context)!;
     if (_userLat == null || _userLng == null) {
       return Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Bat GPS de tim bai viet gan ban.'),
+            Text(t.communityEnableGps),
             const SizedBox(height: 8),
             OutlinedButton(
               // Thu xin vi tri lai
               onPressed: _locLoading ? null : _resolveLocation,
-              child: Text(_locLoading ? 'Dang tai...' : 'Mo GPS'),
+              child: Text(
+                _locLoading
+                    ? t.communityGpsLoading
+                    : t.communityEnableGpsButton,
+              ),
             ),
           ],
         ),
@@ -271,7 +281,7 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
           return const _FeedSkeleton();
         }
         if (snapshot.hasError) {
-          return _buildEmpty('Khong the tai bai viet.');
+          return _buildEmpty(t.communityLoadError);
         }
         final raw = snapshot.data ?? const <CommunityPost>[];
         // Loc bai trong ban kinh 10km
@@ -281,12 +291,13 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
           final d = _distanceKm(_userLat!, _userLng!, place.lat, place.lng);
           return d <= 10;
         }).toList();
-        return _buildPostsList(posts, emptyText: 'Khong co bai viet gan ban.');
+        return _buildPostsList(posts, emptyText: t.communityEmptyNear);
       },
     );
   }
 
   Widget _buildProvinceTab() {
+    final t = AppLocalizations.of(context)!;
     final selected = _selectedProvince;
     return Column(
       children: [
@@ -296,14 +307,14 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
             children: [
               Expanded(
                 child: Text(
-                  selected == null ? 'Chon tinh' : selected.name,
+                  selected == null ? t.communitySelectProvince : selected.name,
                   style: const TextStyle(fontWeight: FontWeight.w700),
                 ),
               ),
               TextButton(
                 // Chon tinh
                 onPressed: _pickProvince,
-                child: const Text('Doi tinh'),
+                child: Text(t.communityChangeProvince),
               ),
             ],
           ),
@@ -311,7 +322,7 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
         const Divider(height: 1),
         Expanded(
           child: selected == null
-              ? _buildEmpty('Chon tinh de xem bai viet.')
+              ? _buildEmpty(t.communitySelectProvinceHint)
               : StreamBuilder<List<CommunityPost>>(
                   stream: _service.watchLatestPosts(limit: 150),
                   builder: (context, snapshot) {
@@ -319,14 +330,14 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
                       return const _FeedSkeleton();
                     }
                     if (snapshot.hasError) {
-                      return _buildEmpty('Khong the tai bai viet.');
+                      return _buildEmpty(t.communityLoadError);
                     }
                     final raw = snapshot.data ?? const <CommunityPost>[];
                     final posts =
                         raw.where((p) => _matchProvince(p, selected)).toList();
                     return _buildPostsList(
                       posts,
-                      emptyText: 'Khong co bai viet theo tinh.',
+                      emptyText: t.communityEmptyProvince,
                     );
                   },
                 ),
@@ -424,6 +435,7 @@ class _PostCardState extends State<_PostCard> {
   final _postService = CommunityService();
 
   Future<void> _openPostMenu(BuildContext context, CommunityPost post) async {
+    final t = AppLocalizations.of(context)!;
     // Menu 3 cham: sua / xoa
     final action = await showModalBottomSheet<String>(
       context: context,
@@ -434,12 +446,12 @@ class _PostCardState extends State<_PostCard> {
             children: [
               ListTile(
                 leading: const Icon(Icons.edit_outlined),
-                title: const Text('Sua bai viet'),
+                title: Text(t.commonEdit),
                 onTap: () => Navigator.pop(ctx, 'edit'),
               ),
               ListTile(
                 leading: const Icon(Icons.delete_outline, color: Colors.red),
-                title: const Text('Xoa bai viet'),
+                title: Text(t.commonDelete),
                 onTap: () => Navigator.pop(ctx, 'delete'),
               ),
             ],
@@ -466,21 +478,22 @@ class _PostCardState extends State<_PostCard> {
   }
 
   Future<bool?> _confirmDelete(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     // Xac nhan truoc khi xoa mem
     return showDialog<bool>(
       context: context,
       builder: (ctx) {
         return AlertDialog(
-          title: const Text('Xoa bai viet'),
-          content: const Text('Ban chac chan muon xoa bai viet nay?'),
+          title: Text(t.communityDeleteTitle),
+          content: Text(t.communityDeleteConfirm),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Huy'),
+              child: Text(t.commonCancel),
             ),
             ElevatedButton(
               onPressed: () => Navigator.pop(ctx, true),
-              child: const Text('Xoa'),
+              child: Text(t.commonDelete),
             ),
           ],
         );
@@ -516,6 +529,7 @@ class _PostCardState extends State<_PostCard> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final post = widget.post;
     final media = post.media;
     final place = post.place;
@@ -587,7 +601,7 @@ class _PostCardState extends State<_PostCard> {
                     Text(
                       post.authorName.isNotEmpty
                           ? post.authorName
-                          : 'FoodG User',
+                          : t.commonUserFallback,
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 13,
@@ -595,7 +609,7 @@ class _PostCardState extends State<_PostCard> {
                       ),
                     ),
                     Text(
-                      _formatTime(post.createdAt),
+                      _formatTime(post.createdAt, t),
                       style: TextStyle(
                         color: timeColor,
                         fontSize: 11,
@@ -634,7 +648,7 @@ class _PostCardState extends State<_PostCard> {
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
                 child: Text(
-                  _expanded ? 'Thu gon' : 'Xem them',
+                  _expanded ? t.commonCollapse : t.commonSeeMore,
                   style: const TextStyle(fontWeight: FontWeight.w700),
                 ),
               ),
@@ -655,7 +669,7 @@ class _PostCardState extends State<_PostCard> {
             children: [
               _ActionButton(
                 icon: isLiked ? Icons.favorite : Icons.favorite_border,
-                label: 'Thich',
+                label: t.actionLike,
                 count: post.likeCount,
                 color: isLiked ? const Color(0xFFEF4444) : actionColor,
                 onTap: () {
@@ -666,7 +680,7 @@ class _PostCardState extends State<_PostCard> {
               const SizedBox(width: 16),
               _ActionButton(
                 icon: Icons.chat_bubble_outline,
-                label: 'Binh luan',
+                label: t.actionComment,
                 count: post.commentCount,
                 color: actionColor,
                 onTap: () {
@@ -1097,17 +1111,18 @@ class _FeedSkeleton extends StatelessWidget {
   }
 }
 
-String _formatTime(Timestamp? ts) {
-  if (ts == null) return 'vua xong';
+String _formatTime(Timestamp? ts, AppLocalizations t) {
+  if (ts == null) return t.timeJustNow;
   final now = DateTime.now();
   final dt = ts.toDate();
   final diff = now.difference(dt);
 
-  if (diff.inMinutes < 1) return 'vua xong';
-  if (diff.inMinutes < 60) return '${diff.inMinutes} phut truoc';
-  if (diff.inHours < 24) return '${diff.inHours} gio truoc';
-  if (diff.inDays < 7) return '${diff.inDays} ngay truoc';
-  return '${dt.day}/${dt.month}/${dt.year}';
+  if (diff.inMinutes < 1) return t.timeJustNow;
+  if (diff.inMinutes < 60) return t.timeMinutesAgo(diff.inMinutes);
+  if (diff.inHours < 24) return t.timeHoursAgo(diff.inHours);
+  if (diff.inDays < 7) return t.timeDaysAgo(diff.inDays);
+  final dateText = '${dt.day}/${dt.month}/${dt.year}';
+  return t.timeOnDate(dateText);
 }
 
 Color _imageFallbackBg(BuildContext context) {

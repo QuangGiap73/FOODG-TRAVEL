@@ -1,5 +1,6 @@
 ﻿import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 
@@ -64,7 +65,9 @@ class _DishDetailPageState extends State<DishDetailPage> {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please login to save favorites.')),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.dishLoginToSave),
+        ),
       );
       return;
     }
@@ -72,9 +75,10 @@ class _DishDetailPageState extends State<DishDetailPage> {
   }
 
   String _buildNearbyQuery(DishModel dish) {
+    final t = AppLocalizations.of(context)!;
     final name = dish.name.trim();
-    if (name.isEmpty) return 'quan an';
-    return '$name quan an';
+    if (name.isEmpty) return t.homeNearbyQuery;
+    return '$name ${t.homeNearbyQuery}';
   }
 
   @override
@@ -131,8 +135,10 @@ class _DishDetailPageState extends State<DishDetailPage> {
                       onTap: () {
                         // TODO: share_plus => Share.share(...)
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Share (TODO)'),
+                          SnackBar(
+                            content: Text(
+                              AppLocalizations.of(context)!.dishShareTodo,
+                            ),
                           ),
                         );
                       },

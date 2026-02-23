@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../cloudinary_config.dart';
 import '../../services/cloudinary_service.dart';
@@ -29,11 +30,18 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
   String? _selectedGender;
   DateTime? _dateOfBirth;
 
-  static const Map<String, String> _genderLabels = {
-    'male': 'Nam',
-    'female': 'Nu',
-    'other': 'Khac',
-    'unknown': 'Khong xac dinh',
+  static const Set<String> _genderKeys = {
+    'male',
+    'female',
+    'other',
+    'unknown',
+  };
+
+  Map<String, String> _genderLabels(AppLocalizations t) => {
+    'male': t.genderMale,
+    'female': t.genderFemale,
+    'other': t.genderOther,
+    'unknown': t.genderUnknown,
   };
 
   @override
@@ -57,7 +65,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
     _avatarUrl = profile?.photoUrl ?? user.photoURL;
     final storedGender = profile?.gender;
     _selectedGender =
-        _genderLabels.containsKey(storedGender) ? storedGender : null;
+        _genderKeys.contains(storedGender) ? storedGender : null;
     _dateOfBirth = profile?.dateOfBirth;
     _dobController.text = _formatDate(_dateOfBirth);
 
@@ -96,8 +104,9 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
       }
     } catch (e) {
       if (mounted) {
+        final t = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Upload failed: $e')),
+          SnackBar(content: Text(t.profileAvatarUploadFailed)),
         );
       }
     } finally {
@@ -172,11 +181,12 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final photoUrl = _avatarUrl ?? FirebaseAuth.instance.currentUser?.photoURL;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Chinh sua thong tin'),
+        title: Text(t.profileEditTitle),
         actions: [
           TextButton(
             onPressed: _isSaving || _isLoading ? null : _saveProfile,
@@ -186,7 +196,7 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                     height: 18,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
-                : const Text('Luu'),
+                : Text(t.save),
           ),
         ],
       ),
@@ -206,13 +216,13 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                     const SizedBox(height: 20),
                     TextFormField(
                       controller: _nameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Nickname',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: t.profileNameLabel,
+                        border: const OutlineInputBorder(),
                       ),
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return 'Vui long nhap ten';
+                          return t.profileNameRequired;
                         }
                         return null;
                       },
@@ -220,12 +230,12 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                     const SizedBox(height: 16),
                     DropdownButtonFormField<String>(
                       value: _selectedGender,
-                      decoration: const InputDecoration(
-                        labelText: 'Gioi tinh',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: t.profileGenderLabel,
+                        border: const OutlineInputBorder(),
                       ),
-                      hint: const Text('Chon gioi tinh'),
-                      items: _genderLabels.entries
+                      hint: Text(t.profileGenderHint),
+                      items: _genderLabels(t).entries
                           .map(
                             (entry) => DropdownMenuItem(
                               value: entry.key,
@@ -241,10 +251,10 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                     TextFormField(
                       controller: _dobController,
                       readOnly: true,
-                      decoration: const InputDecoration(
-                        labelText: 'Ngay sinh',
-                        border: OutlineInputBorder(),
-                        suffixIcon: Icon(Icons.calendar_today),
+                      decoration: InputDecoration(
+                        labelText: t.profileDobLabel,
+                        border: const OutlineInputBorder(),
+                        suffixIcon: const Icon(Icons.calendar_today),
                       ),
                       onTap: () {
                         FocusScope.of(context).requestFocus(FocusNode());
@@ -254,18 +264,18 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _phoneController,
-                      decoration: const InputDecoration(
-                        labelText: 'So dien thoai',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: t.profilePhoneLabel,
+                        border: const OutlineInputBorder(),
                       ),
                       keyboardType: TextInputType.phone,
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _emailController,
-                      decoration: const InputDecoration(
-                        labelText: 'Email',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: t.profileEmailLabel,
+                        border: const OutlineInputBorder(),
                       ),
                       readOnly: true,
                     ),
@@ -290,6 +300,7 @@ class _AvatarRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return ListTile(
       contentPadding: EdgeInsets.zero,
       leading: CircleAvatar(
@@ -297,7 +308,7 @@ class _AvatarRow extends StatelessWidget {
         backgroundImage: photoUrl != null ? NetworkImage(photoUrl!) : null,
         child: photoUrl == null ? const Icon(Icons.person) : null,
       ),
-      title: const Text('Hinh dai dien'),
+      title: Text(t.profileAvatarTitle),
       trailing: isUploading
           ? const SizedBox(
               width: 18,

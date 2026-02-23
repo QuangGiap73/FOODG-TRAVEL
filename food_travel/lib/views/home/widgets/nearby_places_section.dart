@@ -54,9 +54,7 @@ class NearbyPlacesSection extends StatelessWidget {
             if (status == NearbyHomeStatus.locationDisabled)
               _buildMessage(t.homeNearbyEnableLocation),
             if (status == NearbyHomeStatus.error)
-              _buildMessage(
-                controller.errorMessage ?? t.homeNearbyLoadError,
-              ),
+              _buildMessage(t.homeNearbyLoadError),
             if (status == NearbyHomeStatus.empty)
               _buildMessage(t.homeNearbyEmpty),
             if (status == NearbyHomeStatus.success && places.isNotEmpty)

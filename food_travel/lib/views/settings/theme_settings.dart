@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../controller/theme_controller.dart';
 
@@ -16,6 +17,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final controller = ThemeController();
 
     return AnimatedBuilder(
@@ -28,7 +30,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Che do giao dien'),
+            title: Text(t.themeSettingsTitle),
           ),
           body: Padding(
             padding: const EdgeInsets.all(16),
@@ -38,7 +40,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                   children: [
                     Expanded(
                       child: _ThemeCard(
-                        label: 'Sang',
+                        label: t.themeLight,
                         selected: !isAuto && isLightSelected,
                         onTap: isAuto ? null : () => _setMode(ThemeMode.light),
                         background: const LinearGradient(
@@ -51,7 +53,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: _ThemeCard(
-                        label: 'Toi',
+                        label: t.themeDark,
                         selected: !isAuto && isDarkSelected,
                         onTap: isAuto ? null : () => _setMode(ThemeMode.dark),
                         background: const LinearGradient(
@@ -72,12 +74,12 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                   ),
                   child: Row(
                     children: [
-                      const Expanded(
-                        child: Text(
-                          'Tu dong',
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        ),
+                    Expanded(
+                      child: Text(
+                        t.themeSystem,
+                        style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
+                    ),
                       Switch(
                         value: isAuto,
                         onChanged: (value) {

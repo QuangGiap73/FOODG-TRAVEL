@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../controller/map/map_search_controller.dart';
 import '../../controller/map/navigation_controller.dart';
@@ -160,6 +161,27 @@ class _MapPageState extends State<MapPage> {
     ),
   ];
 
+  List<String> _categoryLabels(AppLocalizations t) => [
+    t.mapCategoryRestaurants,
+    t.mapCategoryCafe,
+    t.mapCategorySnack,
+    t.mapCategoryFastFood,
+    t.mapCategorySeafood,
+  ];
+
+  String _styleLabel(AppLocalizations t, int index) {
+    switch (index) {
+      case 0:
+        return t.mapStyleNormal;
+      case 1:
+        return t.mapStyleHighlight;
+      case 2:
+        return t.mapStyleSatellite;
+      default:
+        return t.mapStyleNormal;
+    }
+  }
+
   void _onMapCreated(MapLibreMapController controller) {
     _controller = controller;
     // Tao layer ve route khi map duoc tao
@@ -203,7 +225,9 @@ class _MapPageState extends State<MapPage> {
       LatLng(place.lat, place.lng),
     );
     if (!ok) {
-      final msg = _navController.lastError ?? 'Khong lay duoc chi duong.';
+      if (!mounted) return;
+      final t = AppLocalizations.of(context)!;
+      final msg = _navigationErrorMessage(t);
       _showSnack(msg);
       _navController.clearError();
     }
@@ -351,6 +375,18 @@ class _MapPageState extends State<MapPage> {
     return label.isNotEmpty ? label : 'quan an';
   }
 
+  String _navigationErrorMessage(AppLocalizations t) {
+    final code = _navController.lastErrorCode;
+    switch (code) {
+      case NavigationController.errorPermissionDenied:
+        return t.mapPermissionDenied;
+      case NavigationController.errorRouteUnavailable:
+      case NavigationController.errorRouteFailed:
+      default:
+        return t.mapDirectionsError;
+    }
+  }
+
   void _showSnack(String message) {
     if (!mounted) return;
     _toastTimer?.cancel();
@@ -365,7 +401,8 @@ class _MapPageState extends State<MapPage> {
     if (_controller == null) return;
 
     if (!LocationPreferenceService.enabled.value) {
-      _showSnack('Please enable location.');
+      final t = AppLocalizations.of(context)!;
+      _showSnack(t.mapEnableLocation);
       return;
     }
 
@@ -373,7 +410,8 @@ class _MapPageState extends State<MapPage> {
     target ??= await _controller!.requestMyLocationLatLng();
 
     if (target == null) {
-      _showSnack('Location not available yet.');
+      final t = AppLocalizations.of(context)!;
+      _showSnack(t.mapLocationUnavailable);
       return;
     }
 
@@ -399,7 +437,8 @@ class _MapPageState extends State<MapPage> {
     if (!mounted) return;
 
     if (detail == null) {
-      _showSnack('Place not found.');
+      final t = AppLocalizations.of(context)!;
+      _showSnack(t.mapPlaceNotFound);
       return;
     }
 
@@ -449,6 +488,8 @@ class _MapPageState extends State<MapPage> {
   }
 
   Widget _buildCategoryChips() {
+    final t = AppLocalizations.of(context)!;
+    final labels = _categoryLabels(t);
     return SizedBox(
       height: 36,
       child: ListView.separated(
@@ -456,9 +497,8 @@ class _MapPageState extends State<MapPage> {
         itemCount: _categories.length,
         separatorBuilder: (_, __) => const SizedBox(width: 8),
         itemBuilder: (context, index) {
-          final cat = _categories[index];
           return ChoiceChip(
-            label: Text(cat.label),
+            label: Text(labels[index]),
             selected: index == _selectedCategory,
             onSelected: (selected) {
               if (!selected) return;
@@ -497,11 +537,12 @@ class _MapPageState extends State<MapPage> {
   Future<void> _findNearbyFood({String? queryOverride}) async {
     if (_nearbyLoading) return;
     setState(() => _nearbyLoading = true);
+    final t = AppLocalizations.of(context)!;
 
     try {
       // Yeu cau bat GPS truoc khi tim.
       if (!LocationPreferenceService.enabled.value) {
-        _showSnack('Hay bat GPS de tim quan.');
+        _showSnack(t.mapEnableGpsToSearch);
         return;
       }
 
@@ -511,7 +552,7 @@ class _MapPageState extends State<MapPage> {
       }
       if (permission == LocationPermission.denied ||
           permission == LocationPermission.deniedForever) {
-        _showSnack('Chua co quyen vi tri.');
+        _showSnack(t.mapPermissionDenied);
         return;
       }
 
@@ -527,7 +568,7 @@ class _MapPageState extends State<MapPage> {
       debugPrint('SerpAPI search at ${target.latitude},${target.longitude}');
       if (target.latitude.abs() < 0.0001 &&
           target.longitude.abs() < 0.0001) {
-        _showSnack('Vi tri GPS khong hop le.');
+        _showSnack(t.mapGpsInvalid);
         return;
       }
 
@@ -565,7 +606,7 @@ class _MapPageState extends State<MapPage> {
 
       if (!mounted) return;
       if (places.isEmpty) {
-        _showSnack('Khong tim thay quan gan day.');
+        _showSnack(t.mapNearbyNotFound);
         return;
       }
 
@@ -580,11 +621,11 @@ class _MapPageState extends State<MapPage> {
         await _nearbyLayer?.showPlaces(_nearbyPlaces, animate: true);
       }
     } on TimeoutException {
-      _showSnack('Qua thoi gian lay vi tri.');
+      _showSnack(t.mapLocationTimeout);
     } catch (e, st) {
       debugPrint('Loi tim quan: $e');
       debugPrint('$st');
-      _showSnack('Loi tim quan: $e');
+      _showSnack(t.mapSearchError(e.toString()));
     } finally {
       if (mounted) setState(() => _nearbyLoading = false);
     }
@@ -631,9 +672,10 @@ class _MapPageState extends State<MapPage> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Map'),
+        title: Text(t.navMap),
         actions: [
           PopupMenuButton<int>(
             icon: const Icon(Icons.layers_outlined),
@@ -643,7 +685,7 @@ class _MapPageState extends State<MapPage> {
                 _styles.length,
                 (index) => PopupMenuItem(
                   value: index,
-                  child: Text(_styles[index].label),
+                  child: Text(_styleLabel(t, index)),
                 ),
               );
             },

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../models/community/community_post.dart';
 import '../../services/community/community_service.dart';
@@ -31,20 +32,21 @@ class _CommunityMyPostsPageState extends State<CommunityMyPostsPage> {
   }
 
   Future<void> _deletePost(CommunityPost post) async {
+    final t = AppLocalizations.of(context)!;
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) {
         return AlertDialog(
-          title: const Text('Xoa bai viet'),
-          content: const Text('Ban chac chan muon xoa bai viet nay?'),
+          title: Text(t.communityDeleteTitle),
+          content: Text(t.communityDeleteConfirm),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Huy'),
+              child: Text(t.commonCancel),
             ),
             ElevatedButton(
               onPressed: () => Navigator.pop(ctx, true),
-              child: const Text('Xoa'),
+              child: Text(t.commonDelete),
             ),
           ],
         );
@@ -58,6 +60,7 @@ class _CommunityMyPostsPageState extends State<CommunityMyPostsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final bg = isDark ? const Color(0xFF0F1115) : const Color(0xFFF8FAFC);
@@ -69,13 +72,13 @@ class _CommunityMyPostsPageState extends State<CommunityMyPostsPage> {
       return Scaffold(
         backgroundColor: bg,
         appBar: AppBar(
-          title: const Text('Bai viet cua toi'),
+          title: Text(t.communityMyPostsTitle),
           backgroundColor: bg,
           elevation: 0,
         ),
         body: Center(
           child: Text(
-            'Vui long dang nhap de xem bai viet.',
+            t.communityMyPostsLoginRequired,
             style: TextStyle(color: textSecondary),
           ),
         ),
@@ -89,9 +92,9 @@ class _CommunityMyPostsPageState extends State<CommunityMyPostsPage> {
         surfaceTintColor: bg,
         elevation: 0,
         scrolledUnderElevation: 0,
-        title: const Text(
-          'Bai viet cua toi',
-          style: TextStyle(fontWeight: FontWeight.w700),
+        title: Text(
+          t.communityMyPostsTitle,
+          style: const TextStyle(fontWeight: FontWeight.w700),
         ),
         actions: [
           IconButton(
@@ -109,14 +112,20 @@ class _CommunityMyPostsPageState extends State<CommunityMyPostsPage> {
           }
           if (snapshot.hasError) {
             return Center(
-              child: Text('Khong the tai bai viet.', style: TextStyle(color: textSecondary)),
+              child: Text(
+                t.communityMyPostsLoadError,
+                style: TextStyle(color: textSecondary),
+              ),
             );
           }
 
           final posts = snapshot.data ?? const <CommunityPost>[];
           if (posts.isEmpty) {
             return Center(
-              child: Text('Ban chua co bai viet nao.', style: TextStyle(color: textSecondary)),
+              child: Text(
+                t.communityMyPostsEmpty,
+                style: TextStyle(color: textSecondary),
+              ),
             );
           }
 
@@ -158,6 +167,7 @@ class _MyPostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cardBg = isDark ? const Color(0xFF15181E) : Colors.white;
     final border = isDark ? const Color(0xFF232A33) : const Color(0xFFF1F5F9);
@@ -185,7 +195,7 @@ class _MyPostCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  post.text.isNotEmpty ? post.text : 'Bai viet khong co noi dung.',
+                  post.text.isNotEmpty ? post.text : t.communityPostEmptyContent,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -206,7 +216,7 @@ class _MyPostCard extends StatelessWidget {
                           children: [
                             ListTile(
                               leading: const Icon(Icons.edit_outlined),
-                              title: const Text('Sua bai viet'),
+                              title: Text(t.commonEdit),
                               onTap: () {
                                 Navigator.pop(ctx);
                                 onEdit();
@@ -214,7 +224,7 @@ class _MyPostCard extends StatelessWidget {
                             ),
                             ListTile(
                               leading: const Icon(Icons.delete_outline, color: Colors.red),
-                              title: const Text('Xoa bai viet'),
+                              title: Text(t.commonDelete),
                               onTap: () {
                                 Navigator.pop(ctx);
                                 onDelete();
@@ -277,7 +287,10 @@ class _MyPostCard extends StatelessWidget {
               const SizedBox(width: 4),
               Text('${post.commentCount}', style: TextStyle(color: textSecondary, fontSize: 12)),
               const Spacer(),
-              Text(_formatTime(post.createdAt), style: TextStyle(color: textSecondary, fontSize: 11)),
+              Text(
+                _formatTime(post.createdAt, t),
+                style: TextStyle(color: textSecondary, fontSize: 11),
+              ),
             ],
           ),
         ],
@@ -286,15 +299,16 @@ class _MyPostCard extends StatelessWidget {
   }
 }
 
-String _formatTime(Timestamp? ts) {
-  if (ts == null) return 'vua xong';
+String _formatTime(Timestamp? ts, AppLocalizations t) {
+  if (ts == null) return t.timeJustNow;
   final now = DateTime.now();
   final dt = ts.toDate();
   final diff = now.difference(dt);
 
-  if (diff.inMinutes < 1) return 'vua xong';
-  if (diff.inMinutes < 60) return '${diff.inMinutes} phut truoc';
-  if (diff.inHours < 24) return '${diff.inHours} gio truoc';
-  if (diff.inDays < 7) return '${diff.inDays} ngay truoc';
-  return '${dt.day}/${dt.month}/${dt.year}';
+  if (diff.inMinutes < 1) return t.timeJustNow;
+  if (diff.inMinutes < 60) return t.timeMinutesAgo(diff.inMinutes);
+  if (diff.inHours < 24) return t.timeHoursAgo(diff.inHours);
+  if (diff.inDays < 7) return t.timeDaysAgo(diff.inDays);
+  final dateText = '${dt.day}/${dt.month}/${dt.year}';
+  return t.timeOnDate(dateText);
 }

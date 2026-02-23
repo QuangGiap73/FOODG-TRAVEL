@@ -1,4 +1,5 @@
 ﻿import 'package:flutter/material.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 import '../../services/location_preference_service.dart';
 import '../../services/location_service.dart';
 
@@ -44,29 +45,31 @@ class _LocationSettingsPageState extends State<LocationSettingsPage> {
       await _prefs.setEnabled(true);
     } else {
       await _prefs.setEnabled(false);
+      final t = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(result.message ?? 'Location error.')),
+        SnackBar(content: Text(result.message ?? t.locationError)),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('Location')),
+      appBar: AppBar(title: Text(t.locationSettingsTitle)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          const Text(
-            'Bat/tat vi tri de hien thi tren ban do.',
-            style: TextStyle(fontSize: 14),
+          Text(
+            t.locationSettingsDescription,
+            style: const TextStyle(fontSize: 14),
           ),
           const SizedBox(height: 12),
           ValueListenableBuilder<bool>(
             valueListenable: LocationPreferenceService.enabled,
             builder: (context, enabled, _) {
               return SwitchListTile(
-                title: const Text('Bat vi tri'),
+                title: Text(t.locationEnable),
                 value: enabled,
                 onChanged: _onToggle,
               );
@@ -75,12 +78,12 @@ class _LocationSettingsPageState extends State<LocationSettingsPage> {
           const SizedBox(height: 12),
           ElevatedButton(
             onPressed: _locationService.openLocationSettings,
-            child: const Text('Mo cai dat GPS'),
+            child: Text(t.locationOpenSettings),
           ),
           const SizedBox(height: 8),
           ElevatedButton(
             onPressed: _locationService.openAppSettings,
-            child: const Text('Mo cai dat ung dung'),
+            child: Text(t.locationOpenAppSettings),
           ),
         ],
       ),

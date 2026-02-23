@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../../models/dish_model.dart';
 import '../../../router/route_names.dart';
 import '../../../services/favorite_service.dart';
 
-// Tab Mon an: hien thi danh sach mon yeu thich
+// Tab mon an: hien thi danh sach mon yeu thich
 class FavoriteDishesTab extends StatelessWidget {
   const FavoriteDishesTab({super.key, required this.uid});
 
@@ -12,6 +13,7 @@ class FavoriteDishesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return StreamBuilder<List<DishModel>>(
       stream: FavoriteService().watchFavoriteDishes(uid),
       builder: (context, snapshot) {
@@ -19,12 +21,12 @@ class FavoriteDishesTab extends StatelessWidget {
           return const LinearProgressIndicator();
         }
         if (snapshot.hasError) {
-          return const Center(child: Text('Khong the tai mon yeu thich.'));
+          return Center(child: Text(t.favoriteDishesLoadError));
         }
 
         final dishes = snapshot.data ?? [];
         if (dishes.isEmpty) {
-          return const Center(child: Text('Chua co mon yeu thich.'));
+          return Center(child: Text(t.favoriteDishesEmpty));
         }
 
         return GridView.builder(
@@ -70,20 +72,22 @@ class _DishCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final cardBg = isDark ? const Color(0xFF15181E) : Colors.white;
-    final borderColor = isDark ? const Color(0xFF262B33) : const Color(0xFFF1F5F9);
+    final borderColor =
+        isDark ? const Color(0xFF262B33) : const Color(0xFFF1F5F9);
     final textPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
     final textSecondary = isDark ? Colors.white70 : const Color(0xFF64748B);
     final imageUrl = dish.imageUrl.trim();
-    // Du lieu hien tai: province_code dang chua TEN TINH (vi du: "Lang Son")
+    // Du lieu hien tai: province_code dang chua TEN TINH
     final province = (dish.provinceName.trim().isNotEmpty
             ? dish.provinceName
             : dish.provinceCode)
         .trim();
-    final region = _formatRegion(dish.regionCode);
-    final provinceRegion = _formatProvinceRegion(province, region);
+    final region = _formatRegion(dish.regionCode, t);
+    final provinceRegion = _formatProvinceRegion(province, region, t);
     final tag = dish.tag.trim();
     final spicy = dish.spicyLevel;
 
@@ -109,7 +113,6 @@ class _DishCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Anh mon an
-              // Dung Expanded de anh co the co gian, tranh overflow khi text dai
               Expanded(
                 child: Stack(
                   fit: StackFit.expand,
@@ -145,7 +148,6 @@ class _DishCard extends StatelessWidget {
                         left: 10,
                         bottom: 10,
                         child: ConstrainedBox(
-                          // Gioi han chieu ngang de khong tran ra ngoai anh
                           constraints: const BoxConstraints(maxWidth: 165),
                           child: Container(
                             padding: const EdgeInsets.symmetric(
@@ -203,11 +205,16 @@ class _DishCard extends StatelessWidget {
                     // Muc do cay (spicyLevel)
                     Row(
                       children: [
-                        const Icon(Icons.local_fire_department,
-                            size: 12, color: Color(0xFFF97316)),
+                        const Icon(
+                          Icons.local_fire_department,
+                          size: 12,
+                          color: Color(0xFFF97316),
+                        ),
                         const SizedBox(width: 4),
                         Text(
-                          spicy == 0 ? 'Khong cay' : 'Cay cap $spicy',
+                          spicy == 0
+                              ? t.favoriteSpicyNone
+                              : t.favoriteSpicyLevel(spicy),
                           style: TextStyle(fontSize: 11, color: textSecondary),
                         ),
                       ],
@@ -246,46 +253,45 @@ class _GlassIconButton extends StatelessWidget {
   }
 }
 
-// Format hien thi: "Ten tinh • Mien"
-String _formatProvinceRegion(String province, String region) {
-  if (province.isEmpty && region.isEmpty) return 'Dang cap nhat';
+// Format hien thi: "Ten tinh - Mien"
+String _formatProvinceRegion(
+  String province,
+  String region,
+  AppLocalizations t,
+) {
+  if (province.isEmpty && region.isEmpty) return t.favoriteProvinceUpdating;
   if (province.isEmpty) return region;
   if (region.isEmpty) return province;
-  return '$province • $region';
+  return '$province - $region';
 }
 
 // Chuyen regionCode ve ten mien de doc
-String _formatRegion(String raw) {
+String _formatRegion(String raw, AppLocalizations t) {
   final code = raw.trim().toLowerCase();
   if (code.isEmpty) return '';
 
-  // Map 1 so gia tri pho bien
   switch (code) {
     case 'north':
     case 'mien_bac':
-    case 'miền bắc':
+    case 'mien bac':
     case 'bac':
-    case 'bắc':
     case 'mb':
-      return 'Miền Bắc';
+      return t.regionNorth;
     case 'central':
     case 'mien_trung':
-    case 'miền trung':
+    case 'mien trung':
     case 'trung':
     case 'trung bo':
-    case 'trung bộ':
     case 'mt':
-      return 'Miền Trung';
+      return t.regionCentral;
     case 'south':
     case 'mien_nam':
-    case 'miền nam':
+    case 'mien nam':
     case 'nam':
     case 'nam bo':
-    case 'nam bộ':
     case 'mn':
-      return 'Miền Nam';
+      return t.regionSouth;
     default:
-      // Neu data la tieng Viet san
       return raw;
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:provider/provider.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../../models/places_model.dart';
 import '../../../controller/restaurants/place_favorite_controller.dart';
@@ -59,14 +60,14 @@ class PlaceDetailSheet extends StatelessWidget {
     return '${(meters / 1000).toStringAsFixed(1)} km';
   }
 
-  String _statusLine() {
+  String _statusLine(AppLocalizations t) {
     final openNow = place.isOpen;
     final status = openNow == null
-        ? 'Dang cap nhat gio mo cua'
-        : (openNow ? 'Dang mo cua' : 'Dang dong cua');
+        ? t.placeOpenHoursUpdating
+        : (openNow ? t.mapOpenNow : t.mapClosed);
     final closing = place.closingTime?.trim();
     if (closing == null || closing.isEmpty) return status;
-    return '$status - Dong luc $closing';
+    return '$status - ${t.placeClosesAt(closing)}';
   }
 
   List<Widget> _buildStars(double rating) {
@@ -118,11 +119,13 @@ class PlaceDetailSheet extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(ThemeData theme) {
-    final name = place.name.trim().isEmpty ? 'Quan gan day' : place.name.trim();
+  Widget _buildHeader(ThemeData theme, AppLocalizations t) {
+    final name =
+        place.name.trim().isEmpty ? t.mapPlaceFallbackName : place.name.trim();
     final category = place.category?.trim();
-    final subTitle =
-        (category == null || category.isEmpty) ? 'Am thuc dia phuong' : category;
+    final subTitle = (category == null || category.isEmpty)
+        ? t.placeCategoryFallback
+        : category;
     final imageUrl = place.photoUrl.trim();
     final isDark = theme.brightness == Brightness.dark;
     final placeholderColors = isDark
@@ -237,6 +240,7 @@ class PlaceDetailSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final t = AppLocalizations.of(context)!;
     // Lang nghe favorite de UI tu cap nhat
     final fav = context.watch<PlaceFavoriteController>();
     final isFavorite = fav.isFavorite(place);
@@ -248,7 +252,7 @@ class PlaceDetailSheet extends StatelessWidget {
     final price = place.price?.trim();
     final phone = place.phone?.trim();
     final address =
-        place.address.trim().isEmpty ? 'Dang cap nhat dia chi' : place.address;
+        place.address.trim().isEmpty ? t.placeAddressUpdating : place.address;
     final openNow = place.isOpen;
     final hintColor = isDark
         ? theme.hintColor
@@ -295,7 +299,7 @@ class PlaceDetailSheet extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      _buildHeader(theme),
+                      _buildHeader(theme, t),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(16, 16, 16, 18),
                         child: Column(
@@ -323,7 +327,7 @@ class PlaceDetailSheet extends StatelessWidget {
                                   ],
                                 ] else
                                   Text(
-                                    'Chua co danh gia',
+                                    t.placeNoRating,
                                     style: theme.textTheme.bodySmall?.copyWith(
                                       color: hintColor,
                                     ),
@@ -340,7 +344,7 @@ class PlaceDetailSheet extends StatelessWidget {
                                         ),
                                       ),
                                       Text(
-                                        '/nguoi',
+                                        t.placePricePerPerson,
                                         style: theme.textTheme.bodySmall?.copyWith(
                                           color: hintColor,
                                         ),
@@ -356,7 +360,7 @@ class PlaceDetailSheet extends StatelessWidget {
                                 const SizedBox(width: 6),
                                 Expanded(
                                   child: Text(
-                                    _statusLine(),
+                                    _statusLine(t),
                                     style: theme.textTheme.bodySmall?.copyWith(
                                       color: statusColor,
                                       fontWeight: FontWeight.w600,
@@ -388,8 +392,8 @@ class PlaceDetailSheet extends StatelessWidget {
                                       const SizedBox(height: 4),
                                       Text(
                                         distance == null
-                                            ? 'Cach day dang cap nhat'
-                                            : 'Cach day $distance',
+                                            ? t.placeDistanceUpdating
+                                            : t.placeDistanceAway(distance),
                                         style: theme.textTheme.bodySmall?.copyWith(
                                           color: hintColor,
                                         ),
@@ -410,7 +414,7 @@ class PlaceDetailSheet extends StatelessWidget {
                                 const SizedBox(width: 8),
                                 Text(
                                   phone == null || phone.isEmpty
-                                      ? 'Chua co so dien thoai'
+                                      ? t.placeNoPhone
                                       : phone,
                                   style: theme.textTheme.bodyMedium,
                                 ),
@@ -425,9 +429,9 @@ class PlaceDetailSheet extends StatelessWidget {
                                     child: ElevatedButton.icon(
                                       onPressed: onDirections,
                                       icon: const Icon(Icons.navigation),
-                                      label: const Text(
-                                        'Chi duong',
-                                        style: TextStyle(
+                                      label: Text(
+                                        t.mapDirections,
+                                        style: const TextStyle(
                                           fontWeight: FontWeight.w700,
                                         ),
                                       ),

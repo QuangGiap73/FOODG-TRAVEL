@@ -1,5 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../../models/places_model.dart';
 import '../../map/map_page.dart';
@@ -191,12 +192,13 @@ class _QuickActionsState extends State<_QuickActions> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         _QuickAction(
           icon: Icons.call,
-          label: 'Goi dien',
+          label: t.placeCallAction,
           isActive: _selected == 0,
           onTap: () {
             _onSelect(0);
@@ -205,7 +207,7 @@ class _QuickActionsState extends State<_QuickActions> {
         ),
         _QuickAction(
           icon: Icons.navigation,
-          label: 'Chi duong',
+          label: t.mapDirections,
           isActive: _selected == 1,
           onTap: () {
             _onSelect(1);
@@ -219,13 +221,13 @@ class _QuickActionsState extends State<_QuickActions> {
         ),
         _QuickAction(
           icon: Icons.event,
-          label: 'Dat ban',
+          label: t.placeReserve,
           isActive: _selected == 2,
           onTap: () => _onSelect(2),
         ),
         _QuickAction(
           icon: Icons.group,
-          label: 'Moi ban',
+          label: t.placeInvite,
           isActive: _selected == 3,
           onTap: () => _onSelect(3),
         ),
@@ -288,9 +290,10 @@ class _QuickAction extends StatelessWidget {
 }
 
 void _showCallSheet(BuildContext context, String placeName, String phone) {
+  final t = AppLocalizations.of(context)!;
   if (phone.trim().isEmpty) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Quan chua co so dien')),
+      SnackBar(content: Text(t.placeNoPhone)),
     );
     return;
   }
@@ -332,7 +335,7 @@ void _showCallSheet(BuildContext context, String placeName, String phone) {
                 Expanded(
                   child: OutlinedButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text('Huy'),
+                    child: Text(t.commonCancel),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -348,7 +351,7 @@ void _showCallSheet(BuildContext context, String placeName, String phone) {
                       backgroundColor: const Color(0xFFFF6A00),
                       foregroundColor: Colors.white,
                     ),
-                    child: const Text('Goi ngay'),
+                    child: Text(t.placeCallNow),
                   ),
                 ),
               ],

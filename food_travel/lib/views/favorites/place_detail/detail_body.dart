@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../../models/places_model.dart';
 import '../../../services/map/serpapi_places_service.dart';
@@ -108,6 +109,7 @@ class _PlaceDetailBodyState extends State<PlaceDetailBody> {
   }
 
   Future<void> _showWriteReviewSheet(GoongNearbyPlace place) async {
+    final t = AppLocalizations.of(context)!;
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
       return;
@@ -128,18 +130,16 @@ class _PlaceDetailBodyState extends State<PlaceDetailBody> {
         context: context,
         builder: (dialogContext) {
           return AlertDialog(
-            title: const Text('Ban da danh gia'),
-            content: const Text(
-              'Ban da danh gia quan nay truoc do. Ban muon chinh sua danh gia khong?',
-            ),
+            title: Text(t.reviewAlreadyTitle),
+            content: Text(t.reviewAlreadyMessage),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(dialogContext, false),
-                child: const Text('Khong'),
+                child: Text(t.commonNo),
               ),
               ElevatedButton(
                 onPressed: () => Navigator.pop(dialogContext, true),
-                child: const Text('Co, chinh sua'),
+                child: Text(t.reviewEditConfirm),
               ),
             ],
           );
@@ -179,9 +179,9 @@ class _PlaceDetailBodyState extends State<PlaceDetailBody> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Text(
-                          'Viet danh gia',
-                          style: TextStyle(
+                        Text(
+                          t.reviewWriteTitle,
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
                           ),
@@ -206,9 +206,9 @@ class _PlaceDetailBodyState extends State<PlaceDetailBody> {
                           controller: commentCtrl,
                           minLines: 2,
                           maxLines: 4,
-                          decoration: const InputDecoration(
-                            hintText: 'Nhap nhan xet cua ban...',
-                            border: OutlineInputBorder(),
+                          decoration: InputDecoration(
+                            hintText: t.reviewHint,
+                            border: const OutlineInputBorder(),
                           ),
                         ),
                         const SizedBox(height: 12),
@@ -217,7 +217,7 @@ class _PlaceDetailBodyState extends State<PlaceDetailBody> {
                             Expanded(
                               child: OutlinedButton(
                                 onPressed: () => Navigator.pop(sheetContext),
-                                child: const Text('Huy'),
+                                child: Text(t.commonCancel),
                               ),
                             ),
                             const SizedBox(width: 12),
@@ -230,7 +230,7 @@ class _PlaceDetailBodyState extends State<PlaceDetailBody> {
                                   await _reviewService.upsertMyReview(
                                     place: place,
                                     userId: user.uid,
-                                    userName: user.displayName ?? 'Nguoi dung',
+                                    userName: user.displayName ?? t.commonUserFallback,
                                     userAvatar: user.photoURL ?? '',
                                     rating: rating,
                                     comment: comment,
@@ -245,7 +245,7 @@ class _PlaceDetailBodyState extends State<PlaceDetailBody> {
                                   backgroundColor: const Color(0xFFFF6A00),
                                   foregroundColor: Colors.white,
                                 ),
-                                child: const Text('Gui'),
+                                child: Text(t.commonSend),
                               ),
                             ),
                           ],
@@ -264,6 +264,7 @@ class _PlaceDetailBodyState extends State<PlaceDetailBody> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final textPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
@@ -277,10 +278,11 @@ class _PlaceDetailBodyState extends State<PlaceDetailBody> {
     final fav = context.watch<PlaceFavoriteController>(); // yeu thich mon ăn
     final isFavorive = fav.isFavorite(place);
 
-    final name = place.name.trim().isEmpty ? 'Quan an' : place.name.trim();
+    final name =
+        place.name.trim().isEmpty ? t.placeNameFallback : place.name.trim();
     final category = place.category?.trim() ?? '';
     final address = place.address.trim().isEmpty
-        ? 'Dang cap nhat dia chi'
+        ? t.placeAddressUpdating
         : place.address.trim();
     final district = place.district.trim();
     final rating = place.rating?.toStringAsFixed(1) ?? '';

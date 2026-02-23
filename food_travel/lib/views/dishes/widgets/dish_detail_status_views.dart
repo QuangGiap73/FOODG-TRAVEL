@@ -1,5 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 
+import 'package:food_travel/l10n/app_localizations.dart';
+
 class DishDetailLoadingView extends StatelessWidget {
   const DishDetailLoadingView();
 
@@ -27,7 +29,7 @@ class DishDetailErrorView extends StatelessWidget {
             const SizedBox(height: 12),
             ElevatedButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Quay lại'),
+              child: Text(AppLocalizations.of(context)!.commonBack),
             ),
           ],
         ),
@@ -41,10 +43,11 @@ class DishDetailNotFoundView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    final t = AppLocalizations.of(context)!;
+    return Center(
       child: Padding(
         padding: EdgeInsets.all(18),
-        child: Text('Món ăn không tồn tại hoặc đã bị xoá.'),
+        child: Text(t.dishNotFound),
       ),
     );
   }

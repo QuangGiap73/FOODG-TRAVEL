@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../views/auth/auth_gate.dart';
 import '../views/auth/login_screen.dart';
@@ -47,9 +48,12 @@ class AppRouter {
         final provinceId = settings.arguments as String?;
         if(provinceId == null || provinceId.isEmpty){
           return MaterialPageRoute(
-            builder: (_) => const Scaffold(
-              body:  Center(child: Text('Missing provinces id')),
-            ),
+            builder: (context) {
+              final t = AppLocalizations.of(context)!;
+              return Scaffold(
+                body: Center(child: Text(t.routeMissingProvinceId)),
+              );
+            },
           );
         }
         return MaterialPageRoute(
@@ -59,9 +63,12 @@ class AppRouter {
         final dishId = settings.arguments as String?;
         if (dishId == null || dishId.isEmpty) {
           return MaterialPageRoute(
-            builder: (_) => const Scaffold(
-              body: Center(child: Text('Missing dish id')),
-            ),
+            builder: (context) {
+              final t = AppLocalizations.of(context)!;
+              return Scaffold(
+                body: Center(child: Text(t.routeMissingDishId)),
+              );
+            },
           );
         }
         return MaterialPageRoute(
@@ -75,9 +82,12 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const NotificationsPage());
       default:
         return MaterialPageRoute(
-          builder: (_) => const Scaffold(
-            body: Center(child: Text('Route not found')),
-          ),
+          builder: (context) {
+            final t = AppLocalizations.of(context)!;
+            return Scaffold(
+              body: Center(child: Text(t.routeNotFound)),
+            );
+          },
         );
     }
   }

@@ -1,6 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 
 import 'place_detail_typography.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 class PlaceInfoSection extends StatelessWidget {
   const PlaceInfoSection({
@@ -36,7 +37,10 @@ class PlaceInfoSection extends StatelessWidget {
             children: [
               const Icon(Icons.info_outline, color: Color(0xFFFF6A00)),
               const SizedBox(width: 8),
-              Text('Thong tin quan', style: PlaceDetailTypography.sectionTitle(textPrimary)),
+              Text(
+                AppLocalizations.of(context)!.placeInfoTitle,
+                style: PlaceDetailTypography.sectionTitle(textPrimary),
+              ),
             ],
           ),
           const SizedBox(height: 12),
@@ -50,10 +54,16 @@ class PlaceInfoSection extends StatelessWidget {
             spacing: 8,
             runSpacing: 8,
             children: amenities.isEmpty
-                ? const [
-                    AmenityChip(text: 'May lanh'),
-                    AmenityChip(text: 'Chuyen khoan'),
-                    AmenityChip(text: 'Gui xe mien phi'),
+                ? [
+                    AmenityChip(
+                      text: AppLocalizations.of(context)!.amenityAirConditioner,
+                    ),
+                    AmenityChip(
+                      text: AppLocalizations.of(context)!.amenityBankTransfer,
+                    ),
+                    AmenityChip(
+                      text: AppLocalizations.of(context)!.amenityFreeParking,
+                    ),
                   ]
                 : amenities.map((e) => AmenityChip(text: e)).toList(),
           ),
@@ -98,7 +108,8 @@ class _HoursRowState extends State<HoursRow> {
   @override
   Widget build(BuildContext context) {
     final hours = widget.hours.map(_cleanHourText).where((e) => e.isNotEmpty).toList();
-    final compact = hours.isEmpty ? 'Dang cap nhat gio mo cua' : hours.first;
+    final t = AppLocalizations.of(context)!;
+    final compact = hours.isEmpty ? t.placeOpenHoursUpdating : hours.first;
     final canExpand = hours.length > 1;
 
     return Column(
@@ -109,9 +120,12 @@ class _HoursRowState extends State<HoursRow> {
           borderRadius: BorderRadius.circular(10),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Row(
-              children: [
-                Text('Gio mo cua', style: PlaceDetailTypography.caption(widget.textSecondary)),
+              child: Row(
+                children: [
+                  Text(
+                    t.placeOpenHoursLabel,
+                    style: PlaceDetailTypography.caption(widget.textSecondary),
+                  ),
                 const Spacer(),
                 Icon(
                   _expanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,

@@ -1,5 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../../models/places_model.dart';
 import 'place_detail_typography.dart';
@@ -51,10 +52,11 @@ class MustTrySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SectionHeader(title: 'Mon nen thu', actionText: 'Menu full'),
+        SectionHeader(title: t.placeMenuMustTry, actionText: t.placeMenuFull),
         SizedBox(
           height: 180,
           child: ListView.separated(
@@ -112,6 +114,7 @@ class MenuHighlightsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return FutureBuilder<List<PlaceMenuItem>>(
       future: _fetchMenuItems(),
       builder: (context, snapshot) {
@@ -120,11 +123,11 @@ class MenuHighlightsSection extends StatelessWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SectionHeader(title: 'Mon nen thu', actionText: 'Menu full'),
+              SectionHeader(title: t.placeMenuMustTry, actionText: t.placeMenuFull),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                 child: Text(
-                  'Dang cap nhat mon nen thu.',
+                  t.placeMenuUpdating,
                   style: PlaceDetailTypography.body(textSecondary),
                 ),
               ),

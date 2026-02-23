@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:provider/provider.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../../models/places_model.dart';
 import '../../../controller/restaurants/place_favorite_controller.dart';
@@ -37,11 +38,11 @@ class NearbyPlacesSheet extends StatelessWidget {
     return '${(meters / 1000).toStringAsFixed(1)} km';
   }
 
-  String? _formatEta(double? meters) {
+  String? _formatEta(double? meters, AppLocalizations t) {
     if (meters == null) return null;
     const metersPerMinute = 150.0;
     final minutes = (meters / metersPerMinute).round().clamp(1, 999);
-    return '~$minutes phut';
+    return t.mapEtaMinutes(minutes);
   }
 
   Widget _buildThumbnail(GoongNearbyPlace place, ThemeData theme) {
@@ -68,16 +69,16 @@ class NearbyPlacesSheet extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusBadge() {
+  Widget _buildStatusBadge(AppLocalizations t) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: Colors.green.shade600,
         borderRadius: BorderRadius.circular(10),
       ),
-      child: const Text(
-        'Mo cua',
-        style: TextStyle(
+      child: Text(
+        t.mapOpenNow,
+        style: const TextStyle(
           color: Colors.white,
           fontSize: 11,
           fontWeight: FontWeight.w700,
@@ -115,15 +116,19 @@ class NearbyPlacesSheet extends StatelessWidget {
   }
 
 
-  Widget _buildDirectionsButton(GoongNearbyPlace place, VoidCallback? onTap) {
+  Widget _buildDirectionsButton(
+    AppLocalizations t,
+    GoongNearbyPlace place,
+    VoidCallback? onTap,
+  ) {
     return SizedBox(
       height: 34,
       child: ElevatedButton.icon(
         onPressed: onTap,
         icon: const Icon(Icons.navigation_outlined, size: 16),
-        label: const Text(
-          'Chi duong',
-          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 12),
+        label: Text(
+          t.mapDirections,
+          style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12),
         ),
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.orange.shade700,
@@ -143,12 +148,13 @@ class NearbyPlacesSheet extends StatelessWidget {
     GoongNearbyPlace place, {
     required bool highlight,
   }) {
+    final t = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final meters = _distanceMeters(place);
     final distance = _formatDistance(meters);
-    final eta = _formatEta(meters);
+    final eta = _formatEta(meters, t);
     final address =
-        place.address.trim().isEmpty ? 'Dang cap nhat dia chi' : place.address;
+        place.address.trim().isEmpty ? t.placeAddressUpdating : place.address;
     final borderColor =
         highlight ? Colors.orange.shade400 : theme.dividerColor.withOpacity(0.3);
     final onDirectionsTap =
@@ -197,7 +203,7 @@ class NearbyPlacesSheet extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 8),
-                          _buildStatusBadge(),
+                          _buildStatusBadge(t),
                         ],
                       ),
                       const SizedBox(height: 6),
@@ -210,7 +216,7 @@ class NearbyPlacesSheet extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            'Chua co danh gia',
+                            t.placeNoRating,
                             style: theme.textTheme.bodySmall?.copyWith(
                               color: theme.hintColor,
                             ),
@@ -227,7 +233,7 @@ class NearbyPlacesSheet extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            distance ?? 'Dang cap nhat',
+                            distance ?? t.commonUpdating,
                             style: theme.textTheme.bodySmall?.copyWith(
                               color: theme.hintColor,
                             ),
@@ -265,7 +271,7 @@ class NearbyPlacesSheet extends StatelessWidget {
                 ),
                 _buildFavoriteChip(context, place),
                 const SizedBox(width: 8),
-                _buildDirectionsButton(place, onDirectionsTap),
+                _buildDirectionsButton(t, place, onDirectionsTap),
               ],
             ),
           ],
@@ -278,6 +284,7 @@ class NearbyPlacesSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     if (places.isEmpty) return const SizedBox.shrink();
     final theme = Theme.of(context);
+    final t = AppLocalizations.of(context)!;
 
     // Sheet truot len de hien thi danh sach quan.
     return DraggableScrollableSheet(
@@ -319,7 +326,7 @@ class NearbyPlacesSheet extends StatelessWidget {
                           const Icon(Icons.place_outlined, size: 18),
                           const SizedBox(width: 6),
                           Text(
-                            'Quan gan day (${places.length})',
+                            t.mapNearbyPlacesTitle(places.length),
                             style: theme.textTheme.titleSmall?.copyWith(
                               fontWeight: FontWeight.w700,
                             ),
@@ -340,7 +347,7 @@ class NearbyPlacesSheet extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            'Khoang cach',
+                            t.mapSortDistance,
                             style: theme.textTheme.labelSmall?.copyWith(
                               fontWeight: FontWeight.w600,
                             ),

@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../models/user_model.dart';
 import '../../services/auth_service.dart';
@@ -29,9 +30,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _authService = AuthService();
   final _userService = UserService();
 
+  String _mapRegisterError(AppLocalizations t, FirebaseAuthException e) {
+    switch (e.code) {
+      case 'email-already-in-use':
+        return t.authRegisterEmailInUse;
+      case 'weak-password':
+        return t.authPasswordTooWeak;
+      case 'invalid-email':
+        return t.authEmailInvalid;
+      default:
+        return t.authRegisterFailed;
+    }
+  }
+
   Future<void> _handleRegister() async {
     if (!_formKey.currentState!.validate()) return;
 
+    final t = AppLocalizations.of(context)!;
     final fullName = _nameController.text.trim();
     final email = _emailController.text.trim();
     final phone = _phoneController.text.trim();
@@ -40,7 +55,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     if (password != confirm) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Mật khẩu nhập lại không khớp')),
+        SnackBar(content: Text(t.authPasswordMismatch)),
       );
       return;
     }
@@ -48,7 +63,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() => _isLoading = true);
 
     try {
-      // Đăng ký Firebase Auth
       final UserCredential cred = await _authService.registerWithEmail(
         email: email,
         password: password,
@@ -56,10 +70,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       final user = cred.user;
       if (user == null) {
-        throw Exception('Không lấy được tài khoản vừa tạo');
+        throw Exception(t.authRegisterUserMissing);
       }
 
-      // Tạo model và lưu Firestore
       final userModel = UserModel(
         id: user.uid,
         fullName: fullName,
@@ -71,23 +84,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Đăng ký thành công')),
+        SnackBar(content: Text(t.authRegisterSuccess)),
       );
 
       Navigator.pushReplacementNamed(context, RouteNames.authGate);
     } on FirebaseAuthException catch (e) {
-      String message = 'Đăng ký thất bại';
-      if (e.code == 'email-already-in-use') {
-        message = 'Email đã được sử dụng';
-      } else if (e.code == 'weak-password') {
-        message = 'Mật khẩu quá yếu (tối thiểu 6 ký tự)';
-      } else if (e.code == 'invalid-email') {
-        message = 'Email không hợp lệ';
-      }
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+      final message = _mapRegisterError(t, e);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(message)));
     } catch (e) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Lỗi: $e')));
+          .showSnackBar(SnackBar(content: Text(t.authError(e.toString()))));
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -105,6 +112,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     const primaryStart = Color(0xFFFFB347);
     const primaryEnd = Color(0xFFFF8C00);
 
@@ -115,7 +123,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Ảnh minh họa
               Container(
                 height: 240,
                 width: double.infinity,
@@ -141,14 +148,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-              const Text(
-                'Create Account',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800),
+              Text(
+                t.authRegisterTitle,
+                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w800),
               ),
               const SizedBox(height: 10),
-              const Text(
-                'Join and explore tasty places around you.',
-                style: TextStyle(color: Colors.grey, height: 1.4),
+              Text(
+                t.authRegisterSubtitle,
+                style: const TextStyle(color: Colors.grey, height: 1.4),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
@@ -161,7 +168,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       TextFormField(
                         controller: _nameController,
                         decoration: InputDecoration(
-                          labelText: 'Full name',
+                          labelText: t.authFullNameLabel,
                           prefixIcon: const Icon(Icons.person_outline),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -169,7 +176,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
-                            return 'Vui lòng nhập họ tên';
+                            return t.authFullNameRequired;
                           }
                           return null;
                         },
@@ -178,7 +185,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       TextFormField(
                         controller: _emailController,
                         decoration: InputDecoration(
-                          labelText: 'Email',
+                          labelText: t.authEmailLabel,
                           prefixIcon: const Icon(Icons.email_outlined),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -187,10 +194,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
-                            return 'Vui lòng nhập email';
+                            return t.authEmailRequired;
                           }
                           if (!value.contains('@')) {
-                            return 'Email không hợp lệ';
+                            return t.authEmailInvalid;
                           }
                           return null;
                         },
@@ -199,7 +206,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       TextFormField(
                         controller: _phoneController,
                         decoration: InputDecoration(
-                          labelText: 'Phone (optional)',
+                          labelText: t.authPhoneOptionalLabel,
                           prefixIcon: const Icon(Icons.phone_outlined),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -212,7 +219,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         controller: _passwordController,
                         obscureText: _obscurePassword,
                         decoration: InputDecoration(
-                          labelText: 'Password',
+                          labelText: t.authPasswordLabel,
                           prefixIcon: const Icon(Icons.lock_outline),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -232,10 +239,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
-                            return 'Vui lòng nhập mật khẩu';
+                            return t.authPasswordRequired;
                           }
                           if (value.trim().length < 6) {
-                            return 'Mật khẩu tối thiểu 6 ký tự';
+                            return t.authPasswordTooShort;
                           }
                           return null;
                         },
@@ -245,7 +252,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         controller: _confirmPasswordController,
                         obscureText: _obscureConfirmPassword,
                         decoration: InputDecoration(
-                          labelText: 'Confirm password',
+                          labelText: t.authConfirmPasswordLabel,
                           prefixIcon: const Icon(Icons.lock_outline),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -266,10 +273,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
-                            return 'Vui lòng nhập lại mật khẩu';
+                            return t.authConfirmPasswordRequired;
                           }
                           if (value.trim() != _passwordController.text.trim()) {
-                            return 'Mật khẩu nhập lại không khớp';
+                            return t.authPasswordMismatch;
                           }
                           return null;
                         },
@@ -302,9 +309,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       strokeWidth: 2,
                                     ),
                                   )
-                                : const Text(
-                                    'Sign up',
-                                    style: TextStyle(fontSize: 16),
+                                : Text(
+                                    t.authRegisterAction,
+                                    style: const TextStyle(fontSize: 16),
                                   ),
                           ),
                         ),
@@ -326,10 +333,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               RouteNames.login,
                             );
                           },
-                          child: const Text(
-                            'Log in',
-                            style:
-                                TextStyle(color: Colors.black87, fontSize: 16),
+                          child: Text(
+                            t.authLoginAction,
+                            style: const TextStyle(
+                              color: Colors.black87,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                       ),

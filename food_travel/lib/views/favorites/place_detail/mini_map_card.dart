@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
 import '../../../config/goong_secrets.dart';
@@ -48,6 +49,7 @@ class _PlaceMiniMapCardState extends State<PlaceMiniMapCard> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     if (widget.lat == 0 || widget.lng == 0) {
       return Container(
         height: 130,
@@ -56,8 +58,8 @@ class _PlaceMiniMapCardState extends State<PlaceMiniMapCard> {
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: widget.borderColor),
         ),
-        child: const Center(
-          child: Text('Khong co toa do'),
+        child: Center(
+          child: Text(t.mapNoCoordinates),
         ),
       );
     }
@@ -97,12 +99,15 @@ class _PlaceMiniMapCardState extends State<PlaceMiniMapCard> {
                   color: Colors.white.withOpacity(0.9),
                   borderRadius: BorderRadius.circular(999),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.place, size: 16, color: Color(0xFFFF6A00)),
-                    SizedBox(width: 6),
-                    Text('Mo ban do', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                    const Icon(Icons.place, size: 16, color: Color(0xFFFF6A00)),
+                    const SizedBox(width: 6),
+                    Text(
+                      t.mapOpenMap,
+                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                    ),
                   ],
                 ),
               ),

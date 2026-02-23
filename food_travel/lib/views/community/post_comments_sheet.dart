@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../models/community/community_comment.dart';
 import '../../models/community/community_post.dart';
@@ -52,9 +53,10 @@ class _PostCommentsSheetState extends State<_PostCommentsSheet> {
 
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
+      final t = AppLocalizations.of(context)!;
       // Can login de duoc binh luan
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Vui long dang nhap de binh luan.')),
+        SnackBar(content: Text(t.commentLoginRequired)),
       );
       return;
     }
@@ -64,8 +66,8 @@ class _PostCommentsSheetState extends State<_PostCommentsSheet> {
       final name = (user.displayName?.trim().isNotEmpty ?? false)
           ? user.displayName!.trim()
           : (user.email?.trim().isNotEmpty ?? false)
-              ? user.email!.trim()
-              : 'FoodG User';
+          ? user.email!.trim()
+          : AppLocalizations.of(context)!.commonUserFallback;
       final photo = user.photoURL ?? '';
 
       await _service.addComment(
@@ -94,6 +96,7 @@ class _PostCommentsSheetState extends State<_PostCommentsSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bg = isDark ? const Color(0xFF0F1115) : Colors.white;
     final textColor = isDark ? Colors.white : const Color(0xFF0F172A);
@@ -122,7 +125,7 @@ class _PostCommentsSheetState extends State<_PostCommentsSheet> {
                 children: [
                   Expanded(
                     child: Text(
-                      'Binh luan',
+                      t.commentTitle,
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 16,
@@ -132,7 +135,7 @@ class _PostCommentsSheetState extends State<_PostCommentsSheet> {
                   ),
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: Text('Dong', style: TextStyle(color: subText)),
+                    child: Text(t.commonClose, style: TextStyle(color: subText)),
                   ),
                 ],
               ),
@@ -148,7 +151,8 @@ class _PostCommentsSheetState extends State<_PostCommentsSheet> {
                   final comments = snapshot.data ?? const <CommunityComment>[];
                   if (comments.isEmpty) {
                     return Center(
-                      child: Text('Chua co binh luan.', style: TextStyle(color: subText)),
+                      child:
+                          Text(t.commentEmpty, style: TextStyle(color: subText)),
                     );
                   }
 
@@ -188,7 +192,7 @@ class _PostCommentsSheetState extends State<_PostCommentsSheet> {
                       maxLines: 3,
                       style: TextStyle(color: textColor),
                       decoration: InputDecoration(
-                        hintText: 'Viet binh luan...',
+                        hintText: t.commentHint,
                         hintStyle: TextStyle(color: subText),
                         filled: true,
                         fillColor:
@@ -239,6 +243,7 @@ class _CommentTile extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textColor = isDark ? Colors.white : const Color(0xFF0F172A);
     final subText = isDark ? Colors.white70 : const Color(0xFF64748B);
+    final t = AppLocalizations.of(context)!;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -264,7 +269,7 @@ class _CommentTile extends StatelessWidget {
                     child: Text(
                       comment.authorName.isNotEmpty
                           ? comment.authorName
-                          : 'FoodG User',
+                          : t.commonUserFallback,
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 12,
@@ -286,7 +291,7 @@ class _CommentTile extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                _formatTime(comment.createdAt),
+                _formatTime(comment.createdAt, t),
                 style: TextStyle(color: subText, fontSize: 10),
               ),
             ],
@@ -297,15 +302,16 @@ class _CommentTile extends StatelessWidget {
   }
 }
 
-String _formatTime(Timestamp? ts) {
-  if (ts == null) return 'vua xong';
+String _formatTime(Timestamp? ts, AppLocalizations t) {
+  if (ts == null) return t.timeJustNow;
   final now = DateTime.now();
   final dt = ts.toDate();
   final diff = now.difference(dt);
 
-  if (diff.inMinutes < 1) return 'vua xong';
-  if (diff.inMinutes < 60) return '${diff.inMinutes} phut truoc';
-  if (diff.inHours < 24) return '${diff.inHours} gio truoc';
-  if (diff.inDays < 7) return '${diff.inDays} ngay truoc';
-  return '${dt.day}/${dt.month}/${dt.year}';
+  if (diff.inMinutes < 1) return t.timeJustNow;
+  if (diff.inMinutes < 60) return t.timeMinutesAgo(diff.inMinutes);
+  if (diff.inHours < 24) return t.timeHoursAgo(diff.inHours);
+  if (diff.inDays < 7) return t.timeDaysAgo(diff.inDays);
+  final dateText = '${dt.day}/${dt.month}/${dt.year}';
+  return t.timeOnDate(dateText);
 }
