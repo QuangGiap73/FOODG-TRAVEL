@@ -14,6 +14,7 @@ class RouteNames {
   static const dishDetail = '/dish-detail';
   static const locationSettings = '/settings/location';
   static const myPosts = '/community/my-posts';
+  static const notifications = '/notifications';
 
 
 }

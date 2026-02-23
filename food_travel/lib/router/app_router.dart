@@ -15,6 +15,7 @@ import '../views/provinces/province_detail_page.dart';
 import '../views/dishes/dish_detail_page.dart';
 import '../views/settings/location_settings_page.dart';
 import '../views/community/community_my_posts_page.dart';
+import '../views/notifications/notifications_page.dart';
 import 'route_names.dart';
 
 class AppRouter {
@@ -70,6 +71,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const LocationSettingsPage());
       case RouteNames.myPosts:
         return MaterialPageRoute(builder: (_) => const CommunityMyPostsPage());
+      case RouteNames.notifications:
+        return MaterialPageRoute(builder: (_) => const NotificationsPage());
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(

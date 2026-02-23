@@ -13,6 +13,8 @@ import '../../models/places_model.dart';
 import '../../services/community/community_service.dart';
 import '../../services/food_service.dart';
 import '../../services/location_service.dart';
+import '../../services/notifications/notification_service.dart';
+import '../../router/route_names.dart';
 import 'community_create_post_page.dart';
 import 'post_comments_sheet.dart';
 import '../favorites/place_detail_page.dart';
@@ -163,9 +165,9 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
             style: TextStyle(fontWeight: FontWeight.w700, color: titleColor),
           ),
           actions: [
-          _ActionIcon(icon: Icons.search_rounded, onTap: () {}),
+            _ActionIcon(icon: Icons.search_rounded, onTap: () {}),
             const SizedBox(width: 6),
-            _ActionIcon(icon: Icons.notifications_none_rounded, onTap: () {}),
+            _buildBellAction(),
             const SizedBox(width: 10),
           ],
           bottom: PreferredSize(
@@ -352,6 +354,58 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
   Widget _buildEmpty(String text) {
     return Center(
       child: Text(text, style: const TextStyle(color: Colors.grey)),
+    );
+  }
+
+  Widget _buildBellAction() {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) {
+      return _ActionIcon(
+        icon: Icons.notifications_none_rounded,
+        onTap: () {
+          // Chua dang nhap thi van mo man thong bao
+          Navigator.pushNamed(context, RouteNames.notifications);
+        },
+      );
+    }
+
+    return StreamBuilder<int>(
+      stream: NotificationService().watchUnreadCount(uid),
+      builder: (context, snapshot) {
+        final count = snapshot.data ?? 0;
+        return Stack(
+          clipBehavior: Clip.none,
+          children: [
+            _ActionIcon(
+              icon: Icons.notifications_none_rounded,
+              onTap: () {
+                Navigator.pushNamed(context, RouteNames.notifications);
+              },
+            ),
+            if (count > 0)
+              Positioned(
+                right: -2,
+                top: -2,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: Colors.redAccent,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Text(
+                    count > 99 ? '99+' : count.toString(),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 }
@@ -1060,5 +1114,3 @@ Color _imageFallbackBg(BuildContext context) {
   final isDark = Theme.of(context).brightness == Brightness.dark;
   return isDark ? const Color(0xFF1F2630) : const Color(0xFFE2E8F0);
 }
-
-

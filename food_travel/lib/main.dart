@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:food_travel/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
@@ -13,11 +14,20 @@ import 'firebase_options.dart';
 import 'router/app_router.dart';
 import 'router/route_names.dart';
 
+// Handler khi push den luc app dang background/terminated
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  // Dang ky handler background
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   final themeController = ThemeController();
   await themeController.load();
   final localeController = LocaleController();

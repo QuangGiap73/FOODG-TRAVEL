@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../controller/favorite/favorite_controller.dart';
 import '../../controller/community/post_like_controller.dart';
 import '../../controller/restaurants/place_favorite_controller.dart';
+import '../../services/notifications/notification_service.dart';
 import '../home/home_screen.dart';
 import '../onboarding/welcome_screen.dart';
 
@@ -20,6 +21,8 @@ class AuthGate extends StatelessWidget {
         // Bind user cho like bai viet
         context.read<PostLikeController>().bindUser(snapshot.data?.uid);
         context.read<PlaceFavoriteController>().bindUser(snapshot.data?.uid);
+        // Bind user cho thong bao (luu FCM token)
+        NotificationService().bindUser(snapshot.data?.uid);
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
