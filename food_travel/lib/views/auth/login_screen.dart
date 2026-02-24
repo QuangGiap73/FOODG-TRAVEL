@@ -1,4 +1,6 @@
 ﻿import 'package:flutter/material.dart';
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:food_travel/l10n/app_localizations.dart';
 
@@ -88,14 +90,38 @@ class _LoginScreenState extends State<LoginScreen> {
 
     setState(() => _isLoading = true);
     try {
-      await _authService.loginWithEmail(email: email, password: password);
-      final user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        await _ensureUserProfile(user, email);
+      final cred = await _authService
+          .loginWithEmail(email: email, password: password)
+          .timeout(const Duration(seconds: 20));
+      final user = cred.user ?? FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        throw FirebaseAuthException(
+          code: 'user-missing',
+          message: 'No user after login.',
+        );
       }
 
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, RouteNames.authGate);
+
+      unawaited(
+        _ensureUserProfile(user, email)
+            .timeout(const Duration(seconds: 12))
+            .catchError((e, _) {
+          debugPrint('ensureUserProfile failed: $e');
+        }),
+      );
+    } on TimeoutException {
+      final t = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            t.authError(
+              'Dang nhap qua lau. Kiem tra mang/Google Play Services.',
+            ),
+          ),
+        ),
+      );
     } on FirebaseAuthException catch (e) {
       final t = AppLocalizations.of(context)!;
       final message = _mapLoginError(t, e);
@@ -114,14 +140,33 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _handleGoogleLogin() async {
     setState(() => _isLoading = true);
     try {
-      final cred = await _authService.signInWithGoogle();
+      final cred = await _authService
+          .signInWithGoogle()
+          .timeout(const Duration(seconds: 20));
       final user = cred.user;
       if (user != null) {
-        await _ensureUserProfile(user, user.email ?? "");
+        unawaited(
+          _ensureUserProfile(user, user.email ?? "")
+              .timeout(const Duration(seconds: 12))
+              .catchError((e, _) {
+            debugPrint('ensureUserProfile failed: $e');
+          }),
+        );
       }
 
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, RouteNames.authGate);
+    } on TimeoutException {
+      final t = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            t.authError(
+              'Dang nhap Google qua lau. Kiem tra mang/Google Play Services.',
+            ),
+          ),
+        ),
+      );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'sign_in_canceled') {
         return;

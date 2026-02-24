@@ -42,14 +42,33 @@ class HomeBottomNav extends StatelessWidget {
         ],
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildItem(0, Icons.home_outlined, t.navHome, inactive),
-          _buildItem(1, Icons.explore_outlined, t.navExplore, inactive),
-          _buildCenterMapButton(context, 2, inactive, borderColor),
-          _buildItem(3, Icons.favorite_border, t.navSaved, inactive),
-          _buildItem(4, Icons.person_outline, t.navProfile, inactive),
+          Expanded(child: _buildItem(0, Icons.home_outlined, t.navHome, inactive)),
+          Expanded(child: _buildItem(1, Icons.explore_outlined, t.navExplore, inactive)),
+          Expanded(child: _buildCenterMapButton(context, 2, inactive, borderColor)),
+          Expanded(child: _buildItem(3, Icons.favorite_border, t.navSaved, inactive)),
+          Expanded(child: _buildItem(4, Icons.person_outline, t.navProfile, inactive)),
         ],
+      ),
+    );
+  }
+
+  Widget _buildLabel(String label, Color color, FontWeight weight) {
+    return SizedBox(
+      height: 16,
+      child: Center(
+        child: Text(
+          label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: weight,
+            color: color,
+            height: 1.1,
+          ),
+        ),
       ),
     );
   }
@@ -63,29 +82,34 @@ class HomeBottomNav extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (isActive)
-            Container(
-              width: 6,
-              height: 6,
-              margin: const EdgeInsets.only(bottom: 4),
-              decoration: BoxDecoration(
-                color: activeColor,
-                shape: BoxShape.circle,
+          SizedBox(
+            height: 10,
+            child: Visibility(
+              visible: isActive,
+              maintainSize: true,
+              maintainAnimation: true,
+              maintainState: true,
+              child: Container(
+                width: 6,
+                height: 6,
+                margin: const EdgeInsets.only(bottom: 4),
+                decoration: BoxDecoration(
+                  color: activeColor,
+                  shape: BoxShape.circle,
+                ),
               ),
             ),
+          ),
           Icon(
             icon,
             size: 26,
             color: isActive ? activeColor : inactive,
           ),
           const SizedBox(height: 4),
-          Text(
+          _buildLabel(
             label,
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
-              color: isActive ? activeColor : inactive,
-            ),
+            isActive ? activeColor : inactive,
+            isActive ? FontWeight.w600 : FontWeight.w500,
           ),
         ],
       ),
@@ -99,7 +123,6 @@ class HomeBottomNav extends StatelessWidget {
     Color borderColor,
   ) {
     final bool isActive = currentIndex == index;
-    final t = AppLocalizations.of(context)!;
 
     return GestureDetector(
       onTap: () => onChanged(index),
@@ -134,14 +157,8 @@ class HomeBottomNav extends StatelessWidget {
               ),
             ),
           ),
-          Text(
-            t.navMap,
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w500,
-              color: isActive ? activeColor : inactive,
-            ),
-          ),
+          const SizedBox(height: 4),
+          const SizedBox(height: 16),
         ],
       ),
     );
