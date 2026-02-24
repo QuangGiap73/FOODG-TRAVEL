@@ -1,0 +1,101 @@
+<div class="row align-items-center mb-3">
+  <div class="col">
+    <h4 class="mb-1">Quan ly bai viet</h4>
+    <p class="text-muted mb-0">Kiem tra, an (xoa mem) hoac khoi phuc bai viet cong dong.</p>
+  </div>
+  <div class="col-auto d-flex flex-wrap align-items-center gap-2">
+    <input id="post-search" type="text" class="form-control form-control-sm" placeholder="Tim theo tac gia / noi dung / dia diem" style="width: 280px;">
+    <select id="post-status" class="form-control form-control-sm" style="width: 150px;">
+      <option value="all">Tat ca</option>
+      <option value="active">Dang hien</option>
+      <option value="deleted">Da an</option>
+    </select>
+    <button class="btn btn-primary btn-sm" id="btn-search-post">Tim</button>
+    <button class="btn btn-light btn-sm" id="btn-reset-post" title="Reset"><i class="bi-arrow-clockwise"></i></button>
+  </div>
+</div>
+
+<div class="align-items-center gap-3 d-none" id="bulk-actions-posts" style="margin-left:8px;">
+  <span id="selected-count-posts" class="text-muted mb-0" style="font-size: 14px; font-weight: 600;"></span>
+  <button id="btn-delete-selected-posts" class="btn btn-danger btn-sm" disabled>Xoa mem</button>
+  <button id="btn-restore-selected-posts" class="btn btn-success btn-sm" disabled>Khoi phuc</button>
+</div>
+
+<div class="card">
+  <div class="table-responsive">
+    <table id="post-table" class="table table-sm mb-0">
+      <thead class="table-header-orange">
+        <tr>
+          <th style="width:32px;"><input type="checkbox" id="select-all-posts"></th>
+          <th>Tac gia</th>
+          <th>Noi dung</th>
+          <th>Dia diem</th>
+          <th class="text-center">Media</th>
+          <th class="text-center">Like</th>
+          <th class="text-center">Comment</th>
+          <th class="text-center">Trang thai</th>
+          <th>Ngay tao</th>
+          <th class="text-center" style="width: 90px;">Tac vu</th>
+        </tr>
+      </thead>
+      <tbody id="post-table-body">
+        <tr><td colspan="10" class="text-center text-muted">Dang tai...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="d-flex align-items-center justify-content-between mt-3" id="post-pagination">
+  <div class="text-muted small" id="post-page-info"></div>
+  <nav aria-label="Post pages">
+    <ul class="pagination pagination-sm mb-0" id="post-page-list"></ul>
+  </nav>
+</div>
+
+<!-- Modal xem chi tiet bai viet -->
+<div class="modal fade" id="postDetailModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Chi tiet bai viet</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-md-7">
+            <div class="mb-2">
+              <div class="text-muted small">Tac gia</div>
+              <div id="post-detail-author" class="fw-semibold">-</div>
+              <div id="post-detail-uid" class="text-muted small">-</div>
+            </div>
+            <div class="mb-2">
+              <div class="text-muted small">Noi dung</div>
+              <div id="post-detail-text" class="text-body" style="white-space: pre-wrap;">-</div>
+            </div>
+            <div class="mb-2">
+              <div class="text-muted small">Dia diem</div>
+              <div id="post-detail-place" class="text-body">-</div>
+              <div id="post-detail-place-addr" class="text-muted small">-</div>
+            </div>
+            <div class="d-flex flex-wrap gap-2 mt-3">
+              <span id="post-detail-status" class="badge badge-soft-success">Active</span>
+              <span id="post-detail-like" class="badge badge-soft-primary">Like: 0</span>
+              <span id="post-detail-comment" class="badge badge-soft-info">Comment: 0</span>
+              <span id="post-detail-created" class="badge badge-soft-secondary">Created: -</span>
+            </div>
+          </div>
+          <div class="col-md-5">
+            <div class="text-muted small mb-2">Media</div>
+            <div id="post-detail-media" class="d-flex flex-wrap gap-2"></div>
+            <div id="post-detail-media-empty" class="text-muted small">Khong co anh</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Dong</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/manager_posts/manager_posts.js"></script>

@@ -8,6 +8,7 @@ const { db, checkFirebaseConnection } = require('./firebase/config');
 const managerUsesRouter = require('./routes/managerUses');
 const managerProvincesRouter = require('./routes/managerProvinces');
 const managerDishesRouter = require('./routes/managerDishes');
+const managerPostsRouter = require('./routes/managerPosts');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -62,6 +63,7 @@ app.get('/landing', (req, res) => {
 app.use('/manager-uses', managerUsesRouter);
 app.use('/manager-provinces', managerProvincesRouter);
 app.use('/manager-dishes', managerDishesRouter);
+app.use('/manager-posts', managerPostsRouter);
 app.get('/test-firebase', async (req, res) => {
   try {
     // Test writing a sample document to Firestore
@@ -113,3 +115,4 @@ app.listen(PORT, () => {
   console.log(`Admin demo dang chay tai http://localhost:${PORT}`);
   logStartupHealthCheck();
 });
+

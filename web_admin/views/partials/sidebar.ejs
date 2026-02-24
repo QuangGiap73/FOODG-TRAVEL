@@ -1,4 +1,4 @@
-﻿  <header id="header" class="navbar navbar-expand-lg navbar-fixed navbar-flush navbar-container navbar-bordered">
+  <header id="header" class="navbar navbar-expand-lg navbar-fixed navbar-flush navbar-container navbar-bordered">
     <div class="navbar-nav-wrap">
       <div class="navbar-brand-wrapper">
         <a class="navbar-brand" href="/" aria-label="Admin home">
@@ -75,9 +75,9 @@
         <div class="navbar-vertical-content">
           <ul class="navbar-nav navbar-nav-lg nav-tabs">
             <li class="navbar-vertical-aside-has-menu <%= (currentPath === '/' || currentPath === '/dashboard') ? 'active' : '' %>">
-              <a class="js-navbar-vertical-aside-menu-link nav-link" href="/" title="Trang chủ">
+              <a class="js-navbar-vertical-aside-menu-link nav-link" href="/" title="Trang ch?">
                 <i class="tio-home-vs-1-outlined nav-icon"></i>
-                <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">Trang chủ</span>
+                <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">Trang ch?</span>
               </a>
             </li>
             <li class="navbar-vertical-aside-has-menu <%= currentPath.startsWith('/manager-uses') ? 'active' : '' %>">
@@ -96,6 +96,12 @@
               <a class="js-navbar-vertical-aside-menu-link nav-link" href="/manager-dishes" title="Quan ly mon an">
                 <i class="bi-egg-fried nav-icon"></i>
                 <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">Quan ly mon an</span>
+              </a>
+            </li>
+            <li class="navbar-vertical-aside-has-menu <%= currentPath.startsWith('/manager-posts') ? 'active' : '' %>">
+              <a class="js-navbar-vertical-aside-menu-link nav-link" href="/manager-posts" title="Quan ly bai viet">
+                <i class="bi-chat-square-text nav-icon"></i>
+                <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">Quan ly bai viet</span>
               </a>
             </li>
             <li class="navbar-vertical-aside-has-menu <%= currentPath === '/login' ? 'active' : '' %>">
@@ -118,7 +124,7 @@
 
         <div class="navbar-vertical-footer text-center py-3">
           <small class="text-muted d-block mb-1">Giaodien demo</small>
-          <small class="text-muted d-block">Tuy chỉnh sidebar khi thêm trang mới.</small>
+          <small class="text-muted d-block">Tuy ch?nh sidebar khi th�m trang m?i.</small>
         </div>
       </div>
     </div>
@@ -147,3 +153,4 @@
     }
   });
 </script>
+
