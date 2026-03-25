@@ -277,6 +277,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get commonCancel => 'Huy';
 
   @override
+  String get commonConfirm => 'Xac nhan';
+
+  @override
   String get commonDelete => 'Xoa';
 
   @override
@@ -299,6 +302,18 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get commonUpdating => 'Dang cap nhat';
+
+  @override
+  String get noticeSuccessTitle => 'Thanh cong';
+
+  @override
+  String get noticePostCreated => 'Dang bai viet thanh cong.';
+
+  @override
+  String get noticePostUpdated => 'Chinh sua bai viet thanh cong.';
+
+  @override
+  String get noticePostDeleted => 'Da xoa bai viet.';
 
   @override
   String get commentTitle => 'Binh luan';

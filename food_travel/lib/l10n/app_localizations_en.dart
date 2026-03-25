@@ -278,6 +278,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commonCancel => 'Cancel';
 
   @override
+  String get commonConfirm => 'Confirm';
+
+  @override
   String get commonDelete => 'Delete';
 
   @override
@@ -300,6 +303,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonUpdating => 'Updating';
+
+  @override
+  String get noticeSuccessTitle => 'Success';
+
+  @override
+  String get noticePostCreated => 'Post published successfully.';
+
+  @override
+  String get noticePostUpdated => 'Post updated successfully.';
+
+  @override
+  String get noticePostDeleted => 'Post deleted.';
 
   @override
   String get commentTitle => 'Comments';

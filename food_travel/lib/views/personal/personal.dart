@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../controller/personal_controller.dart';
 import '../../router/route_names.dart';
 import '../../services/auth_service.dart';
+import '../../widgets/app_notice_dialog.dart';
 import 'edit_personal.dart';
 import 'package:food_travel/l10n/app_localizations.dart';
 
@@ -36,19 +37,18 @@ class _PersonalPageState extends State<PersonalPage> {
       context: context,
       builder: (dialogContext) {
         final t = AppLocalizations.of(dialogContext)!;
-        return AlertDialog(
-          title: Text(t.logoutTitle),
-          content: Text(t.logoutConfirm),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext, false),
-              child: Text(t.commonCancel),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.pop(dialogContext, true),
-              child: Text(t.logoutAction),
-            ),
-          ],
+        return AppNoticeDialog(
+          title: t.logoutTitle,
+          message: t.logoutConfirm,
+          confirmText: t.logoutAction,
+          cancelText: t.commonCancel,
+          onConfirm: () => Navigator.pop(dialogContext, true),
+          onCancel: () => Navigator.pop(dialogContext, false),
+          icon: const Icon(
+            Icons.logout_rounded,
+            color: Color(0xFFFF7A00),
+            size: 30,
+          ),
         );
       },
     );

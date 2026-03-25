@@ -596,6 +596,12 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get commonCancel;
 
+  /// No description provided for @commonConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get commonConfirm;
+
   /// No description provided for @commonDelete.
   ///
   /// In en, this message translates to:
@@ -643,6 +649,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Updating'**
   String get commonUpdating;
+
+  /// No description provided for @noticeSuccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Success'**
+  String get noticeSuccessTitle;
+
+  /// No description provided for @noticePostCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Post published successfully.'**
+  String get noticePostCreated;
+
+  /// No description provided for @noticePostUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Post updated successfully.'**
+  String get noticePostUpdated;
+
+  /// No description provided for @noticePostDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Post deleted.'**
+  String get noticePostDeleted;
 
   /// No description provided for @commentTitle.
   ///

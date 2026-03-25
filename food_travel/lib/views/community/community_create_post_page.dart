@@ -17,6 +17,9 @@ import '../../services/map/serpapi_places_service.dart';
 class CommunityCreatePostPage extends StatefulWidget {
   const CommunityCreatePostPage({super.key, this.post});
 
+  static const String resultCreated = 'created';
+  static const String resultUpdated = 'updated';
+
   final CommunityPost? post; // Neu co post -> che do sua
 
   @override
@@ -195,7 +198,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
         );
 
         if (!mounted) return;
-        Navigator.pop(context, true);
+        Navigator.pop(context, CommunityCreatePostPage.resultUpdated);
         return;
       }
 
@@ -225,7 +228,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
       );
 
       if (!mounted) return;
-      Navigator.pop(context, true);
+      Navigator.pop(context, CommunityCreatePostPage.resultCreated);
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

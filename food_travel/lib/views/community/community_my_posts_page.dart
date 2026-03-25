@@ -5,6 +5,7 @@ import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../models/community/community_post.dart';
 import '../../services/community/community_service.dart';
+import '../../widgets/app_notice_dialog.dart';
 import 'community_create_post_page.dart';
 
 class CommunityMyPostsPage extends StatefulWidget {
@@ -19,42 +20,94 @@ class _CommunityMyPostsPageState extends State<CommunityMyPostsPage> {
 
   Future<void> _openCreatePost() async {
     // Mo trang tao bai viet moi
-    await Navigator.of(context).push(
+    final result = await Navigator.of(context).push<String>(
       MaterialPageRoute(builder: (_) => const CommunityCreatePostPage()),
     );
+    if (!mounted) return;
+    final t = AppLocalizations.of(context)!;
+    if (result == CommunityCreatePostPage.resultCreated) {
+      await showAppNoticeDialog(
+        context,
+        title: t.noticeSuccessTitle,
+        message: t.noticePostCreated,
+        confirmText: t.commonConfirm,
+        icon: const Icon(
+          Icons.check_circle_rounded,
+          color: Color(0xFFFF7A00),
+          size: 30,
+        ),
+        barrierDismissible: false,
+      );
+    } else if (result == CommunityCreatePostPage.resultUpdated) {
+      await showAppNoticeDialog(
+        context,
+        title: t.noticeSuccessTitle,
+        message: t.noticePostUpdated,
+        confirmText: t.commonConfirm,
+        icon: const Icon(
+          Icons.check_circle_rounded,
+          color: Color(0xFFFF7A00),
+          size: 30,
+        ),
+        barrierDismissible: false,
+      );
+    }
   }
 
   Future<void> _openEdit(CommunityPost post) async {
     // Mo trang sua bai viet
-    await Navigator.of(context).push(
+    final result = await Navigator.of(context).push<String>(
       MaterialPageRoute(builder: (_) => CommunityCreatePostPage(post: post)),
     );
+    if (!mounted) return;
+    final t = AppLocalizations.of(context)!;
+    if (result == CommunityCreatePostPage.resultUpdated) {
+      await showAppNoticeDialog(
+        context,
+        title: t.noticeSuccessTitle,
+        message: t.noticePostUpdated,
+        confirmText: t.commonConfirm,
+        icon: const Icon(
+          Icons.check_circle_rounded,
+          color: Color(0xFFFF7A00),
+          size: 30,
+        ),
+        barrierDismissible: false,
+      );
+    }
   }
 
   Future<void> _deletePost(CommunityPost post) async {
     final t = AppLocalizations.of(context)!;
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (ctx) {
-        return AlertDialog(
-          title: Text(t.communityDeleteTitle),
-          content: Text(t.communityDeleteConfirm),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: Text(t.commonCancel),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              child: Text(t.commonDelete),
-            ),
-          ],
-        );
-      },
+    final ok = await showAppNoticeDialog(
+      context,
+      title: t.communityDeleteTitle,
+      message: t.communityDeleteConfirm,
+      confirmText: t.commonDelete,
+      cancelText: t.commonCancel,
+      icon: const Icon(
+        Icons.delete_rounded,
+        color: Color(0xFFFF7A00),
+        size: 30,
+      ),
+      barrierDismissible: false,
     );
     if (ok == true) {
       // Xoa mem (khong mat du lieu)
       await _service.softDeletePost(post.id);
+      if (!mounted) return;
+      await showAppNoticeDialog(
+        context,
+        title: t.noticeSuccessTitle,
+        message: t.noticePostDeleted,
+        confirmText: t.commonConfirm,
+        icon: const Icon(
+          Icons.delete_rounded,
+          color: Color(0xFFFF7A00),
+          size: 30,
+        ),
+        barrierDismissible: false,
+      );
     }
   }
 

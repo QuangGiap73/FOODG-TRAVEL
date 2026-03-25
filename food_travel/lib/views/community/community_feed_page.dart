@@ -16,6 +16,7 @@ import '../../services/food_service.dart';
 import '../../services/location_service.dart';
 import '../../services/notifications/notification_service.dart';
 import '../../router/route_names.dart';
+import '../../widgets/app_notice_dialog.dart';
 import 'community_create_post_page.dart';
 import 'post_comments_sheet.dart';
 import '../favorites/place_detail_page.dart';
@@ -38,11 +39,39 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
   ProvinceModel? _selectedProvince;
 
   Future<void> _openCreatePost() async {
-    final posted = await Navigator.of(context).push<bool>(
+    final result = await Navigator.of(context).push<String>(
       MaterialPageRoute(builder: (_) => const CommunityCreatePostPage()),
     );
 
-    if (posted == true) {
+    if (!mounted) return;
+    final t = AppLocalizations.of(context)!;
+    if (result == CommunityCreatePostPage.resultCreated) {
+      await showAppNoticeDialog(
+        context,
+        title: t.noticeSuccessTitle,
+        message: t.noticePostCreated,
+        confirmText: t.commonConfirm,
+        icon: const Icon(
+          Icons.check_circle_rounded,
+          color: Color(0xFFFF7A00),
+          size: 30,
+        ),
+        barrierDismissible: false,
+      );
+      setState(() {});
+    } else if (result == CommunityCreatePostPage.resultUpdated) {
+      await showAppNoticeDialog(
+        context,
+        title: t.noticeSuccessTitle,
+        message: t.noticePostUpdated,
+        confirmText: t.commonConfirm,
+        icon: const Icon(
+          Icons.check_circle_rounded,
+          color: Color(0xFFFF7A00),
+          size: 30,
+        ),
+        barrierDismissible: false,
+      );
       setState(() {});
     }
   }
@@ -201,14 +230,10 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
             _buildProvinceTab(),
           ],
         ),
-        floatingActionButton: FloatingActionButton.extended(
+        floatingActionButton: FloatingActionButton(
           backgroundColor: const Color(0xFFF97316),
           onPressed: _openCreatePost,
-          icon: const Icon(Icons.edit_rounded, size: 22),
-          label: Text(
-            t.communityPostButton,
-            style: const TextStyle(fontWeight: FontWeight.w700),
-          ),
+          child: const Icon(Icons.edit_rounded, size: 24),
         ),
       ),
     );
@@ -462,17 +487,45 @@ class _PostCardState extends State<_PostCard> {
 
     if (action == 'edit') {
       // Mo man sua (dung lai trang tao bai)
-      await Navigator.of(context).push(
+      final result = await Navigator.of(context).push<String>(
         MaterialPageRoute(
           builder: (_) => CommunityCreatePostPage(post: post),
         ),
       );
+      if (!mounted) return;
+      if (result == CommunityCreatePostPage.resultUpdated) {
+        await showAppNoticeDialog(
+          context,
+          title: t.noticeSuccessTitle,
+          message: t.noticePostUpdated,
+          confirmText: t.commonConfirm,
+          icon: const Icon(
+            Icons.check_circle_rounded,
+            color: Color(0xFFFF7A00),
+            size: 30,
+          ),
+          barrierDismissible: false,
+        );
+      }
     }
 
     if (action == 'delete') {
       final ok = await _confirmDelete(context);
       if (ok == true) {
         await _postService.softDeletePost(post.id);
+        if (!mounted) return;
+        await showAppNoticeDialog(
+          context,
+          title: t.noticeSuccessTitle,
+          message: t.noticePostDeleted,
+          confirmText: t.commonConfirm,
+          icon: const Icon(
+            Icons.delete_rounded,
+            color: Color(0xFFFF7A00),
+            size: 30,
+          ),
+          barrierDismissible: false,
+        );
       }
     }
   }
@@ -480,24 +533,18 @@ class _PostCardState extends State<_PostCard> {
   Future<bool?> _confirmDelete(BuildContext context) {
     final t = AppLocalizations.of(context)!;
     // Xac nhan truoc khi xoa mem
-    return showDialog<bool>(
-      context: context,
-      builder: (ctx) {
-        return AlertDialog(
-          title: Text(t.communityDeleteTitle),
-          content: Text(t.communityDeleteConfirm),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: Text(t.commonCancel),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              child: Text(t.commonDelete),
-            ),
-          ],
-        );
-      },
+    return showAppNoticeDialog(
+      context,
+      title: t.communityDeleteTitle,
+      message: t.communityDeleteConfirm,
+      confirmText: t.commonDelete,
+      cancelText: t.commonCancel,
+      icon: const Icon(
+        Icons.delete_rounded,
+        color: Color(0xFFFF7A00),
+        size: 30,
+      ),
+      barrierDismissible: false,
     );
   }
 
