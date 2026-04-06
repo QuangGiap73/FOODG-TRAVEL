@@ -6,6 +6,7 @@ import '../views/auth/login_screen.dart';
 import '../views/auth/register_screen.dart';
 import '../views/home/home_screen.dart';
 import '../views/onboarding/welcome_screen.dart';
+import '../views/onboarding/onboarding_carousel.dart';
 import '../views/personal/edit_personal.dart';
 import '../views/personal/personal.dart';
 import '../views/settings/change_password_page.dart';
@@ -26,6 +27,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const AuthGate());
       case RouteNames.welcome:
         return MaterialPageRoute(builder: (_) => const WelcomeScreen());
+      case RouteNames.onboarding:
+        return MaterialPageRoute(builder: (_) => const OnboardingCarousel());
       case RouteNames.login:
         return MaterialPageRoute(builder: (_) => const LoginScreen());
       case RouteNames.register:

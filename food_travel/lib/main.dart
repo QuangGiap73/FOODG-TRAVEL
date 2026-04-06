@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:food_travel/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'controller/favorite/favorite_controller.dart';
 import 'controller/community/post_like_controller.dart';
@@ -33,9 +34,12 @@ void main() async {
   await themeController.load();
   final localeController = LocaleController();
   await localeController.load();
+  final prefs = await SharedPreferences.getInstance();
+  final hasSeenOnboarding = prefs.getBool('onboarding_seen') ?? false;
   runApp(MyApp(
     themeController: themeController,
     localeController: localeController,
+    hasSeenOnboarding: hasSeenOnboarding,
     ));
 }
 
@@ -43,10 +47,12 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key, 
     required this.themeController,
     required this.localeController,
+    required this.hasSeenOnboarding,
     });
 
   final ThemeController themeController;
   final LocaleController localeController;
+  final bool hasSeenOnboarding;
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +86,9 @@ class MyApp extends StatelessWidget {
               Locale('en'),
             ],
             localizationsDelegates: AppLocalizations.localizationsDelegates,
-            initialRoute: RouteNames.authGate,
+            initialRoute: hasSeenOnboarding
+                ? RouteNames.authGate
+                : RouteNames.onboarding,
             onGenerateRoute: AppRouter.onGenerateRoute,
           ),
         );
