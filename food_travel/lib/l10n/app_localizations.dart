@@ -1772,6 +1772,18 @@ abstract class AppLocalizations {
   /// **'Continue with Google'**
   String get authContinueGoogle;
 
+  /// No description provided for @authContinueApple.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Apple'**
+  String get authContinueApple;
+
+  /// No description provided for @authForgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot password?'**
+  String get authForgotPassword;
+
   /// No description provided for @authNoAccount.
   ///
   /// In en, this message translates to:
@@ -1891,6 +1903,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Registration successful'**
   String get authRegisterSuccess;
+
+  /// No description provided for @authAgreePrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'I agree with '**
+  String get authAgreePrefix;
+
+  /// No description provided for @authTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Service'**
+  String get authTerms;
+
+  /// No description provided for @authAnd.
+  ///
+  /// In en, this message translates to:
+  /// **' and '**
+  String get authAnd;
+
+  /// No description provided for @authPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get authPrivacy;
+
+  /// No description provided for @authDot.
+  ///
+  /// In en, this message translates to:
+  /// **'.'**
+  String get authDot;
 
   /// No description provided for @authRegisterFailed.
   ///

@@ -304,37 +304,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Icon(Icons.g_mobiledata, color: Colors.red, size: 24),
-                                      SizedBox(width: 8),
-                                      Text('Google', style: TextStyle(color: Colors.black87)),
+                                    children: [
+                                      const Icon(Icons.g_mobiledata, color: Colors.red, size: 24),
+                                      const SizedBox(width: 8),
+                                      Text(t.authContinueGoogle, style: TextStyle(color: textPrimary)),
                                     ],
                                   ),
                                 ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: OutlinedButton(
-                                  onPressed: null,
-                                  style: OutlinedButton.styleFrom(
-                                    side: BorderSide(color: borderColor),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(vertical: 12),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Icon(Icons.apple, color: Colors.black, size: 22),
-                                      SizedBox(width: 8),
-                                      Text('Apple', style: TextStyle(color: Colors.black87)),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                            const SizedBox(width: 12),
+                          ],
+                        ),
                           const SizedBox(height: 14),
                           Row(
                               children: [
@@ -396,19 +376,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                 Align(
                                   alignment: Alignment.centerRight,
                                   child: TextButton(
-                                    onPressed: () {
-                                      // TODO: Forgot password flow
-                                    },
-                                    child: const Text(
-                                      'Quên mật khẩu?',
-                                      style: TextStyle(
-                                        color: Color(0xFFFF6A00),
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
+                                onPressed: () {
+                                  // TODO: Forgot password flow
+                                },
+                                child: Text(
+                                  t.authForgotPassword,
+                                  style: const TextStyle(
+                                    color: Color(0xFFFF6A00),
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
+                              ),
+                            ),
                               ],
                             ),
                           ),
@@ -453,9 +433,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           WidgetSpan(
                             child: GestureDetector(
                               onTap: () => Navigator.pushReplacementNamed(context, RouteNames.register),
-                              child: const Text(
-                                'Đăng ký',
-                                style: TextStyle(
+                              child: Text(
+                                t.authRegisterAction,
+                                style: const TextStyle(
                                   color: Color(0xFFFF6A00),
                                   fontWeight: FontWeight.w700,
                                 ),

@@ -890,6 +890,12 @@ class AppLocalizationsVi extends AppLocalizations {
   String get authContinueGoogle => 'Tiep tuc voi Google';
 
   @override
+  String get authContinueApple => 'Tiep tuc voi Apple';
+
+  @override
+  String get authForgotPassword => 'Quen mat khau?';
+
+  @override
   String get authNoAccount => 'Chua co tai khoan? ';
 
   @override
@@ -952,6 +958,21 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get authRegisterSuccess => 'Dang ky thanh cong';
+
+  @override
+  String get authAgreePrefix => 'Toi dong y voi ';
+
+  @override
+  String get authTerms => 'Dieu khoan';
+
+  @override
+  String get authAnd => ' va ';
+
+  @override
+  String get authPrivacy => 'Chinh sach bao mat';
+
+  @override
+  String get authDot => '.';
 
   @override
   String get authRegisterFailed => 'Dang ky that bai';

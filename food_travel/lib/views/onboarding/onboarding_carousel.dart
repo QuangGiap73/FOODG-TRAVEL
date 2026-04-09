@@ -3,6 +3,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../router/route_names.dart';
+import '../../controller/l10n/locale_controller.dart';
 
 /// Onboarding carousel mô phỏng layout HTML: 3 slide + sheet xin quyền vị trí.
 class OnboardingCarousel extends StatefulWidget {
@@ -52,6 +53,14 @@ class _OnboardingCarouselState extends State<OnboardingCarousel> {
     }
   }
 
+  Future<void> _showLanguageSheet() async {
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (_) => const _LanguageSheet(),
+    );
+  }
+
   void _next() {
     if (_index < _slides.length - 1) {
       _page.nextPage(
@@ -59,7 +68,7 @@ class _OnboardingCarouselState extends State<OnboardingCarousel> {
         curve: Curves.easeOut,
       );
     } else {
-      _showPermissionSheet();
+      _showLanguageSheet().then((_) => _showPermissionSheet());
     }
   }
 
@@ -332,6 +341,131 @@ class _Point extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _LanguageSheet extends StatefulWidget {
+  const _LanguageSheet();
+
+  @override
+  State<_LanguageSheet> createState() => _LanguageSheetState();
+}
+
+class _LanguageSheetState extends State<_LanguageSheet> {
+  String _code = LocaleController().locale?.languageCode ?? 'vi';
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 52,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(99),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Chọn ngôn ngữ',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 12),
+            _Option(
+              label: 'Tiếng Việt',
+              value: 'vi',
+              group: _code,
+              onChanged: (v) => setState(() => _code = v),
+            ),
+            _Option(
+              label: 'English',
+              value: 'en',
+              group: _code,
+              onChanged: (v) => setState(() => _code = v),
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () async {
+                  final target = _code;
+                  await LocaleController().setLocale(
+                    target.isEmpty ? null : Locale(target),
+                  );
+                  if (mounted) Navigator.pop(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFFF6A00),
+                  minimumSize: const Size.fromHeight(48),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+                child: const Text(
+                  'Áp dụng',
+                  style: TextStyle(fontWeight: FontWeight.w700),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _Option extends StatelessWidget {
+  const _Option({
+    required this.label,
+    required this.value,
+    required this.group,
+    required this.onChanged,
+  });
+  final String label;
+  final String value;
+  final String group;
+  final ValueChanged<String> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final selected = value == group;
+    return InkWell(
+      onTap: () => onChanged(value),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Row(
+          children: [
+            Radio<String>(
+              value: value,
+              groupValue: group,
+              activeColor: const Color(0xFFFF6A00),
+              onChanged: (v) => onChanged(v!),
+            ),
+            const SizedBox(width: 4),
+            Text(
+              label,
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: selected ? Colors.black : Colors.black87,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

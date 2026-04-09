@@ -240,6 +240,8 @@ class _HomeFeedState extends State<_HomeFeed> {
   Timer? _autoSlideTimer;
   final ValueNotifier<int> _imageIndex = ValueNotifier<int>(0);
   String? _lastProvinceId;
+  List<DishModel> _dishesCache = const [];
+  String? _dishesCacheProvinceId;
   Stream<List<DishModel>>? _dishesStream;
 
   final _locationPrefs = LocationPreferenceService();
@@ -337,25 +339,70 @@ class _HomeFeedState extends State<_HomeFeed> {
     if (_selectedProvince?.id == province.id) {
       return;
     }
+    final keys = _provinceQueryKeys(province);
+    debugPrint(
+      '[Home] setProvince: name=${province.name} code=${province.code} id=${province.id} keys=$keys',
+    );
     setState(() {
       _selectedProvince = province;
-      _dishesStream = _service.watchDishesByProvinceKeys(
-        _provinceQueryKeys(province),
-      );
+      _dishesStream = _service.watchDishesByProvinceKeys(keys);
     });
     _imageIndex.value = 0;
   }
 
   List<String> _provinceQueryKeys(ProvinceModel province) {
-    return [province.code, province.name, province.id]
-        .map((value) => value.trim())
-        .where((value) => value.isNotEmpty)
-        .toSet()
-        .toList();
+    // Trả về nhiều biến thể để khớp với field province_code trong collection dishes:
+    // - code
+    // - id (doc id)
+    // - name (đủ dấu)
+    // - slug của name
+    // - slug/code/id đã normalize
+    // - slug trong province (nếu có)
+    final code = province.code.trim();
+    final id = province.id.trim();
+    final name = province.name.trim();
+    final slug = (province.slug ?? '').trim();
+    final nameSlug = _slugify(name);
+    final normCode = _normalizeKey(code);
+    final normId = _normalizeKey(id);
+    final normName = _normalizeKey(name);
+    final normSlug = _normalizeKey(slug);
+    final noAccentName = _removeDiacritics(name);
+    final gpsName = _gpsProvinceName?.trim() ?? '';
+    final gpsCode = _gpsProvinceCode?.trim() ?? '';
+    final gpsNoAccent = _removeDiacritics(gpsName);
+
+    return [
+      code,
+      id,
+      name,
+      slug,
+      nameSlug,
+      normCode,
+      normId,
+      normName,
+      normSlug,
+      noAccentName,
+      gpsName,
+      gpsCode,
+      gpsNoAccent,
+    ].where((v) => v.isNotEmpty).toSet().toList();
+  }
+
+  String _removeDiacritics(String input) {
+    const source = 'àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ';
+    const target = 'aaaaaaaaaaaaaaaaaeeeeeeeeeeeiiiiiooooooooooooooooouuuuuuuuuuuyyyyyd';
+    final lower = input.toLowerCase();
+    final codeUnits = lower.split('');
+    final mapped = codeUnits.map((ch) {
+      final index = source.indexOf(ch);
+      return index == -1 ? ch : target[index];
+    }).join();
+    return mapped.replaceAll(RegExp(r'[^a-z0-9]+'), ' ').trim();
   }
 
   String _slugify(String raw) {
-    final normalized = raw.trim().toLowerCase();
+    final normalized = _removeDiacritics(raw).trim();
     if (normalized.isEmpty) return '';
     final cleaned = normalized.replaceAll(RegExp(r'[^a-z0-9]+'), ' ').trim();
     if (cleaned.isEmpty) return '';
@@ -363,7 +410,8 @@ class _HomeFeedState extends State<_HomeFeed> {
   }
 
   String _normalizeKey(String raw) {
-    return raw.trim().toLowerCase().replaceAll('-', '_');
+    final normalized = _removeDiacritics(raw).trim().toLowerCase();
+    return normalized.replaceAll('-', '_');
   }
 
   ProvinceModel? _findPreferredProvince(List<ProvinceModel> provinces) {
@@ -1071,7 +1119,24 @@ class _HomeFeedState extends State<_HomeFeed> {
           StreamBuilder<List<DishModel>>(
             stream: _dishesStream,
             builder: (context, snapshot) {
+              final provinceId = _selectedProvince?.id;
+
               if (snapshot.connectionState == ConnectionState.waiting) {
+                // Reuse cache while chờ stream để tránh UI kẹt trạng thái loading.
+                if (provinceId != null &&
+                    _dishesCacheProvinceId == provinceId &&
+                    _dishesCache.isNotEmpty) {
+                  final cached = _filterDishes(_dishesCache);
+                  if (cached.isNotEmpty) {
+                    return _buildDishList(
+                      context,
+                      theme,
+                      t,
+                      crossAxisCount,
+                      cached,
+                    );
+                  }
+                }
                 return const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: LinearProgressIndicator(),
@@ -1081,121 +1146,32 @@ class _HomeFeedState extends State<_HomeFeed> {
                 return _buildEmpty(t.homeDishListLoadError);
               }
 
-              final dishes = snapshot.data ?? [];
+              var dishes = snapshot.data ?? const <DishModel>[];
+              if (provinceId != null && dishes.isNotEmpty) {
+                // Lưu cache cho tỉnh hiện tại để dùng lại khi GPS hoặc stream tạm ngắt.
+                _dishesCache = dishes;
+                _dishesCacheProvinceId = provinceId;
+              }
+
+              // Khi stream trả về rỗng (ví dụ GPS thay đổi liên tục) dùng cache nếu khớp tỉnh.
+              if (dishes.isEmpty &&
+                  provinceId != null &&
+                  _dishesCacheProvinceId == provinceId) {
+                dishes = _dishesCache;
+              }
+
               final filtered = _filterDishes(dishes);
 
               if (filtered.isEmpty) {
                 return _buildEmpty(t.homeDishNotFound);
               }
 
-              return Consumer<FavoriteController>(
-                builder: (context, favoriteController, _) {
-                  final favoriteIds = favoriteController.favoriteIds;
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 20),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                t.homeSpecialtiesTitle,
-                                style: theme.textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                setState(() {
-                                  _showAllSpecialties = !_showAllSpecialties;
-                                });
-                              },
-                              child: Text(
-                                _showAllSpecialties
-                                    ? t.homeSpecialtiesCollapse
-                                    : t.homeSpecialtiesSeeAll,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        if (_showAllSpecialties)
-                          GridView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: filtered.length,
-                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: crossAxisCount,
-                              crossAxisSpacing: 10,
-                              mainAxisSpacing: 10,
-                              // Card nho gon hon de hien thi duoc nhieu item tren man hinh.
-                              childAspectRatio: 0.92,
-                            ),
-                            itemBuilder: (context, index) {
-                              final dish = filtered[index];
-                              final isFavorite = favoriteIds.contains(dish.id);
-                              return GestureDetector(
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                    context,
-                                    RouteNames.dishDetail,
-                                    arguments: dish.id,
-                                  );
-                                },
-                                child: _buildDishCard(
-                                  dish,
-                                  isFavorite: isFavorite,
-                                  onToggle:
-                                      () => favoriteController.toggleFavorite(
-                                        dish.id,
-                                      ),
-                                ),
-                              );
-                            },
-                          )
-                        else
-                          SizedBox(
-                            height: 220,
-                            child: ListView.separated(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: filtered.length,
-                              separatorBuilder:
-                                  (_, __) => const SizedBox(width: 10),
-                              itemBuilder: (context, index) {
-                                final dish = filtered[index];
-                                final isFavorite = favoriteIds.contains(
-                                  dish.id,
-                                );
-                                return SizedBox(
-                                  width: 190,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.pushNamed(
-                                        context,
-                                        RouteNames.dishDetail,
-                                        arguments: dish.id,
-                                      );
-                                    },
-                                    child: _buildDishCard(
-                                      dish,
-                                      compact: true,
-                                      isFavorite: isFavorite,
-                                      onToggle:
-                                          () => favoriteController
-                                              .toggleFavorite(dish.id),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                      ],
-                    ),
-                  );
-                },
+              return _buildDishList(
+                context,
+                theme,
+                t,
+                crossAxisCount,
+                filtered,
               );
             },
           ),
@@ -1213,6 +1189,119 @@ class _HomeFeedState extends State<_HomeFeed> {
       final tag = dish.tag.toLowerCase();
       return name.contains(query) || tag.contains(query);
     }).toList();
+  }
+
+  Widget _buildDishList(
+    BuildContext context,
+    ThemeData theme,
+    AppLocalizations t,
+    int crossAxisCount,
+    List<DishModel> filtered,
+  ) {
+    return Consumer<FavoriteController>(
+      builder: (context, favoriteController, _) {
+        final favoriteIds = favoriteController.favoriteIds;
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      t.homeSpecialtiesTitle,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _showAllSpecialties = !_showAllSpecialties;
+                      });
+                    },
+                    child: Text(
+                      _showAllSpecialties
+                          ? t.homeSpecialtiesCollapse
+                          : t.homeSpecialtiesSeeAll,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              if (_showAllSpecialties)
+                GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: filtered.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: crossAxisCount,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    // Card nho gon hon de hien thi duoc nhieu item tren man hinh.
+                    childAspectRatio: 0.92,
+                  ),
+                  itemBuilder: (context, index) {
+                    final dish = filtered[index];
+                    final isFavorite = favoriteIds.contains(dish.id);
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          RouteNames.dishDetail,
+                          arguments: dish.id,
+                        );
+                      },
+                      child: _buildDishCard(
+                        dish,
+                        isFavorite: isFavorite,
+                        onToggle: () => favoriteController.toggleFavorite(
+                          dish.id,
+                        ),
+                      ),
+                    );
+                  },
+                )
+              else
+                SizedBox(
+                  height: 220,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: filtered.length,
+                    separatorBuilder: (_, __) => const SizedBox(width: 10),
+                    itemBuilder: (context, index) {
+                      final dish = filtered[index];
+                      final isFavorite = favoriteIds.contains(dish.id);
+                      return SizedBox(
+                        width: 190,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              RouteNames.dishDetail,
+                              arguments: dish.id,
+                            );
+                          },
+                          child: _buildDishCard(
+                            dish,
+                            compact: true,
+                            isFavorite: isFavorite,
+                            onToggle: () =>
+                                favoriteController.toggleFavorite(dish.id),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildSearchField(ThemeData theme, AppLocalizations t) {

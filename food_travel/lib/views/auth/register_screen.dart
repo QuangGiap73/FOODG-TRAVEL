@@ -246,7 +246,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               padding:
                                   const EdgeInsets.symmetric(vertical: 10),
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: isDark ? cardColor : Colors.white,
                                 borderRadius: BorderRadius.circular(12),
                                 boxShadow: const [
                                   BoxShadow(
@@ -420,28 +420,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     padding: const EdgeInsets.only(top: 2),
                                     child: RichText(
                                       text: TextSpan(
-                                        text: 'Tôi đồng ý với ',
+                                        text: t.authAgreePrefix,
                                         style: TextStyle(
                                           color: textSecondary,
                                           fontSize: 13,
                                         ),
-                                        children: const [
+                                        children: [
                                           TextSpan(
-                                            text: 'Điều khoản',
-                                            style: TextStyle(
+                                            text: t.authTerms,
+                                            style: const TextStyle(
                                               color: Color(0xFFFF6A00),
                                               fontWeight: FontWeight.w600,
                                             ),
                                           ),
-                                          TextSpan(text: ' và '),
+                                          TextSpan(text: t.authAnd),
                                           TextSpan(
-                                            text: 'Chính sách bảo mật',
-                                            style: TextStyle(
+                                            text: t.authPrivacy,
+                                            style: const TextStyle(
                                               color: Color(0xFFFF6A00),
                                               fontWeight: FontWeight.w600,
                                             ),
                                           ),
-                                          TextSpan(text: '.'),
+                                          TextSpan(text: t.authDot),
                                         ],
                                       ),
                                     ),
@@ -492,7 +492,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: Text(
-                            'Hoặc đăng ký với',
+                            '${t.authOr} ${t.authRegisterAction.toLowerCase()}',
                             style: TextStyle(
                               color: textSecondary,
                               fontWeight: FontWeight.w600,
@@ -516,16 +516,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               padding:
                                   const EdgeInsets.symmetric(vertical: 12),
                             ),
-                            child: const Row(
+                            child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.g_mobiledata,
+                                const Icon(Icons.g_mobiledata,
                                     color: Colors.red, size: 22),
-                                SizedBox(width: 8),
+                                const SizedBox(width: 8),
                                 Text(
-                                  'Đăng ký với Google',
+                                  t.authContinueGoogle,
                                   style: TextStyle(
-                                    color: Colors.white,
+                                    color: textPrimary,
                                     fontWeight: FontWeight.w600,
                                     fontSize: 13,
                                   ),

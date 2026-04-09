@@ -895,6 +895,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authContinueGoogle => 'Continue with Google';
 
   @override
+  String get authContinueApple => 'Continue with Apple';
+
+  @override
+  String get authForgotPassword => 'Forgot password?';
+
+  @override
   String get authNoAccount => 'Don\'t have an account? ';
 
   @override
@@ -957,6 +963,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get authRegisterSuccess => 'Registration successful';
+
+  @override
+  String get authAgreePrefix => 'I agree with ';
+
+  @override
+  String get authTerms => 'Terms of Service';
+
+  @override
+  String get authAnd => ' and ';
+
+  @override
+  String get authPrivacy => 'Privacy Policy';
+
+  @override
+  String get authDot => '.';
 
   @override
   String get authRegisterFailed => 'Registration failed';

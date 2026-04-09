@@ -241,10 +241,6 @@ class _MapPageState extends State<MapPage> {
     await _ensurePuckReady();
     _ensureNearbyLayer();
 
-    if (_lastLatLng != null) {
-      await _updateUserMarker(_lastLatLng!);
-    }
-
     if (_searchLatLng != null) {
       await _showSearchMarker(_searchLatLng!, animate: false);
     }
@@ -290,7 +286,13 @@ class _MapPageState extends State<MapPage> {
 
   Future<void> _clearUserMarker({bool keepLastLocation = false}) async {
     if (_puck != null) {
-      await _puck!.dispose();
+      try {
+        if (_styleReady) {
+          await _puck!.dispose();
+        }
+      } catch (_) {
+        // Ignored: style may be reloading
+      }
       _puck = null;
     }
     _pulseStarted = false;
@@ -318,6 +320,7 @@ class _MapPageState extends State<MapPage> {
         distanceFilter: 5,
       ),
     ).listen((pos) async {
+      if (!_styleReady) return;
       final latLng = LatLng(pos.latitude, pos.longitude);
       _lastLatLng = latLng;
       await _ensurePuckReady();

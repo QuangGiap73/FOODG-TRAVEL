@@ -60,8 +60,16 @@ class UserLocationPuck {
 
   Future<void> dispose() async {
     stopPulse();
-    if (_dot != null) await controller.removeSymbol(_dot!);
-    if (_pulse != null) await controller.removeSymbol(_pulse!);
+    try {
+      if (_dot != null) {
+        await controller.removeSymbol(_dot!);
+      }
+      if (_pulse != null) {
+        await controller.removeSymbol(_pulse!);
+      }
+    } catch (_) {
+      // Ignored: style may be reloading/disposed when widget unmounts.
+    }
     _dot = null;
     _pulse = null;
   }
