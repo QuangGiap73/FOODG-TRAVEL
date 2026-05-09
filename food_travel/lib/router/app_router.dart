@@ -18,6 +18,7 @@ import '../views/dishes/dish_detail_page.dart';
 import '../views/settings/location_settings_page.dart';
 import '../views/community/community_my_posts_page.dart';
 import '../views/notifications/notifications_page.dart';
+import '../views/home/search/search_result_page.dart';
 import 'route_names.dart';
 
 class AppRouter {
@@ -83,6 +84,11 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const CommunityMyPostsPage());
       case RouteNames.notifications:
         return MaterialPageRoute(builder: (_) => const NotificationsPage());
+      case RouteNames.search:
+        final args = settings.arguments as SearchPageArgs?;
+        return MaterialPageRoute(
+          builder: (_) => SearchResultPage(args: args),
+        );
       default:
         return MaterialPageRoute(
           builder: (context) {

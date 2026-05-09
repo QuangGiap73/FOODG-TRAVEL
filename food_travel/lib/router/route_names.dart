@@ -17,5 +17,7 @@ class RouteNames {
   static const myPosts = '/community/my-posts';
   static const notifications = '/notifications';
 
+  static const search = '/search';
+
 
 }

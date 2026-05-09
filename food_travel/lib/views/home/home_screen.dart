@@ -23,6 +23,7 @@ import '../../services/location_preference_service.dart';
 import '../../services/location_service.dart';
 import '../../services/map/geocode_service.dart';
 import '../favorites/place_detail_page.dart';
+import 'search/search_result_page.dart';
 import 'widgets/home_bottom_nav.dart';
 import 'widgets/nearby_places_section.dart';
 import 'widgets/today_eat_section.dart';
@@ -1322,13 +1323,29 @@ class _HomeFeedState extends State<_HomeFeed> {
       child: TextField(
         controller: _searchController,
         onChanged: (value) => setState(() => _query = value.trim()),
+        onSubmitted: (_) => _openSearchPage(),
         decoration: InputDecoration(
           icon: const Icon(Icons.search),
+          suffixIcon: IconButton(
+            icon: const Icon(Icons.arrow_forward),
+            onPressed: _openSearchPage,
+          ),
           hintText: t.homeSearchHint,
           border: InputBorder.none,
         ),
       ),
     );
+  }
+
+  void _openSearchPage() {
+    final args = SearchPageArgs(
+      initialQuery: _searchController.text.trim(),
+      provinceCode: _selectedProvince?.code,
+      provinceName: _selectedProvince?.name,
+      userLat: _nearbyHomeController.userLatLng?.latitude,
+      userLng: _nearbyHomeController.userLatLng?.longitude,
+    );
+    Navigator.pushNamed(context, RouteNames.search, arguments: args);
   }
 
   Widget _buildProvinceImageSlide({
