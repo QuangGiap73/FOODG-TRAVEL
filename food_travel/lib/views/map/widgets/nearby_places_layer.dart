@@ -12,6 +12,7 @@ class NearbyPlacesLayer {
   final MapLibreMapController _controller;
   final List<Symbol> _symbols = [];
   final Set<String> _imageNames = {};
+  final Map<String, GoongNearbyPlace> _placeBySymbolId = {};
 
   Future<void> showPlaces(
     List<GoongNearbyPlace> places, {
@@ -40,6 +41,7 @@ class NearbyPlacesLayer {
         ),
       );
       _symbols.add(symbol);
+      _placeBySymbolId[symbol.id] = place;
     }
 
     if (animate) {
@@ -62,6 +64,11 @@ class NearbyPlacesLayer {
     // maplibre_gl 0.25.0 khong ho tro removeImage().
     // Anh style se duoc clear khi style reload; tai day chi clear danh sach local.
     _imageNames.clear();
+    _placeBySymbolId.clear();
+  }
+
+  GoongNearbyPlace? placeForSymbol(Symbol symbol) {
+    return _placeBySymbolId[symbol.id];
   }
 
   Future<Uint8List> _buildMarkerImage(String photoUrl) async {

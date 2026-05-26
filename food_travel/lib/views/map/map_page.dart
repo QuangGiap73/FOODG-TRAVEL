@@ -187,6 +187,7 @@ class _MapPageState extends State<MapPage> {
     _controller = controller;
     // Tao layer ve route khi map duoc tao
     _routeLayer = RouteLayer(controller);
+    controller.onSymbolTapped.add(_onSymbolTapped);
   }
 
   Future<void> _ensurePuckReady() async {
@@ -200,6 +201,12 @@ class _MapPageState extends State<MapPage> {
   void _ensureNearbyLayer() {
     if (_controller == null) return;
     _nearbyLayer ??= NearbyPlacesLayer(_controller!);
+  }
+
+  void _onSymbolTapped(Symbol symbol) {
+    final place = _nearbyLayer?.placeForSymbol(symbol);
+    if (place == null) return;
+    _openPlaceDetail(place);
   }
 
   void _onNavChanged() {
@@ -670,6 +677,7 @@ class _MapPageState extends State<MapPage> {
   @override
   void dispose() {
     _stopLocationStream();
+    _controller?.onSymbolTapped.remove(_onSymbolTapped);
     _nearbyLayer?.clear();
     _puck?.dispose();
     _controller?.dispose();
