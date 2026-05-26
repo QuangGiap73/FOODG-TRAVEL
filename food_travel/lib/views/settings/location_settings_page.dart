@@ -44,11 +44,38 @@ class _LocationSettingsPageState extends State<LocationSettingsPage> {
     if (result.isSuccess) {
       await _prefs.setEnabled(true);
     } else {
-      await _prefs.setEnabled(false);
       final t = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(result.message ?? t.locationError)),
-      );
+      switch (result.failReason) {
+        case LocationFailReason.serviceDisabled:
+          await _prefs.setEnabled(false);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(result.message ?? t.locationError)),
+          );
+          await _locationService.openLocationSettings();
+          break;
+        case LocationFailReason.permissionDenied:
+        case LocationFailReason.permissionDeniedForever:
+          await _prefs.setEnabled(false);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(result.message ?? t.locationError)),
+          );
+          if (result.failReason == LocationFailReason.permissionDeniedForever) {
+            await _locationService.openAppSettings();
+          }
+          break;
+        case LocationFailReason.timeoutOrError:
+        case null:
+          // GPS co the dang cham, van cho bat tinh nang vi tri trong app.
+          await _prefs.setEnabled(true);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                result.message ?? 'Dang bat vi tri, vui long thu lai sau it giay.',
+              ),
+            ),
+          );
+          break;
+      }
     }
   }
 

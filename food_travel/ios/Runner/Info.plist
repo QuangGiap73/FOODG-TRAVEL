@@ -45,5 +45,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>FoodG can su dung vi tri de tim quan an gan ban va dan duong chinh xac.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>FoodG can su dung vi tri de cap nhat tinh nang ban do va dan duong lien tuc.</string>
 </dict>
 </plist>

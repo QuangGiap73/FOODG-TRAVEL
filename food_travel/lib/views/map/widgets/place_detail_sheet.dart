@@ -12,6 +12,7 @@ Future<void> showPlaceDetailSheet(
   GoongNearbyPlace place, {
   LatLng? userLocation,
   VoidCallback? onDirections,
+  VoidCallback? onImageTap,
 }) {
   return showModalBottomSheet<void>(
     context: context,
@@ -26,6 +27,7 @@ Future<void> showPlaceDetailSheet(
           place: place,
           userLocation: userLocation,
           onDirections: onDirections,
+          onImageTap: onImageTap,
         ),
       );
     },
@@ -38,11 +40,13 @@ class PlaceDetailSheet extends StatelessWidget {
     required this.place,
     this.userLocation,
     this.onDirections,
+    this.onImageTap,
   });
 
   final GoongNearbyPlace place;
   final LatLng? userLocation;
   final VoidCallback? onDirections;
+  final VoidCallback? onImageTap;
 
   double? _distanceMeters() {
     if (userLocation == null) return null;
@@ -139,10 +143,12 @@ class PlaceDetailSheet extends StatelessWidget {
       child: Stack(
         children: [
           Positioned.fill(
-            child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-              child: imageUrl.isEmpty
-                  ? Container(
+            child: GestureDetector(
+              onTap: onImageTap,
+              child: ClipRRect(
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                child: imageUrl.isEmpty
+                     ? Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: placeholderColors,
@@ -150,26 +156,29 @@ class PlaceDetailSheet extends StatelessWidget {
                           end: Alignment.bottomRight,
                         ),
                       ),
-                    )
-                  : Image.network(
+                     )
+                     : Image.network(
                       imageUrl,
                       fit: BoxFit.cover,
                       errorBuilder: (_, __, ___) => Container(
                         color: placeholderColors.first,
                       ),
-                    ),
+                     ),
+              ),
             ),
           ),
           Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.black.withOpacity(overlayTopOpacity),
-                    Colors.black.withOpacity(overlayBottomOpacity),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
+            child: IgnorePointer(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.black.withOpacity(overlayTopOpacity),
+                      Colors.black.withOpacity(overlayBottomOpacity),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
                 ),
               ),
             ),

@@ -98,11 +98,76 @@ class SerpApiPlacesService {
         dedup[key] = place;
         if (dedup.length >= limit) break;
       }
-      return dedup.values.toList();
+      final base = dedup.values.toList();
+      final enriched = await _enrichTopPlacesWithDetailPhoto(base);
+      return enriched;
     } catch (e) {
       debugPrint('SerpAPI error: $e');
       return [];
     }
+  }
+
+  Future<GoongNearbyPlace> _enrichWithDetailPrimaryPhoto(
+    GoongNearbyPlace seed,
+  ) async {
+    final detail = await fetchPlaceDetail(seed);
+    if (detail == null) return seed;
+
+    final photos = detail.photoUrls;
+    if (photos.isEmpty) return detail;
+
+    final firstPhoto = photos.first.trim();
+    if (firstPhoto.isEmpty) return detail;
+
+    return GoongNearbyPlace(
+      id: detail.id,
+      serpDataId: detail.serpDataId,
+      name: detail.name,
+      address: detail.address,
+      district: detail.district,
+      lat: detail.lat,
+      lng: detail.lng,
+      // Ep anh dai dien = anh dau tien trong thong tin chi tiet.
+      photoUrl: firstPhoto,
+      photoUrls: detail.photoUrls,
+      rating: detail.rating,
+      reviewCount: detail.reviewCount,
+      price: detail.price,
+      phone: detail.phone,
+      category: detail.category,
+      isOpen: detail.isOpen,
+      closingTime: detail.closingTime,
+      openingHours: detail.openingHours,
+      amenities: detail.amenities,
+      mustTryItems: detail.mustTryItems,
+    );
+  }
+
+  Future<List<GoongNearbyPlace>> _enrichTopPlacesWithDetailPhoto(
+    List<GoongNearbyPlace> places,
+  ) async {
+    if (places.isEmpty) return places;
+
+    // Chi enrich mot so item dau de tranh loading qua lau / hit quota.
+    const maxEnrich = 4;
+    final count = places.length < maxEnrich ? places.length : maxEnrich;
+    final output = List<GoongNearbyPlace>.from(places);
+
+    final futures = <Future<void>>[];
+    for (var i = 0; i < count; i++) {
+      futures.add(() async {
+        try {
+          final enriched = await _enrichWithDetailPrimaryPhoto(output[i])
+              .timeout(const Duration(seconds: 4));
+          output[i] = enriched;
+        } catch (_) {
+          // Loi/timeout thi giu nguyen item goc.
+        }
+      }());
+    }
+
+    await Future.wait(futures);
+    return output;
   }
 
   // Tim dia diem theo text (khong can toa do)

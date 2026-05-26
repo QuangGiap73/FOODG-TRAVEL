@@ -13,6 +13,7 @@ import '../../services/map/places_service.dart';
 import '../../services/map/serpapi_places_service.dart';
 import '../../services/location_preference_service.dart';
 import '../../widgets/user_location_puck.dart';
+import '../../views/favorites/place_detail_page.dart';
 import 'widgets/map_search_bar.dart';
 import 'widgets/nearby_places_layer.dart';
 import 'widgets/nearby_places_sheet.dart';
@@ -533,6 +534,14 @@ class _MapPageState extends State<MapPage> {
       onDirections: () {
         Navigator.of(context).pop();
         _startDirections(place);
+      },
+      onImageTap: () {
+        Navigator.of(context).pop(); // dong bottom sheet
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => FavoritePlaceDetailPage(place: place),
+          ),
+        );
       },
     );
   }
