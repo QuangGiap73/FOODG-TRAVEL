@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:food_travel/l10n/app_localizations.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../controller/map/map_search_controller.dart';
 import '../../controller/map/navigation_controller.dart';
@@ -40,6 +41,11 @@ class _NearbyCacheEntry {
 
   final DateTime at;
   final List<GoongNearbyPlace> places;
+}
+
+enum _DirectionsChoice {
+  inApp,
+  googleMaps,
 }
 
 class MapPage extends StatefulWidget {
@@ -227,6 +233,92 @@ class _MapPageState extends State<MapPage> {
     // Bat dau dan duong den quan
     _startDirectionsInternal(place);
   }
+  // lua chon cach thuc chi duong den map 
+  Future<void> _openDirectionsChooser(GoongNearbyPlace place) async {
+    if(!mounted) return;
+    final choice = await showModalBottomSheet<_DirectionsChoice>(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 8),
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade400,
+                  borderRadius: BorderRadius.circular(999),
+                ),
+              ),
+              const SizedBox(height: 12),
+              const ListTile(
+                title: Text(
+                  'Chọn cách chỉ đường',
+                  style: TextStyle(fontWeight: FontWeight.w700),
+
+                ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.navigation),
+                title: const Text('Dẫn đường trong ứng dụng'),
+                onTap: () => Navigator.of(ctx).pop(_DirectionsChoice.inApp),
+              ),
+              ListTile(
+                leading: const Icon(Icons.map_outlined),
+                title: const Text('Mở Google Maps'),
+                onTap: () => Navigator.of(ctx).pop(_DirectionsChoice.googleMaps),
+              ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        );
+      },
+    );
+    if(choice == null) return;
+    switch(choice) {
+      case _DirectionsChoice.inApp:
+        _startDirectionsInternal(place);
+        break;
+      case _DirectionsChoice.googleMaps:
+        await _openGoogleMapsDirections(place);
+        break;
+    }
+  }
+  Future<void> _openGoogleMapsDirections(GoongNearbyPlace place) async {
+  final lat = place.lat;
+  final lng = place.lng;
+
+  // Thử mở app Google Maps trước
+  final appUri = Uri.parse(
+    'comgooglemaps://?daddr=$lat,$lng&directionsmode=driving',
+  );
+
+  // Fallback: mở web Google Maps
+  final webUri = Uri.parse(
+    'https://www.google.com/maps/dir/?api=1&destination=$lat,$lng&travelmode=driving',
+  );
+
+  try {
+    if (await canLaunchUrl(appUri)) {
+      await launchUrl(appUri, mode: LaunchMode.externalApplication);
+      return;
+    }
+
+    if (await canLaunchUrl(webUri)) {
+      await launchUrl(webUri, mode: LaunchMode.externalApplication);
+      return;
+    }
+
+    _showSnack('Không thể mở Google Maps trên thiết bị này');
+  } catch (_) {
+    _showSnack('Có lỗi khi mở Google Maps');
+  }
+}
 
   Future<void> _startDirectionsInternal(GoongNearbyPlace place) async {
     final ok = await _navController.startNavigation(
@@ -540,7 +632,7 @@ class _MapPageState extends State<MapPage> {
       userLocation: _lastLatLng,
       onDirections: () {
         Navigator.of(context).pop();
-        _startDirections(place);
+        _openDirectionsChooser(place);
       },
       onImageTap: () {
         Navigator.of(context).pop(); // dong bottom sheet
@@ -795,7 +887,7 @@ class _MapPageState extends State<MapPage> {
                 _openPlaceDetail(place);
               },
               onDirections: (place) {
-                _startDirections(place);
+                _openDirectionsChooser(place);
               },
             ),
           Positioned(
