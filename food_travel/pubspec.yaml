@@ -85,6 +85,7 @@ flutter:
     - assets/anh_dau_bep.jpg
     - assets/map/anh1_vitri1.png
     - assets/map/anh1_vitri2.png
+    - assets/favorites/favorites1.png
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
