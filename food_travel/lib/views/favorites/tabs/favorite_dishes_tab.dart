@@ -73,6 +73,7 @@ class _DishCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
+    final lang = Localizations.localeOf(context).languageCode;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final cardBg = isDark ? const Color(0xFF15181E) : Colors.white;
@@ -82,13 +83,11 @@ class _DishCard extends StatelessWidget {
     final textSecondary = isDark ? Colors.white70 : const Color(0xFF64748B);
     final imageUrl = dish.imageUrl.trim();
     // Du lieu hien tai: province_code dang chua TEN TINH
-    final province = (dish.provinceName.trim().isNotEmpty
-            ? dish.provinceName
-            : dish.provinceCode)
-        .trim();
-    final region = _formatRegion(dish.regionCode, t);
+    final province = dish.getProvince(lang).trim();
+    final region = _formatRegion(dish.getRegion(lang), t);
     final provinceRegion = _formatProvinceRegion(province, region, t);
-    final tag = dish.tag.trim();
+    final tag = dish.getCategory(lang).trim();
+    final dishName = dish.getName(lang);
     final spicy = dish.spicyLevel;
 
     return InkWell(
@@ -182,7 +181,7 @@ class _DishCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      dish.name,
+                      dishName,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(

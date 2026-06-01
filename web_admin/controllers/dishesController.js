@@ -2,6 +2,16 @@ const { db } = require('../firebase/config');
 const cloudinary = require('../config/cloudinary');
 const streamifier = require('streamifier');
 
+function pickI18nText(value, lang = 'vi') {
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+        const vi = String(value.vi || '').trim();
+        const en = String(value.en || '').trim();
+        if (lang === 'en') return en || vi;
+        return vi || en;
+    }
+    return String(value || '').trim();
+}
+
 function renderDishesPage(req, res){
     res.render('manager_dishes/manager_dishes', { pageTitle: 'Quan ly mon an'});
 }
@@ -17,17 +27,19 @@ async function listDishes(req, res) {
 
         if(q) {
             dishes = dishes.filter((item) =>{ // loc danh sach
-                const name = String(item.name || item.Name || '').toLowerCase();
+                const name = pickI18nText(item.name || item.Name, 'vi').toLowerCase();
+                const nameEn = pickI18nText(item.name || item.Name, 'en').toLowerCase();
                 const slug = String(item.slug || '').toLowerCase();
-                return name.includes(q) || slug.includes(q); // dieu kien co chua tu khoa 
+                return name.includes(q) || nameEn.includes(q) || slug.includes(q); // dieu kien co chua tu khoa 
 
             });
         }
         if (province){
             dishes = dishes.filter(item => {
-              const provCode = String(item.province_code || '').toLowerCase();
+              const provCode = pickI18nText(item.province_code || '', 'vi').toLowerCase();
+              const provCodeEn = pickI18nText(item.province_code || '', 'en').toLowerCase();
               const provName = String(item.province_name || item.province || '').toLowerCase();
-              return provCode === province || provName === province;
+              return provCode === province || provCodeEn === province || provName === province;
             });
           }
         res.json({data: dishes});

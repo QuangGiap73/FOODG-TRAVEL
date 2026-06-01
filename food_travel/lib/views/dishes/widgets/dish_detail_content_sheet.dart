@@ -17,14 +17,26 @@ class DishDetailContentSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final lang = Localizations.localeOf(context).languageCode;
+    final name = dish.getName(lang);
+    final category = dish.getCategory(lang);
+    final bestSeason = dish.getBestSeason(lang);
+    final bestTime = dish.getBestTime(lang);
+    final description = dish.getDescription(lang);
+    final originStory = dish.getOriginStory(lang);
+    final ingredients = dish.getIngredients(lang);
+    final instructions = dish.getInstructions(lang);
+    final priceRange = dish.getPriceRange(lang);
+    final province = dish.getProvince(lang);
+    final region = dish.getRegion(lang);
 
     final spicy = _clampLevel(dish.spicyLevel);
     final satiety = _clampLevel(dish.satietyLevel);
 
     final tags = _dedupeTags([
       ...dish.tags,
-      if (dish.provinceName.isNotEmpty) dish.provinceName,
-      if (dish.tag.isNotEmpty) dish.tag,
+      if (province.isNotEmpty) province,
+      if (category.isNotEmpty) category,
     ]);
 
     return Container(
@@ -45,7 +57,7 @@ class DishDetailContentSheet extends StatelessWidget {
         children: [
           // Header info
           Text(
-            dish.name,
+            name,
             style: theme.textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.w700,
               letterSpacing: -0.2,
@@ -54,7 +66,7 @@ class DishDetailContentSheet extends StatelessWidget {
           const SizedBox(height: 8),
 
           Text(
-            dish.tag.isNotEmpty ? dish.tag : 'Món ăn đặc sản',
+            category.isNotEmpty ? category : 'Món ăn đặc sản',
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.onSurface.withOpacity(0.65),
               fontWeight: FontWeight.w600,
@@ -86,7 +98,7 @@ class DishDetailContentSheet extends StatelessWidget {
             spacing: 8,
             runSpacing: 8,
             children: tags.map((t) {
-              final isProvince = t == dish.provinceName;
+              final isProvince = t == province;
               return _TagChip(
                 text: t,
                 highlight: isProvince,
@@ -142,8 +154,8 @@ class DishDetailContentSheet extends StatelessWidget {
                     iconBg: Colors.blue.withOpacity(isDark ? 0.25 : 0.14),
                     iconColor: Colors.blue.shade600,
                     title: 'Mùa ngon nhất',
-                    value: dish.bestSeason.isNotEmpty
-                        ? dish.bestSeason
+                    value: bestSeason.isNotEmpty
+                        ? bestSeason
                         : 'Chưa cập nhật',
                   ),
                 ),
@@ -154,8 +166,8 @@ class DishDetailContentSheet extends StatelessWidget {
                     iconBg: Colors.amber.withOpacity(isDark ? 0.25 : 0.16),
                     iconColor: Colors.amber.shade700,
                     title: 'Thời điểm ăn',
-                    value: dish.bestTime.isNotEmpty
-                        ? dish.bestTime
+                    value: bestTime.isNotEmpty
+                        ? bestTime
                         : 'Chưa cập nhật',
                   ),
                 ),
@@ -169,8 +181,8 @@ class DishDetailContentSheet extends StatelessWidget {
           _SectionTitle(title: 'Giới thiệu'),
           const SizedBox(height: 8),
           Text(
-            dish.description.isNotEmpty
-                ? dish.description
+            description.isNotEmpty
+                ? description
                 : 'Chưa có mô tả cho món ăn này.',
             maxLines: descExpanded ? null : 3,
             overflow: descExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
@@ -180,7 +192,7 @@ class DishDetailContentSheet extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 6),
-          if ((dish.description).trim().isNotEmpty)
+          if ((description).trim().isNotEmpty)
             TextButton(
               onPressed: onToggleDesc,
               style: TextButton.styleFrom(
@@ -199,15 +211,15 @@ class DishDetailContentSheet extends StatelessWidget {
           const SizedBox(height: 14),
 
           // Origin story quote
-          if (dish.originStory.trim().isNotEmpty)
-            _QuoteCard(text: dish.originStory),
+          if (originStory.trim().isNotEmpty)
+            _QuoteCard(text: originStory),
 
           const SizedBox(height: 18),
 
           // Ingredients
           _SectionTitle(title: 'Nguyên liệu', icon: Icons.shopping_bag_outlined),
           const SizedBox(height: 10),
-          ..._toLines(dish.ingredients).map((x) => _BulletLine(text: x)),
+          ..._toLines(ingredients).map((x) => _BulletLine(text: x)),
 
           const SizedBox(height: 18),
 
@@ -215,13 +227,13 @@ class DishDetailContentSheet extends StatelessWidget {
           _SectionTitle(
               title: 'Cách chế biến', icon: Icons.list_alt_outlined),
           const SizedBox(height: 12),
-          _TimelineSteps(steps: _toLines(dish.instructions)),
+          _TimelineSteps(steps: _toLines(instructions)),
 
           const SizedBox(height: 18),
 
           // Price range
-          if (dish.priceRange.trim().isNotEmpty)
-            _PriceCard(priceRange: dish.priceRange),
+          if (priceRange.trim().isNotEmpty)
+            _PriceCard(priceRange: priceRange),
         ],
       ),
     );
@@ -230,9 +242,13 @@ class DishDetailContentSheet extends StatelessWidget {
   int _clampLevel(int v) => v.clamp(0, 5);
 
   String _buildLocationText(DishModel dish) {
+    // Keep fallback behavior for old data while preferring i18n fields.
+    final lang = WidgetsBinding.instance.platformDispatcher.locale.languageCode;
     final parts = <String>[];
-    if (dish.provinceName.trim().isNotEmpty) parts.add(dish.provinceName.trim());
-    if (dish.regionCode.trim().isNotEmpty) parts.add(dish.regionCode.trim());
+    final province = dish.getProvince(lang).trim();
+    final region = dish.getRegion(lang).trim();
+    if (province.isNotEmpty) parts.add(province);
+    if (region.isNotEmpty) parts.add(region);
     if (parts.isEmpty) return 'Chưa cập nhật';
     return parts.join(', ');
   }
@@ -242,6 +258,8 @@ class DishDetailContentSheet extends StatelessWidget {
     for (final t in input) {
       final s = t.trim();
       if (s.isEmpty) continue;
+      // Bo cac tag kieu mo ta dai/liet ke, chi giu chip ngan gon.
+      if (s.contains(';') || s.length > 28) continue;
       set.add(s);
     }
     return set.toList();

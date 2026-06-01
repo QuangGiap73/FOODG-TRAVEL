@@ -8,7 +8,7 @@ const path = require('path');
 const { db } = require('../firebase/config');
 
 // Lấy đường dẫn file JSON (mặc định: web_admin/data.json)
-const dataPath = process.argv[2] || path.join(__dirname, '..', 'data1.json');
+const dataPath = process.argv[2] || path.join(__dirname, '..', 'ha_noi_i18n_vi_en.json');
 if (!fs.existsSync(dataPath)) {
   console.error('Không tìm thấy file:', dataPath);
   process.exit(1);

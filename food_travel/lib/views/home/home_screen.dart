@@ -1182,13 +1182,19 @@ class _HomeFeedState extends State<_HomeFeed> {
 
   List<DishModel> _filterDishes(List<DishModel> dishes) {
     final query = _query.toLowerCase();
+    final lang = Localizations.localeOf(context).languageCode;
     if (query.isEmpty) {
       return dishes;
     }
     return dishes.where((dish) {
-      final name = dish.name.toLowerCase();
-      final tag = dish.tag.toLowerCase();
-      return name.contains(query) || tag.contains(query);
+      final name = dish.getName(lang).toLowerCase();
+      final tag = dish.getCategory(lang).toLowerCase();
+      final nameEn = dish.getName('en').toLowerCase();
+      final tagEn = dish.getCategory('en').toLowerCase();
+      return name.contains(query) ||
+          tag.contains(query) ||
+          nameEn.contains(query) ||
+          tagEn.contains(query);
     }).toList();
   }
 
@@ -1406,6 +1412,9 @@ class _HomeFeedState extends State<_HomeFeed> {
   }) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final lang = Localizations.localeOf(context).languageCode;
+    final dishName = dish.getName(lang);
+    final dishCategory = dish.getCategory(lang);
     final imageUrl = dish.imageUrl;
 
     // Mau vien cam theo yeu cau, nhat hon o light mode de nhin "sach".
@@ -1470,7 +1479,7 @@ class _HomeFeedState extends State<_HomeFeed> {
             Padding(
               padding: const EdgeInsets.fromLTRB(8, 7, 8, 2),
               child: Text(
-                dish.name,
+                dishName,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.bodyMedium?.copyWith(
@@ -1480,11 +1489,11 @@ class _HomeFeedState extends State<_HomeFeed> {
                 ),
               ),
             ),
-            if (dish.tag.isNotEmpty)
+            if (dishCategory.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: Text(
-                  dish.tag,
+                  dishCategory,
                   maxLines: compact ? 2 : 1,
                   overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.bodySmall?.copyWith(

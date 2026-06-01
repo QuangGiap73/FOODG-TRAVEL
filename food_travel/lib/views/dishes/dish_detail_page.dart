@@ -76,7 +76,8 @@ class _DishDetailPageState extends State<DishDetailPage> {
 
   String _buildNearbyQuery(DishModel dish) {
     final t = AppLocalizations.of(context)!;
-    final name = dish.name.trim();
+    final lang = Localizations.localeOf(context).languageCode;
+    final name = dish.getName(lang).trim();
     if (name.isEmpty) return t.homeNearbyQuery;
     return '$name ${t.homeNearbyQuery}';
   }
@@ -93,6 +94,8 @@ class _DishDetailPageState extends State<DishDetailPage> {
             if (c.error != null) return DishDetailErrorView(message: c.error!);
             final dish = c.dish;
             if (dish == null) return const DishDetailNotFoundView();
+            final lang = Localizations.localeOf(context).languageCode;
+            final dishName = dish.getName(lang);
 
             final images = _buildImages(dish);
             final favoriteController = context.watch<FavoriteController>();
@@ -118,7 +121,7 @@ class _DishDetailPageState extends State<DishDetailPage> {
                     duration: const Duration(milliseconds: 250),
                     opacity: _isCollapsed ? 1 : 0,
                     child: Text(
-                      dish.name,
+                      dishName,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.center,

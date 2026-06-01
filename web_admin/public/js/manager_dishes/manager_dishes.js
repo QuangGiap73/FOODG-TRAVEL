@@ -13,6 +13,15 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentPage = 1;
   let currentList = [];
 
+  function i18nText(value, lang = 'vi') {
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+      const vi = String(value.vi || '').trim();
+      const en = String(value.en || '').trim();
+      return lang === 'en' ? (en || vi) : (vi || en);
+    }
+    return String(value || '').trim();
+  }
+
   async function loadDishes() {
     if (!tbody) return;
     const q = encodeURIComponent((searchInput?.value || '').trim());
@@ -100,17 +109,17 @@ document.addEventListener('DOMContentLoaded', () => {
           : [];
         const img = images[0] || item.Img || item.img || item.imageUrl || '';
 
-        const name = item.Name || item.name || '';
+        const name = i18nText(item.Name || item.name, 'vi');
         const slug = item.slug || '';
-        const region = item.region_code || '';
-        const province = item.province_code || '';
-        const cat = item.category || '';
+        const region = i18nText(item.region_code || '', 'vi');
+        const province = i18nText(item.province_code || '', 'vi');
+        const cat = i18nText(item.category || '', 'vi');
         const price = item.price_range || '';
         const spicy = item.spicy_level != null ? item.spicy_level : '';
         const satiety = item.satiety_level != null ? item.satiety_level : '';
-        const bestTime = item.Best_time || item.best_time || '';
-        const bestSeason = item.Best_season || item.best_season || '';
-        const tags = item.Tags || item.tags || '';
+        const bestTime = i18nText(item.Best_time || item.best_time || '', 'vi');
+        const bestSeason = i18nText(item.Best_season || item.best_season || '', 'vi');
+        const tags = i18nText(item.Tags || item.tags || '', 'vi');
         const rowNum = item.STT || offset + idx + 1;
         const id = item.id || rowNum;
 

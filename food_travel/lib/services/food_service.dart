@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import '../models/dish_model.dart';
 import '../models/province_model.dart';
 
-/// Service truy cập dữ liệu món ăn/tỉnh thành.
+/// Service truy cap du lieu mon an/tinh thanh.
 class FoodService {
   FoodService._internal();
   static final FoodService _instance = FoodService._internal();
@@ -12,15 +12,13 @@ class FoodService {
 
   final _db = FirebaseFirestore.instance;
 
-  /// Lắng nghe danh sách tỉnh (sắp xếp theo tên).
+  /// Lang nghe danh sach tinh (sap xep theo ten).
   Stream<List<ProvinceModel>> watchProvinces() {
     return _db
         .collection('provinces')
         .orderBy('name')
         .snapshots()
-        .map(
-          (snapshot) => snapshot.docs.map(ProvinceModel.fromDoc).toList(),
-        );
+        .map((snapshot) => snapshot.docs.map(ProvinceModel.fromDoc).toList());
   }
 
   Stream<ProvinceModel?> watchProvinceById(String id) {
@@ -31,17 +29,26 @@ class FoodService {
         .map((doc) => doc.exists ? ProvinceModel.fromDoc(doc) : null);
   }
 
-  /// Lấy món ăn theo mã tỉnh.
+  /// Lay mon an theo ma tinh.
+  /// Ho tro ca schema cu (province_code: String) va moi (province_code: {vi,en}).
   Stream<List<DishModel>> watchDishesByProvince(String provinceCode) {
-    return _db
-        .collection('dishes')
-        .where('province_code', isEqualTo: provinceCode)
-        .limit(20)
-        .snapshots()
-        .map((snapshot) => snapshot.docs.map(DishModel.fromDoc).toList());
+    final normalizedTarget = _normalize(provinceCode);
+    if (normalizedTarget.isEmpty) return Stream.value(const <DishModel>[]);
+
+    return _db.collection('dishes').limit(300).snapshots().map((snapshot) {
+      final all = snapshot.docs.map(DishModel.fromDoc).toList();
+      return all.where((dish) {
+        final vi = _normalize(dish.provinceI18n['vi'] ?? dish.provinceCode);
+        final en = _normalize(dish.provinceI18n['en'] ?? '');
+        final raw = _normalize(dish.provinceCode);
+        return vi == normalizedTarget ||
+            en == normalizedTarget ||
+            raw == normalizedTarget;
+      }).take(20).toList();
+    });
   }
 
-  /// Lấy một món ăn theo id.
+  /// Lay mot mon an theo id.
   Stream<DishModel?> watchDishById(String id) {
     return _db
         .collection('dishes')
@@ -50,7 +57,7 @@ class FoodService {
         .map((doc) => doc.exists ? DishModel.fromDoc(doc) : null);
   }
 
-  /// Lấy món theo nhiều biến thể mã tỉnh (code/id/name/slug...).
+  /// Lay mon theo nhieu bien the ma tinh (code/id/name/slug...).
   Stream<List<DishModel>> watchDishesByProvinceKeys(
     Iterable<String> provinceKeys,
   ) {
@@ -67,34 +74,25 @@ class FoodService {
         .toSet()
         .toList();
 
-    debugPrint('[FoodService] query province_code keys=$keys');
+    debugPrint('[FoodService] query province keys=$keys');
     if (keys.isEmpty) return Stream.value(const <DishModel>[]);
 
-    final limitedKeys = keys.length > 10 ? keys.sublist(0, 10) : keys;
+    final keySet = keys.map(_normalize).where((e) => e.isNotEmpty).toSet();
 
-    return _db
-        .collection('dishes')
-        .where('province_code', whereIn: limitedKeys)
-        .limit(20)
-        .snapshots()
-        .map((snap) => snap.docs.map(DishModel.fromDoc).toList())
-        .asyncExpand((first) {
-          if (first.isNotEmpty || keys.length <= 10) {
-            return Stream.value(first);
-          }
-          final remaining =
-              keys.sublist(10, keys.length > 20 ? 20 : keys.length);
-          return _db
-              .collection('dishes')
-              .where('province_code', whereIn: remaining)
-              .limit(20)
-              .snapshots()
-              .map((snap) => snap.docs.map(DishModel.fromDoc).toList())
-              .map((second) => first.isNotEmpty ? first : second);
-        });
+    return _db.collection('dishes').limit(500).snapshots().map((snap) {
+      final all = snap.docs.map(DishModel.fromDoc).toList();
+      return all.where((dish) {
+        final candidates = <String>{
+          _normalize(dish.provinceCode),
+          _normalize(dish.provinceI18n['vi'] ?? ''),
+          _normalize(dish.provinceI18n['en'] ?? ''),
+        };
+        return candidates.any(keySet.contains);
+      }).take(20).toList();
+    });
   }
 
-  /// Tìm kiếm món ăn theo text (không dấu), ưu tiên tỉnh nếu có.
+  /// Tim kiem mon an theo text (khong dau), uu tien tinh neu co.
   Future<List<DishModel>> searchDishes({
     required String query,
     String? provinceCode,
@@ -103,24 +101,36 @@ class FoodService {
     final normalized = _normalize(query);
     if (normalized.isEmpty) return const [];
 
-    Query ref = _db.collection('dishes');
-    if (provinceCode != null && provinceCode.trim().isNotEmpty) {
-      ref = ref.where('province_code', isEqualTo: provinceCode.trim());
-    }
+    final normalizedProvince = _normalize(provinceCode ?? '');
 
-    // Lấy rộng hơn rồi lọc client vì Firestore chưa full-text.
-    final snap = await ref.limit(limit * 2).get();
+    // Lay rong hon roi loc client vi Firestore chua full-text.
+    final snap = await _db.collection('dishes').limit(limit * 6).get();
     return snap.docs
         .map(DishModel.fromDoc)
         .where((d) {
+          if (normalizedProvince.isEmpty) return true;
+          final vi = _normalize(d.provinceI18n['vi'] ?? d.provinceCode);
+          final en = _normalize(d.provinceI18n['en'] ?? '');
+          final raw = _normalize(d.provinceCode);
+          return vi == normalizedProvince ||
+              en == normalizedProvince ||
+              raw == normalizedProvince;
+        })
+        .where((d) {
           final name = d.name.toLowerCase();
+          final nameEn = d.getName('en').toLowerCase();
           final tag = d.tag.toLowerCase();
+          final categoryEn = d.getCategory('en').toLowerCase();
           final slug = d.slug.toLowerCase();
           final normName = _normalize(d.name);
+          final normNameEn = _normalize(d.getName('en'));
           return name.contains(normalized) ||
+              nameEn.contains(normalized) ||
               tag.contains(normalized) ||
+              categoryEn.contains(normalized) ||
               slug.contains(normalized) ||
-              normName.contains(normalized);
+              normName.contains(normalized) ||
+              normNameEn.contains(normalized);
         })
         .take(limit)
         .toList();

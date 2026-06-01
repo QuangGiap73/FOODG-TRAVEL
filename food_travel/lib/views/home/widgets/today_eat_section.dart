@@ -136,8 +136,9 @@ class _TodayEatSectionState extends State<TodayEatSection> {
                     runSpacing: 8,
                     children: List.generate(picks.length, (index) {
                       final dish = picks[index];
+                      final lang = Localizations.localeOf(context).languageCode;
                       return _DishTabChip(
-                        label: _twoWordLabel(dish.name, t),
+                        label: _twoWordLabel(dish.getName(lang), t),
                         isActive: selected == index,
                         onTap: () {
                           setState(() => _selectedIndex = index);

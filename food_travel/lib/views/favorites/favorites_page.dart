@@ -72,6 +72,7 @@ class _FavoriteDishCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final lang = Localizations.localeOf(context).languageCode;
     final imageUrl = dish.imageUrl;
 
     return Container(
@@ -129,7 +130,7 @@ class _FavoriteDishCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 8, 10, 4),
               child: Text(
-                dish.name,
+                dish.getName(lang),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.bodyLarge?.copyWith(

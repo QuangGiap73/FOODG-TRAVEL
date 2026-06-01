@@ -194,6 +194,22 @@
     if (el) el.textContent = value;
   }
 
+  function i18nText(value, lang = 'vi') {
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+      const vi = String(value.vi || '').trim();
+      const en = String(value.en || '').trim();
+      return lang === 'en' ? (en || vi) : (vi || en);
+    }
+    return String(value || '').trim();
+  }
+
+  function toI18n(value, previous) {
+    const vi = String(value || '').trim();
+    const prevEn = previous && typeof previous === 'object' ? String(previous.en || '').trim() : '';
+    const prevVi = previous && typeof previous === 'object' ? String(previous.vi || '').trim() : '';
+    return { vi: vi || prevVi, en: prevEn };
+  }
+
   function formatDate(val) {
     if (!val) return '-';
     if (typeof val === 'object' && val._seconds) {
@@ -209,7 +225,7 @@
       const cleaned = val.map((tag) => String(tag).trim()).filter(Boolean);
       return cleaned.length ? cleaned.join(', ') : '-';
     }
-    const text = String(val).trim();
+    const text = i18nText(val, 'vi');
     return text || '-';
   }
 
@@ -262,18 +278,18 @@
   function openDishDetail(dish) {
     if (!detailModal || !dish) return;
     const dishId = dish.id || dish.ID || dish.Stt || dish.STT || '';
-    const name = dish.Name || dish.name || '-';
+    const name = i18nText(dish.Name || dish.name, 'vi') || '-';
     const slug = dish.slug || '';
-    const region = dish.region_name || dish.region || dish.region_code || '';
-    const province = dish.province_name || dish.province || dish.province_code || '';
-    const category = dish.category || '';
-    const price = dish.price_range || '';
-    const bestTime = dish.Best_time || dish.best_time || '';
-    const bestSeason = dish.Best_season || dish.best_season || '';
-    const tags = dish.Tags || dish.tags || '';
+    const region = i18nText(dish.region_name || dish.region || dish.region_code || '', 'vi');
+    const province = i18nText(dish.province_name || dish.province || dish.province_code || '', 'vi');
+    const category = i18nText(dish.category || '', 'vi');
+    const price = i18nText(dish.price_range || '', 'vi');
+    const bestTime = i18nText(dish.Best_time || dish.best_time || '', 'vi');
+    const bestSeason = i18nText(dish.Best_season || dish.best_season || '', 'vi');
+    const tags = i18nText(dish.Tags || dish.tags || '', 'vi');
     const spicy = dish.spicy_level;
     const satiety = dish.satiety_level;
-    const desc = dish.description || dish.desc || '';
+    const desc = i18nText(dish.description || dish.desc || '', 'vi');
     const created = dish.createdAt || dish.created_at || '';
     const updated = dish.updatedAt || dish.updated_at || '';
     const images = normalizeDishImages(dish);
@@ -316,7 +332,7 @@
       return;
     }
     if (!detailModal) {
-      alert(`Mon: ${dish.Name || dish.name || id}`);
+      alert(`Mon: ${i18nText(dish.Name || dish.name, 'vi') || id}`);
       return;
     }
     openDishDetail(dish);
@@ -331,19 +347,19 @@
     errorEl && (errorEl.textContent = '');
     form?.reset();
     if (f.id) f.id.value = dish.id || '';
-    if (f.name) f.name.value = dish.Name || dish.name || '';
+    if (f.name) f.name.value = i18nText(dish.Name || dish.name, 'vi');
     if (f.slug) f.slug.value = dish.slug || '';
-    if (f.province) f.province.value = dish.province_code || '';
-    if (f.region) f.region.value = dish.region_code || '';
-    if (f.category) f.category.value = dish.category || '';
-    if (f.price) f.price.value = dish.price_range || '';
-    if (f.bestTime) f.bestTime.value = dish.Best_time || dish.best_time || '';
-    if (f.bestSeason) f.bestSeason.value = dish.Best_season || dish.best_season || '';
-    if (f.tags) f.tags.value = dish.Tags || dish.tags || '';
+    if (f.province) f.province.value = i18nText(dish.province_code || '', 'vi');
+    if (f.region) f.region.value = i18nText(dish.region_code || '', 'vi');
+    if (f.category) f.category.value = i18nText(dish.category || '', 'vi');
+    if (f.price) f.price.value = i18nText(dish.price_range || '', 'vi');
+    if (f.bestTime) f.bestTime.value = i18nText(dish.Best_time || dish.best_time || '', 'vi');
+    if (f.bestSeason) f.bestSeason.value = i18nText(dish.Best_season || dish.best_season || '', 'vi');
+    if (f.tags) f.tags.value = i18nText(dish.Tags || dish.tags || '', 'vi');
     if (f.spicy) f.spicy.value = dish.spicy_level ?? '';
     if (f.satiety) f.satiety.value = dish.satiety_level ?? '';
     if (f.img) f.img.value = dish.Img || dish.img || dish.imageUrl || '';
-    if (f.desc) f.desc.value = dish.description || '';
+    if (f.desc) f.desc.value = i18nText(dish.description || '', 'vi');
 
     editSelectedFiles = [];
     const existing = Array.isArray(dish.Images || dish.images || dish.imageUrls)
@@ -376,6 +392,7 @@
   async function saveDish() {
     if (!f.id || !f.name) return;
     const id = f.id.value || '';
+    const existingDish = cache.find((d) => String(d.id || d.STT) === String(id)) || {};
     let uploadedUrls = [];
     if(editSelectedFiles.length){
       try{
@@ -394,23 +411,23 @@
     const allImages = [...editExistingUrls, ...uploadedUrls].filter(Boolean);
     const primaryImg = allImages[0] || manualUrl || '';
     const payload = {
-      Name: f.name.value.trim(),
+      Name: toI18n(f.name.value.trim(), existingDish.Name || existingDish.name),
       slug: f.slug.value.trim(),
-      province_code: f.province.value.trim(),
-      region_code: f.region.value.trim(),
-      category: f.category.value.trim(),
-      price_range: f.price.value.trim(),
-      Best_time: f.bestTime.value.trim(),
-      Best_season: f.bestSeason.value.trim(),
-      Tags: f.tags.value.trim(),
+      province_code: toI18n(f.province.value.trim(), existingDish.province_code),
+      region_code: toI18n(f.region.value.trim(), existingDish.region_code),
+      category: toI18n(f.category.value.trim(), existingDish.category),
+      price_range: toI18n(f.price.value.trim(), existingDish.price_range),
+      Best_time: toI18n(f.bestTime.value.trim(), existingDish.Best_time || existingDish.best_time),
+      Best_season: toI18n(f.bestSeason.value.trim(), existingDish.Best_season || existingDish.best_season),
+      Tags: toI18n(f.tags.value.trim(), existingDish.Tags || existingDish.tags),
       spicy_level: Number(f.spicy.value || 0),
       satiety_level: Number(f.satiety.value || 0),
       Img: primaryImg,
       Images: allImages,
-      description: f.desc.value.trim(),
+      description: toI18n(f.desc.value.trim(), existingDish.description),
       updatedAt: new Date().toISOString(),
     };
-    if (!payload.Name) {
+    if (!payload.Name?.vi) {
       errorEl && (errorEl.textContent = 'Ten mon bat buoc');
       return;
     }
@@ -452,23 +469,23 @@
     const primaryImg = allImages[0] || '';
     const payload = {
       id: a.id.value.trim(),
-      Name: a.name.value.trim(),
+      Name: toI18n(a.name.value.trim()),
       slug: a.slug.value.trim(),
-      province_code: a.province.value.trim(),
-      region_code: a.region.value.trim(),
-      category: a.category.value.trim(),
-      price_range: a.price.value.trim(),
-      Best_time: a.bestTime.value.trim(),
-      Best_season: a.bestSeason.value.trim(),
-      Tags: a.tags.value.trim(),
+      province_code: toI18n(a.province.value.trim()),
+      region_code: toI18n(a.region.value.trim()),
+      category: toI18n(a.category.value.trim()),
+      price_range: toI18n(a.price.value.trim()),
+      Best_time: toI18n(a.bestTime.value.trim()),
+      Best_season: toI18n(a.bestSeason.value.trim()),
+      Tags: toI18n(a.tags.value.trim()),
       spicy_level: Number(a.spicy.value || 0),
       satiety_level: Number(a.satiety.value || 0),
       Img: primaryImg,
       Images: allImages,
-      description: a.desc.value.trim(),
+      description: toI18n(a.desc.value.trim()),
       createdAt: new Date().toISOString(),
     };
-    if (!payload.id || !payload.Name) {
+    if (!payload.id || !payload.Name?.vi) {
       addError && (addError.textContent = 'Id va Ten la bat buoc');
       return;
     }
