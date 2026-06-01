@@ -484,16 +484,28 @@ class AppLocalizationsVi extends AppLocalizations {
   String get favoritesLoginRequired => 'Vui long dang nhap de xem muc da luu.';
 
   @override
-  String get favoritesTitle => 'Luu';
+  String get favoritesTitle => 'Lưu yêu thích';
 
   @override
-  String get favoritesSubtitle => 'Tat ca muc da luu';
+  String get favoritesSubtitle => 'Món ngon và quán bạn muốn thử';
 
   @override
-  String get favoritesTabDishes => 'Mon an';
+  String get favoritesTabDishes => 'Món ăn';
 
   @override
-  String get favoritesTabPlaces => 'Quan an';
+  String get favoritesTabPlaces => 'Quán ăn';
+
+  @override
+  String get favoritesSearchHint => 'Tìm món ăn, quán đã lưu...';
+
+  @override
+  String get favoritesStatSavedDishes => 'món đã lưu';
+
+  @override
+  String get favoritesStatSavedPlaces => 'quán yêu thích';
+
+  @override
+  String get favoritesStatTodaySuggestions => 'gợi ý hôm nay';
 
   @override
   String get favoritesFilterCentral => 'Mien Trung';

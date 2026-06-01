@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:food_travel/l10n/app_localizations.dart';
 
@@ -182,12 +184,9 @@ class _DishCard extends StatelessWidget {
                               color: const Color(0xFFF97316),
                               borderRadius: BorderRadius.circular(999),
                             ),
-                            child: Text(
-                              tag,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              softWrap: false,
-                              style: const TextStyle(
+                            child: _AutoMarqueeText(
+                              text: tag,
+                              textStyle: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 10,
                                 fontWeight: FontWeight.w700,
@@ -249,6 +248,80 @@ class _DishCard extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _AutoMarqueeText extends StatefulWidget {
+  const _AutoMarqueeText({
+    required this.text,
+    required this.textStyle,
+  });
+
+  final String text;
+  final TextStyle textStyle;
+
+  @override
+  State<_AutoMarqueeText> createState() => _AutoMarqueeTextState();
+}
+
+class _AutoMarqueeTextState extends State<_AutoMarqueeText> {
+  final ScrollController _controller = ScrollController();
+  Timer? _timer;
+  bool _forward = true;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _startMarquee());
+  }
+
+  @override
+  void didUpdateWidget(covariant _AutoMarqueeText oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.text != widget.text) {
+      _timer?.cancel();
+      WidgetsBinding.instance.addPostFrameCallback((_) => _startMarquee());
+    }
+  }
+
+  void _startMarquee() {
+    if (!mounted || !_controller.hasClients) return;
+    final max = _controller.position.maxScrollExtent;
+    if (max <= 0) return;
+
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 3), (_) async {
+      if (!mounted || !_controller.hasClients) return;
+      final target = _forward ? _controller.position.maxScrollExtent : 0.0;
+      _forward = !_forward;
+      await _controller.animateTo(
+        target,
+        duration: const Duration(milliseconds: 1300),
+        curve: Curves.easeInOut,
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      controller: _controller,
+      scrollDirection: Axis.horizontal,
+      physics: const NeverScrollableScrollPhysics(),
+      child: Text(
+        widget.text,
+        maxLines: 1,
+        softWrap: false,
+        style: widget.textStyle,
       ),
     );
   }

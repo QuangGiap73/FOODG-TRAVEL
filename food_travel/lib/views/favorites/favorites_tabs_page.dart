@@ -29,13 +29,13 @@ class _FavoritesTabsPageState extends State<FavoritesTabsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final t = AppLocalizations.of(context);
+    final t = AppLocalizations.of(context)!;
     final user = FirebaseAuth.instance.currentUser;
 
     if (user == null) {
       return Scaffold(
         body: Center(
-          child: Text(t?.favoritesLoginRequired ?? 'Bạn cần đăng nhập để xem mục đã lưu'),
+          child: Text(t.favoritesLoginRequired),
         ),
       );
     }
@@ -66,10 +66,10 @@ class _FavoritesTabsPageState extends State<FavoritesTabsPage> {
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(0, 0, 0, 12),
                         child: _HeroHeader(
-                          title: 'Lưu yêu thích',
-                          subtitle: 'Món ngon và quán bạn muốn thử',
-                          dishLabel: t?.favoritesTabDishes ?? 'Món ăn',
-                          placeLabel: t?.favoritesTabPlaces ?? 'Quán ăn',
+                          title: t.favoritesTitle,
+                          subtitle: t.favoritesSubtitle,
+                          dishLabel: t.favoritesTabDishes,
+                          placeLabel: t.favoritesTabPlaces,
                           tabIndex: _tabIndex,
                           onTabChanged: (i) {
                             if (_tabIndex == i) return;
@@ -77,6 +77,10 @@ class _FavoritesTabsPageState extends State<FavoritesTabsPage> {
                           },
                           dishCount: dishCount,
                           placeCount: placeCount,
+                          searchHint: t.favoritesSearchHint,
+                          savedDishesLabel: t.favoritesStatSavedDishes,
+                          savedPlacesLabel: t.favoritesStatSavedPlaces,
+                          todaySuggestionsLabel: t.favoritesStatTodaySuggestions,
                           searchController: _searchController,
                           onSearchChanged: (value) {
                             setState(() => _query = value.trim());
@@ -121,6 +125,10 @@ class _HeroHeader extends StatelessWidget {
     required this.onTabChanged,
     required this.dishCount,
     required this.placeCount,
+    required this.searchHint,
+    required this.savedDishesLabel,
+    required this.savedPlacesLabel,
+    required this.todaySuggestionsLabel,
     required this.searchController,
     required this.onSearchChanged,
   });
@@ -133,6 +141,10 @@ class _HeroHeader extends StatelessWidget {
   final ValueChanged<int> onTabChanged;
   final int dishCount;
   final int placeCount;
+  final String searchHint;
+  final String savedDishesLabel;
+  final String savedPlacesLabel;
+  final String todaySuggestionsLabel;
   final TextEditingController searchController;
   final ValueChanged<String> onSearchChanged;
 
@@ -241,6 +253,7 @@ class _HeroHeader extends StatelessWidget {
                     const SizedBox(height: 16),
                     _SearchBarCard(
                       isDark: isDark,
+                      hint: searchHint,
                       controller: searchController,
                       onChanged: onSearchChanged,
                     ),
@@ -255,6 +268,9 @@ class _HeroHeader extends StatelessWidget {
                     _StatsStrip(
                       dishCount: dishCount,
                       placeCount: placeCount,
+                      savedDishesLabel: savedDishesLabel,
+                      savedPlacesLabel: savedPlacesLabel,
+                      todaySuggestionsLabel: todaySuggestionsLabel,
                       isDark: isDark,
                     ),
                   ],
@@ -324,11 +340,13 @@ class _MascotImage extends StatelessWidget {
 class _SearchBarCard extends StatelessWidget {
   const _SearchBarCard({
     required this.isDark,
+    required this.hint,
     required this.controller,
     required this.onChanged,
   });
 
   final bool isDark;
+  final String hint;
   final TextEditingController controller;
   final ValueChanged<String> onChanged;
 
@@ -369,7 +387,7 @@ class _SearchBarCard extends StatelessWidget {
                     color: isDark ? const Color(0xFFE2E8F0) : const Color(0xFF334155),
                   ),
               decoration: InputDecoration(
-                hintText: 'Tìm món ăn, quán đã lưu...',
+                hintText: hint,
                 border: InputBorder.none,
                 isDense: true,
                 hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -527,11 +545,17 @@ class _StatsStrip extends StatelessWidget {
   const _StatsStrip({
     required this.dishCount,
     required this.placeCount,
+    required this.savedDishesLabel,
+    required this.savedPlacesLabel,
+    required this.todaySuggestionsLabel,
     required this.isDark,
   });
 
   final int dishCount;
   final int placeCount;
+  final String savedDishesLabel;
+  final String savedPlacesLabel;
+  final String todaySuggestionsLabel;
   final bool isDark;
 
   @override
@@ -559,7 +583,7 @@ class _StatsStrip extends StatelessWidget {
             child: _StatBlock(
               icon: Icons.bookmark_border_rounded,
               value: dishCount,
-              label: 'món đã lưu',
+              label: savedDishesLabel,
               isDark: isDark,
             ),
           ),
@@ -567,7 +591,7 @@ class _StatsStrip extends StatelessWidget {
             child: _StatBlock(
               icon: Icons.favorite_border_rounded,
               value: placeCount,
-              label: 'quán yêu thích',
+              label: savedPlacesLabel,
               isDark: isDark,
             ),
           ),
@@ -575,7 +599,7 @@ class _StatsStrip extends StatelessWidget {
             child: _StatBlock(
               icon: Icons.auto_awesome_rounded,
               value: 3,
-              label: 'gợi ý hôm nay',
+              label: todaySuggestionsLabel,
               isDark: isDark,
             ),
           ),

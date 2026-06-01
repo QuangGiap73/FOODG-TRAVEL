@@ -499,6 +499,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get favoritesTabPlaces => 'Places';
 
   @override
+  String get favoritesSearchHint => 'Search saved dishes and places...';
+
+  @override
+  String get favoritesStatSavedDishes => 'saved dishes';
+
+  @override
+  String get favoritesStatSavedPlaces => 'favorite places';
+
+  @override
+  String get favoritesStatTodaySuggestions => 'today suggestions';
+
+  @override
   String get favoritesFilterCentral => 'Central';
 
   @override

@@ -1016,6 +1016,30 @@ abstract class AppLocalizations {
   /// **'Places'**
   String get favoritesTabPlaces;
 
+  /// No description provided for @favoritesSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search saved dishes and places...'**
+  String get favoritesSearchHint;
+
+  /// No description provided for @favoritesStatSavedDishes.
+  ///
+  /// In en, this message translates to:
+  /// **'saved dishes'**
+  String get favoritesStatSavedDishes;
+
+  /// No description provided for @favoritesStatSavedPlaces.
+  ///
+  /// In en, this message translates to:
+  /// **'favorite places'**
+  String get favoritesStatSavedPlaces;
+
+  /// No description provided for @favoritesStatTodaySuggestions.
+  ///
+  /// In en, this message translates to:
+  /// **'today suggestions'**
+  String get favoritesStatTodaySuggestions;
+
   /// No description provided for @favoritesFilterCentral.
   ///
   /// In en, this message translates to:
