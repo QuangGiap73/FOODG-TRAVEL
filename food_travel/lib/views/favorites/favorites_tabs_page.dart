@@ -49,13 +49,14 @@ class _FavoritesTabsPageState extends State<FavoritesTabsPage> {
             return Scaffold(
               backgroundColor: bg,
               body: SafeArea(
+                top: false,
                 bottom: false,
                 child: CustomScrollView(
                   physics: const BouncingScrollPhysics(),
                   slivers: [
                     SliverToBoxAdapter(
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 12),
                         child: _HeroHeader(
                           title: 'Lưu yêu thích',
                           subtitle: 'Món ngon và quán bạn muốn thử',
@@ -121,12 +122,12 @@ class _HeroHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final topInset = MediaQuery.paddingOf(context).top;
 
     return Column(
       children: [
         Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(28),
             gradient: isDark
                 ? const LinearGradient(
                     colors: [
@@ -158,7 +159,6 @@ class _HeroHeader extends StatelessWidget {
               ),
             ],
           ),
-          clipBehavior: Clip.antiAlias,
           child: Stack(
             children: [
               Positioned(
@@ -181,7 +181,7 @@ class _HeroHeader extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
+                padding: EdgeInsets.fromLTRB(18, topInset + 12, 18, 18),
                 child: Column(
                   children: [
                     Row(
