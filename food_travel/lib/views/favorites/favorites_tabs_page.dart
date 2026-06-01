@@ -18,6 +18,14 @@ class FavoritesTabsPage extends StatefulWidget {
 
 class _FavoritesTabsPageState extends State<FavoritesTabsPage> {
   int _tabIndex = 0;
+  String _query = '';
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +42,7 @@ class _FavoritesTabsPageState extends State<FavoritesTabsPage> {
 
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final bg = isDark ? const Color(0xFF0D1218) : const Color(0xFFFFFBF7);
+    final bg = isDark ? const Color(0xFF0D1218) : Colors.white;
 
     return StreamBuilder<List<DishModel>>(
       stream: FavoriteService().watchFavoriteDishes(user.uid),
@@ -69,6 +77,10 @@ class _FavoritesTabsPageState extends State<FavoritesTabsPage> {
                           },
                           dishCount: dishCount,
                           placeCount: placeCount,
+                          searchController: _searchController,
+                          onSearchChanged: (value) {
+                            setState(() => _query = value.trim());
+                          },
                         ),
                       ),
                     ),
@@ -79,10 +91,12 @@ class _FavoritesTabsPageState extends State<FavoritesTabsPage> {
                             ? FavoriteDishesTab(
                                 key: const ValueKey('dish-tab'),
                                 uid: user.uid,
+                                query: _query,
                               )
                             : FavoritePlacesTab(
                                 key: const ValueKey('place-tab'),
                                 uid: user.uid,
+                                query: _query,
                               ),
                       ),
                     ),
@@ -107,6 +121,8 @@ class _HeroHeader extends StatelessWidget {
     required this.onTabChanged,
     required this.dishCount,
     required this.placeCount,
+    required this.searchController,
+    required this.onSearchChanged,
   });
 
   final String title;
@@ -117,6 +133,8 @@ class _HeroHeader extends StatelessWidget {
   final ValueChanged<int> onTabChanged;
   final int dishCount;
   final int placeCount;
+  final TextEditingController searchController;
+  final ValueChanged<String> onSearchChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -221,7 +239,11 @@ class _HeroHeader extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 16),
-                    _SearchBarCard(isDark: isDark),
+                    _SearchBarCard(
+                      isDark: isDark,
+                      controller: searchController,
+                      onChanged: onSearchChanged,
+                    ),
                     const SizedBox(height: 12),
                     _TabSwitcher(
                       index: tabIndex,
@@ -300,9 +322,15 @@ class _MascotImage extends StatelessWidget {
 }
 
 class _SearchBarCard extends StatelessWidget {
-  const _SearchBarCard({required this.isDark});
+  const _SearchBarCard({
+    required this.isDark,
+    required this.controller,
+    required this.onChanged,
+  });
 
   final bool isDark;
+  final TextEditingController controller;
+  final ValueChanged<String> onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -332,15 +360,24 @@ class _SearchBarCard extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(
-              'Tìm món ăn, quán đã lưu...',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+            child: TextField(
+              controller: controller,
+              onChanged: onChanged,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
-                    color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF7A8699),
+                    color: isDark ? const Color(0xFFE2E8F0) : const Color(0xFF334155),
                   ),
+              decoration: InputDecoration(
+                hintText: 'Tìm món ăn, quán đã lưu...',
+                border: InputBorder.none,
+                isDense: true,
+                hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF7A8699),
+                    ),
+              ),
             ),
           ),
           Container(
@@ -526,7 +563,6 @@ class _StatsStrip extends StatelessWidget {
               isDark: isDark,
             ),
           ),
-          _DividerLine(isDark: isDark),
           Expanded(
             child: _StatBlock(
               icon: Icons.favorite_border_rounded,
@@ -535,13 +571,12 @@ class _StatsStrip extends StatelessWidget {
               isDark: isDark,
             ),
           ),
-          _DividerLine(isDark: isDark),
-          const Expanded(
+          Expanded(
             child: _StatBlock(
               icon: Icons.auto_awesome_rounded,
               value: 3,
               label: 'gợi ý hôm nay',
-              isDark: false,
+              isDark: isDark,
             ),
           ),
         ],
@@ -623,7 +658,7 @@ class _StatBlock extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: 10.5,
+                  fontSize: 9.5,
                   fontWeight: FontWeight.w500,
                   color: effectiveDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
                 ),

@@ -7,9 +7,14 @@ import '../place_detail_page.dart';
 
 // Tab Quan an: hien thi danh sach quan yeu thich
 class FavoritePlacesTab extends StatelessWidget {
-  const FavoritePlacesTab({super.key, required this.uid});
+  const FavoritePlacesTab({
+    super.key,
+    required this.uid,
+    this.query = '',
+  });
 
   final String uid;
+  final String query;
 
   @override
   Widget build(BuildContext context) {
@@ -25,17 +30,29 @@ class FavoritePlacesTab extends StatelessWidget {
         }
 
         final places = snapshot.data ?? [];
-        if (places.isEmpty) {
+        final q = query.trim().toLowerCase();
+        final filtered = q.isEmpty
+            ? places
+            : places.where((p) {
+                final name = p.name.toLowerCase();
+                final address = p.address.toLowerCase();
+                final price = (p.price ?? '').toLowerCase();
+                return name.contains(q) ||
+                    address.contains(q) ||
+                    price.contains(q);
+              }).toList();
+
+        if (filtered.isEmpty) {
           return Center(child: Text(t.favoritePlacesEmpty));
         }
 
         return ListView.separated(
-          itemCount: places.length,
+          itemCount: filtered.length,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           separatorBuilder: (_, __) => const SizedBox(height: 10),
           itemBuilder: (context, index) {
-            final place = places[index];
+            final place = filtered[index];
             return _RestaurantCard(
               place: place,
               onRemove: () {

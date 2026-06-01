@@ -7,9 +7,14 @@ import '../../../services/favorite_service.dart';
 
 // Tab mon an: hien thi danh sach mon yeu thich
 class FavoriteDishesTab extends StatelessWidget {
-  const FavoriteDishesTab({super.key, required this.uid});
+  const FavoriteDishesTab({
+    super.key,
+    required this.uid,
+    this.query = '',
+  });
 
   final String uid;
+  final String query;
 
   @override
   Widget build(BuildContext context) {
@@ -25,12 +30,32 @@ class FavoriteDishesTab extends StatelessWidget {
         }
 
         final dishes = snapshot.data ?? [];
-        if (dishes.isEmpty) {
+        final q = query.trim().toLowerCase();
+        final filtered = q.isEmpty
+            ? dishes
+            : dishes.where((d) {
+                final nameVi = d.getName('vi').toLowerCase();
+                final nameEn = d.getName('en').toLowerCase();
+                final catVi = d.getCategory('vi').toLowerCase();
+                final catEn = d.getCategory('en').toLowerCase();
+                final provinceVi = d.getProvince('vi').toLowerCase();
+                final provinceEn = d.getProvince('en').toLowerCase();
+                final slug = d.slug.toLowerCase();
+                return nameVi.contains(q) ||
+                    nameEn.contains(q) ||
+                    catVi.contains(q) ||
+                    catEn.contains(q) ||
+                    provinceVi.contains(q) ||
+                    provinceEn.contains(q) ||
+                    slug.contains(q);
+              }).toList();
+
+        if (filtered.isEmpty) {
           return Center(child: Text(t.favoriteDishesEmpty));
         }
 
         return GridView.builder(
-          itemCount: dishes.length,
+          itemCount: filtered.length,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -40,7 +65,7 @@ class FavoriteDishesTab extends StatelessWidget {
             childAspectRatio: 0.76,
           ),
           itemBuilder: (context, index) {
-            final dish = dishes[index];
+            final dish = filtered[index];
             return _DishCard(
               dish: dish,
               onRemove: () => FavoriteService().toggleFavorite(uid, dish.id),
