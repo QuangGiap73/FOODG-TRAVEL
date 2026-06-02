@@ -19,6 +19,8 @@ import '../../router/route_names.dart';
 import '../../widgets/app_notice_dialog.dart';
 import 'community_create_post_page.dart';
 import 'post_comments_sheet.dart';
+import 'widgets/community_banner_header.dart';
+import 'widgets/community_quick_composer_card.dart';
 import '../favorites/place_detail_page.dart';
 
 class CommunityFeedPage extends StatefulWidget {
@@ -37,44 +39,6 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
   double? _userLng;
   bool _locLoading = false;
   ProvinceModel? _selectedProvince;
-
-  Future<void> _openCreatePost() async {
-    final result = await Navigator.of(context).push<String>(
-      MaterialPageRoute(builder: (_) => const CommunityCreatePostPage()),
-    );
-
-    if (!mounted) return;
-    final t = AppLocalizations.of(context)!;
-    if (result == CommunityCreatePostPage.resultCreated) {
-      await showAppNoticeDialog(
-        context,
-        title: t.noticeSuccessTitle,
-        message: t.noticePostCreated,
-        confirmText: t.commonConfirm,
-        icon: const Icon(
-          Icons.check_circle_rounded,
-          color: Color(0xFFFF7A00),
-          size: 30,
-        ),
-        barrierDismissible: false,
-      );
-      setState(() {});
-    } else if (result == CommunityCreatePostPage.resultUpdated) {
-      await showAppNoticeDialog(
-        context,
-        title: t.noticeSuccessTitle,
-        message: t.noticePostUpdated,
-        confirmText: t.commonConfirm,
-        icon: const Icon(
-          Icons.check_circle_rounded,
-          color: Color(0xFFFF7A00),
-          size: 30,
-        ),
-        barrierDismissible: false,
-      );
-      setState(() {});
-    }
-  }
 
   @override
   void initState() {
@@ -200,18 +164,63 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
             bottom: false,
             child: Column(
               children: [
-                _CommunityHeader(
+                CommunityBannerHeader(
                   title: t.communityTitle,
                   subtitle: 'Chia sẻ hành trình ẩm thực của bạn',
                   isDark: isDark,
                   onSearchTap: () {},
                   bellAction: _buildHeaderBellAction(),
-                  tabs: [
-                    Tab(text: t.communityTabNewest),
-                    Tab(text: t.communityTabTrending),
-                    Tab(text: t.communityTabNear),
-                    Tab(text: t.communityTabProvince),
-                  ],
+                ),
+                Transform.translate(
+                  offset: const Offset(0, -22),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: CommunityQuickComposerCard(
+                      avatarUrl: FirebaseAuth.instance.currentUser?.photoURL,
+                      onImageTap: () {},
+                      onCheckInTap: () {},
+                      onReviewTap: () {},
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Container(
+                  height: 50,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color:
+                        isDark
+                            ? const Color(0xFF0F1115)
+                            : const Color(0xFFFFFBF7),
+                    border: Border(
+                      bottom: BorderSide(
+                        color:
+                            isDark
+                                ? const Color(0xFF232A33)
+                                : const Color(0xFFFFE6D0),
+                        width: 1,
+                      ),
+                    ),
+                  ),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: TabBar(
+                      isScrollable: true,
+                      labelPadding: const EdgeInsets.symmetric(horizontal: 16),
+                      labelColor:
+                          isDark ? Colors.white : const Color(0xFF0F172A),
+                      unselectedLabelColor:
+                          isDark ? Colors.white60 : const Color(0xFF94A3B8),
+                      indicatorColor: const Color(0xFFF97316),
+                      indicatorWeight: 3,
+                      tabs: [
+                        Tab(text: t.communityTabNewest),
+                        Tab(text: t.communityTabTrending),
+                        Tab(text: t.communityTabNear),
+                        Tab(text: t.communityTabProvince),
+                      ],
+                    ),
+                  ),
                 ),
                 Expanded(
                   child: TabBarView(
@@ -225,11 +234,6 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
                 ),
               ],
             ),
-          ),
-          floatingActionButton: FloatingActionButton(
-            backgroundColor: const Color(0xFFF97316),
-            onPressed: _openCreatePost,
-            child: const Icon(Icons.edit_rounded, size: 24),
           ),
         ),
       ),
@@ -401,7 +405,7 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
   Widget _buildHeaderBellAction() {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid == null) {
-      return _HeaderActionIcon(
+      return CommunityHeaderActionIcon(
         icon: Icons.notifications_none_rounded,
         hasDot: false,
         onTap: () {
@@ -417,7 +421,7 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
         return Stack(
           clipBehavior: Clip.none,
           children: [
-            _HeaderActionIcon(
+            CommunityHeaderActionIcon(
               icon: Icons.notifications_none_rounded,
               hasDot: count > 0,
               onTap: () {
@@ -450,354 +454,6 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
           ],
         );
       },
-    );
-  }
-
-  Widget _buildBellAction() {
-    final uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid == null) {
-      return _ActionIcon(
-        icon: Icons.notifications_none_rounded,
-        onTap: () {
-          // Chua dang nhap thi van mo man thong bao
-          Navigator.pushNamed(context, RouteNames.notifications);
-        },
-      );
-    }
-
-    return StreamBuilder<int>(
-      stream: NotificationService().watchUnreadCount(uid),
-      builder: (context, snapshot) {
-        final count = snapshot.data ?? 0;
-        return Stack(
-          clipBehavior: Clip.none,
-          children: [
-            _ActionIcon(
-              icon: Icons.notifications_none_rounded,
-              onTap: () {
-                Navigator.pushNamed(context, RouteNames.notifications);
-              },
-            ),
-            if (count > 0)
-              Positioned(
-                right: -2,
-                top: -2,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 5,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.redAccent,
-                    borderRadius: BorderRadius.circular(999),
-                  ),
-                  child: Text(
-                    count > 99 ? '99+' : count.toString(),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-              ),
-          ],
-        );
-      },
-    );
-  }
-}
-
-class _CommunityHeader extends StatelessWidget {
-  const _CommunityHeader({
-    required this.title,
-    required this.subtitle,
-    required this.isDark,
-    required this.onSearchTap,
-    required this.bellAction,
-    required this.tabs,
-  });
-
-  final String title;
-  final String subtitle;
-  final bool isDark;
-  final VoidCallback onSearchTap;
-  final Widget bellAction;
-  final List<Widget> tabs;
-
-  @override
-  Widget build(BuildContext context) {
-    final titleColor = isDark ? Colors.white : const Color(0xFF0F172A);
-    final subtitleColor =
-        isDark ? const Color(0xFFCBD5E1) : const Color(0xFF64748B);
-    final topInset = MediaQuery.paddingOf(context).top;
-
-    return Container(
-      color: isDark ? const Color(0xFF0F1115) : const Color(0xFFFFFBF7),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(
-            height: 138 + topInset,
-            width: double.infinity,
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Positioned.fill(
-                  child: Container(
-                    color:
-                        isDark
-                            ? const Color(0xFF1A1F27)
-                            : const Color(0xFFFFF1E2),
-                    child: Image.asset(
-                      'assets/community/community_banner_bg.png',
-                      fit: BoxFit.contain,
-                      alignment: Alignment.centerRight,
-                      errorBuilder: (context, error, stackTrace) {
-                        return const _CommunityHeaderFallbackBg();
-                      },
-                    ),
-                  ),
-                ),
-                Positioned.fill(
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          (isDark ? Colors.black : Colors.white).withOpacity(
-                            isDark ? 0.18 : 0.02,
-                          ),
-                          Colors.transparent,
-                          (isDark ? Colors.black : Colors.white).withOpacity(
-                            isDark ? 0.06 : 0.10,
-                          ),
-                        ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  left: 20,
-                  top: topInset + 12,
-                  right: 126,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.displaySmall?.copyWith(
-                          fontSize: 30,
-                          height: 1,
-                          fontWeight: FontWeight.w900,
-                          color: titleColor,
-                          letterSpacing: -0.8,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        subtitle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontSize: 12,
-                          height: 1.2,
-                          fontWeight: FontWeight.w700,
-                          color: subtitleColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Positioned(top: topInset + 8, right: 52, child: bellAction),
-                Positioned(
-                  top: topInset + 8,
-                  right: 12,
-                  child: _HeaderActionIcon(
-                    icon: Icons.search_rounded,
-                    onTap: onSearchTap,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            height: 50,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF0F1115) : const Color(0xFFFFFBF7),
-              border: Border(
-                bottom: BorderSide(
-                  color:
-                      isDark
-                          ? const Color(0xFF232A33)
-                          : const Color(0xFFFFE6D0),
-                  width: 1,
-                ),
-              ),
-            ),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: TabBar(
-                isScrollable: true,
-                labelPadding: const EdgeInsets.symmetric(horizontal: 16),
-                labelColor: isDark ? Colors.white : const Color(0xFF0F172A),
-                unselectedLabelColor:
-                    isDark ? Colors.white60 : const Color(0xFF94A3B8),
-                indicatorColor: const Color(0xFFF97316),
-                indicatorWeight: 3,
-                tabs: tabs,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _CommunityHeaderFallbackBg extends StatelessWidget {
-  const _CommunityHeaderFallbackBg();
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: _CommunityHeaderFallbackPainter(),
-      child: const SizedBox.expand(),
-    );
-  }
-}
-
-class _CommunityHeaderFallbackPainter extends CustomPainter {
-  const _CommunityHeaderFallbackPainter();
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final bgRect = Offset.zero & size;
-    final bgPaint =
-        Paint()
-          ..shader = const LinearGradient(
-            colors: [Color(0xFFFFD8AD), Color(0xFFFFEAD2), Color(0xFFFFFBF7)],
-            stops: [0.0, 0.55, 1.0],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ).createShader(bgRect);
-
-    canvas.drawRect(bgRect, bgPaint);
-
-    final wavePaint =
-        Paint()
-          ..color = const Color(0xFFFFB15C).withOpacity(0.45)
-          ..style = PaintingStyle.fill;
-
-    final wave =
-        Path()
-          ..moveTo(0, size.height * 0.70)
-          ..cubicTo(
-            size.width * 0.25,
-            size.height * 0.58,
-            size.width * 0.42,
-            size.height * 0.84,
-            size.width * 0.66,
-            size.height * 0.66,
-          )
-          ..cubicTo(
-            size.width * 0.83,
-            size.height * 0.55,
-            size.width * 0.94,
-            size.height * 0.66,
-            size.width,
-            size.height * 0.60,
-          )
-          ..lineTo(size.width, size.height)
-          ..lineTo(0, size.height)
-          ..close();
-
-    canvas.drawPath(wave, wavePaint);
-
-    final frontWavePaint =
-        Paint()
-          ..color = const Color(0xFFFFD9AE).withOpacity(0.65)
-          ..style = PaintingStyle.fill;
-
-    final frontWave =
-        Path()
-          ..moveTo(0, size.height * 0.82)
-          ..cubicTo(
-            size.width * 0.26,
-            size.height * 0.72,
-            size.width * 0.45,
-            size.height * 0.90,
-            size.width * 0.70,
-            size.height * 0.76,
-          )
-          ..cubicTo(
-            size.width * 0.86,
-            size.height * 0.68,
-            size.width * 0.94,
-            size.height * 0.76,
-            size.width,
-            size.height * 0.72,
-          )
-          ..lineTo(size.width, size.height)
-          ..lineTo(0, size.height)
-          ..close();
-
-    canvas.drawPath(frontWave, frontWavePaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class _HeaderActionIcon extends StatelessWidget {
-  const _HeaderActionIcon({
-    required this.icon,
-    required this.onTap,
-    this.hasDot = false,
-  });
-
-  final IconData icon;
-  final VoidCallback onTap;
-  final bool hasDot;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(999),
-        child: SizedBox(
-          width: 36,
-          height: 36,
-          child: Stack(
-            alignment: Alignment.center,
-            clipBehavior: Clip.none,
-            children: [
-              Icon(icon, size: 29, color: const Color(0xFF0F172A)),
-              if (hasDot)
-                Positioned(
-                  top: 5,
-                  right: 4,
-                  child: Container(
-                    width: 8,
-                    height: 8,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFFF6B00),
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }
@@ -1375,34 +1031,6 @@ class _ActionButton extends StatelessWidget {
             Text(label, style: TextStyle(fontSize: 11, color: color)),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _ActionIcon extends StatelessWidget {
-  const _ActionIcon({required this.icon, required this.onTap});
-
-  final IconData icon;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bg = isDark ? const Color(0xFF1A1F27) : const Color(0xFFF8FAFC);
-    final fg = isDark ? Colors.white70 : const Color(0xFF64748B);
-
-    return InkWell(
-      borderRadius: BorderRadius.circular(20),
-      onTap: onTap,
-      child: Container(
-        width: 36,
-        height: 36,
-        decoration: BoxDecoration(
-          color: bg,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Icon(icon, color: fg, size: 20),
       ),
     );
   }
