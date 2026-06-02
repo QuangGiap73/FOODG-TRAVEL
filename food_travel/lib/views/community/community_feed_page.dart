@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -179,56 +178,41 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
     final t = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final bg = isDark ? const Color(0xFF0F1115) : const Color(0xFFF8FAFC);
-    final appBarBg = isDark ? const Color(0xFF0F1115) : Colors.white;
-    final titleColor = isDark ? Colors.white : const Color(0xFF0F172A);
+    final bg = isDark ? const Color(0xFF0F1115) : const Color(0xFFFFFBF7);
 
     return DefaultTabController(
       length: 4,
       child: Scaffold(
         backgroundColor: bg,
-        appBar: AppBar(
-          backgroundColor: appBarBg,
-          surfaceTintColor: appBarBg,
-          elevation: 0,
-          scrolledUnderElevation: 0,
-          title: Text(
-            t.communityTitle,
-            style: TextStyle(fontWeight: FontWeight.w700, color: titleColor),
-          ),
-          actions: [
-            _ActionIcon(icon: Icons.search_rounded, onTap: () {}),
-            const SizedBox(width: 6),
-            _buildBellAction(),
-            const SizedBox(width: 10),
-          ],
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(48),
-            child: Align(
-              alignment: Alignment.centerLeft,
-                child: TabBar(
-                  isScrollable: true,
-                  labelColor: isDark ? Colors.white : const Color(0xFF0F172A),
-                  unselectedLabelColor:
-                      isDark ? Colors.white60 : const Color(0xFF94A3B8),
-                  indicatorColor: const Color(0xFFF97316),
-                  tabs: [
-                    Tab(text: t.communityTabNewest),
-                    Tab(text: t.communityTabTrending),
-                    Tab(text: t.communityTabNear),
-                    Tab(text: t.communityTabProvince),
+        body: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              _CommunityHeader(
+                title: t.communityTitle,
+                subtitle: 'Chia sẻ hành trình ẩm thực của bạn',
+                isDark: isDark,
+                onSearchTap: () {},
+                bellAction: _buildHeaderBellAction(),
+                tabs: [
+                  Tab(text: t.communityTabNewest),
+                  Tab(text: t.communityTabTrending),
+                  Tab(text: t.communityTabNear),
+                  Tab(text: t.communityTabProvince),
+                ],
+              ),
+              Expanded(
+                child: TabBarView(
+                  children: [
+                    _buildNewestTab(),
+                    _buildTrendingTab(),
+                    _buildNearYouTab(),
+                    _buildProvinceTab(),
                   ],
                 ),
               ),
-            ),
+            ],
           ),
-        body: TabBarView(
-          children: [
-            _buildNewestTab(),
-            _buildTrendingTab(),
-            _buildNearYouTab(),
-            _buildProvinceTab(),
-          ],
         ),
         floatingActionButton: FloatingActionButton(
           backgroundColor: const Color(0xFFF97316),
@@ -393,6 +377,59 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
     );
   }
 
+  Widget _buildHeaderBellAction() {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) {
+      return _HeaderActionIcon(
+        icon: Icons.notifications_none_rounded,
+        hasDot: false,
+        onTap: () {
+          Navigator.pushNamed(context, RouteNames.notifications);
+        },
+      );
+    }
+
+    return StreamBuilder<int>(
+      stream: NotificationService().watchUnreadCount(uid),
+      builder: (context, snapshot) {
+        final count = snapshot.data ?? 0;
+        return Stack(
+          clipBehavior: Clip.none,
+          children: [
+            _HeaderActionIcon(
+              icon: Icons.notifications_none_rounded,
+              hasDot: count > 0,
+              onTap: () {
+                Navigator.pushNamed(context, RouteNames.notifications);
+              },
+            ),
+            if (count > 0)
+              Positioned(
+                right: -2,
+                top: -2,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: Colors.redAccent,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Text(
+                    count > 99 ? '99+' : count.toString(),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 9,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget _buildBellAction() {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid == null) {
@@ -442,6 +479,299 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
           ],
         );
       },
+    );
+  }
+}
+
+
+class _CommunityHeader extends StatelessWidget {
+  const _CommunityHeader({
+    required this.title,
+    required this.subtitle,
+    required this.isDark,
+    required this.onSearchTap,
+    required this.bellAction,
+    required this.tabs,
+  });
+
+  final String title;
+  final String subtitle;
+  final bool isDark;
+  final VoidCallback onSearchTap;
+  final Widget bellAction;
+  final List<Widget> tabs;
+
+  @override
+  Widget build(BuildContext context) {
+    final titleColor = isDark ? Colors.white : const Color(0xFF0F172A);
+    final subtitleColor =
+        isDark ? const Color(0xFFCBD5E1) : const Color(0xFF64748B);
+
+    return Container(
+      color: isDark ? const Color(0xFF0F1115) : const Color(0xFFFFFBF7),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            height: 138,
+            width: double.infinity,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Positioned.fill(
+                  child: Container(
+                    color: isDark ? const Color(0xFF1A1F27) : const Color(0xFFFFF1E2),
+                    child: Image.asset(
+                      'assets/community/community_banner_bg.png',
+                      fit: BoxFit.contain,
+                      alignment: Alignment.centerRight,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const _CommunityHeaderFallbackBg();
+                      },
+                    ),
+                  ),
+                ),
+                Positioned.fill(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          (isDark ? Colors.black : Colors.white)
+                              .withOpacity(isDark ? 0.18 : 0.02),
+                          Colors.transparent,
+                          (isDark ? Colors.black : Colors.white)
+                              .withOpacity(isDark ? 0.06 : 0.10),
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  left: 20,
+                  top: 36,
+                  right: 126,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style:
+                            Theme.of(context).textTheme.displaySmall?.copyWith(
+                                  fontSize: 30,
+                                  height: 1,
+                                  fontWeight: FontWeight.w900,
+                                  color: titleColor,
+                                  letterSpacing: -0.8,
+                                ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        subtitle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontSize: 12,
+                              height: 1.2,
+                              fontWeight: FontWeight.w700,
+                              color: subtitleColor,
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  top: 10,
+                  right: 52,
+                  child: bellAction,
+                ),
+                Positioned(
+                  top: 10,
+                  right: 12,
+                  child: _HeaderActionIcon(
+                    icon: Icons.search_rounded,
+                    onTap: onSearchTap,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            height: 50,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF0F1115) : const Color(0xFFFFFBF7),
+              border: Border(
+                bottom: BorderSide(
+                  color:
+                      isDark ? const Color(0xFF232A33) : const Color(0xFFFFE6D0),
+                  width: 1,
+                ),
+              ),
+            ),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: TabBar(
+                isScrollable: true,
+                labelPadding: const EdgeInsets.symmetric(horizontal: 16),
+                labelColor: isDark ? Colors.white : const Color(0xFF0F172A),
+                unselectedLabelColor:
+                    isDark ? Colors.white60 : const Color(0xFF94A3B8),
+                indicatorColor: const Color(0xFFF97316),
+                indicatorWeight: 3,
+                tabs: tabs,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CommunityHeaderFallbackBg extends StatelessWidget {
+  const _CommunityHeaderFallbackBg();
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      painter: _CommunityHeaderFallbackPainter(),
+      child: const SizedBox.expand(),
+    );
+  }
+}
+
+class _CommunityHeaderFallbackPainter extends CustomPainter {
+  const _CommunityHeaderFallbackPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final bgRect = Offset.zero & size;
+    final bgPaint = Paint()
+      ..shader = const LinearGradient(
+        colors: [
+          Color(0xFFFFD8AD),
+          Color(0xFFFFEAD2),
+          Color(0xFFFFFBF7),
+        ],
+        stops: [0.0, 0.55, 1.0],
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+      ).createShader(bgRect);
+
+    canvas.drawRect(bgRect, bgPaint);
+
+    final wavePaint = Paint()
+      ..color = const Color(0xFFFFB15C).withOpacity(0.45)
+      ..style = PaintingStyle.fill;
+
+    final wave = Path()
+      ..moveTo(0, size.height * 0.70)
+      ..cubicTo(
+        size.width * 0.25,
+        size.height * 0.58,
+        size.width * 0.42,
+        size.height * 0.84,
+        size.width * 0.66,
+        size.height * 0.66,
+      )
+      ..cubicTo(
+        size.width * 0.83,
+        size.height * 0.55,
+        size.width * 0.94,
+        size.height * 0.66,
+        size.width,
+        size.height * 0.60,
+      )
+      ..lineTo(size.width, size.height)
+      ..lineTo(0, size.height)
+      ..close();
+
+    canvas.drawPath(wave, wavePaint);
+
+    final frontWavePaint = Paint()
+      ..color = const Color(0xFFFFD9AE).withOpacity(0.65)
+      ..style = PaintingStyle.fill;
+
+    final frontWave = Path()
+      ..moveTo(0, size.height * 0.82)
+      ..cubicTo(
+        size.width * 0.26,
+        size.height * 0.72,
+        size.width * 0.45,
+        size.height * 0.90,
+        size.width * 0.70,
+        size.height * 0.76,
+      )
+      ..cubicTo(
+        size.width * 0.86,
+        size.height * 0.68,
+        size.width * 0.94,
+        size.height * 0.76,
+        size.width,
+        size.height * 0.72,
+      )
+      ..lineTo(size.width, size.height)
+      ..lineTo(0, size.height)
+      ..close();
+
+    canvas.drawPath(frontWave, frontWavePaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class _HeaderActionIcon extends StatelessWidget {
+  const _HeaderActionIcon({
+    required this.icon,
+    required this.onTap,
+    this.hasDot = false,
+  });
+
+  final IconData icon;
+  final VoidCallback onTap;
+  final bool hasDot;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(999),
+        child: SizedBox(
+          width: 36,
+          height: 36,
+          child: Stack(
+            alignment: Alignment.center,
+            clipBehavior: Clip.none,
+            children: [
+              Icon(
+                icon,
+                size: 29,
+                color: const Color(0xFF0F172A),
+              ),
+              if (hasDot)
+                Positioned(
+                  top: 5,
+                  right: 4,
+                  child: Container(
+                    width: 8,
+                    height: 8,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFFF6B00),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
