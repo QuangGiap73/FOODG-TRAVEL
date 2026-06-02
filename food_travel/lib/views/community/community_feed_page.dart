@@ -1,4 +1,4 @@
-import 'dart:math';
+﻿import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -183,42 +183,55 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 6),
-                Container(
-                  height: 50,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color:
-                        isDark
-                            ? const Color(0xFF0F1115)
-                            : const Color(0xFFFFFBF7),
-                    border: Border(
-                      bottom: BorderSide(
-                        color:
-                            isDark
-                                ? const Color(0xFF232A33)
-                                : const Color(0xFFFFE6D0),
-                        width: 1,
+                const SizedBox(height: 0),
+                Transform.translate(
+                  offset: const Offset(0, -8),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: SizedBox(
+                      height: 34,
+                      child: Builder(
+                        builder: (context) {
+                        final tabController = DefaultTabController.of(context);
+                        return AnimatedBuilder(
+                          animation: tabController!,
+                          builder: (context, _) {
+                            final selectedIndex = tabController.index;
+                            return Row(
+                              children: [
+                                _buildCommunityPill(
+                                  label: 'Tất cả',
+                                  selected: selectedIndex == 0,
+                                  onTap: () => tabController.animateTo(0),
+                                  isDark: isDark,
+                                ),
+                                const SizedBox(width: 8),
+                                _buildCommunityPill(
+                                  label: 'Đang hot',
+                                  selected: selectedIndex == 1,
+                                  onTap: () => tabController.animateTo(1),
+                                  isDark: isDark,
+                                ),
+                                const SizedBox(width: 8),
+                                _buildCommunityPill(
+                                  label: 'Gần bạn',
+                                  selected: selectedIndex == 2,
+                                  onTap: () => tabController.animateTo(2),
+                                  isDark: isDark,
+                                ),
+                                const SizedBox(width: 8),
+                                _buildCommunityPill(
+                                  label: 'Theo tỉnh',
+                                  selected: selectedIndex == 3,
+                                  onTap: () => tabController.animateTo(3),
+                                  isDark: isDark,
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                        },
                       ),
-                    ),
-                  ),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: TabBar(
-                      isScrollable: true,
-                      labelPadding: const EdgeInsets.symmetric(horizontal: 16),
-                      labelColor:
-                          isDark ? Colors.white : const Color(0xFF0F172A),
-                      unselectedLabelColor:
-                          isDark ? Colors.white60 : const Color(0xFF94A3B8),
-                      indicatorColor: const Color(0xFFF97316),
-                      indicatorWeight: 3,
-                      tabs: [
-                        Tab(text: t.communityTabNewest),
-                        Tab(text: t.communityTabTrending),
-                        Tab(text: t.communityTabNear),
-                        Tab(text: t.communityTabProvince),
-                      ],
                     ),
                   ),
                 ),
@@ -399,6 +412,48 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
   Widget _buildEmpty(String text) {
     return Center(
       child: Text(text, style: const TextStyle(color: Colors.grey)),
+    );
+  }
+
+  Widget _buildCommunityPill({
+    required String label,
+    required bool selected,
+    required VoidCallback onTap,
+    required bool isDark,
+  }) {
+    final selectedBg = const Color(0xFFF97316);
+    final unselectedBg = isDark ? const Color(0xFFF3F4F6) : Colors.white;
+    final borderColor =
+        isDark ? const Color(0xFFE5E7EB) : const Color(0xFFE2E8F0);
+    final textColor = selected ? Colors.white : const Color(0xFF374151);
+
+    return Expanded(
+      child: Material(
+        color: selected ? selectedBg : unselectedBg,
+        borderRadius: BorderRadius.circular(999),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(999),
+          onTap: onTap,
+          child: Container(
+            height: 30,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(999),
+              border: Border.all(color: selected ? selectedBg : borderColor),
+            ),
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w700,
+                color: textColor,
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 
