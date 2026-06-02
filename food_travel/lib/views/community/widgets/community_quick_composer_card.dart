@@ -10,7 +10,7 @@ class CommunityQuickComposerCard extends StatefulWidget {
   });
 
   final String? avatarUrl;
-  final VoidCallback onImageTap;
+  final ValueChanged<String> onImageTap;
   final VoidCallback onCheckInTap;
   final VoidCallback onReviewTap;
 
@@ -125,7 +125,7 @@ class _CommunityQuickComposerCardState extends State<CommunityQuickComposerCard>
                   iconColor: pillIconColor,
                   textColor: pillTextColor,
                   background: pillBackground,
-                  onTap: widget.onImageTap,
+                  onTap: () => widget.onImageTap(_textController.text.trim()),
                 ),
               ),
               const SizedBox(width: 8),

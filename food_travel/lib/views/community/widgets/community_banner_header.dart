@@ -26,7 +26,7 @@ class CommunityBannerHeader extends StatelessWidget {
     return Container(
       color: isDark ? const Color(0xFF0F1115) : const Color(0xFFFFFBF7),
       child: SizedBox(
-        height: 138 + topInset,
+        height: 132 + topInset,
         width: double.infinity,
         child: Stack(
           clipBehavior: Clip.none,
@@ -37,8 +37,8 @@ class CommunityBannerHeader extends StatelessWidget {
                     isDark ? const Color(0xFF1A1F27) : const Color(0xFFFFF1E2),
                 child: Image.asset(
                   'assets/community/community_banner_bg.png',
-                  fit: BoxFit.contain,
-                  alignment: Alignment.centerRight,
+                  fit: BoxFit.cover,
+                  alignment: Alignment.topRight,
                   errorBuilder: (context, error, stackTrace) {
                     return const _CommunityHeaderFallbackBg();
                   },
@@ -66,7 +66,7 @@ class CommunityBannerHeader extends StatelessWidget {
             ),
             Positioned(
               left: 20,
-              top: topInset + 12,
+              top: topInset + 6,
               right: 126,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,9 +98,9 @@ class CommunityBannerHeader extends StatelessWidget {
                 ],
               ),
             ),
-            Positioned(top: topInset + 8, right: 52, child: bellAction),
+            Positioned(top: topInset + 4, right: 52, child: bellAction),
             Positioned(
-              top: topInset + 8,
+              top: topInset + 4,
               right: 12,
               child: CommunityHeaderActionIcon(
                 icon: Icons.search_rounded,

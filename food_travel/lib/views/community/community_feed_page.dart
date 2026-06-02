@@ -65,6 +65,14 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
     setState(() => _locLoading = false);
   }
 
+  Future<void> _openCreatePost([String initialText = '']) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => CommunityCreatePostPage(initialText: initialText),
+      ),
+    );
+  }
+
   Future<void> _pickProvince() async {
     // Chon tinh tu danh sach Firebase
     final picked = await showModalBottomSheet<ProvinceModel>(
@@ -159,6 +167,16 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
         child: Scaffold(
           extendBodyBehindAppBar: true,
           backgroundColor: bg,
+          floatingActionButton: FloatingActionButton(
+            onPressed: () => _openCreatePost(),
+            backgroundColor: const Color(0xFFF97316),
+            foregroundColor: Colors.white,
+            elevation: 4,
+            shape: const CircleBorder(),
+            child: const Icon(Icons.add_rounded, size: 28),
+          ),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.endFloat,
           body: SafeArea(
             top: false,
             bottom: false,
@@ -177,7 +195,7 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: CommunityQuickComposerCard(
                       avatarUrl: FirebaseAuth.instance.currentUser?.photoURL,
-                      onImageTap: () {},
+                      onImageTap: (text) => _openCreatePost(text),
                       onCheckInTap: () {},
                       onReviewTap: () {},
                     ),
@@ -192,44 +210,44 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
                       height: 34,
                       child: Builder(
                         builder: (context) {
-                        final tabController = DefaultTabController.of(context);
-                        return AnimatedBuilder(
-                          animation: tabController!,
-                          builder: (context, _) {
-                            final selectedIndex = tabController.index;
-                            return Row(
-                              children: [
-                                _buildCommunityPill(
-                                  label: 'Tất cả',
-                                  selected: selectedIndex == 0,
-                                  onTap: () => tabController.animateTo(0),
-                                  isDark: isDark,
-                                ),
-                                const SizedBox(width: 8),
-                                _buildCommunityPill(
-                                  label: 'Đang hot',
-                                  selected: selectedIndex == 1,
-                                  onTap: () => tabController.animateTo(1),
-                                  isDark: isDark,
-                                ),
-                                const SizedBox(width: 8),
-                                _buildCommunityPill(
-                                  label: 'Gần bạn',
-                                  selected: selectedIndex == 2,
-                                  onTap: () => tabController.animateTo(2),
-                                  isDark: isDark,
-                                ),
-                                const SizedBox(width: 8),
-                                _buildCommunityPill(
-                                  label: 'Theo tỉnh',
-                                  selected: selectedIndex == 3,
-                                  onTap: () => tabController.animateTo(3),
-                                  isDark: isDark,
-                                ),
-                              ],
-                            );
-                          },
-                        );
+                          final tabController = DefaultTabController.of(context);
+                          return AnimatedBuilder(
+                            animation: tabController,
+                            builder: (context, _) {
+                              final selectedIndex = tabController.index;
+                              return Row(
+                                children: [
+                                  _buildCommunityPill(
+                                    label: 'Tất cả',
+                                    selected: selectedIndex == 0,
+                                    onTap: () => tabController.animateTo(0),
+                                    isDark: isDark,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  _buildCommunityPill(
+                                    label: 'Đang hot',
+                                    selected: selectedIndex == 1,
+                                    onTap: () => tabController.animateTo(1),
+                                    isDark: isDark,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  _buildCommunityPill(
+                                    label: 'Gần bạn',
+                                    selected: selectedIndex == 2,
+                                    onTap: () => tabController.animateTo(2),
+                                    isDark: isDark,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  _buildCommunityPill(
+                                    label: 'Theo tỉnh',
+                                    selected: selectedIndex == 3,
+                                    onTap: () => tabController.animateTo(3),
+                                    isDark: isDark,
+                                  ),
+                                ],
+                              );
+                            },
+                          );
                         },
                       ),
                     ),

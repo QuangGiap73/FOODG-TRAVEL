@@ -15,12 +15,13 @@ import '../../services/location_service.dart';
 import '../../services/map/serpapi_places_service.dart';
 
 class CommunityCreatePostPage extends StatefulWidget {
-  const CommunityCreatePostPage({super.key, this.post});
+  const CommunityCreatePostPage({super.key, this.post, this.initialText});
 
   static const String resultCreated = 'created';
   static const String resultUpdated = 'updated';
 
   final CommunityPost? post; // Neu co post -> che do sua
+  final String? initialText;
 
   @override
   State<CommunityCreatePostPage> createState() =>
@@ -55,6 +56,8 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
       _placeId = widget.post!.placeId;
       _placeSource = widget.post!.placeSource;
       _existingMedia.addAll(widget.post!.media);
+    } else if (widget.initialText?.trim().isNotEmpty == true) {
+      _textController.text = widget.initialText!.trim();
     }
   }
 
