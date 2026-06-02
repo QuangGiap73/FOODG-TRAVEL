@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:food_travel/l10n/app_localizations.dart';
 
@@ -78,6 +79,7 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
   @override
   void initState() {
     super.initState();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     _resolveLocation();
   }
 
@@ -147,7 +149,8 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
     const earthRadius = 6371.0; // km
     final dLat = _deg2rad(lat2 - lat1);
     final dLng = _deg2rad(lng2 - lng1);
-    final a = sin(dLat / 2) * sin(dLat / 2) +
+    final a =
+        sin(dLat / 2) * sin(dLat / 2) +
         cos(_deg2rad(lat1)) *
             cos(_deg2rad(lat2)) *
             sin(dLng / 2) *
@@ -179,45 +182,55 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final bg = isDark ? const Color(0xFF0F1115) : const Color(0xFFFFFBF7);
+    final overlayStyle = SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+      statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+    );
 
-    return DefaultTabController(
-      length: 4,
-      child: Scaffold(
-        backgroundColor: bg,
-        body: SafeArea(
-          bottom: false,
-          child: Column(
-            children: [
-              _CommunityHeader(
-                title: t.communityTitle,
-                subtitle: 'Chia sẻ hành trình ẩm thực của bạn',
-                isDark: isDark,
-                onSearchTap: () {},
-                bellAction: _buildHeaderBellAction(),
-                tabs: [
-                  Tab(text: t.communityTabNewest),
-                  Tab(text: t.communityTabTrending),
-                  Tab(text: t.communityTabNear),
-                  Tab(text: t.communityTabProvince),
-                ],
-              ),
-              Expanded(
-                child: TabBarView(
-                  children: [
-                    _buildNewestTab(),
-                    _buildTrendingTab(),
-                    _buildNearYouTab(),
-                    _buildProvinceTab(),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: overlayStyle,
+      child: DefaultTabController(
+        length: 4,
+        child: Scaffold(
+          extendBodyBehindAppBar: true,
+          backgroundColor: bg,
+          body: SafeArea(
+            top: false,
+            bottom: false,
+            child: Column(
+              children: [
+                _CommunityHeader(
+                  title: t.communityTitle,
+                  subtitle: 'Chia sẻ hành trình ẩm thực của bạn',
+                  isDark: isDark,
+                  onSearchTap: () {},
+                  bellAction: _buildHeaderBellAction(),
+                  tabs: [
+                    Tab(text: t.communityTabNewest),
+                    Tab(text: t.communityTabTrending),
+                    Tab(text: t.communityTabNear),
+                    Tab(text: t.communityTabProvince),
                   ],
                 ),
-              ),
-            ],
+                Expanded(
+                  child: TabBarView(
+                    children: [
+                      _buildNewestTab(),
+                      _buildTrendingTab(),
+                      _buildNearYouTab(),
+                      _buildProvinceTab(),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: const Color(0xFFF97316),
-          onPressed: _openCreatePost,
-          child: const Icon(Icons.edit_rounded, size: 24),
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: const Color(0xFFF97316),
+            onPressed: _openCreatePost,
+            child: const Icon(Icons.edit_rounded, size: 24),
+          ),
         ),
       ),
     );
@@ -254,7 +267,9 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
         final raw = snapshot.data ?? const <CommunityPost>[];
         final posts = [...raw];
         // Sap xep theo diem noi bat (like + comment)
-        posts.sort((a, b) => _engagementScore(b).compareTo(_engagementScore(a)));
+        posts.sort(
+          (a, b) => _engagementScore(b).compareTo(_engagementScore(a)),
+        );
         return _buildPostsList(posts, emptyText: t.communityEmptyTrending);
       },
     );
@@ -294,12 +309,13 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
         }
         final raw = snapshot.data ?? const <CommunityPost>[];
         // Loc bai trong ban kinh 10km
-        final posts = raw.where((p) {
-          final place = p.place;
-          if (place == null) return false;
-          final d = _distanceKm(_userLat!, _userLng!, place.lat, place.lng);
-          return d <= 10;
-        }).toList();
+        final posts =
+            raw.where((p) {
+              final place = p.place;
+              if (place == null) return false;
+              final d = _distanceKm(_userLat!, _userLng!, place.lat, place.lng);
+              return d <= 10;
+            }).toList();
         return _buildPostsList(posts, emptyText: t.communityEmptyNear);
       },
     );
@@ -330,33 +346,38 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
         ),
         const Divider(height: 1),
         Expanded(
-          child: selected == null
-              ? _buildEmpty(t.communitySelectProvinceHint)
-              : StreamBuilder<List<CommunityPost>>(
-                  stream: _service.watchLatestPosts(limit: 150),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const _FeedSkeleton();
-                    }
-                    if (snapshot.hasError) {
-                      return _buildEmpty(t.communityLoadError);
-                    }
-                    final raw = snapshot.data ?? const <CommunityPost>[];
-                    final posts =
-                        raw.where((p) => _matchProvince(p, selected)).toList();
-                    return _buildPostsList(
-                      posts,
-                      emptyText: t.communityEmptyProvince,
-                    );
-                  },
-                ),
+          child:
+              selected == null
+                  ? _buildEmpty(t.communitySelectProvinceHint)
+                  : StreamBuilder<List<CommunityPost>>(
+                    stream: _service.watchLatestPosts(limit: 150),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const _FeedSkeleton();
+                      }
+                      if (snapshot.hasError) {
+                        return _buildEmpty(t.communityLoadError);
+                      }
+                      final raw = snapshot.data ?? const <CommunityPost>[];
+                      final posts =
+                          raw
+                              .where((p) => _matchProvince(p, selected))
+                              .toList();
+                      return _buildPostsList(
+                        posts,
+                        emptyText: t.communityEmptyProvince,
+                      );
+                    },
+                  ),
         ),
       ],
     );
   }
 
-  Widget _buildPostsList(List<CommunityPost> posts,
-      {required String emptyText}) {
+  Widget _buildPostsList(
+    List<CommunityPost> posts, {
+    required String emptyText,
+  }) {
     if (posts.isEmpty) {
       return _buildEmpty(emptyText);
     }
@@ -408,8 +429,10 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
                 right: -2,
                 top: -2,
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 5,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.redAccent,
                     borderRadius: BorderRadius.circular(999),
@@ -460,8 +483,10 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
                 right: -2,
                 top: -2,
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 5,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.redAccent,
                     borderRadius: BorderRadius.circular(999),
@@ -482,7 +507,6 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
     );
   }
 }
-
 
 class _CommunityHeader extends StatelessWidget {
   const _CommunityHeader({
@@ -506,6 +530,7 @@ class _CommunityHeader extends StatelessWidget {
     final titleColor = isDark ? Colors.white : const Color(0xFF0F172A);
     final subtitleColor =
         isDark ? const Color(0xFFCBD5E1) : const Color(0xFF64748B);
+    final topInset = MediaQuery.paddingOf(context).top;
 
     return Container(
       color: isDark ? const Color(0xFF0F1115) : const Color(0xFFFFFBF7),
@@ -513,14 +538,17 @@ class _CommunityHeader extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(
-            height: 138,
+            height: 138 + topInset,
             width: double.infinity,
             child: Stack(
               clipBehavior: Clip.none,
               children: [
                 Positioned.fill(
                   child: Container(
-                    color: isDark ? const Color(0xFF1A1F27) : const Color(0xFFFFF1E2),
+                    color:
+                        isDark
+                            ? const Color(0xFF1A1F27)
+                            : const Color(0xFFFFF1E2),
                     child: Image.asset(
                       'assets/community/community_banner_bg.png',
                       fit: BoxFit.contain,
@@ -536,11 +564,13 @@ class _CommunityHeader extends StatelessWidget {
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          (isDark ? Colors.black : Colors.white)
-                              .withOpacity(isDark ? 0.18 : 0.02),
+                          (isDark ? Colors.black : Colors.white).withOpacity(
+                            isDark ? 0.18 : 0.02,
+                          ),
                           Colors.transparent,
-                          (isDark ? Colors.black : Colors.white)
-                              .withOpacity(isDark ? 0.06 : 0.10),
+                          (isDark ? Colors.black : Colors.white).withOpacity(
+                            isDark ? 0.06 : 0.10,
+                          ),
                         ],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -550,7 +580,7 @@ class _CommunityHeader extends StatelessWidget {
                 ),
                 Positioned(
                   left: 20,
-                  top: 36,
+                  top: topInset + 12,
                   right: 126,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -559,14 +589,15 @@ class _CommunityHeader extends StatelessWidget {
                         title,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style:
-                            Theme.of(context).textTheme.displaySmall?.copyWith(
-                                  fontSize: 30,
-                                  height: 1,
-                                  fontWeight: FontWeight.w900,
-                                  color: titleColor,
-                                  letterSpacing: -0.8,
-                                ),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.displaySmall?.copyWith(
+                          fontSize: 30,
+                          height: 1,
+                          fontWeight: FontWeight.w900,
+                          color: titleColor,
+                          letterSpacing: -0.8,
+                        ),
                       ),
                       const SizedBox(height: 10),
                       Text(
@@ -574,22 +605,18 @@ class _CommunityHeader extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontSize: 12,
-                              height: 1.2,
-                              fontWeight: FontWeight.w700,
-                              color: subtitleColor,
-                            ),
+                          fontSize: 12,
+                          height: 1.2,
+                          fontWeight: FontWeight.w700,
+                          color: subtitleColor,
+                        ),
                       ),
                     ],
                   ),
                 ),
+                Positioned(top: topInset + 8, right: 52, child: bellAction),
                 Positioned(
-                  top: 10,
-                  right: 52,
-                  child: bellAction,
-                ),
-                Positioned(
-                  top: 10,
+                  top: topInset + 8,
                   right: 12,
                   child: _HeaderActionIcon(
                     icon: Icons.search_rounded,
@@ -607,7 +634,9 @@ class _CommunityHeader extends StatelessWidget {
               border: Border(
                 bottom: BorderSide(
                   color:
-                      isDark ? const Color(0xFF232A33) : const Color(0xFFFFE6D0),
+                      isDark
+                          ? const Color(0xFF232A33)
+                          : const Color(0xFFFFE6D0),
                   width: 1,
                 ),
               ),
@@ -650,73 +679,74 @@ class _CommunityHeaderFallbackPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final bgRect = Offset.zero & size;
-    final bgPaint = Paint()
-      ..shader = const LinearGradient(
-        colors: [
-          Color(0xFFFFD8AD),
-          Color(0xFFFFEAD2),
-          Color(0xFFFFFBF7),
-        ],
-        stops: [0.0, 0.55, 1.0],
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-      ).createShader(bgRect);
+    final bgPaint =
+        Paint()
+          ..shader = const LinearGradient(
+            colors: [Color(0xFFFFD8AD), Color(0xFFFFEAD2), Color(0xFFFFFBF7)],
+            stops: [0.0, 0.55, 1.0],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ).createShader(bgRect);
 
     canvas.drawRect(bgRect, bgPaint);
 
-    final wavePaint = Paint()
-      ..color = const Color(0xFFFFB15C).withOpacity(0.45)
-      ..style = PaintingStyle.fill;
+    final wavePaint =
+        Paint()
+          ..color = const Color(0xFFFFB15C).withOpacity(0.45)
+          ..style = PaintingStyle.fill;
 
-    final wave = Path()
-      ..moveTo(0, size.height * 0.70)
-      ..cubicTo(
-        size.width * 0.25,
-        size.height * 0.58,
-        size.width * 0.42,
-        size.height * 0.84,
-        size.width * 0.66,
-        size.height * 0.66,
-      )
-      ..cubicTo(
-        size.width * 0.83,
-        size.height * 0.55,
-        size.width * 0.94,
-        size.height * 0.66,
-        size.width,
-        size.height * 0.60,
-      )
-      ..lineTo(size.width, size.height)
-      ..lineTo(0, size.height)
-      ..close();
+    final wave =
+        Path()
+          ..moveTo(0, size.height * 0.70)
+          ..cubicTo(
+            size.width * 0.25,
+            size.height * 0.58,
+            size.width * 0.42,
+            size.height * 0.84,
+            size.width * 0.66,
+            size.height * 0.66,
+          )
+          ..cubicTo(
+            size.width * 0.83,
+            size.height * 0.55,
+            size.width * 0.94,
+            size.height * 0.66,
+            size.width,
+            size.height * 0.60,
+          )
+          ..lineTo(size.width, size.height)
+          ..lineTo(0, size.height)
+          ..close();
 
     canvas.drawPath(wave, wavePaint);
 
-    final frontWavePaint = Paint()
-      ..color = const Color(0xFFFFD9AE).withOpacity(0.65)
-      ..style = PaintingStyle.fill;
+    final frontWavePaint =
+        Paint()
+          ..color = const Color(0xFFFFD9AE).withOpacity(0.65)
+          ..style = PaintingStyle.fill;
 
-    final frontWave = Path()
-      ..moveTo(0, size.height * 0.82)
-      ..cubicTo(
-        size.width * 0.26,
-        size.height * 0.72,
-        size.width * 0.45,
-        size.height * 0.90,
-        size.width * 0.70,
-        size.height * 0.76,
-      )
-      ..cubicTo(
-        size.width * 0.86,
-        size.height * 0.68,
-        size.width * 0.94,
-        size.height * 0.76,
-        size.width,
-        size.height * 0.72,
-      )
-      ..lineTo(size.width, size.height)
-      ..lineTo(0, size.height)
-      ..close();
+    final frontWave =
+        Path()
+          ..moveTo(0, size.height * 0.82)
+          ..cubicTo(
+            size.width * 0.26,
+            size.height * 0.72,
+            size.width * 0.45,
+            size.height * 0.90,
+            size.width * 0.70,
+            size.height * 0.76,
+          )
+          ..cubicTo(
+            size.width * 0.86,
+            size.height * 0.68,
+            size.width * 0.94,
+            size.height * 0.76,
+            size.width,
+            size.height * 0.72,
+          )
+          ..lineTo(size.width, size.height)
+          ..lineTo(0, size.height)
+          ..close();
 
     canvas.drawPath(frontWave, frontWavePaint);
   }
@@ -750,11 +780,7 @@ class _HeaderActionIcon extends StatelessWidget {
             alignment: Alignment.center,
             clipBehavior: Clip.none,
             children: [
-              Icon(
-                icon,
-                size: 29,
-                color: const Color(0xFF0F172A),
-              ),
+              Icon(icon, size: 29, color: const Color(0xFF0F172A)),
               if (hasDot)
                 Positioned(
                   top: 5,
@@ -818,9 +844,7 @@ class _PostCardState extends State<_PostCard> {
     if (action == 'edit') {
       // Mo man sua (dung lai trang tao bai)
       final result = await Navigator.of(context).push<String>(
-        MaterialPageRoute(
-          builder: (_) => CommunityCreatePostPage(post: post),
-        ),
+        MaterialPageRoute(builder: (_) => CommunityCreatePostPage(post: post)),
       );
       if (!mounted) return;
       if (result == CommunityCreatePostPage.resultUpdated) {
@@ -884,9 +908,10 @@ class _PostCardState extends State<_PostCard> {
 
     // Tao seed place tu snapshot de mo trang chi tiet
     final rawId = (post.placeId ?? '').trim();
-    final safeId = rawId.isNotEmpty
-        ? rawId
-        : '${place.name}_${place.lat}_${place.lng}'.replaceAll(' ', '_');
+    final safeId =
+        rawId.isNotEmpty
+            ? rawId
+            : '${place.name}_${place.lat}_${place.lng}'.replaceAll(' ', '_');
 
     final seed = GoongNearbyPlace(
       id: safeId,
@@ -922,9 +947,10 @@ class _PostCardState extends State<_PostCard> {
     final cardBg = isDark ? const Color(0xFF15181E) : Colors.white;
     final borderColor =
         isDark ? const Color(0xFF232A33) : const Color(0xFFF1F5F9);
-    final shadowColor = isDark
-        ? Colors.black.withOpacity(0.35)
-        : Colors.black.withOpacity(0.04);
+    final shadowColor =
+        isDark
+            ? Colors.black.withOpacity(0.35)
+            : Colors.black.withOpacity(0.04);
     final primaryText = isDark ? Colors.white : const Color(0xFF0F172A);
     final secondaryText = isDark ? Colors.white70 : const Color(0xFF475569);
     final timeColor = const Color(0xFF94A3B8);
@@ -940,7 +966,7 @@ class _PostCardState extends State<_PostCard> {
             color: shadowColor,
             blurRadius: 14,
             offset: const Offset(0, 6),
-          )
+          ),
         ],
       ),
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 10),
@@ -963,12 +989,14 @@ class _PostCardState extends State<_PostCard> {
                 radius: 18,
                 backgroundColor:
                     isDark ? const Color(0xFF1F2630) : const Color(0xFFE2E8F0),
-                backgroundImage: post.authorPhoto.trim().isNotEmpty
-                    ? NetworkImage(post.authorPhoto)
-                    : null,
-                child: post.authorPhoto.trim().isEmpty
-                    ? const Icon(Icons.person, size: 16)
-                    : null,
+                backgroundImage:
+                    post.authorPhoto.trim().isNotEmpty
+                        ? NetworkImage(post.authorPhoto)
+                        : null,
+                child:
+                    post.authorPhoto.trim().isEmpty
+                        ? const Icon(Icons.person, size: 16)
+                        : null,
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -987,10 +1015,7 @@ class _PostCardState extends State<_PostCard> {
                     ),
                     Text(
                       _formatTime(post.createdAt, t),
-                      style: TextStyle(
-                        color: timeColor,
-                        fontSize: 11,
-                      ),
+                      style: TextStyle(color: timeColor, fontSize: 11),
                     ),
                   ],
                 ),
@@ -1009,7 +1034,8 @@ class _PostCardState extends State<_PostCard> {
             Text(
               text,
               maxLines: _expanded ? null : 3,
-              overflow: _expanded ? TextOverflow.visible : TextOverflow.ellipsis,
+              overflow:
+                  _expanded ? TextOverflow.visible : TextOverflow.ellipsis,
               style: TextStyle(
                 color: secondaryText,
                 height: 1.45,
@@ -1033,10 +1059,7 @@ class _PostCardState extends State<_PostCard> {
 
           if (media.isEmpty && place != null) ...[
             const SizedBox(height: 10),
-            _InlinePlace(
-              place: place,
-              onTap: () => _openPlaceDetail(post),
-            ),
+            _InlinePlace(place: place, onTap: () => _openPlaceDetail(post)),
           ],
 
           const SizedBox(height: 6),
@@ -1076,11 +1099,7 @@ class _PostCardState extends State<_PostCard> {
 }
 
 class _MediaHero extends StatefulWidget {
-  const _MediaHero({
-    required this.media,
-    required this.place,
-    this.onPlaceTap,
-  });
+  const _MediaHero({required this.media, required this.place, this.onPlaceTap});
 
   final List<PostMedia> media;
   final PlaceSnapshot? place;
@@ -1161,8 +1180,10 @@ class _MediaHeroState extends State<_MediaHero> {
               child: IgnorePointer(
                 // Khong chan swipe
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.black.withOpacity(0.6),
                     borderRadius: BorderRadius.circular(10),
@@ -1182,10 +1203,7 @@ class _MediaHeroState extends State<_MediaHero> {
             Positioned(
               left: 10,
               bottom: 10,
-              child: _PlaceChip(
-                place: place,
-                onTap: widget.onPlaceTap,
-              ),
+              child: _PlaceChip(place: place, onTap: widget.onPlaceTap),
             ),
           if (media.length > 1)
             Positioned(
@@ -1204,9 +1222,10 @@ class _MediaHeroState extends State<_MediaHero> {
                       width: active ? 14 : 6,
                       height: 6,
                       decoration: BoxDecoration(
-                        color: active
-                            ? Colors.white
-                            : Colors.white.withOpacity(0.5),
+                        color:
+                            active
+                                ? Colors.white
+                                : Colors.white.withOpacity(0.5),
                         borderRadius: BorderRadius.circular(999),
                       ),
                     );
@@ -1273,8 +1292,7 @@ class _InlinePlace extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bg = isDark ? const Color(0xFF1A1F27) : const Color(0xFFF8FAFC);
-    final border =
-        isDark ? const Color(0xFF2A303A) : const Color(0xFFF1F5F9);
+    final border = isDark ? const Color(0xFF2A303A) : const Color(0xFFF1F5F9);
     final text = isDark ? Colors.white : const Color(0xFF0F172A);
     final subText = isDark ? Colors.white70 : const Color(0xFF64748B);
 
@@ -1354,10 +1372,7 @@ class _ActionButton extends StatelessWidget {
               style: TextStyle(fontSize: 12, color: color),
             ),
             const SizedBox(width: 4),
-            Text(
-              label,
-              style: TextStyle(fontSize: 11, color: color),
-            ),
+            Text(label, style: TextStyle(fontSize: 11, color: color)),
           ],
         ),
       ),
