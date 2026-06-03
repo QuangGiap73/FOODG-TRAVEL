@@ -1,13 +1,13 @@
-﻿import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../models/user_model.dart';
+import '../../router/route_names.dart';
 import '../../services/auth_service.dart';
 import '../../services/user_service.dart';
-import '../../router/route_names.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -20,11 +20,11 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _obscurePassword = true;
-  bool _isLoading = false;
-
   final _authService = AuthService();
   final _userService = UserService();
+  bool _isLoading = false;
+  bool _obscurePassword = true;
+  bool _rememberLogin = true;
 
   Future<void> _ensureUserProfile(User user, String fallbackEmail) async {
     final existing = await _userService.getUserById(user.uid);
@@ -33,28 +33,39 @@ class _LoginScreenState extends State<LoginScreen> {
       final fullName = (displayName != null && displayName.isNotEmpty)
           ? displayName
           : (user.email ?? fallbackEmail);
-      final userModel = UserModel(
-        id: user.uid,
-        fullName: fullName,
-        email: user.email ?? fallbackEmail,
-        phone: user.phoneNumber,
-        photoUrl: user.photoURL,
-        role: 'user',
+      await _userService.createUser(
+        UserModel(
+          id: user.uid,
+          fullName: fullName,
+          email: user.email ?? fallbackEmail,
+          phone: user.phoneNumber,
+          photoUrl: user.photoURL,
+          role: 'user',
+        ),
       );
-      await _userService.createUser(userModel);
-    } else {
-      if (existing.role.isEmpty) {
-        await _userService.ensureUserRole(uid: user.uid, role: 'user');
-      }
-      final photoUrl = user.photoURL;
-      if (photoUrl != null &&
-          photoUrl.isNotEmpty &&
-          existing.photoUrl != photoUrl) {
-        await _userService.updateUserPhotoUrl(
-          uid: user.uid,
-          photoUrl: photoUrl,
-        );
-      }
+      return;
+    }
+
+    if (existing.role.isEmpty) {
+      await _userService.ensureUserRole(uid: user.uid, role: 'user');
+    }
+
+    final photoUrl = user.photoURL;
+    if (photoUrl != null &&
+        photoUrl.isNotEmpty &&
+        existing.photoUrl != photoUrl) {
+      await _userService.updateUserPhotoUrl(uid: user.uid, photoUrl: photoUrl);
+    }
+  }
+
+  String _mapGoogleError(AppLocalizations t, FirebaseAuthException e) {
+    switch (e.code) {
+      case 'account-exists-with-different-credential':
+        return t.authGoogleAccountExists;
+      case 'invalid-credential':
+        return t.authGoogleInvalidCredential;
+      default:
+        return t.authGoogleFailed;
     }
   }
 
@@ -71,18 +82,8 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  String _mapGoogleError(AppLocalizations t, FirebaseAuthException e) {
-    switch (e.code) {
-      case 'account-exists-with-different-credential':
-        return t.authGoogleAccountExists;
-      case 'invalid-credential':
-        return t.authGoogleInvalidCredential;
-      default:
-        return t.authGoogleFailed;
-    }
-  }
-
   Future<void> _handleLogin() async {
+    final t = AppLocalizations.of(context)!;
     if (!_formKey.currentState!.validate()) return;
 
     final email = _emailController.text.trim();
@@ -112,24 +113,17 @@ class _LoginScreenState extends State<LoginScreen> {
         }),
       );
     } on TimeoutException {
-      final t = AppLocalizations.of(context)!;
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            t.authError(
-              'Dang nhap qua lau. Kiem tra mang/Google Play Services.',
-            ),
-          ),
-        ),
+        SnackBar(content: Text(t.authError('Đăng nhập quá lâu. Kiểm tra mạng.'))),
       );
     } on FirebaseAuthException catch (e) {
-      final t = AppLocalizations.of(context)!;
-      final message = _mapLoginError(t, e);
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
+        SnackBar(content: Text(_mapLoginError(t, e))),
       );
     } catch (e) {
-      final t = AppLocalizations.of(context)!;
+      if (!mounted) return;
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(t.authError(e.toString()))));
     } finally {
@@ -138,6 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _handleGoogleLogin() async {
+    if (_isLoading) return;
     setState(() => _isLoading = true);
     try {
       final cred = await _authService
@@ -146,7 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final user = cred.user;
       if (user != null) {
         unawaited(
-          _ensureUserProfile(user, user.email ?? "")
+          _ensureUserProfile(user, user.email ?? '')
               .timeout(const Duration(seconds: 12))
               .catchError((e, _) {
             debugPrint('ensureUserProfile failed: $e');
@@ -157,31 +152,28 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, RouteNames.authGate);
     } on TimeoutException {
-      final t = AppLocalizations.of(context)!;
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            t.authError(
-              'Dang nhap Google qua lau. Kiem tra mang/Google Play Services.',
-            ),
-          ),
+        const SnackBar(
+          content: Text('Đăng nhập Google quá lâu. Vui lòng kiểm tra mạng.'),
         ),
       );
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'sign_in_canceled') {
-        return;
-      }
+      if (e.code == 'sign_in_canceled') return;
+      if (!mounted) return;
       final t = AppLocalizations.of(context)!;
-      final message = _mapGoogleError(t, e);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
+        SnackBar(content: Text(_mapGoogleError(t, e))),
       );
     } catch (e) {
-      final t = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(t.authError(e.toString()))));
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Đăng nhập thất bại: $e')),
+      );
     } finally {
-      if (mounted) setState(() => _isLoading = false);
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
@@ -197,347 +189,330 @@ class _LoginScreenState extends State<LoginScreen> {
     final t = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final scaffoldBg = isDark ? const Color(0xFF0F131A) : const Color(0xFFFAFAF9);
-    final cardColor = isDark ? const Color(0xFF161B24) : Colors.white;
-    final borderColor = isDark ? Colors.white10 : const Color(0xFFE2E8F0);
-    final dividerColor = isDark ? Colors.white12 : Colors.grey.shade200;
-    final textPrimary = isDark ? Colors.white : Colors.black87;
-    final textSecondary = isDark ? Colors.white70 : Colors.black54;
-    final fieldFill = isDark ? const Color(0xFF1E2633) : const Color(0xFFF8FAFC);
-    final headerGradTop = isDark ? const Color(0xFF1B2432) : const Color(0xFFFFF1E6);
-    final headerGradBottom = isDark ? const Color(0xFF111827) : const Color(0xFFFFE0CC);
+    final bg = isDark ? const Color(0xFF0E1218) : const Color(0xFFFFF7F0);
+    final cardBg = isDark ? const Color(0xFF171B22) : Colors.white;
+    final textPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
+    final textSecondary = isDark ? Colors.white70 : const Color(0xFF64748B);
+    final borderColor = isDark ? const Color(0xFF2A303A) : const Color(0xFFE9E5DF);
+    final accent = const Color(0xFFF97316);
 
     return Scaffold(
-      backgroundColor: scaffoldBg,
+      backgroundColor: bg,
       body: SafeArea(
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 180,
-                child: Stack(
-                  children: [
-                    Positioned.fill(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [headerGradTop, headerGradBottom],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned.fill(
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          image: const DecorationImage(
-                            image: AssetImage('assets/patterns/leaf.png'),
-                            fit: BoxFit.cover,
-                            opacity: 0.05,
-                          ),
-                          color: Colors.transparent,
-                        ),
-                      ),
-                    ),
-                    const Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: 18),
-                        child: Icon(
-                          Icons.restaurant_menu,
-                          color: Color(0xFFFF6A00),
-                          size: 42,
-                        ),
-                      ),
-                    ),
-                  ],
+        top: false,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 240,
+                width: double.infinity,
+                child: Image.asset(
+                  'assets/login/login_banner.png',
+                  fit: BoxFit.contain,
+                  alignment: Alignment.topCenter,
+                  errorBuilder: (_, __, ___) => const SizedBox.shrink(),
                 ),
               ),
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: cardColor,
-                        borderRadius: BorderRadius.circular(24),
-                        border: Border.all(color: borderColor),
-                        boxShadow: isDark
-                            ? null
-                            : const [
-                                BoxShadow(
-                                  blurRadius: 20,
-                                  color: Color(0x11000000),
-                                  offset: Offset(0, 6),
-                                ),
-                              ],
+              Transform.translate(
+                offset: const Offset(0, -46),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 0, 16, 0),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(18),
+                    decoration: BoxDecoration(
+                      color: cardBg,
+                      borderRadius: BorderRadius.circular(26),
+                      border: Border.all(color: borderColor),
+                      boxShadow: isDark
+                          ? null
+                          : const [
+                              BoxShadow(
+                                color: Color(0x12000000),
+                                blurRadius: 18,
+                                offset: Offset(0, 8),
+                              ),
+                            ],
+                    ),
+                    child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                    Text(
+                      'Đăng nhập',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w900,
+                        color: textPrimary,
                       ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      'Khám phá món ngon quanh bạn cùng FoodS',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: textSecondary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Form(
+                      key: _formKey,
                       child: Column(
                         children: [
-                          const SizedBox(height: 4),
-                          Text(
-                            t.authLoginTitle,
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w700,
-                              color: textPrimary,
+                          TextFormField(
+                            controller: _emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            style: TextStyle(color: textPrimary),
+                            decoration: InputDecoration(
+                              hintText: 'Email hoặc số điện thoại',
+                              hintStyle: TextStyle(color: textSecondary),
+                              prefixIcon: Icon(Icons.person_outline, color: textSecondary),
+                              filled: true,
+                              fillColor: isDark ? const Color(0xFF1E2633) : const Color(0xFFF8FAFC),
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(14),
+                                borderSide: BorderSide(color: borderColor),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(14),
+                                borderSide: BorderSide(color: borderColor),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(14),
+                                borderSide: BorderSide(color: accent),
+                              ),
                             ),
+                            validator: (value) {
+                              if (value == null || value.trim().isEmpty) {
+                                return t.authEmailRequired;
+                              }
+                              return null;
+                            },
                           ),
-                          const SizedBox(height: 16),
-                          // Social buttons
+                          const SizedBox(height: 12),
+                          TextFormField(
+                            controller: _passwordController,
+                            obscureText: _obscurePassword,
+                            style: TextStyle(color: textPrimary),
+                            decoration: InputDecoration(
+                              hintText: 'Mật khẩu',
+                              hintStyle: TextStyle(color: textSecondary),
+                              prefixIcon: Icon(Icons.lock_outline, color: textSecondary),
+                              suffixIcon: IconButton(
+                                onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                                icon: Icon(
+                                  _obscurePassword
+                                      ? Icons.visibility_off_outlined
+                                      : Icons.visibility_outlined,
+                                  color: textSecondary,
+                                ),
+                              ),
+                              filled: true,
+                              fillColor: isDark ? const Color(0xFF1E2633) : const Color(0xFFF8FAFC),
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(14),
+                                borderSide: BorderSide(color: borderColor),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(14),
+                                borderSide: BorderSide(color: borderColor),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(14),
+                                borderSide: BorderSide(color: accent),
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.trim().isEmpty) {
+                                return t.authPasswordRequired;
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 10),
                           Row(
                             children: [
-                              Expanded(
-                                child: OutlinedButton(
-                                  onPressed: _isLoading ? null : _handleGoogleLogin,
-                                  style: OutlinedButton.styleFrom(
-                                    side: BorderSide(color: borderColor),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(vertical: 12),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Icon(Icons.g_mobiledata, color: Colors.red, size: 24),
-                                      const SizedBox(width: 8),
-                                      Text(t.authContinueGoogle, style: TextStyle(color: textPrimary)),
-                                    ],
-                                  ),
+                              Checkbox(
+                                value: _rememberLogin,
+                                onChanged: (value) {
+                                  setState(() => _rememberLogin = value ?? true);
+                                },
+                                activeColor: accent,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4),
                                 ),
-                            ),
-                            const SizedBox(width: 12),
-                          ],
-                        ),
-                          const SizedBox(height: 14),
-                          Row(
-                              children: [
-                              Expanded(child: Divider(color: dividerColor)),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 10),
+                                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              Text(
+                                'Ghi nhớ đăng nhập',
+                                style: TextStyle(color: textSecondary, fontSize: 12, fontWeight: FontWeight.w600),
+                              ),
+                              const Spacer(),
+                              TextButton(
+                                onPressed: () {},
                                 child: Text(
-                                  t.authOr,
+                                  'Quên mật khẩu?',
                                   style: TextStyle(
-                                    color: textSecondary,
-                                    fontWeight: FontWeight.w600,
-                                    letterSpacing: 0.2,
+                                    color: accent,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
                                   ),
                                 ),
                               ),
-                              Expanded(child: Divider(color: dividerColor)),
                             ],
                           ),
-                          const SizedBox(height: 14),
-                          Form(
-                            key: _formKey,
-                            child: Column(
-                              children: [
-                                _TextFieldCard(
-                                  label: t.authEmailLabel,
-                                  icon: Icons.person_outline,
-                                  controller: _emailController,
-                                  keyboardType: TextInputType.emailAddress,
-                                  validator: (value) {
-                                    if (value == null || value.trim().isEmpty) {
-                                      return t.authEmailRequired;
-                                    }
-                                    if (!value.contains('@')) {
-                                      return t.authEmailInvalid;
-                                    }
-                                    return null;
-                                  },
-                                  fillColor: fieldFill,
-                                  textColor: textPrimary,
-                                  hintColor: textSecondary,
-                                  borderColor: borderColor,
-                                  focusedColor: const Color(0xFFFF6A00),
-                                ),
-                                const SizedBox(height: 12),
-                                _TextFieldCard(
-                                  label: t.authPasswordLabel,
-                                  icon: Icons.lock_outline,
-                                  controller: _passwordController,
-                                  obscure: _obscurePassword,
-                                  onSuffixTap: () => setState(() => _obscurePassword = !_obscurePassword),
-                                  validator: (value) =>
-                                      (value == null || value.trim().isEmpty) ? t.authPasswordRequired : null,
-                                  fillColor: fieldFill,
-                                  textColor: textPrimary,
-                                  hintColor: textSecondary,
-                                  borderColor: borderColor,
-                                  focusedColor: const Color(0xFFFF6A00),
-                                ),
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: TextButton(
-                                onPressed: () {
-                                  // TODO: Forgot password flow
-                                },
-                                child: Text(
-                                  t.authForgotPassword,
-                                  style: const TextStyle(
-                                    color: Color(0xFFFF6A00),
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                          const SizedBox(height: 6),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: _isLoading ? null : _handleLogin,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: accent,
+                                foregroundColor: Colors.white,
+                                elevation: 0,
+                                minimumSize: const Size.fromHeight(52),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18),
                                 ),
                               ),
-                            ),
-                              ],
+                              child: _isLoading
+                                  ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : const Text(
+                                      'Đăng nhập',
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                    ),
                             ),
                           ),
                         ],
                       ),
                     ),
                     const SizedBox(height: 18),
+                    Row(
+                      children: [
+                        Expanded(child: Divider(color: borderColor)),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Text(
+                            'Hoặc đăng nhập với',
+                            style: TextStyle(
+                              color: textSecondary,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        Expanded(child: Divider(color: borderColor)),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
                     SizedBox(
                       width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: _isLoading ? null : _handleLogin,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFFF6A00),
-                          minimumSize: const Size.fromHeight(54),
+                      child: OutlinedButton(
+                        onPressed: _isLoading ? null : _handleGoogleLogin,
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: borderColor),
+                          backgroundColor: isDark ? const Color(0xFF171B22) : Colors.white,
+                          minimumSize: const Size.fromHeight(52),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(18),
                           ),
-                          shadowColor: Colors.orange.shade200,
-                          elevation: 10,
                         ),
-                        child: _isLoading
-                            ? const SizedBox(
-                                width: 22,
-                                height: 22,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: Colors.white,
-                                ),
-                              )
-                            : Text(
-                                t.authLoginAction,
-                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 24,
+                              height: 24,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(999),
                               ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text.rich(
-                      TextSpan(
-                        text: '${t.authNoAccount} ',
-                        style: TextStyle(color: textSecondary),
-                        children: [
-                          WidgetSpan(
-                            child: GestureDetector(
-                              onTap: () => Navigator.pushReplacementNamed(context, RouteNames.register),
-                              child: Text(
-                                t.authRegisterAction,
-                                style: const TextStyle(
-                                  color: Color(0xFFFF6A00),
-                                  fontWeight: FontWeight.w700,
+                              child: const Center(
+                                child: Text(
+                                  'G',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w900,
+                                    color: Color(0xFF4285F4),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 10),
+                            Text(
+                              'Google',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w800,
+                                color: textPrimary,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 24),
-                  ],
+                    const SizedBox(height: 18),
+                    Center(
+                      child: GestureDetector(
+                        onTap: () =>
+                            Navigator.pushNamed(context, RouteNames.register),
+                        child: RichText(
+                          text: TextSpan(
+                            style: TextStyle(
+                              color: textSecondary,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            children: [
+                              const TextSpan(text: 'Chưa có tài khoản? '),
+                              TextSpan(
+                                text: 'Đăng ký ngay',
+                                style: TextStyle(
+                                  color: accent,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Center(
+                      child: Text(
+                        'Bằng cách tiếp tục, bạn đồng ý với Điều khoản và Chính sách bảo mật của FoodS.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: textSecondary,
+                          fontSize: 11,
+                          height: 1.45,
+                        ),
+                      ),
+                    ),
+                    ],
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-    );
-  }
-}
-
-class _TextFieldCard extends StatelessWidget {
-  const _TextFieldCard({
-    required this.label,
-    required this.icon,
-    required this.controller,
-    this.obscure = false,
-    this.onSuffixTap,
-    this.validator,
-    this.keyboardType,
-    required this.fillColor,
-    required this.textColor,
-    required this.hintColor,
-    required this.borderColor,
-    required this.focusedColor,
-  });
-
-  final String label;
-  final IconData icon;
-  final TextEditingController controller;
-  final bool obscure;
-  final VoidCallback? onSuffixTap;
-  final String? Function(String?)? validator;
-  final TextInputType? keyboardType;
-  final Color fillColor;
-  final Color textColor;
-  final Color hintColor;
-  final Color borderColor;
-  final Color focusedColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            color: hintColor,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 6),
-        TextFormField(
-          controller: controller,
-          obscureText: obscure,
-          validator: validator,
-          keyboardType: keyboardType,
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: fillColor,
-            prefixIcon: Icon(icon, color: hintColor),
-            suffixIcon: onSuffixTap == null
-                ? null
-                : IconButton(
-                    icon: Icon(
-                      obscure
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined,
-                      color: hintColor,
-                    ),
-                    onPressed: onSuffixTap,
-                  ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: BorderSide(color: borderColor),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: BorderSide(color: borderColor),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: BorderSide(color: focusedColor),
-            ),
-            hintStyle: TextStyle(color: hintColor),
-          ),
-          style: TextStyle(color: textColor),
-        ),
-      ],
     );
   }
 }

@@ -131,82 +131,56 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final textPrimary = isDark ? Colors.white : Colors.black87;
     final textSecondary = isDark ? Colors.white70 : Colors.black54;
     final fieldFill = isDark ? const Color(0xFF1E2633) : const Color(0xFFF8FAFC);
-    final headerGradTop = isDark ? const Color(0xFF1B2432) : const Color(0xFFFFF1E6);
-    final headerGradBottom = isDark ? const Color(0xFF111827) : const Color(0xFFFFE0CC);
 
     return Scaffold(
       backgroundColor: scaffoldBg,
       body: SafeArea(
+        top: false,
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
             SliverToBoxAdapter(
               child: SizedBox(
-                height: 160,
+                height: 260,
+                width: double.infinity,
                 child: Stack(
+                  fit: StackFit.expand,
                   children: [
-                    Positioned.fill(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [headerGradTop, headerGradBottom],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
+                    Image.asset(
+                      'assets/login/login-3.png',
+                      fit: BoxFit.contain,
+                      alignment: Alignment.topCenter,
+                      errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                    ),
+                    Positioned(
+                      left: 16,
+                      top: MediaQuery.of(context).padding.top + 8,
+                      child: InkWell(
+                        onTap: () => Navigator.pushReplacementNamed(
+                          context,
+                          RouteNames.login,
+                        ),
+                        borderRadius: BorderRadius.circular(30),
+                        child: Container(
+                          width: 42,
+                          height: 42,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(21),
+                            boxShadow: const [
+                              BoxShadow(
+                                blurRadius: 12,
+                                color: Color(0x22000000),
+                                offset: Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.arrow_back_ios_new,
+                            size: 18,
+                            color: Colors.black87,
                           ),
                         ),
-                      ),
-                    ),
-                    Positioned.fill(
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          image: const DecorationImage(
-                            image: AssetImage('assets/patterns/leaf.png'),
-                            fit: BoxFit.cover,
-                            opacity: 0.05,
-                          ),
-                          color: Colors.transparent,
-                        ),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 16, bottom: 12),
-                        child: InkWell(
-                          onTap: () => Navigator.pushReplacementNamed(
-                            context,
-                            RouteNames.login,
-                          ),
-                          borderRadius: BorderRadius.circular(30),
-                          child: Container(
-                            width: 42,
-                            height: 42,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(21),
-                              boxShadow: const [
-                                BoxShadow(
-                                  blurRadius: 12,
-                                  color: Color(0x22000000),
-                                  offset: Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: const Icon(
-                              Icons.arrow_back_ios_new,
-                              size: 18,
-                              color: Colors.black87,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: 12),
-                        child: Icon(Icons.restaurant_menu,
-                            color: Color(0xFFFF6A00), size: 40),
                       ),
                     ),
                   ],
