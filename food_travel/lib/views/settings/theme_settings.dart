@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../controller/theme_controller.dart';
 
@@ -17,6 +18,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final controller = ThemeController();
     final currentUser = FirebaseAuth.instance.currentUser;
     final displayName = (currentUser?.displayName?.trim().isNotEmpty ?? false)
@@ -30,7 +32,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
         final current = controller.themeMode;
         final isLightSelected = current == ThemeMode.light;
         final isDarkSelected = current == ThemeMode.dark;
-        final isSystemSelected = current == ThemeMode.system;
+        final isSystemSelected = controller.isAuto;
 
         final isDark = Theme.of(context).brightness == Brightness.dark;
         final scaffoldBg = isDark ? const Color(0xFF0E1218) : const Color(0xFFF7F4EF);
@@ -38,7 +40,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
         final borderColor = isDark ? const Color(0xFF2A303A) : const Color(0xFFE8E0D4);
         final textPrimary = isDark ? Colors.white : const Color(0xFF111827);
         final textSecondary = isDark ? Colors.white70 : const Color(0xFF6B7280);
-        final sectionTitle = const Color(0xFFF97316);
+        final accent = const Color(0xFFF97316);
 
         return Scaffold(
           backgroundColor: scaffoldBg,
@@ -47,7 +49,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
               padding: const EdgeInsets.fromLTRB(16, 10, 16, 24),
               children: [
                 _PageHeader(
-                  title: 'Cài đặt',
+                  title: t.themeSettingsTitle,
                   onBack: () => Navigator.of(context).maybePop(),
                 ),
                 const SizedBox(height: 18),
@@ -56,16 +58,16 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                   photoUrl: currentUser?.photoURL,
                   subtitle: subtitle,
                   imagePath: 'assets/setting/setting_theme.png',
+                  accent: accent,
                   isDark: isDark,
                   textPrimary: textPrimary,
                   textSecondary: textSecondary,
-                  accent: const Color(0xFFF97316),
                 ),
                 const SizedBox(height: 18),
                 Text(
-                  'Giao diện',
+                  t.themeAppearanceSection,
                   style: TextStyle(
-                    color: sectionTitle,
+                    color: accent,
                     fontSize: 22,
                     fontWeight: FontWeight.w800,
                     letterSpacing: -0.3,
@@ -92,7 +94,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Chế độ hiển thị',
+                        t.themeDisplayMode,
                         style: TextStyle(
                           color: textPrimary,
                           fontSize: 16,
@@ -101,31 +103,31 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                       ),
                       const SizedBox(height: 12),
                       _ModeOptionTile(
-                        title: 'Sáng',
-                        subtitle: 'Giao diện nền sáng, dễ nhìn ban ngày',
+                        title: t.themeLight,
+                        subtitle: t.themeLightDesc,
                         icon: Icons.wb_sunny_rounded,
                         selected: isLightSelected,
-                        accent: const Color(0xFFF97316),
+                        accent: accent,
                         onTap: () => _setMode(ThemeMode.light),
                         isDark: isDark,
                       ),
                       const SizedBox(height: 10),
                       _ModeOptionTile(
-                        title: 'Tối',
-                        subtitle: 'Giao diện nền tối, dịu mắt ban đêm',
+                        title: t.themeDark,
+                        subtitle: t.themeDarkDesc,
                         icon: Icons.nightlight_round,
                         selected: isDarkSelected,
-                        accent: const Color(0xFFF97316),
+                        accent: accent,
                         onTap: () => _setMode(ThemeMode.dark),
                         isDark: isDark,
                       ),
                       const SizedBox(height: 10),
                       _ModeOptionTile(
-                        title: 'Theo hệ thống',
-                        subtitle: 'Tự đổi theo cài đặt thiết bị',
+                        title: t.themeSystem,
+                        subtitle: t.themeSystemDesc,
                         icon: Icons.phone_android_rounded,
                         selected: isSystemSelected,
-                        accent: const Color(0xFFF97316),
+                        accent: accent,
                         onTap: () => _setMode(ThemeMode.system),
                         isDark: isDark,
                       ),
@@ -134,7 +136,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                 ),
                 const SizedBox(height: 18),
                 Text(
-                  'Xem trước giao diện',
+                  t.themePreviewTitle,
                   style: TextStyle(
                     color: textPrimary,
                     fontSize: 16,
@@ -146,7 +148,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                   children: [
                     Expanded(
                       child: _PreviewCard(
-                        title: 'Sáng',
+                        title: t.themeLight,
                         isDarkPreview: false,
                         selected: current == ThemeMode.light,
                       ),
@@ -154,7 +156,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: _PreviewCard(
-                        title: 'Tối',
+                        title: t.themeDark,
                         isDarkPreview: true,
                         selected: current == ThemeMode.dark,
                       ),
@@ -163,7 +165,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Khi bật theo hệ thống, ứng dụng sẽ tự đổi màu theo cài đặt thiết bị.',
+                  t.themePreviewNote,
                   style: TextStyle(
                     color: textSecondary,
                     fontSize: 12,
@@ -192,23 +194,19 @@ class _PageHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: onBack,
-            borderRadius: BorderRadius.circular(999),
-            child: const SizedBox(
-              width: 38,
-              height: 38,
-              child: Icon(
-                Icons.arrow_back_ios_new_rounded,
-                size: 18,
-                color: Color(0xFF111827),
-              ),
+        InkWell(
+          onTap: onBack,
+          borderRadius: BorderRadius.circular(999),
+          child: const SizedBox(
+            width: 38,
+            height: 38,
+            child: Icon(
+              Icons.arrow_back_ios_new_rounded,
+              size: 18,
+              color: Color(0xFF111827),
             ),
           ),
         ),
-        const SizedBox(width: 12),
         Expanded(
           child: Center(
             child: Text(
@@ -233,20 +231,20 @@ class _HeroHeader extends StatelessWidget {
     required this.photoUrl,
     required this.subtitle,
     required this.imagePath,
+    required this.accent,
     required this.isDark,
     required this.textPrimary,
     required this.textSecondary,
-    required this.accent,
   });
 
   final String displayName;
   final String? photoUrl;
   final String subtitle;
   final String imagePath;
+  final Color accent;
   final bool isDark;
   final Color textPrimary;
   final Color textSecondary;
-  final Color accent;
 
   @override
   Widget build(BuildContext context) {
@@ -276,78 +274,73 @@ class _HeroHeader extends StatelessWidget {
                 ),
               ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          Stack(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 108),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    _AccountAvatar(
-                      photoUrl: photoUrl,
-                      displayName: displayName,
-                      borderColor: Colors.white,
-                      backgroundColor: surface,
-                    ),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            displayName,
-                            style: TextStyle(
-                              color: textPrimary,
-                              fontSize: 22,
-                              fontWeight: FontWeight.w900,
-                              height: 1.0,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            subtitle,
-                            style: TextStyle(
-                              color: textSecondary,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                            decoration: BoxDecoration(
-                              color: accent.withValues(alpha: 0.14),
-                              borderRadius: BorderRadius.circular(999),
-                            ),
-                            child: Text(
-                              'Explorer',
-                              style: TextStyle(
-                                color: accent,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                          ),
-                        ],
+          Padding(
+            padding: const EdgeInsets.only(right: 108),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                _AccountAvatar(
+                  photoUrl: photoUrl,
+                  displayName: displayName,
+                  borderColor: Colors.white,
+                  backgroundColor: surface,
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        displayName,
+                        style: TextStyle(
+                          color: textPrimary,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w900,
+                          height: 1.0,
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 8),
+                      Text(
+                        subtitle,
+                        style: TextStyle(
+                          color: textSecondary,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: accent.withValues(alpha: 0.14),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: Text(
+                          'Explorer',
+                          style: TextStyle(
+                            color: accent,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Positioned(
-                right: -20,
-                top: -15,
-                child: Image.asset(
-                  imagePath,
-                  width: 170,
-                  fit: BoxFit.contain,
-                  errorBuilder: (_, __, ___) => const SizedBox.shrink(),
-                ),
-              ),
-            ],
+              ],
+            ),
+          ),
+          Positioned(
+            right: -20,
+            top: -15,
+            child: Image.asset(
+              imagePath,
+              width: 170,
+              fit: BoxFit.contain,
+              errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+            ),
           ),
         ],
       ),
@@ -544,8 +537,7 @@ class _PreviewCard extends StatelessWidget {
     final bg = isDarkPreview ? const Color(0xFF1E2026) : Colors.white;
     final borderColor = selected ? const Color(0xFFF97316) : (isDarkPreview ? const Color(0xFF2A303A) : const Color(0xFFE8E0D4));
     final titleColor = isDarkPreview ? Colors.white : const Color(0xFF111827);
-    final subColor = isDarkPreview ? Colors.white38 : const Color(0xFFCBD5E1);
-    final foodBg = isDarkPreview ? const Color(0xFF2B2E35) : const Color(0xFFF4F0EA);
+    final barColor = isDarkPreview ? Colors.white24 : const Color(0xFFD8DEE7);
 
     return Container(
       padding: const EdgeInsets.all(10),
@@ -573,70 +565,33 @@ class _PreviewCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          Container(
-            height: 96,
-            decoration: BoxDecoration(
-              color: foodBg,
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Stack(
-              children: [
-                Positioned(
-                  left: 12,
-                  top: 12,
-                  child: Container(
-                    width: 46,
-                    height: 46,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: isDarkPreview ? const Color(0xFFFFB74D) : const Color(0xFFFFE2B3),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  right: 10,
-                  top: 14,
-                  child: Container(
-                    width: 34,
-                    height: 34,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: isDarkPreview ? const Color(0xFFFFC14D) : const Color(0xFFFFA940),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  left: 14,
-                  right: 14,
-                  bottom: 14,
-                  child: Container(
-                    height: 16,
-                    decoration: BoxDecoration(
-                      color: isDarkPreview
-                          ? Colors.white12
-                          : Colors.orange.withValues(alpha: 0.85),
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                  ),
-                ),
-              ],
+          ClipRRect(
+            borderRadius: BorderRadius.circular(14),
+            child: SizedBox(
+              height: 96,
+              child: Image.asset(
+                'assets/setting/setting-theme-2.jpg',
+                fit: BoxFit.cover,
+                alignment: isDarkPreview ? Alignment.centerRight : Alignment.centerLeft,
+                errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+              ),
             ),
           ),
           const SizedBox(height: 10),
           Container(
             width: double.infinity,
-            height: 10,
+            height: 8,
             decoration: BoxDecoration(
-              color: subColor,
+              color: barColor,
               borderRadius: BorderRadius.circular(999),
             ),
           ),
           const SizedBox(height: 8),
           Container(
-            width: 72,
+            width: 64,
             height: 18,
             decoration: BoxDecoration(
-              color: isDarkPreview ? const Color(0xFFF97316) : const Color(0xFFF97316),
+              color: const Color(0xFFF97316),
               borderRadius: BorderRadius.circular(999),
             ),
           ),

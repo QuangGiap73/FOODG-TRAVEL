@@ -116,6 +116,36 @@ abstract class AppLocalizations {
   /// **'Choose language'**
   String get chooseLanguage;
 
+  /// No description provided for @languageAppSection.
+  ///
+  /// In en, this message translates to:
+  /// **'App language'**
+  String get languageAppSection;
+
+  /// No description provided for @languageDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Default language'**
+  String get languageDefault;
+
+  /// No description provided for @languageEnglishSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get languageEnglishSubtitle;
+
+  /// No description provided for @languageInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Changing the language will apply to the entire FoodS app.'**
+  String get languageInfo;
+
+  /// No description provided for @languageSupportedNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Only Vietnamese and English are supported.'**
+  String get languageSupportedNote;
+
   /// No description provided for @vietnamese.
   ///
   /// In en, this message translates to:
@@ -1574,17 +1604,59 @@ abstract class AppLocalizations {
   /// **'Light'**
   String get themeLight;
 
+  /// No description provided for @themeLightDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Bright background, easy to read during the day'**
+  String get themeLightDesc;
+
   /// No description provided for @themeDark.
   ///
   /// In en, this message translates to:
   /// **'Dark'**
   String get themeDark;
 
+  /// No description provided for @themeDarkDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark background, easier on the eyes at night'**
+  String get themeDarkDesc;
+
   /// No description provided for @themeSystem.
   ///
   /// In en, this message translates to:
   /// **'System'**
   String get themeSystem;
+
+  /// No description provided for @themeSystemDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatically follows your device settings'**
+  String get themeSystemDesc;
+
+  /// No description provided for @themeAppearanceSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get themeAppearanceSection;
+
+  /// No description provided for @themeDisplayMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Display mode'**
+  String get themeDisplayMode;
+
+  /// No description provided for @themePreviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get themePreviewTitle;
+
+  /// No description provided for @themePreviewNote.
+  ///
+  /// In en, this message translates to:
+  /// **'When system mode is enabled, the app will follow your device theme automatically.'**
+  String get themePreviewNote;
 
   /// No description provided for @locationSettingsTitle.
   ///

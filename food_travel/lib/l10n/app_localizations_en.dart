@@ -18,6 +18,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chooseLanguage => 'Choose language';
 
   @override
+  String get languageAppSection => 'App language';
+
+  @override
+  String get languageDefault => 'Default language';
+
+  @override
+  String get languageEnglishSubtitle => 'English';
+
+  @override
+  String get languageInfo =>
+      'Changing the language will apply to the entire FoodS app.';
+
+  @override
+  String get languageSupportedNote =>
+      'Only Vietnamese and English are supported.';
+
+  @override
   String get vietnamese => 'Vietnamese';
 
   @override
@@ -790,10 +807,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String get themeLight => 'Light';
 
   @override
+  String get themeLightDesc => 'Bright background, easy to read during the day';
+
+  @override
   String get themeDark => 'Dark';
 
   @override
+  String get themeDarkDesc => 'Dark background, easier on the eyes at night';
+
+  @override
   String get themeSystem => 'System';
+
+  @override
+  String get themeSystemDesc => 'Automatically follows your device settings';
+
+  @override
+  String get themeAppearanceSection => 'Appearance';
+
+  @override
+  String get themeDisplayMode => 'Display mode';
+
+  @override
+  String get themePreviewTitle => 'Preview';
+
+  @override
+  String get themePreviewNote =>
+      'When system mode is enabled, the app will follow your device theme automatically.';
 
   @override
   String get locationSettingsTitle => 'Location';

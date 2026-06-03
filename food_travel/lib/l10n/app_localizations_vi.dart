@@ -18,6 +18,22 @@ class AppLocalizationsVi extends AppLocalizations {
   String get chooseLanguage => 'Chon ngon ngu';
 
   @override
+  String get languageAppSection => 'Ngon ngu ung dung';
+
+  @override
+  String get languageDefault => 'Ngon ngu mac dinh';
+
+  @override
+  String get languageEnglishSubtitle => 'Tieng Anh';
+
+  @override
+  String get languageInfo =>
+      'Thay doi ngon ngu se ap dung cho toan bo ung dung FoodS.';
+
+  @override
+  String get languageSupportedNote => 'Chi ho tro Tieng Viet va Tieng Anh.';
+
+  @override
   String get vietnamese => 'Tieng Viet';
 
   @override
@@ -787,10 +803,32 @@ class AppLocalizationsVi extends AppLocalizations {
   String get themeLight => 'Sang';
 
   @override
+  String get themeLightDesc => 'Giao dien nen sang, de nhin ban ngay';
+
+  @override
   String get themeDark => 'Toi';
 
   @override
+  String get themeDarkDesc => 'Giao dien nen toi, diu mat ban dem';
+
+  @override
   String get themeSystem => 'Tu dong';
+
+  @override
+  String get themeSystemDesc => 'Tu doi theo cai dat thiet bi';
+
+  @override
+  String get themeAppearanceSection => 'Giao dien';
+
+  @override
+  String get themeDisplayMode => 'Che do hien thi';
+
+  @override
+  String get themePreviewTitle => 'Xem truoc giao dien';
+
+  @override
+  String get themePreviewNote =>
+      'Khi bat theo he thong, ung dung se tu doi mau theo cai dat thiet bi.';
 
   @override
   String get locationSettingsTitle => 'Vi tri';
