@@ -180,90 +180,74 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
           body: SafeArea(
             top: false,
             bottom: false,
-            child: Column(
-              children: [
-                CommunityBannerHeader(
-                  title: t.communityTitle,
-                  subtitle: 'Chia sẻ hành trình ẩm thực của bạn',
-                  isDark: isDark,
-                  onSearchTap: () {},
-                  bellAction: _buildHeaderBellAction(),
-                ),
-                Transform.translate(
-                  offset: const Offset(0, -22),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: CommunityQuickComposerCard(
-                      avatarUrl: FirebaseAuth.instance.currentUser?.photoURL,
-                      onImageTap: (text) => _openCreatePost(text),
-                      onCheckInTap: () {},
-                      onReviewTap: () {},
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 0),
-                Transform.translate(
-                  offset: const Offset(0, -8),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: NestedScrollView(
+              floatHeaderSlivers: true,
+              headerSliverBuilder: (context, innerBoxIsScrolled) {
+                final topInset = MediaQuery.paddingOf(context).top;
+                final bannerHeight = 132.0 + topInset;
+                const composerOverlap = 26.0;
+                const composerReserve = 90.0;
+
+                return [
+                  SliverToBoxAdapter(
                     child: SizedBox(
-                      height: 34,
-                      child: Builder(
-                        builder: (context) {
-                          final tabController = DefaultTabController.of(context);
-                          return AnimatedBuilder(
-                            animation: tabController,
-                            builder: (context, _) {
-                              final selectedIndex = tabController.index;
-                              return Row(
-                                children: [
-                                  _buildCommunityPill(
-                                    label: 'Tất cả',
-                                    selected: selectedIndex == 0,
-                                    onTap: () => tabController.animateTo(0),
-                                    isDark: isDark,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  _buildCommunityPill(
-                                    label: 'Đang hot',
-                                    selected: selectedIndex == 1,
-                                    onTap: () => tabController.animateTo(1),
-                                    isDark: isDark,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  _buildCommunityPill(
-                                    label: 'Gần bạn',
-                                    selected: selectedIndex == 2,
-                                    onTap: () => tabController.animateTo(2),
-                                    isDark: isDark,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  _buildCommunityPill(
-                                    label: 'Theo tỉnh',
-                                    selected: selectedIndex == 3,
-                                    onTap: () => tabController.animateTo(3),
-                                    isDark: isDark,
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        },
+                      height: bannerHeight + composerReserve,
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          Positioned(
+                            left: 0,
+                            right: 0,
+                            top: 0,
+                            child: CommunityBannerHeader(
+                              title: t.communityTitle,
+                              subtitle: 'Chia sẻ hành trình ẩm thực của bạn',
+                              isDark: isDark,
+                              onSearchTap: () {},
+                              bellAction: _buildHeaderBellAction(),
+                            ),
+                          ),
+                          Positioned(
+                            left: 0,
+                            right: 0,
+                            top: bannerHeight - composerOverlap,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              child: CommunityQuickComposerCard(
+                                avatarUrl:
+                                    FirebaseAuth.instance.currentUser?.photoURL,
+                                onImageTap: (text) => _openCreatePost(text),
+                                onCheckInTap: () {},
+                                onReviewTap: () {},
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ),
-                Expanded(
-                  child: TabBarView(
-                    children: [
-                      _buildNewestTab(),
-                      _buildTrendingTab(),
-                      _buildNearYouTab(),
-                      _buildProvinceTab(),
-                    ],
+                  SliverPersistentHeader(
+                    pinned: true,
+                    delegate: _PinnedHeaderDelegate(
+                      height: 46,
+                      child: Container(
+                        color: bg,
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                        child: _buildCommunityFilterBar(isDark),
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                ];
+              },
+              body: TabBarView(
+                children: [
+                  _buildNewestTab(),
+                  _buildTrendingTab(),
+                  _buildNearYouTab(),
+                  _buildProvinceTab(),
+                ],
+              ),
             ),
           ),
         ),
@@ -433,6 +417,51 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
     );
   }
 
+  Widget _buildCommunityFilterBar(bool isDark) {
+    return Builder(
+      builder: (context) {
+        final tabController = DefaultTabController.of(context);
+        return AnimatedBuilder(
+          animation: tabController,
+          builder: (context, _) {
+            final selectedIndex = tabController.index;
+            return Row(
+              children: [
+                _buildCommunityPill(
+                  label: 'Tất cả',
+                  selected: selectedIndex == 0,
+                  onTap: () => tabController.animateTo(0),
+                  isDark: isDark,
+                ),
+                const SizedBox(width: 8),
+                _buildCommunityPill(
+                  label: 'Đang hot',
+                  selected: selectedIndex == 1,
+                  onTap: () => tabController.animateTo(1),
+                  isDark: isDark,
+                ),
+                const SizedBox(width: 8),
+                _buildCommunityPill(
+                  label: 'Gần bạn',
+                  selected: selectedIndex == 2,
+                  onTap: () => tabController.animateTo(2),
+                  isDark: isDark,
+                ),
+                const SizedBox(width: 8),
+                _buildCommunityPill(
+                  label: 'Theo tỉnh',
+                  selected: selectedIndex == 3,
+                  onTap: () => tabController.animateTo(3),
+                  isDark: isDark,
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   Widget _buildCommunityPill({
     required String label,
     required bool selected,
@@ -531,6 +560,32 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
   }
 }
 
+class _PinnedHeaderDelegate extends SliverPersistentHeaderDelegate {
+  _PinnedHeaderDelegate({
+    required this.height,
+    required this.child,
+  });
+
+  final double height;
+  final Widget child;
+
+  @override
+  double get minExtent => height;
+
+  @override
+  double get maxExtent => height;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return child;
+  }
+
+  @override
+  bool shouldRebuild(covariant _PinnedHeaderDelegate oldDelegate) {
+    return oldDelegate.height != height || oldDelegate.child != child;
+  }
+}
+
 class _PostCard extends StatefulWidget {
   const _PostCard({required this.post});
 
@@ -572,11 +627,13 @@ class _PostCardState extends State<_PostCard> {
 
     if (action == 'edit') {
       // Mo man sua (dung lai trang tao bai)
-      final result = await Navigator.of(context).push<String>(
+      final navigator = Navigator.of(context);
+      final result = await navigator.push<String>(
         MaterialPageRoute(builder: (_) => CommunityCreatePostPage(post: post)),
       );
-      if (!mounted) return;
+      if (!context.mounted) return;
       if (result == CommunityCreatePostPage.resultUpdated) {
+        if (!context.mounted) return;
         await showAppNoticeDialog(
           context,
           title: t.noticeSuccessTitle,
@@ -594,9 +651,10 @@ class _PostCardState extends State<_PostCard> {
 
     if (action == 'delete') {
       final ok = await _confirmDelete(context);
+      if (!context.mounted) return;
       if (ok == true) {
         await _postService.softDeletePost(post.id);
-        if (!mounted) return;
+        if (!context.mounted) return;
         await showAppNoticeDialog(
           context,
           title: t.noticeSuccessTitle,
