@@ -850,64 +850,138 @@ class AppLocalizationsVi extends AppLocalizations {
   String get locationError => 'Loi vi tri.';
 
   @override
-  String get changePasswordTitle => 'Doi mat khau';
+  String get changePasswordTitle => 'Đổi mật khẩu';
 
   @override
-  String get changePasswordSuccess => 'Doi mat khau thanh cong.';
+  String get changePasswordSuccess => 'Đổi mật khẩu thành công.';
 
   @override
-  String get changePasswordCurrentLabel => 'Mat khau hien tai';
+  String get changePasswordCurrentLabel => 'Mật khẩu hiện tại';
 
   @override
-  String get changePasswordNewLabel => 'Mat khau moi';
+  String get changePasswordNewLabel => 'Mật khẩu mới';
 
   @override
-  String get changePasswordConfirmLabel => 'Nhap lai mat khau moi';
+  String get changePasswordConfirmLabel => 'Xác nhận mật khẩu mới';
 
   @override
-  String get changePasswordCurrentRequired => 'Vui long nhap mat khau hien tai';
+  String get changePasswordCurrentRequired => 'Vui lòng nhập mật khẩu hiện tại';
 
   @override
-  String get changePasswordNewRequired => 'Vui long nhap mat khau moi';
+  String get changePasswordNewRequired => 'Vui lòng nhập mật khẩu mới';
 
   @override
-  String get changePasswordNewTooShort => 'Mat khau moi it nhat 6 ky tu';
+  String get changePasswordNewTooShort => 'Mật khẩu mới ít nhất 6 ký tự';
 
   @override
-  String get changePasswordConfirmRequired => 'Vui long nhap lai mat khau moi';
+  String get changePasswordConfirmRequired => 'Vui lòng xác nhận mật khẩu mới';
 
   @override
-  String get changePasswordMismatch => 'Mat khau moi khong trung khop';
+  String get changePasswordMismatch => 'Mật khẩu mới không khớp';
 
   @override
   String get changePasswordErrorMissingFields =>
-      'Vui long nhap day du thong tin.';
+      'Vui lòng nhập đầy đủ thông tin.';
 
   @override
-  String get changePasswordErrorMismatch => 'Mat khau moi khong trung khop.';
+  String get changePasswordErrorMismatch => 'Mật khẩu mới không khớp.';
 
   @override
-  String get changePasswordErrorTooShort => 'Mat khau moi it nhat 6 ky tu.';
+  String get changePasswordErrorTooShort => 'Mật khẩu mới ít nhất 6 ký tự.';
 
   @override
-  String get changePasswordErrorWrongCurrent => 'Mat khau hien tai khong dung.';
+  String get changePasswordErrorWrongCurrent => 'Mật khẩu hiện tại không đúng.';
 
   @override
-  String get changePasswordErrorWeak => 'Mat khau moi qua yeu.';
+  String get changePasswordErrorWeak => 'Mật khẩu mới quá yếu.';
 
   @override
   String get changePasswordErrorRequiresLogin =>
-      'Vui long dang nhap lai roi thu lai.';
+      'Vui lòng đăng nhập lại rồi thử lại.';
 
   @override
-  String get changePasswordErrorNoUser => 'Chua dang nhap.';
+  String get changePasswordErrorNoUser => 'Chưa đăng nhập.';
+
+  @override
+  String get changePasswordErrorNoEmail =>
+      'Không tìm thấy email cho tài khoản này.';
 
   @override
   String get changePasswordErrorNoPasswordProvider =>
-      'Tai khoan dang nhap bang Google, khong doi duoc mat khau.';
+      'Tài khoản đăng nhập bằng Google, không đổi được mật khẩu.';
 
   @override
-  String get changePasswordErrorUnknown => 'Doi mat khau that bai.';
+  String get changePasswordErrorUnknown => 'Đổi mật khẩu thất bại.';
+
+  @override
+  String get changePasswordBannerTitle => 'Bảo vệ tài khoản của bạn';
+
+  @override
+  String get changePasswordBannerSubtitle =>
+      'Hãy dùng mật khẩu mạnh để giữ an toàn cho hành trình ẩm thực của bạn';
+
+  @override
+  String get changePasswordBannerBadge => 'FoodS Security';
+
+  @override
+  String get changePasswordStrengthTitle => 'Độ mạnh mật khẩu';
+
+  @override
+  String get changePasswordStrengthWeak => 'Yếu';
+
+  @override
+  String get changePasswordStrengthMedium => 'Trung bình';
+
+  @override
+  String get changePasswordStrengthStrong => 'Mạnh';
+
+  @override
+  String get changePasswordStrengthVeryStrong => 'Rất mạnh';
+
+  @override
+  String get changePasswordTipsTitle => 'Gợi ý mật khẩu an toàn';
+
+  @override
+  String get changePasswordTipLength => 'Ít nhất 8 ký tự';
+
+  @override
+  String get changePasswordTipUpperLower => 'Có chữ hoa và chữ thường';
+
+  @override
+  String get changePasswordTipNumber => 'Có số';
+
+  @override
+  String get changePasswordTipSpecial => 'Có ký tự đặc biệt';
+
+  @override
+  String get changePasswordTipNoReuse => 'Không trùng mật khẩu cũ';
+
+  @override
+  String get changePasswordForgotPrompt => 'Bạn quên mật khẩu hiện tại?';
+
+  @override
+  String get changePasswordResetAction => 'Đặt lại mật khẩu';
+
+  @override
+  String get changePasswordResetSuccess => 'Đã gửi email đặt lại mật khẩu.';
+
+  @override
+  String get changePasswordResetNoEmail =>
+      'Không tìm thấy email cho tài khoản này.';
+
+  @override
+  String get changePasswordResetFailed =>
+      'Không thể gửi email đặt lại mật khẩu.';
+
+  @override
+  String get changePasswordInfoText =>
+      'Sau khi đổi mật khẩu, bạn nên đăng nhập lại trên các thiết bị khác để đảm bảo an toàn.';
+
+  @override
+  String get changePasswordCancel => 'Hủy';
+
+  @override
+  String get changePasswordUpdate => 'Cập nhật mật khẩu';
 
   @override
   String get authLoginTitle => 'Chao mung tro lai!';

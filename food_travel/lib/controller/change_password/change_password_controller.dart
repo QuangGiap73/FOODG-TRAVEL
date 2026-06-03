@@ -13,6 +13,7 @@ class ChangePasswordController extends ChangeNotifier {
   static const errorWeakPassword = 'weak_password';
   static const errorRequiresRecentLogin = 'requires_recent_login';
   static const errorNoUser = 'no_user';
+  static const errorNoEmail = 'no_email';
   static const errorNoPasswordProvider = 'no_password_provider';
   static const errorUnknown = 'unknown';
 
@@ -74,6 +75,28 @@ class ChangePasswordController extends ChangeNotifier {
     }
   }
 
+  Future<bool> requestPasswordReset() async {
+    _errorCode = null;
+    _success = false;
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      await _authService.sendPasswordResetEmailForCurrentUser();
+      _success = true;
+      return true;
+    } on FirebaseAuthException catch (e) {
+      _errorCode = _mapErrorCode(e.code);
+      return false;
+    } catch (_) {
+      _errorCode = errorUnknown;
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
   String _mapErrorCode(String code) {
     switch (code) {
       case 'wrong-password':
@@ -85,6 +108,8 @@ class ChangePasswordController extends ChangeNotifier {
         return errorRequiresRecentLogin;
       case 'no-user':
         return errorNoUser;
+      case 'no-email':
+        return errorNoEmail;
       case 'no-password-provider':
         return errorNoPasswordProvider;
       default:

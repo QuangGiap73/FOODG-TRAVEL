@@ -909,11 +909,83 @@ class AppLocalizationsEn extends AppLocalizations {
   String get changePasswordErrorNoUser => 'Not signed in.';
 
   @override
+  String get changePasswordErrorNoEmail => 'No email found for this account.';
+
+  @override
   String get changePasswordErrorNoPasswordProvider =>
       'Google sign-in account cannot change password.';
 
   @override
   String get changePasswordErrorUnknown => 'Password change failed.';
+
+  @override
+  String get changePasswordBannerTitle => 'Protect your account';
+
+  @override
+  String get changePasswordBannerSubtitle =>
+      'Use a strong password to keep your food journey secure.';
+
+  @override
+  String get changePasswordBannerBadge => 'FoodS Security';
+
+  @override
+  String get changePasswordStrengthTitle => 'Password strength';
+
+  @override
+  String get changePasswordStrengthWeak => 'Weak';
+
+  @override
+  String get changePasswordStrengthMedium => 'Medium';
+
+  @override
+  String get changePasswordStrengthStrong => 'Strong';
+
+  @override
+  String get changePasswordStrengthVeryStrong => 'Very strong';
+
+  @override
+  String get changePasswordTipsTitle => 'Safe password tips';
+
+  @override
+  String get changePasswordTipLength => 'At least 8 characters';
+
+  @override
+  String get changePasswordTipUpperLower => 'Use upper and lower case';
+
+  @override
+  String get changePasswordTipNumber => 'Include numbers';
+
+  @override
+  String get changePasswordTipSpecial => 'Include special characters';
+
+  @override
+  String get changePasswordTipNoReuse => 'Don\'t reuse old password';
+
+  @override
+  String get changePasswordForgotPrompt => 'Forgot your current password?';
+
+  @override
+  String get changePasswordResetAction => 'Reset password';
+
+  @override
+  String get changePasswordResetSuccess => 'Password reset email sent.';
+
+  @override
+  String get changePasswordResetNoEmail => 'No email found for this account.';
+
+  @override
+  String get changePasswordResetFailed =>
+      'Could not send password reset email.';
+
+  @override
+  String get changePasswordInfoText =>
+      'After changing your password, sign in again on other devices to stay secure.';
+
+  @override
+  String get changePasswordCancel => 'Cancel';
+
+  @override
+  String get changePasswordUpdate => 'Update password';
 
   @override
   String get authLoginTitle => 'Welcome back!';

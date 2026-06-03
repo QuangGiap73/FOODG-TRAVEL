@@ -1796,6 +1796,12 @@ abstract class AppLocalizations {
   /// **'Not signed in.'**
   String get changePasswordErrorNoUser;
 
+  /// No description provided for @changePasswordErrorNoEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'No email found for this account.'**
+  String get changePasswordErrorNoEmail;
+
   /// No description provided for @changePasswordErrorNoPasswordProvider.
   ///
   /// In en, this message translates to:
@@ -1807,6 +1813,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Password change failed.'**
   String get changePasswordErrorUnknown;
+
+  /// No description provided for @changePasswordBannerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Protect your account'**
+  String get changePasswordBannerTitle;
+
+  /// No description provided for @changePasswordBannerSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a strong password to keep your food journey secure.'**
+  String get changePasswordBannerSubtitle;
+
+  /// No description provided for @changePasswordBannerBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'FoodS Security'**
+  String get changePasswordBannerBadge;
+
+  /// No description provided for @changePasswordStrengthTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Password strength'**
+  String get changePasswordStrengthTitle;
+
+  /// No description provided for @changePasswordStrengthWeak.
+  ///
+  /// In en, this message translates to:
+  /// **'Weak'**
+  String get changePasswordStrengthWeak;
+
+  /// No description provided for @changePasswordStrengthMedium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get changePasswordStrengthMedium;
+
+  /// No description provided for @changePasswordStrengthStrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Strong'**
+  String get changePasswordStrengthStrong;
+
+  /// No description provided for @changePasswordStrengthVeryStrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Very strong'**
+  String get changePasswordStrengthVeryStrong;
+
+  /// No description provided for @changePasswordTipsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Safe password tips'**
+  String get changePasswordTipsTitle;
+
+  /// No description provided for @changePasswordTipLength.
+  ///
+  /// In en, this message translates to:
+  /// **'At least 8 characters'**
+  String get changePasswordTipLength;
+
+  /// No description provided for @changePasswordTipUpperLower.
+  ///
+  /// In en, this message translates to:
+  /// **'Use upper and lower case'**
+  String get changePasswordTipUpperLower;
+
+  /// No description provided for @changePasswordTipNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Include numbers'**
+  String get changePasswordTipNumber;
+
+  /// No description provided for @changePasswordTipSpecial.
+  ///
+  /// In en, this message translates to:
+  /// **'Include special characters'**
+  String get changePasswordTipSpecial;
+
+  /// No description provided for @changePasswordTipNoReuse.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t reuse old password'**
+  String get changePasswordTipNoReuse;
+
+  /// No description provided for @changePasswordForgotPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot your current password?'**
+  String get changePasswordForgotPrompt;
+
+  /// No description provided for @changePasswordResetAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset password'**
+  String get changePasswordResetAction;
+
+  /// No description provided for @changePasswordResetSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Password reset email sent.'**
+  String get changePasswordResetSuccess;
+
+  /// No description provided for @changePasswordResetNoEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'No email found for this account.'**
+  String get changePasswordResetNoEmail;
+
+  /// No description provided for @changePasswordResetFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not send password reset email.'**
+  String get changePasswordResetFailed;
+
+  /// No description provided for @changePasswordInfoText.
+  ///
+  /// In en, this message translates to:
+  /// **'After changing your password, sign in again on other devices to stay secure.'**
+  String get changePasswordInfoText;
+
+  /// No description provided for @changePasswordCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get changePasswordCancel;
+
+  /// No description provided for @changePasswordUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Update password'**
+  String get changePasswordUpdate;
 
   /// No description provided for @authLoginTitle.
   ///

@@ -86,4 +86,32 @@ class AuthService {
         await user.updatePassword(newPassword);
         }
 
+    Future<void> sendPasswordResetEmailForCurrentUser() async {
+        final user = _auth.currentUser;
+        if (user == null) {
+            throw FirebaseAuthException(
+                code: 'no-user',
+                message: 'No user signed in.',
+            );
+        }
+
+        final email = user.email;
+        if (email == null || email.isEmpty) {
+            throw FirebaseAuthException(
+                code: 'no-email',
+                message: 'No email for current user.',
+            );
+        }
+
+        final providers = user.providerData.map((p) => p.providerId).toList();
+        if (!providers.contains('password')) {
+            throw FirebaseAuthException(
+                code: 'no-password-provider',
+                message: 'Password provider not linked.',
+            );
+        }
+
+        await _auth.sendPasswordResetEmail(email: email);
+    }
+
 }
