@@ -1,8 +1,165 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:food_travel/l10n/app_localizations.dart';
 
-class PlaceStickyActionBar extends StatelessWidget {
-  const PlaceStickyActionBar({super.key});
+import '../../../controller/journey/journey_controller.dart';
+import '../../../models/journey/checkin_result.dart';
+import '../../../models/places_model.dart';
+import '../../../services/restaurants/place_review_service.dart';
+
+class PlaceStickyActionBar extends StatefulWidget {
+  const PlaceStickyActionBar({super.key, required this.place});
+
+  // Quán đang mở trong trang chi tiết.
+  final GoongNearbyPlace place;
+
+  @override
+  State<PlaceStickyActionBar> createState() => _PlaceStickyActionBarState();
+}
+
+class _PlaceStickyActionBarState extends State<PlaceStickyActionBar> {
+  // Controller Journey: tu lay GPS va goi Cloud Function createCheckin.
+  late final JourneyController _journeyController;
+
+  // Dung de lay placeId dong nhat voi collection places.
+  final _reviewService = PlaceReviewService();
+
+  bool _isCheckingIn = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _journeyController = JourneyController();
+  }
+
+  @override
+  void dispose() {
+    _journeyController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleCheckIn() async {
+    if (_isCheckingIn) return;
+
+    final messenger = ScaffoldMessenger.of(context);
+    final placeId = _reviewService.placeIdOf(widget.place);
+
+    if (placeId.trim().isEmpty) {
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text('Khong the xac dinh placeId cua quan nay.'),
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _isCheckingIn = true;
+    });
+
+    // Controller se:
+    // - tu lay GPS hien tai
+    // - goi Cloud Function createCheckin
+    // - nhan ve diem + streak + badge
+    final ok = await _journeyController.checkInPlace(
+      placeId: placeId,
+      placeName: widget.place.name,
+      placeAddress: widget.place.address,
+      placeLat: widget.place.lat,
+      placeLng: widget.place.lng,
+      verificationType: 'gps',
+      source: 'place_detail',
+      photoUrl: widget.place.photoUrl.trim().isNotEmpty
+          ? widget.place.photoUrl.trim()
+          : null,
+      districtName: widget.place.district.trim().isNotEmpty
+          ? widget.place.district.trim()
+          : null,
+      placeType: widget.place.category?.trim().isNotEmpty == true
+          ? widget.place.category!.trim()
+          : null,
+    );
+
+    if (!mounted) return;
+
+    setState(() {
+      _isCheckingIn = false;
+    });
+
+    if (ok && _journeyController.lastCheckinResult != null) {
+      final result = _journeyController.lastCheckinResult!;
+      await _showSuccessDialog(result);
+      return;
+    }
+
+    messenger.showSnackBar(
+      SnackBar(
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 90),
+        content: Text(_messageForError(
+          _journeyController.errorCode,
+          _journeyController.errorMessage,
+        )),
+      ),
+    );
+  }
+
+  Future<void> _showSuccessDialog(JourneyCheckinResult result) async {
+    final extras = <String>[
+      if (result.isNewPlace) 'quan moi',
+      if (result.isNewProvince) 'tinh moi',
+    ];
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Check-in thanh cong'),
+          content: Text(
+            'Ban vua check-in ${result.placeName}.\n'
+            '+${result.pointsEarned} diem'
+            '${extras.isEmpty ? '' : '\n(${extras.join(' + ')})'}',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  String _messageForError(String? code, String? message) {
+    switch (code) {
+      case 'location_service_disabled':
+        return 'Hay bat GPS de check-in.';
+      case 'location_permission_denied':
+        return 'Can cap quyen vi tri de check-in.';
+      case 'location_permission_denied_forever':
+        return 'Quyen vi tri dang bi chan vinh vien. Hay mo trong cai dat.';
+      case 'location_timeout':
+        return 'Khong lay duoc vi tri hien tai. Thu lai sau.';
+      case 'unauthenticated':
+        return 'Ban can dang nhap de check-in.';
+      case 'failed-precondition':
+        return message?.trim().isNotEmpty == true
+            ? message!.trim()
+            : 'Khong the check-in luc nay.';
+      case 'resource-exhausted':
+        return message?.trim().isNotEmpty == true
+            ? message!.trim()
+            : 'Ban da dat gioi han check-in trong ngay.';
+      case 'invalid-argument':
+        return message?.trim().isNotEmpty == true
+            ? message!.trim()
+            : 'Du lieu check-in khong hop le.';
+      default:
+        return message?.trim().isNotEmpty == true
+            ? message!.trim()
+            : 'Check-in that bai. Vui long thu lai.';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -10,7 +167,9 @@ class PlaceStickyActionBar extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bg = isDark ? const Color(0xFF0F131A) : Colors.white;
     final border = isDark ? const Color(0xFF1F2530) : const Color(0xFFE2E8F0);
-    final shadow = isDark ? Colors.black.withOpacity(0.5) : Colors.black.withOpacity(0.08);
+    final shadow = isDark
+        ? Colors.black.withValues(alpha: 0.5)
+        : Colors.black.withValues(alpha: 0.08);
     final outlineColor = isDark ? const Color(0xFF2B3442) : const Color(0xFFE2E8F0);
     final outlineText = isDark ? Colors.white70 : const Color(0xFF0F172A);
 
@@ -44,9 +203,22 @@ class PlaceStickyActionBar extends StatelessWidget {
           Expanded(
             flex: 2,
             child: ElevatedButton.icon(
-              onPressed: () {},
-              icon: const Icon(Icons.shopping_bag_outlined, size: 18),
-              label: Text(t.placeSchedule),
+              // Neu dang xu ly thi khoa nut.
+              onPressed: _isCheckingIn ? null : _handleCheckIn,
+              icon: _isCheckingIn
+                  ? Container(
+                      width: 18,
+                      height: 18,
+                      padding: const EdgeInsets.all(2),
+                      child: const CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                  : const Icon(Icons.location_on_outlined, size: 18),
+              label: Text(
+                _isCheckingIn ? 'Dang check-in...' : 'Toi da an o day',
+              ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFFF6A00),
                 foregroundColor: Colors.white,
@@ -62,4 +234,3 @@ class PlaceStickyActionBar extends StatelessWidget {
     );
   }
 }
-
