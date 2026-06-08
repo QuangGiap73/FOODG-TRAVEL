@@ -100,6 +100,46 @@ type BadgeRule = {
   targetValue: number;
 };
 
+type DailyMissionDefinition = {
+  id: string;
+  title: string;
+  description: string;
+  type: string;
+  iconKey: string;
+  targetCount: number;
+  rewardPoints: number;
+};
+
+const DAILY_MISSION_DEFINITIONS: DailyMissionDefinition[] = [
+  {
+    id: "checkin_new_place",
+    title: "Check-in 1 quan moi",
+    description: "Hay check-in tai mot quan ban chua tung an.",
+    type: "checkin_new_place",
+    iconKey: "checkin",
+    targetCount: 1,
+    rewardPoints: 30,
+  },
+  {
+    id: "try_vietnamese_food",
+    title: "Thu mot mon Viet",
+    description: "Kham pha mot mon an Viet Nam hom nay.",
+    type: "try_vietnamese_food",
+    iconKey: "food",
+    targetCount: 1,
+    rewardPoints: 20,
+  },
+  {
+    id: "save_wishlist_place",
+    title: "Luu 1 quan muon an",
+    description: "Luu mot quan vao danh sach yeu thich.",
+    type: "save_wishlist_place",
+    iconKey: "save",
+    targetCount: 1,
+    rewardPoints: 10,
+  },
+];
+
 /**
  * Ep an input thanh chuoi an toan.
  */
@@ -208,6 +248,197 @@ async function syncJourneyBadge(
     {merge: true},
   );
 }
+
+
+/**
+ * Tao du lieu mission mac dinh de ghi vao Firestore.
+ */
+function buildMissionSeed(
+  definition: DailyMissionDefinition,
+  dateKey: string,
+): admin.firestore.DocumentData {
+  return {
+    id: definition.id,
+    title: definition.title,
+    description: definition.description,
+    type: definition.type,
+    iconKey: definition.iconKey,
+    targetCount: definition.targetCount,
+    currentCount: 0,
+    rewardPoints: definition.rewardPoints,
+    date: dateKey,
+    isCompleted: false,
+    isClaimed: false,
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+  };
+}
+
+/**
+ * Ghi mission mac dinh neu mission hom nay chua ton tai.
+ */
+function writeDailyMissionSeed(
+  tx: admin.firestore.Transaction,
+  missionRef: admin.firestore.DocumentReference,
+  existing: admin.firestore.DocumentData | undefined,
+  definition: DailyMissionDefinition,
+  dateKey: string,
+) {
+  if (existing) return;
+
+  tx.set(
+    missionRef,
+    buildMissionSeed(definition, dateKey),
+    {merge: true},
+  );
+}
+
+/**
+ * Cap nhat tien do mission trong transaction.
+ */
+function writeDailyMissionProgress(
+  tx: admin.firestore.Transaction,
+  missionRef: admin.firestore.DocumentReference,
+  existing: admin.firestore.DocumentData | undefined,
+  definition: DailyMissionDefinition,
+  dateKey: string,
+  shouldIncrease: boolean,
+) {
+  const currentCount = toInt(existing?.currentCount);
+  const targetCount = definition.targetCount;
+  const alreadyCompleted =
+    existing?.isCompleted === true ||
+    (targetCount > 0 && currentCount >= targetCount);
+
+  const nextCount = shouldIncrease && !alreadyCompleted ?
+    Math.min(currentCount + 1, targetCount) :
+    currentCount;
+
+  const isCompleted =
+    alreadyCompleted ||
+    (targetCount > 0 && nextCount >= targetCount);
+
+  const data: admin.firestore.DocumentData = {
+    id: definition.id,
+    title: definition.title,
+    description: definition.description,
+    type: definition.type,
+    iconKey: definition.iconKey,
+    targetCount,
+    currentCount: nextCount,
+    rewardPoints: definition.rewardPoints,
+    date: dateKey,
+    isCompleted,
+    isClaimed: existing?.isClaimed === true,
+    createdAt:
+      existing?.createdAt ??
+      admin.firestore.FieldValue.serverTimestamp(),
+    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+  };
+
+  if (isCompleted && !existing?.completedAt) {
+    data.completedAt = admin.firestore.FieldValue.serverTimestamp();
+  }
+
+  if (existing?.claimedAt) {
+    data.claimedAt = existing.claimedAt;
+  }
+
+  if (existing?.dueAt) {
+    data.dueAt = existing.dueAt;
+  }
+
+  tx.set(missionRef, data, {merge: true});
+}
+
+/**
+ * Kiem tra check-in co tinh la nhiem vu thu mon Viet hay khong.
+ */
+function isVietnameseFoodMissionMatched(params: {
+  placeName: string;
+  placeAddress: string;
+  placeType: string;
+  provinceCode: string;
+  provinceName: string;
+}): boolean {
+  const combined = [
+    params.placeName,
+    params.placeAddress,
+    params.placeType,
+    params.provinceCode,
+    params.provinceName,
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  return (
+    combined.includes("viet") ||
+    combined.includes("vietnam") ||
+    combined.includes("viet nam") ||
+    combined.includes("mon viet") ||
+    combined.includes("pho") ||
+    combined.includes("bun") ||
+    combined.includes("banh") ||
+    params.provinceCode.trim().length > 0 ||
+    params.provinceName.trim().length > 0
+  );
+}
+
+export const ensureDailyMissions = onCall(async (request) => {
+  const uid = request.auth?.uid;
+  if (!uid) {
+    throw new HttpsError("unauthenticated", "Ban can dang nhap.");
+  }
+
+  const payload = request.data ?? {};
+  const dateKey =
+    toStringSafe(payload.dateKey) || getVietnamDateKey(new Date());
+
+  const summaryRef = db
+    .collection("users")
+    .doc(uid)
+    .collection("journey")
+    .doc("summary");
+
+  const dailyMissionRef = summaryRef
+    .collection("daily_missions")
+    .doc(dateKey);
+
+  const missionsCol = dailyMissionRef.collection("missions");
+  const missionRefs = DAILY_MISSION_DEFINITIONS.map((mission) =>
+    missionsCol.doc(mission.id),
+  );
+
+  await db.runTransaction(async (tx) => {
+    const missionSnaps = await Promise.all(
+      missionRefs.map((missionRef) => tx.get(missionRef)),
+    );
+
+    tx.set(
+      dailyMissionRef,
+      {
+        dateKey,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      },
+      {merge: true},
+    );
+
+    DAILY_MISSION_DEFINITIONS.forEach((mission, index) => {
+      writeDailyMissionSeed(
+        tx,
+        missionRefs[index],
+        missionSnaps[index].data(),
+        mission,
+        dateKey,
+      );
+    });
+  });
+
+  return {
+    success: true,
+    dateKey,
+  };
+});
 
 // ============================
 // LIKE -> thong bao + push
@@ -436,6 +667,17 @@ export const createCheckin = onCall(async (request) => {
     const provinceExplorerBadge = badgeSnaps[2].data() ?? {};
     const streakBadge = badgeSnaps[3].data() ?? {};
 
+    const dailyMissionRef = summaryRef
+      .collection("daily_missions")
+      .doc(todayKey);
+    const missionsCol = dailyMissionRef.collection("missions");
+    const missionRefs = DAILY_MISSION_DEFINITIONS.map((mission) =>
+      missionsCol.doc(mission.id),
+    );
+    const missionSnaps = await Promise.all(
+      missionRefs.map((missionRef) => tx.get(missionRef)),
+    );
+
     const isNewPlace = !placeVisitSnap.exists;
     const isNewProvince = Boolean(
       provinceRef && provinceCode && !(provinceSnap?.exists),
@@ -606,6 +848,43 @@ export const createCheckin = onCall(async (request) => {
       currentValue: currentStreak,
       targetValue: 3,
     }, streakBadge);
+
+    const completedVietnameseMission = isVietnameseFoodMissionMatched({
+      placeName,
+      placeAddress,
+      placeType,
+      provinceCode,
+      provinceName,
+    });
+
+    tx.set(
+      dailyMissionRef,
+      {
+        dateKey: todayKey,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      },
+      {merge: true},
+    );
+
+    DAILY_MISSION_DEFINITIONS.forEach((mission, index) => {
+      const existing = missionSnaps[index].data();
+
+      const shouldIncrease =
+        (mission.id === "checkin_new_place" && isNewPlace) ||
+        (
+          mission.id === "try_vietnamese_food" &&
+          completedVietnameseMission
+        );
+
+      writeDailyMissionProgress(
+        tx,
+        missionRefs[index],
+        existing,
+        mission,
+        todayKey,
+        shouldIncrease,
+      );
+    });
 
     return {
       checkinId: checkinRef.id,

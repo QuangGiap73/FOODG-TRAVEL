@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/journey/journey_stats.dart';
+import '../../../models/journey/mission_model.dart';
+import '../../../views/journey/widgets/daily_mission_section.dart';
 
 class FoodJourneyPage extends StatelessWidget {
   const FoodJourneyPage({super.key});
@@ -64,8 +66,14 @@ class FoodJourneyPage extends StatelessWidget {
               ),
               _JourneyHeroBanner(userId: user?.uid),
               const SizedBox(height: 20),
-              const SizedBox(height: 420),
-            ],
+              DailyMissionSection(
+                userId: user?.uid,
+              ),
+
+              const SizedBox(height: 20),
+
+              const SizedBox(height: 300),
+                          ],
           ),
         ),
       ),
