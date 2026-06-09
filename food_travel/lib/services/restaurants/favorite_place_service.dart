@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 import '../../models/places_model.dart';
 
@@ -81,6 +82,16 @@ class FavoritePlaceService {
       'createdAt': FieldValue.serverTimestamp(),
       'createAt': FieldValue.serverTimestamp(),
     });
+    await _completeSavePlaceMission();
+  }
+   Future<void> _completeSavePlaceMission() async {
+    try {
+      await FirebaseFunctions.instance
+          .httpsCallable('completeSavePlaceMission')
+          .call();
+    } catch (e) {
+      // Khong chan viec luu yeu thich neu mission loi.
+    }
   }
 }
 

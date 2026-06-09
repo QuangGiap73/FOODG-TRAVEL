@@ -926,3 +926,73 @@ export const createCheckin = onCall(async (request) => {
     ...result,
   };
 });
+/**
+ * Marks today's save-place mission as completed after the user saves a place.
+ */
+export const completeSavePlaceMission = onCall(async (request) => {
+  const uid = request.auth?.uid;
+
+  if (!uid) {
+    throw new HttpsError(
+      "unauthenticated",
+      "Ban can dang nhap de cap nhat nhiem vu.",
+    );
+  }
+
+  const now = new Date();
+  const todayKey = getVietnamDateKey(now);
+
+  const missionRef = db
+    .collection("users")
+    .doc(uid)
+    .collection("journey")
+    .doc("summary")
+    .collection("daily_missions")
+    .doc(todayKey)
+    .collection("missions")
+    .doc("save_wishlist_place");
+
+  await db.runTransaction(async (tx) => {
+    const missionSnap = await tx.get(missionRef);
+    const missionData = missionSnap.data() ?? {};
+
+    const targetCount = Math.max(
+      toInt(missionData.targetCount, 1),
+      1,
+    );
+
+    const currentCount = toInt(missionData.currentCount);
+    const nextCount = Math.min(currentCount + 1, targetCount);
+    const isCompleted = nextCount >= targetCount;
+
+    const updateData: admin.firestore.DocumentData = {
+      id: "save_wishlist_place",
+      title: "Luu 1 quan muon an",
+      description: "Luu mot quan vao danh sach yeu thich.",
+      type: "save_wishlist_place",
+      iconKey: "save",
+      targetCount,
+      currentCount: nextCount,
+      rewardPoints: 10,
+      date: todayKey,
+      isCompleted,
+      isClaimed: false,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    };
+
+    if (!missionSnap.exists) {
+      updateData.createdAt = admin.firestore.FieldValue.serverTimestamp();
+    }
+
+    if (isCompleted && !missionData.completedAt) {
+      updateData.completedAt = admin.firestore.FieldValue.serverTimestamp();
+    }
+
+    tx.set(missionRef, updateData, {merge: true});
+  });
+
+  return {
+    success: true,
+    missionId: "save_wishlist_place",
+  };
+});
