@@ -5,6 +5,7 @@ import '../../../controller/journey/journey_controller.dart';
 import '../../../models/journey/checkin_result.dart';
 import '../../../models/places_model.dart';
 import '../../../services/restaurants/place_review_service.dart';
+import '../../../views/journey/widgets2/checkin_success_dialog.dart';
 
 class PlaceStickyActionBar extends StatefulWidget {
   const PlaceStickyActionBar({super.key, required this.place});
@@ -104,31 +105,11 @@ class _PlaceStickyActionBarState extends State<PlaceStickyActionBar> {
   }
 
   Future<void> _showSuccessDialog(JourneyCheckinResult result) async {
-    final extras = <String>[
-      if (result.isNewPlace) 'quan moi',
-      if (result.isNewProvince) 'tinh moi',
-    ];
-
-    await showDialog<void>(
-      context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: const Text('Check-in thanh cong'),
-          content: Text(
-            'Ban vua check-in ${result.placeName}.\n'
-            '+${result.pointsEarned} diem'
-            '${extras.isEmpty ? '' : '\n(${extras.join(' + ')})'}',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext),
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  await showCheckinSuccessDialog(
+    context,
+    result: result,
+  );
+}
 
   String _messageForError(String? code, String? message) {
     switch (code) {

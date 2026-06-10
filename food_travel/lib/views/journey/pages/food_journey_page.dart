@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../../models/journey/journey_stats.dart';
 import '../../../models/journey/mission_model.dart';
 import '../../../views/journey/widgets/daily_mission_section.dart';
+import '../../../views/journey/pages/mission_detail_page.dart';
 
 class FoodJourneyPage extends StatelessWidget {
   const FoodJourneyPage({super.key});
@@ -68,6 +69,17 @@ class FoodJourneyPage extends StatelessWidget {
               const SizedBox(height: 20),
               DailyMissionSection(
                 userId: user?.uid,
+                onMissionTap: (mission) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) {
+                        return MissionDetailPage(
+                          mission: mission,
+                        );
+                      },
+                    ),
+                  );
+                },
               ),
 
               const SizedBox(height: 20),
