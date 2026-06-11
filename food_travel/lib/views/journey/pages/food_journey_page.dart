@@ -3,9 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/journey/journey_stats.dart';
-import '../../../models/journey/mission_model.dart';
-import '../../../views/journey/widgets/daily_mission_section.dart';
 import '../../../views/journey/pages/mission_detail_page.dart';
+import '../../../views/journey/widgets/daily_mission_section.dart';
+import '../../../views/journey/widgets/vietnam_journer_map_card.dart';
 
 class FoodJourneyPage extends StatelessWidget {
   const FoodJourneyPage({super.key});
@@ -72,20 +72,15 @@ class FoodJourneyPage extends StatelessWidget {
                 onMissionTap: (mission) {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (_) {
-                        return MissionDetailPage(
-                          mission: mission,
-                        );
-                      },
+                      builder: (_) => MissionDetailPage(mission: mission),
                     ),
                   );
                 },
               ),
-
               const SizedBox(height: 20),
-
+              VietnamJourneyMapCard(userId: user?.uid),
               const SizedBox(height: 300),
-                          ],
+            ],
           ),
         ),
       ),
@@ -182,7 +177,7 @@ class _JourneyStatsLayout extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          Positioned(
+          const Positioned(
             left: 130,
             top: 20,
             child: _JourneyBadgeChip(
@@ -224,10 +219,7 @@ class _JourneyStatsLayout extends StatelessWidget {
 }
 
 class _JourneyBadgeChip extends StatelessWidget {
-  const _JourneyBadgeChip({
-    required this.icon,
-    required this.label,
-  });
+  const _JourneyBadgeChip({required this.icon, required this.label});
 
   final IconData icon;
   final String label;
@@ -277,11 +269,7 @@ class _JourneyLevelBlock extends StatelessWidget {
         fontWeight: FontWeight.w800,
         height: 1,
         shadows: [
-          Shadow(
-            color: Colors.white,
-            blurRadius: 2,
-            offset: Offset(0, 1),
-          ),
+          Shadow(color: Colors.white, blurRadius: 2, offset: Offset(0, 1)),
         ],
       ),
     );
@@ -299,8 +287,11 @@ class _JourneyPointsBlock extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Icon(Icons.local_fire_department_rounded,
-            size: 18, color: Color(0xFF9B4D00)),
+        const Icon(
+          Icons.local_fire_department_rounded,
+          size: 18,
+          color: Color(0xFF9B4D00),
+        ),
         const SizedBox(width: 4),
         RichText(
           textAlign: TextAlign.right,
@@ -344,6 +335,7 @@ class _JourneyPointsBlock extends StatelessWidget {
     );
   }
 }
+
 class _JourneyStreakBlock extends StatelessWidget {
   const _JourneyStreakBlock({required this.days});
 
@@ -355,8 +347,11 @@ class _JourneyStreakBlock extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Icon(Icons.local_fire_department_rounded,
-            size: 18, color: Color(0xFF9B4D00)),
+        const Icon(
+          Icons.local_fire_department_rounded,
+          size: 18,
+          color: Color(0xFF9B4D00),
+        ),
         const SizedBox(width: 4),
         RichText(
           textAlign: TextAlign.right,
@@ -400,6 +395,7 @@ class _JourneyStreakBlock extends StatelessWidget {
     );
   }
 }
+
 class _JourneyProgressBlock extends StatelessWidget {
   const _JourneyProgressBlock({
     required this.pointsToNextLevel,
@@ -448,8 +444,9 @@ class _JourneyProgressBlock extends StatelessWidget {
                 child: LinearProgressIndicator(
                   value: progress,
                   minHeight: 8,
-                  backgroundColor:
-                      const Color(0xFFE7C98F).withValues(alpha: 0.5),
+                  backgroundColor: const Color(
+                    0xFFE7C98F,
+                  ).withValues(alpha: 0.5),
                   valueColor: const AlwaysStoppedAnimation<Color>(
                     Color(0xFFEB8A00),
                   ),

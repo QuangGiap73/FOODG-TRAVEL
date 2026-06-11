@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="520" height="720" viewBox="0 0 520 720" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Vietnam food journey map">
+  <defs>
+    <linearGradient id="paper" x1="24" y1="20" x2="500" y2="700" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFCF8"/>
+      <stop offset="1" stop-color="#FFF4E8"/>
+    </linearGradient>
+    <linearGradient id="land" x1="170" y1="64" x2="338" y2="650" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F3EFE8"/>
+      <stop offset="1" stop-color="#D8D1C8"/>
+    </linearGradient>
+    <linearGradient id="stroke" x1="184" y1="78" x2="351" y2="654" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D8D0C5"/>
+      <stop offset="1" stop-color="#B8AFA4"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#B38A63" flood-opacity="0.16"/>
+    </filter>
+    <style>
+      .line { fill: none; stroke: #FFFFFF; stroke-width: 2.1; stroke-linecap: round; opacity: .88; }
+      .wave { fill: none; stroke: #F2E6D8; stroke-width: 2.6; stroke-linecap: round; opacity: .82; }
+      .island { fill: #E5DFD6; stroke: #C9C0B6; stroke-width: 1.7; }
+    </style>
+  </defs>
+
+  <rect x="8" y="8" width="504" height="704" rx="44" fill="url(#paper)"/>
+
+  <path class="wave" d="M38 162 C68 144 96 145 124 163"/>
+  <path class="wave" d="M376 206 C404 188 434 191 462 210"/>
+  <path class="wave" d="M52 474 C85 456 118 458 146 476"/>
+  <path class="wave" d="M346 558 C380 539 413 542 442 561"/>
+
+  <g filter="url(#shadow)">
+    <path
+      d="M169 73
+         C189 57 215 50 240 53
+         C259 55 279 49 301 51
+         C326 54 350 65 374 78
+         C399 92 421 105 438 108
+         C452 110 462 118 461 130
+         C460 143 448 152 432 154
+         C410 156 389 152 369 154
+         C351 156 334 164 322 176
+         C308 190 293 203 280 218
+         C269 231 265 246 268 260
+         C271 278 282 294 285 311
+         C288 326 281 344 270 361
+         C259 378 255 392 259 408
+         C264 425 278 441 290 457
+         C302 472 308 488 308 505
+         C307 520 314 535 328 551
+         C343 567 355 586 357 605
+         C358 623 351 639 336 649
+         C320 660 298 662 281 655
+         C265 648 251 637 239 633
+         C225 628 208 631 193 642
+         C179 651 162 653 149 646
+         C136 639 129 627 132 613
+         C135 597 145 585 157 573
+         C170 561 181 548 186 533
+         C191 517 189 501 183 485
+         C177 468 177 451 184 434
+         C191 418 202 404 206 389
+         C211 373 210 354 205 336
+         C200 318 199 300 206 283
+         C212 266 222 252 224 237
+         C225 223 216 211 204 198
+         C192 185 183 172 181 156
+         C179 141 184 126 184 112
+         C184 99 178 87 169 73 Z"
+      fill="url(#land)"
+      stroke="url(#stroke)"
+      stroke-width="4.2"
+      stroke-linejoin="round"
+    />
+
+    <path class="line" d="M186 106 C214 112 244 103 271 86"/>
+    <path class="line" d="M196 148 C227 154 252 171 259 193"/>
+    <path class="line" d="M241 126 C271 133 305 129 336 112"/>
+    <path class="line" d="M280 227 C302 213 324 193 353 188"/>
+    <path class="line" d="M224 241 C236 257 242 274 241 292"/>
+    <path class="line" d="M214 318 C234 327 246 348 244 370"/>
+    <path class="line" d="M213 406 C232 414 245 434 253 454"/>
+    <path class="line" d="M258 462 C275 477 284 495 286 518"/>
+    <path class="line" d="M287 523 C300 541 308 562 308 584"/>
+    <path class="line" d="M169 571 C186 582 202 585 220 580"/>
+    <path class="line" d="M207 628 C224 622 242 621 260 629"/>
+    <path class="line" d="M173 526 C191 521 204 507 209 489"/>
+  </g>
+
+  <g opacity=".96">
+    <ellipse class="island" cx="389" cy="396" rx="7" ry="5"/>
+    <ellipse class="island" cx="408" cy="385" rx="6" ry="4"/>
+    <ellipse class="island" cx="430" cy="398" rx="7" ry="5"/>
+    <ellipse class="island" cx="386" cy="420" rx="6" ry="4"/>
+    <ellipse class="island" cx="408" cy="415" rx="6" ry="4"/>
+
+    <ellipse class="island" cx="372" cy="584" rx="6" ry="4"/>
+    <ellipse class="island" cx="392" cy="576" rx="6" ry="4"/>
+    <ellipse class="island" cx="414" cy="586" rx="6" ry="4"/>
+    <ellipse class="island" cx="383" cy="603" rx="7" ry="5"/>
+  </g>
+</svg>

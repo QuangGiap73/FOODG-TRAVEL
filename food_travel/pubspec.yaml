@@ -52,6 +52,7 @@ dependencies:
   geolocator: ^12.0.0
   url_launcher: ^6.2.6
   cloud_functions: ^6.3.2
+  flutter_svg: ^2.0.10
 
 dev_dependencies:
   flutter_test:
@@ -98,6 +99,10 @@ flutter:
     - assets/community/community_post1.png
     - assets/journey/jourfood_1A.png
     - assets/journey/checkin_success_mascot.png
+    - assets/maps/
+    - assets/maps/geojson/vietnam_provinces_34.geojson
+    - assets/maps/geojson/vietnam_provinces_34_compact.json
+    - assets/maps/vietnam_34_provinces_foods.svg
     
 
   #   - images/a_dot_burr.jpeg
