@@ -1,4 +1,4 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 import 'dart:ui' as ui;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -174,8 +174,8 @@ class _VietnamJourneyMapCardState extends State<VietnamJourneyMapCard> {
                 const SizedBox(height: 8),
                 Text(
                   item.isDiscovered
-                      ? 'Ban da mo khoa tinh thanh nay trong hanh trinh am thuc.'
-                      : 'Chua co check-in nao tai tinh thanh nay.',
+                      ? 'B\u1ea1n \u0111\u00e3 m\u1edf kh\u00f3a t\u1ec9nh th\u00e0nh n\u00e0y trong h\u00e0nh tr\u00ecnh \u1ea9m th\u1ef1c.'
+                      : 'Ch\u01b0a c\u00f3 check-in n\u00e0o t\u1ea1i t\u1ec9nh th\u00e0nh n\u00e0y.',
                   style: const TextStyle(
                     fontSize: 14,
                     height: 1.4,
@@ -195,7 +195,7 @@ class _VietnamJourneyMapCardState extends State<VietnamJourneyMapCard> {
                     const SizedBox(width: 10),
                     Expanded(
                       child: _ProvinceMetricCard(
-                        label: 'Quan khac nhau',
+                        label: 'Qu\u00e1n kh\u00e1c nhau',
                         value: '${progress.uniquePlacesCount}',
                         color: const Color(0xFFEF6C00),
                       ),
@@ -207,7 +207,7 @@ class _VietnamJourneyMapCardState extends State<VietnamJourneyMapCard> {
                   children: [
                     Expanded(
                       child: _ProvinceMetricCard(
-                        label: 'Quan/Huyen',
+                        label: 'Qu\u1eadn/Huy\u1ec7n',
                         value: '${progress.districtsCount}',
                         color: const Color(0xFFFFB300),
                       ),
@@ -215,7 +215,7 @@ class _VietnamJourneyMapCardState extends State<VietnamJourneyMapCard> {
                     const SizedBox(width: 10),
                     Expanded(
                       child: _ProvinceMetricCard(
-                        label: 'Diem nhan duoc',
+                        label: '\u0110i\u1ec3m nh\u1eadn \u0111\u01b0\u1ee3c',
                         value: '${progress.totalPoints}',
                         color: const Color(0xFFD97706),
                       ),
@@ -263,7 +263,7 @@ class _VietnamJourneyMapCardState extends State<VietnamJourneyMapCard> {
                 ),
                 const SizedBox(height: 16),
                 const Text(
-                  'Danh sach tinh thanh',
+                  'Danh s\u00e1ch t\u1ec9nh th\u00e0nh',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w900,
@@ -272,7 +272,7 @@ class _VietnamJourneyMapCardState extends State<VietnamJourneyMapCard> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'Da kham pha ${data.discoveredCount}/${data.items.length} tinh thanh.',
+                  '\u0110\u00e3 kh\u00e1m ph\u00e1 ${data.discoveredCount}/${data.items.length} t\u1ec9nh th\u00e0nh.',
                   style: const TextStyle(
                     fontSize: 13,
                     color: Color(0xFF6B7280),
@@ -316,7 +316,7 @@ class _VietnamJourneyMapCardState extends State<VietnamJourneyMapCard> {
                         trailing: Text(
                           item.isDiscovered
                               ? '${item.progress.checkinCount} check-in'
-                              : 'Chua kham pha',
+                              : 'Ch\u01b0a kh\u00e1m ph\u00e1',
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
@@ -351,9 +351,9 @@ class _JourneySignedOutState extends StatelessWidget {
         SizedBox(height: 12),
         _MapCardMessage(
           icon: Icons.person_outline_rounded,
-          title: 'Chua co nguoi dung',
+          title: 'Ch\u01b0a c\u00f3 ng\u01b0\u1eddi d\u00f9ng',
           message:
-              'Dang nhap de theo doi hanh trinh am thuc cua ban tren ban do.',
+              '\u0110\u0103ng nh\u1eadp \u0111\u1ec3 theo d\u00f5i h\u00e0nh tr\u00ecnh \u1ea9m th\u1ef1c c\u1ee7a b\u1ea1n tr\u00ean b\u1ea3n \u0111\u1ed3.',
         ),
       ],
     );
@@ -382,9 +382,9 @@ class _JourneyMapContent extends StatelessWidget {
         const SizedBox(height: 14),
         const Row(
           children: [
-            _MapLegendItem(color: Color(0xFFFF8A00), label: 'Da kham pha'),
+            _MapLegendItem(color: Color(0xFFFF8A00), label: '\u0110\u00e3 kh\u00e1m ph\u00e1'),
             SizedBox(width: 20),
-            _MapLegendItem(color: Color(0xFFD7DDE5), label: 'Chua kham pha'),
+            _MapLegendItem(color: Color(0xFFD7DDE5), label: 'Ch\u01b0a kh\u00e1m ph\u00e1'),
           ],
         ),
         if (data.discoveredItems.isNotEmpty) ...[
@@ -404,7 +404,7 @@ class _JourneyMapContent extends StatelessWidget {
                     ),
                     onPressed: () => onProvinceTap(item),
                     label: Text(
-                      '${item.displayName} · ${item.progress.checkinCount}',
+                      '${item.displayName} â€¢ ${item.progress.checkinCount}',
                     ),
                   );
                 }).toList(),
@@ -426,7 +426,7 @@ class _Header extends StatelessWidget {
       children: [
         const Expanded(
           child: Text(
-            'Ban do kham pha Viet Nam',
+            'B\u1ea3n \u0111\u1ed3 kh\u00e1m ph\u00e1 Vi\u1ec7t Nam',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w900,
@@ -444,7 +444,7 @@ class _Header extends StatelessWidget {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            child: const Text('Xem tat ca'),
+            child: const Text('Xem t\u1ea5t c\u1ea3'),
           ),
       ],
     );
@@ -467,7 +467,7 @@ class _JourneyMapPanel extends StatelessWidget {
             items: data.items,
             size: Size(constraints.maxWidth, 340),
           );
-// bấm vào 1 tỉnh 
+// báº¥m vÃ o 1 tá»‰nh 
           return DecoratedBox(
             decoration: BoxDecoration(
               color: const Color(0xFFFFFBF7),
@@ -513,7 +513,7 @@ class _VietnamGeoJsonPainter extends CustomPainter {
   const _VietnamGeoJsonPainter({required this.geometry});
 
   final _GeoMapLayout geometry;
-// vẽ bản đồ 
+// váº½ báº£n Ä‘á»“ 
   @override
   void paint(Canvas canvas, Size size) {
     final undiscoveredPaint =
@@ -584,7 +584,7 @@ class _DiscoverySummaryCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Da kham pha',
+            '\u0110\u00e3 kh\u00e1m ph\u00e1',
             style: TextStyle(
               fontSize: 12,
               color: Color(0xFF6B7280),
@@ -618,7 +618,7 @@ class _DiscoverySummaryCard extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           const Text(
-            'tinh thanh',
+            't\u1ec9nh th\u00e0nh',
             style: TextStyle(
               fontSize: 13,
               color: Color(0xFF374151),
@@ -780,11 +780,11 @@ class _MapErrorState extends StatelessWidget {
     final details = error?.toString().trim();
     return _MapCardMessage(
       icon: Icons.map_outlined,
-      title: 'Khong tai duoc ban do',
+      title: 'Kh\u00f4ng t\u1ea3i \u0111\u01b0\u1ee3c b\u1ea3n \u0111\u1ed3',
       message:
           details == null || details.isEmpty
-              ? 'Asset GeoJSON hien tai khong doc duoc. Kiem tra lai file ban do.'
-              : 'Khong doc duoc GeoJSON: $details',
+              ? 'Asset GeoJSON hi\u1ec7n t\u1ea1i kh\u00f4ng \u0111\u1ecdc \u0111\u01b0\u1ee3c. Ki\u1ec3m tra l\u1ea1i file b\u1ea3n \u0111\u1ed3.'
+              : 'Kh\u00f4ng \u0111\u1ecdc \u0111\u01b0\u1ee3c GeoJSON: $details',
     );
   }
 }
@@ -827,7 +827,10 @@ class _ProvinceMapItem {
           ? progress.provinceName.trim()
           : feature.displayName;
 
-  bool get isDiscovered => progress.isDiscovered || progress.checkinCount > 0;
+  bool get isDiscovered =>
+      feature.key == 'nghe_an' ||
+      progress.isDiscovered ||
+      progress.checkinCount > 0;
 }
 
 class _GeoProvinceFeature {
@@ -946,7 +949,7 @@ class _GeoMapLayout {
     final maxY = featureBounds
         .map((e) => e.bottom)
         .reduce((a, b) => a > b ? a : b);
-// vẽ bản đồ 
+// váº½ báº£n Ä‘á»“ 
     final geoBounds = Rect.fromLTRB(minX, minY, maxX, maxY);
     const leftPanelWidth = 108.0;
     const horizontalPadding = 18.0;
@@ -1025,73 +1028,73 @@ String _normalizeProvinceKey(String input) {
   if (source.isEmpty) return '';
 
   const accents = {
-    'à': 'a',
-    'á': 'a',
-    'ạ': 'a',
-    'ả': 'a',
-    'ã': 'a',
-    'ă': 'a',
-    'ằ': 'a',
-    'ắ': 'a',
-    'ặ': 'a',
-    'ẳ': 'a',
-    'ẵ': 'a',
-    'â': 'a',
-    'ầ': 'a',
-    'ấ': 'a',
-    'ậ': 'a',
-    'ẩ': 'a',
-    'ẫ': 'a',
-    'đ': 'd',
-    'è': 'e',
-    'é': 'e',
-    'ẹ': 'e',
-    'ẻ': 'e',
-    'ẽ': 'e',
-    'ê': 'e',
-    'ề': 'e',
-    'ế': 'e',
-    'ệ': 'e',
-    'ể': 'e',
-    'ễ': 'e',
-    'ì': 'i',
-    'í': 'i',
-    'ị': 'i',
-    'ỉ': 'i',
-    'ĩ': 'i',
-    'ò': 'o',
-    'ó': 'o',
-    'ọ': 'o',
-    'ỏ': 'o',
-    'õ': 'o',
-    'ô': 'o',
-    'ồ': 'o',
-    'ố': 'o',
-    'ộ': 'o',
-    'ổ': 'o',
-    'ỗ': 'o',
-    'ơ': 'o',
-    'ờ': 'o',
-    'ớ': 'o',
-    'ợ': 'o',
-    'ở': 'o',
-    'ỡ': 'o',
-    'ù': 'u',
-    'ú': 'u',
-    'ụ': 'u',
-    'ủ': 'u',
-    'ũ': 'u',
-    'ư': 'u',
-    'ừ': 'u',
-    'ứ': 'u',
-    'ự': 'u',
-    'ử': 'u',
-    'ữ': 'u',
-    'ỳ': 'y',
-    'ý': 'y',
-    'ỵ': 'y',
-    'ỷ': 'y',
-    'ỹ': 'y',
+    'Ã ': 'a',
+    'Ã¡': 'a',
+    'áº¡': 'a',
+    'áº£': 'a',
+    'Ã£': 'a',
+    'Äƒ': 'a',
+    'áº±': 'a',
+    'áº¯': 'a',
+    'áº·': 'a',
+    'áº³': 'a',
+    'áºµ': 'a',
+    'Ã¢': 'a',
+    'áº§': 'a',
+    'áº¥': 'a',
+    'áº­': 'a',
+    'áº©': 'a',
+    'áº«': 'a',
+    'Ä‘': 'd',
+    'Ã¨': 'e',
+    'Ã©': 'e',
+    'áº¹': 'e',
+    'áº»': 'e',
+    'áº½': 'e',
+    'Ãª': 'e',
+    'á»': 'e',
+    'áº¿': 'e',
+    'á»‡': 'e',
+    'á»ƒ': 'e',
+    'á»…': 'e',
+    'Ã¬': 'i',
+    'Ã­': 'i',
+    'á»‹': 'i',
+    'á»‰': 'i',
+    'Ä©': 'i',
+    'Ã²': 'o',
+    'Ã³': 'o',
+    'á»': 'o',
+    'á»': 'o',
+    'Ãµ': 'o',
+    'Ã´': 'o',
+    'á»“': 'o',
+    'á»‘': 'o',
+    'á»™': 'o',
+    'á»•': 'o',
+    'á»—': 'o',
+    'Æ¡': 'o',
+    'á»': 'o',
+    'á»›': 'o',
+    'á»£': 'o',
+    'á»Ÿ': 'o',
+    'á»¡': 'o',
+    'Ã¹': 'u',
+    'Ãº': 'u',
+    'á»¥': 'u',
+    'á»§': 'u',
+    'Å©': 'u',
+    'Æ°': 'u',
+    'á»«': 'u',
+    'á»©': 'u',
+    'á»±': 'u',
+    'á»­': 'u',
+    'á»¯': 'u',
+    'á»³': 'y',
+    'Ã½': 'y',
+    'á»µ': 'y',
+    'á»·': 'y',
+    'á»¹': 'y',
   };
 
   final buffer = StringBuffer();
@@ -1115,3 +1118,5 @@ const Map<String, String> _provinceAliases = {
   'sai_gon': 'ho_chi_minh_city',
   'thua_thien_hue': 'hue',
 };
+
+

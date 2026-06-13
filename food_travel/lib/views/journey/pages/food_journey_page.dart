@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+﻿import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -16,13 +16,51 @@ class FoodJourneyPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFFBF3),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFFFFBF3),
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+        toolbarHeight: 72,
+        leading: IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: const Icon(
+            Icons.arrow_back_ios_new_rounded,
+            size: 20,
+            color: Color(0xFF111111),
+          ),
+        ),
+        title: const Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Hành trình ẩm thực ',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: Color(0xFF111111),
+              ),
+            ),
+            SizedBox(height: 2),
+            Text(
+              'Khám phá Việt Nam qua từng món ăn',
+              style: TextStyle(
+                fontSize: 12,
+                color: Color(0xFF6B7280),
+              ),
+            ),
+          ],
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Padding(
+              Offstage(
+                offstage: true,
+                child: Padding(
                 padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
                 child: SizedBox(
                   height: 56,
@@ -44,7 +82,7 @@ class FoodJourneyPage extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            'Hành trình ẩm thực',
+                            'Hành trình ẩm thực ',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w700,
@@ -63,6 +101,7 @@ class FoodJourneyPage extends StatelessWidget {
                       ),
                     ],
                   ),
+                ),
                 ),
               ),
               _JourneyHeroBanner(userId: user?.uid),
@@ -314,7 +353,7 @@ class _JourneyPointsBlock extends StatelessWidget {
                 ),
               ),
               const TextSpan(
-                text: 'điểm',
+                text: 'Điểm',
                 style: TextStyle(
                   color: Color(0xFF8A4300),
                   fontSize: 11,
@@ -420,7 +459,7 @@ class _JourneyProgressBlock extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'Còn $pointsToNextLevel điểm để lên Lv.${level + 1}.',
+            'Cần $pointsToNextLevel điểm để lên Lv.${level + 1}.',
             style: const TextStyle(
               color: Color(0xFF6C3B00),
               fontSize: 12,
@@ -482,3 +521,4 @@ class _JourneyProgressBlock extends StatelessWidget {
     );
   }
 }
+

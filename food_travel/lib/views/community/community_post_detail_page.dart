@@ -44,9 +44,10 @@ class _CommunityPostDetailPageState extends State<CommunityPostDetailPage> {
 
     // Tao seed place tu snapshot de mo trang chi tiet
     final rawId = (post.placeId ?? '').trim();
-    final safeId = rawId.isNotEmpty
-        ? rawId
-        : '${place.name}_${place.lat}_${place.lng}'.replaceAll(' ', '_');
+    final safeId =
+        rawId.isNotEmpty
+            ? rawId
+            : '${place.name}_${place.lat}_${place.lng}'.replaceAll(' ', '_');
 
     final seed = GoongNearbyPlace(
       id: safeId,
@@ -101,97 +102,247 @@ class _CommunityPostDetailPageState extends State<CommunityPostDetailPage> {
 
           final likeController = context.watch<PostLikeController>();
           final isLiked = likeController.isLiked(post.id);
-          final actionColor =
-              isDark ? Colors.white70 : const Color(0xFF64748B);
+          final actionColor = isDark ? Colors.white70 : const Color(0xFF64748B);
           final textColor = isDark ? Colors.white : const Color(0xFF0F172A);
           final subText = isDark ? Colors.white70 : const Color(0xFF475569);
+          final cardBg = isDark ? const Color(0xFF15181E) : Colors.white;
+          final borderColor =
+              isDark ? const Color(0xFF232A33) : const Color(0xFFF1E7D8);
+          final titleText =
+              post.text.trim().isNotEmpty ? post.text.trim() : 'Chia sẻ mới';
 
           return ListView(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 120),
             children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 20,
-                    backgroundColor: isDark
-                        ? const Color(0xFF1F2630)
-                        : const Color(0xFFE2E8F0),
-                    backgroundImage: post.authorPhoto.trim().isNotEmpty
-                        ? NetworkImage(post.authorPhoto)
-                        : null,
-                    child: post.authorPhoto.trim().isEmpty
-                        ? const Icon(Icons.person, size: 16)
-                        : null,
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          post.authorName.isNotEmpty
-                              ? post.authorName
-                              : t.commonUserFallback,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 14,
-                            color: textColor,
-                          ),
-                        ),
-                        Text(
-                          _formatTime(post.createdAt, t),
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: const Color(0xFF94A3B8),
-                          ),
-                        ),
-                      ],
+              Container(
+                decoration: BoxDecoration(
+                  color: cardBg,
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: borderColor),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(
+                        alpha: isDark ? 0.25 : 0.04,
+                      ),
+                      blurRadius: 18,
+                      offset: const Offset(0, 10),
                     ),
-                  ),
-                ],
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (post.media.isNotEmpty)
+                      _MediaHero(
+                        media: post.media,
+                        place: post.place,
+                        onPlaceTap: () => _openPlaceDetail(post),
+                      )
+                    else
+                      Container(
+                        height: 220,
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(24),
+                          ),
+                          gradient: LinearGradient(
+                            colors:
+                                isDark
+                                    ? const [
+                                      Color(0xFF20262F),
+                                      Color(0xFF14181E),
+                                    ]
+                                    : const [
+                                      Color(0xFFFFF3E0),
+                                      Color(0xFFFFE1B8),
+                                    ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                        ),
+                        child: Center(
+                          child: Icon(
+                            Icons.restaurant_menu_rounded,
+                            size: 54,
+                            color:
+                                isDark
+                                    ? Colors.white70
+                                    : const Color(0xFFFF8A00),
+                          ),
+                        ),
+                      ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 18),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 22,
+                                backgroundColor:
+                                    isDark
+                                        ? const Color(0xFF1F2630)
+                                        : const Color(0xFFE2E8F0),
+                                backgroundImage:
+                                    post.authorPhoto.trim().isNotEmpty
+                                        ? NetworkImage(post.authorPhoto)
+                                        : null,
+                                child:
+                                    post.authorPhoto.trim().isEmpty
+                                        ? const Icon(Icons.person, size: 18)
+                                        : null,
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      post.authorName.isNotEmpty
+                                          ? post.authorName
+                                          : t.commonUserFallback,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w800,
+                                        fontSize: 15,
+                                        color: textColor,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 3),
+                                    Text(
+                                      _formatTime(post.createdAt, t),
+                                      style: const TextStyle(
+                                        fontSize: 11,
+                                        color: Color(0xFF94A3B8),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 5,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFFFF1DE),
+                                  borderRadius: BorderRadius.circular(999),
+                                ),
+                                child: const Text(
+                                  'Bài viết',
+                                  style: TextStyle(
+                                    color: Color(0xFFFF7A00),
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            titleText,
+                            style: TextStyle(
+                              color: textColor,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w800,
+                              height: 1.3,
+                            ),
+                          ),
+                          if (post.text.trim().isNotEmpty) ...[
+                            const SizedBox(height: 10),
+                            Text(
+                              post.text,
+                              style: TextStyle(
+                                color: subText,
+                                height: 1.55,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                          if (post.media.isEmpty && post.place != null) ...[
+                            const SizedBox(height: 14),
+                            _InlinePlace(
+                              place: post.place!,
+                              onTap: () => _openPlaceDetail(post),
+                            ),
+                          ],
+                          const SizedBox(height: 18),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 12,
+                            ),
+                            decoration: BoxDecoration(
+                              color:
+                                  isDark
+                                      ? const Color(0xFF1A1F27)
+                                      : const Color(0xFFFFFBF6),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color:
+                                    isDark
+                                        ? const Color(0xFF2A303A)
+                                        : const Color(0xFFF3E7D7),
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                _ActionButton(
+                                  icon:
+                                      isLiked
+                                          ? Icons.favorite
+                                          : Icons.favorite_border,
+                                  label: t.actionLike,
+                                  count: post.likeCount,
+                                  color:
+                                      isLiked
+                                          ? const Color(0xFFEF4444)
+                                          : actionColor,
+                                  onTap:
+                                      () => likeController.toggleLike(post.id),
+                                ),
+                                const SizedBox(width: 18),
+                                _ActionButton(
+                                  icon: Icons.chat_bubble_outline,
+                                  label: t.actionComment,
+                                  count: post.commentCount,
+                                  color: actionColor,
+                                  onTap:
+                                      () =>
+                                          showPostCommentsSheet(context, post),
+                                ),
+                                const Spacer(),
+                                Icon(
+                                  Icons.remove_red_eye_outlined,
+                                  size: 18,
+                                  color: actionColor,
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  '${(post.likeCount * 10) + (post.commentCount * 3) + 120}',
+                                  style: TextStyle(
+                                    color: actionColor,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 12),
-              if (post.media.isNotEmpty)
-                _MediaHero(
-                  media: post.media,
-                  place: post.place,
-                  onPlaceTap: () => _openPlaceDetail(post),
-                ),
-              if (post.text.trim().isNotEmpty) ...[
-                const SizedBox(height: 12),
-                Text(
-                  post.text,
-                  style: TextStyle(color: subText, height: 1.5, fontSize: 14),
-                ),
-              ],
-              if (post.media.isEmpty && post.place != null) ...[
-                const SizedBox(height: 12),
+              if (post.place != null && post.media.isNotEmpty) ...[
+                const SizedBox(height: 14),
                 _InlinePlace(
                   place: post.place!,
                   onTap: () => _openPlaceDetail(post),
                 ),
               ],
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  _ActionButton(
-                    icon: isLiked ? Icons.favorite : Icons.favorite_border,
-                    label: t.actionLike,
-                    count: post.likeCount,
-                    color:
-                        isLiked ? const Color(0xFFEF4444) : actionColor,
-                    onTap: () => likeController.toggleLike(post.id),
-                  ),
-                  const SizedBox(width: 16),
-                  _ActionButton(
-                    icon: Icons.chat_bubble_outline,
-                    label: t.actionComment,
-                    count: post.commentCount,
-                    color: actionColor,
-                    onTap: () => showPostCommentsSheet(context, post),
-                  ),
-                ],
-              ),
             ],
           );
         },
@@ -201,11 +352,7 @@ class _CommunityPostDetailPageState extends State<CommunityPostDetailPage> {
 }
 
 class _MediaHero extends StatefulWidget {
-  const _MediaHero({
-    required this.media,
-    required this.place,
-    this.onPlaceTap,
-  });
+  const _MediaHero({required this.media, required this.place, this.onPlaceTap});
 
   final List<PostMedia> media;
   final PlaceSnapshot? place;
@@ -266,10 +413,10 @@ class _MediaHeroState extends State<_MediaHero> {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      Colors.black.withOpacity(0.45),
+                      Colors.black.withValues(alpha: 0.45),
                       Colors.transparent,
                       Colors.transparent,
-                      Colors.black.withOpacity(0.25),
+                      Colors.black.withValues(alpha: 0.25),
                     ],
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
@@ -284,10 +431,12 @@ class _MediaHeroState extends State<_MediaHero> {
               top: 10,
               child: IgnorePointer(
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.6),
+                    color: Colors.black.withValues(alpha: 0.6),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
@@ -305,10 +454,7 @@ class _MediaHeroState extends State<_MediaHero> {
             Positioned(
               left: 10,
               bottom: 10,
-              child: _PlaceChip(
-                place: place,
-                onTap: widget.onPlaceTap,
-              ),
+              child: _PlaceChip(place: place, onTap: widget.onPlaceTap),
             ),
           if (media.length > 1)
             Positioned(
@@ -326,9 +472,10 @@ class _MediaHeroState extends State<_MediaHero> {
                       width: active ? 14 : 6,
                       height: 6,
                       decoration: BoxDecoration(
-                        color: active
-                            ? Colors.white
-                            : Colors.white.withOpacity(0.5),
+                        color:
+                            active
+                                ? Colors.white
+                                : Colors.white.withValues(alpha: 0.5),
                         borderRadius: BorderRadius.circular(999),
                       ),
                     );
@@ -356,7 +503,7 @@ class _PlaceChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.6),
+          color: Colors.black.withValues(alpha: 0.6),
           borderRadius: BorderRadius.circular(999),
         ),
         child: Row(
@@ -394,8 +541,7 @@ class _InlinePlace extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bg = isDark ? const Color(0xFF1A1F27) : const Color(0xFFF8FAFC);
-    final border =
-        isDark ? const Color(0xFF2A303A) : const Color(0xFFF1F5F9);
+    final border = isDark ? const Color(0xFF2A303A) : const Color(0xFFF1F5F9);
     final text = isDark ? Colors.white : const Color(0xFF0F172A);
     final subText = isDark ? Colors.white70 : const Color(0xFF64748B);
 
@@ -473,10 +619,7 @@ class _ActionButton extends StatelessWidget {
               style: TextStyle(fontSize: 12, color: color),
             ),
             const SizedBox(width: 4),
-            Text(
-              label,
-              style: TextStyle(fontSize: 11, color: color),
-            ),
+            Text(label, style: TextStyle(fontSize: 11, color: color)),
           ],
         ),
       ),
@@ -573,9 +716,7 @@ class _EmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textColor = isDark ? Colors.white70 : const Color(0xFF64748B);
-    return Center(
-      child: Text(message, style: TextStyle(color: textColor)),
-    );
+    return Center(child: Text(message, style: TextStyle(color: textColor)));
   }
 }
 
