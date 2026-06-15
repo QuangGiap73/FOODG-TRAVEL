@@ -57,6 +57,50 @@ async function createNotification(params: {
 }
 
 /**
+ * Tao thong bao hanh trinh sau khi check-in.
+ * - Luu o users/{ownerId}/notifications
+ */
+async function createJourneyNotification(params: {
+  ownerId: string;
+  checkinId: string;
+  placeName: string;
+  provinceName?: string;
+  pointsEarned: number;
+  currentStreak: number;
+}) {
+  const ref = db
+    .collection("users")
+    .doc(params.ownerId)
+    .collection("notifications")
+    .doc();
+
+  const locationText = params.provinceName ?
+    `${params.placeName}, ${params.provinceName}` :
+    params.placeName;
+  const streakText = params.currentStreak > 1 ?
+    ` Chuoi hien tai ${params.currentStreak} ngay.` :
+    "";
+
+  await ref.set({
+    type: "journey_checkin",
+    postId: "",
+    actorId: "system",
+    actorName: "Hanh trinh am thuc",
+    actorPhoto: "",
+    snippet:
+      `Ban vua check-in tai ${locationText} ` +
+      `va nhan ${params.pointsEarned} diem.${streakText}`,
+    checkinId: params.checkinId,
+    placeName: params.placeName,
+    provinceName: params.provinceName ?? "",
+    pointsEarned: params.pointsEarned,
+    currentStreak: params.currentStreak,
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    read: false,
+  });
+}
+
+/**
  * Gui push notification ve may.
  * - Lay token cua ownerId
  * - Gui push toi tat ca token do
@@ -920,6 +964,44 @@ export const createCheckin = onCall(async (request) => {
     checkinId: result.checkinId,
     pointsEarned: result.pointsEarned,
   });
+
+  try {
+    await createJourneyNotification({
+      ownerId: uid,
+      checkinId: result.checkinId,
+      placeName: result.placeName,
+      provinceName: result.provinceName,
+      pointsEarned: result.pointsEarned,
+      currentStreak: result.currentStreak,
+    });
+
+    const pushBody = result.provinceName ?
+      `${result.placeName}, ${result.provinceName}` +
+        ` • +${result.pointsEarned} diem` :
+      `${result.placeName} • +${result.pointsEarned} diem`;
+
+    await sendPush(
+      uid,
+      "Check-in thanh cong",
+      pushBody,
+      {
+        type: "journey_checkin",
+        checkinId: result.checkinId,
+        placeId: result.placeId,
+        placeName: result.placeName,
+        provinceCode: result.provinceCode || "",
+        provinceName: result.provinceName || "",
+        pointsEarned: String(result.pointsEarned),
+        currentStreak: String(result.currentStreak),
+      },
+    );
+  } catch (error) {
+    logger.error("Failed to create checkin notification", {
+      uid,
+      checkinId: result.checkinId,
+      error,
+    });
+  }
 
   return {
     success: true,
