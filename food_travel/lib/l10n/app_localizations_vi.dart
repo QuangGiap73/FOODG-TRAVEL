@@ -70,29 +70,29 @@ class AppLocalizationsVi extends AppLocalizations {
   String get signInToViewProfile => 'Vui long dang nhap de xem trang ca nhan.';
 
   @override
-  String get personalSurvey => 'Phieu khao sat';
+  String get personalSurvey => 'Phiếu khảo sát';
 
   @override
-  String get surveyTitle => 'Phieu khao sat';
+  String get surveyTitle => 'Phiếu khảo sát';
 
   @override
-  String get surveyProvinceLabel => 'Tinh/Thanh pho';
+  String get surveyProvinceLabel => 'Tỉnh/Thành phố';
 
   @override
-  String get surveyProvinceRequired => 'Vui long nhap tinh/thanh';
+  String get surveyProvinceRequired => 'Vui lòng nhập tỉnh/thành';
 
   @override
-  String get surveySpicyLevel => 'Muc do cay';
+  String get surveySpicyLevel => 'Mức độ cay';
 
   @override
-  String get surveyFavoritesLabel => 'Mon yeu thich (phan tach bang dau phay)';
+  String get surveyFavoritesLabel => 'Món yêu thích (phân tách bằng dấu phẩy)';
 
   @override
   String get surveyDislikesLabel =>
-      'Nguyen lieu khong thich (phan tach bang dau phay)';
+      'Nguyên liệu không thích (phân tách bằng dấu phẩy)';
 
   @override
-  String get surveySaveFailed => 'Luu that bai';
+  String get surveySaveFailed => 'Lưu thất bại';
 
   @override
   String get notificationsTitle => 'Thong bao';

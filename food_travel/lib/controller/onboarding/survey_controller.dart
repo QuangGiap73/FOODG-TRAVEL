@@ -1,16 +1,17 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+
 import '../../models/user_preferences.dart';
 import '../../services/user_service.dart';
 
-class SurveyController extends ChangeNotifier{
+class SurveyController extends ChangeNotifier {
   SurveyController({FirebaseAuth? auth, UserService? userService})
-    : _auth = auth ?? FirebaseAuth.instance,
-      _userService = userService ?? UserService();
+      : _auth = auth ?? FirebaseAuth.instance,
+        _userService = userService ?? UserService();
 
-  final FirebaseAuth _auth; // lấy dữ liệu hiện tại
-  final UserService _userService; // lưu dữ liệu form
-  // tao controller input
+  final FirebaseAuth _auth;
+  final UserService _userService;
+
   final provinceController = TextEditingController();
   final favoritesController = TextEditingController();
   final dislikesController = TextEditingController();
@@ -20,22 +21,24 @@ class SurveyController extends ChangeNotifier{
 
   int get spicyLevel => _spicyLevel;
   bool get isLoading => _isLoading;
-  // set thuc an cay
-  void setSpicyLevel(double value){
+
+  void setSpicyLevel(double value) {
     _spicyLevel = value.round();
     notifyListeners();
   }
-  // ham tách danh sách text -> list
-  List<String> _splitList(String raw){
+
+  List<String> _splitList(String raw) {
     return raw
         .split(',')
         .map((e) => e.trim())
         .where((e) => e.isNotEmpty)
         .toList();
   }
+
   String? _buildProvinceCode(String raw) {
     final normalized = raw.trim().toLowerCase();
     if (normalized.isEmpty) return null;
+
     const overrides = {
       'ho chi minh city': 'ho_chi_minh',
       'tp ho chi minh': 'ho_chi_minh',
@@ -48,16 +51,15 @@ class SurveyController extends ChangeNotifier{
     if (cleaned.isEmpty) return null;
     return cleaned.split(RegExp(r'\s+')).join('_');
   }
-  // ham submit khaor sats
-  Future<bool> submit() async{
-    if(_isLoading) return false;
+
+  Future<bool> submit() async {
+    if (_isLoading) return false;
     final user = _auth.currentUser;
     if (user == null) return false;
 
     _isLoading = true;
     notifyListeners();
     try {
-      // tao object preferences
       final provinceName = provinceController.text.trim();
       final preferences = UserPreferences(
         provinceCode: _buildProvinceCode(provinceName),
@@ -66,21 +68,22 @@ class SurveyController extends ChangeNotifier{
         favoriteTags: _splitList(favoritesController.text),
         dislikedIngredients: _splitList(dislikesController.text),
       );
-      await _userService.saveOnboarding(uid: user.uid, preferences: preferences);
-    
+      await _userService.saveOnboarding(
+        uid: user.uid,
+        preferences: preferences,
+      );
       return true;
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
-  // don dep bo nho
+
   @override
-  void dispose(){
+  void dispose() {
     provinceController.dispose();
     favoritesController.dispose();
     dislikesController.dispose();
     super.dispose();
   }
-  
 }

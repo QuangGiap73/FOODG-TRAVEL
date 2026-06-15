@@ -94,6 +94,7 @@ class _MapPageState extends State<MapPage> {
   UserLocationPuck? _puck;
   StreamSubscription<Position>? _positionSub;
   bool _styleReady = false;
+  bool _locationEnabled = LocationPreferenceService.enabled.value;
   bool _centeredOnUser = false;
   bool _pulseStarted = false;
   LatLng? _lastLatLng;
@@ -217,15 +218,28 @@ class _MapPageState extends State<MapPage> {
 
   void _onNavChanged() {
     if (!mounted) return;
-    setState(() {});
-
-    // Neu co route thi ve polyline, neu khong thi xoa
     if (_routeLayer == null) return;
     final route = _navController.route;
     if (route == null) {
       _routeLayer!.clear();
     } else {
       _routeLayer!.showRoute(route.points);
+    }
+  }
+
+  Future<void> _handleLocationPreferenceChanged() async {
+    final enabled = LocationPreferenceService.enabled.value;
+    if (_locationEnabled != enabled && mounted) {
+      setState(() => _locationEnabled = enabled);
+    } else {
+      _locationEnabled = enabled;
+    }
+
+    if (enabled) {
+      await _startLocationStream();
+    } else {
+      await _stopLocationStream();
+      await _clearUserMarker();
     }
   }
 
@@ -460,7 +474,7 @@ class _MapPageState extends State<MapPage> {
     final queryKey = query == null ? '' : _normalizeQuery(query);
     final scope = queryKey.isEmpty ? _categories[categoryIndex].id : 'q';
     final suffix = queryKey.isEmpty ? '' : '_$queryKey';
-    return '${scope}_${lat}_${lng}$suffix';
+    return '${scope}_${lat}_$lng$suffix';
   }
 
   String _normalizeQuery(String input) {
@@ -502,9 +516,9 @@ class _MapPageState extends State<MapPage> {
 
   Future<void> _recenterOnUser() async {
     if (_controller == null) return;
+    final t = AppLocalizations.of(context)!;
 
     if (!LocationPreferenceService.enabled.value) {
-      final t = AppLocalizations.of(context)!;
       _showSnack(t.mapEnableLocation);
       return;
     }
@@ -513,7 +527,6 @@ class _MapPageState extends State<MapPage> {
     target ??= await _controller!.requestMyLocationLatLng();
 
     if (target == null) {
-      final t = AppLocalizations.of(context)!;
       _showSnack(t.mapLocationUnavailable);
       return;
     }
@@ -746,6 +759,9 @@ class _MapPageState extends State<MapPage> {
   void initState() {
     super.initState();
     final loadFuture = _locationPrefs.load();
+    LocationPreferenceService.enabled.addListener(
+      _handleLocationPreferenceChanged,
+    );
     // Khoi tao controller dan duong
     _navController = NavigationController();
     _navController.addListener(_onNavChanged);
@@ -764,11 +780,17 @@ class _MapPageState extends State<MapPage> {
         _startDirections(widget.initialPlace!);
       });
     }
+    loadFuture.whenComplete(() {
+      _handleLocationPreferenceChanged();
+    });
   }
 
   @override
   void dispose() {
     _stopLocationStream();
+    LocationPreferenceService.enabled.removeListener(
+      _handleLocationPreferenceChanged,
+    );
     _controller?.onSymbolTapped.remove(_onSymbolTapped);
     _nearbyLayer?.clear();
     _puck?.dispose();
@@ -806,37 +828,23 @@ class _MapPageState extends State<MapPage> {
       ),
       body: Stack(
         children: [
-          ValueListenableBuilder<bool>(
-            valueListenable: LocationPreferenceService.enabled,
-            builder: (context, enabled, _) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (enabled) {
-                  _startLocationStream();
-                } else {
-                  _stopLocationStream();
-                  _clearUserMarker();
-                }
-              });
-
-              return MapLibreMap(
-                key: ValueKey(_styleUrl),
-                styleString: _styleUrl,
-                initialCameraPosition: const CameraPosition(
-                  target: LatLng(21.0278, 105.8342),
-                  zoom: 12,
-                ),
-                onMapCreated: _onMapCreated,
-                onStyleLoadedCallback: _onStyleLoaded,
-                onUserLocationUpdated: _onUserLocationUpdated,
-                zoomGesturesEnabled: true,
-                myLocationEnabled: enabled,
-                myLocationTrackingMode: enabled
-                    ? MyLocationTrackingMode.tracking
-                    : MyLocationTrackingMode.none,
-                // Keep the native blue dot; the custom puck is the pulsing image.
-                myLocationRenderMode: MyLocationRenderMode.normal,
-              );
-            },
+          MapLibreMap(
+            key: ValueKey(_styleUrl),
+            styleString: _styleUrl,
+            initialCameraPosition: const CameraPosition(
+              target: LatLng(21.0278, 105.8342),
+              zoom: 12,
+            ),
+            onMapCreated: _onMapCreated,
+            onStyleLoadedCallback: _onStyleLoaded,
+            onUserLocationUpdated: _onUserLocationUpdated,
+            zoomGesturesEnabled: true,
+            myLocationEnabled: _locationEnabled,
+            myLocationTrackingMode: _locationEnabled
+                ? MyLocationTrackingMode.tracking
+                : MyLocationTrackingMode.none,
+            // Keep the native blue dot; the custom puck is the pulsing image.
+            myLocationRenderMode: MyLocationRenderMode.normal,
           ),
           Positioned(
             left: 16,
@@ -845,13 +853,15 @@ class _MapPageState extends State<MapPage> {
             child: SafeArea(
               child: Column(
                 children: [
-                  MapSearchBar(
-                    controller: _searchTextController,
-                    loading: _searchController.loading,
-                    suggestions: _searchController.suggestions,
-                    onQueryChanged: _searchController.onQueryChanged,
-                    onClear: _clearSearch,
-                    onSelect: _onSelectPrediction,
+                  RepaintBoundary(
+                    child: MapSearchBar(
+                      controller: _searchTextController,
+                      loading: _searchController.loading,
+                      suggestions: _searchController.suggestions,
+                      onQueryChanged: _searchController.onQueryChanged,
+                      onClear: _clearSearch,
+                      onSelect: _onSelectPrediction,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   _buildCategoryChips(),
@@ -869,8 +879,8 @@ class _MapPageState extends State<MapPage> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.75),
-                    borderRadius: BorderRadius.circular(12),
+                    color: const Color(0xFF111827).withValues(alpha: 0.88),
+                    borderRadius: BorderRadius.circular(16),
                   ),
                   child: Text(
                     _toastMessage!,
@@ -893,46 +903,121 @@ class _MapPageState extends State<MapPage> {
           Positioned(
             right: 16,
             bottom: 24,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                FloatingActionButton(
-                  heroTag: 'nearby_food',
-                  mini: true,
-                  onPressed: _nearbyLoading ? null : _findNearbyFood,
-                  child: _nearbyLoading
-                      ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Icon(Icons.restaurant),
-                ),
-                const SizedBox(height: 8),
-                FloatingActionButton(
-                  heroTag: 'recenter',
-                  mini: true,
-                  onPressed: _recenterOnUser,
-                  child: const Icon(Icons.navigation),
-                ),
-                const SizedBox(height: 8),
-                FloatingActionButton(
-                  heroTag: 'zoom_in',
-                  mini: true,
-                  onPressed: _zoomIn,
-                  child: const Icon(Icons.add),
-                ),
-                const SizedBox(height: 8),
-                FloatingActionButton(
-                  heroTag: 'zoom_out',
-                  mini: true,
-                  onPressed: _zoomOut,
-                  child: const Icon(Icons.remove),
-                ),
-              ],
+            child: _MapControls(
+              nearbyLoading: _nearbyLoading,
+              onFindNearby: _findNearbyFood,
+              onRecenter: _recenterOnUser,
+              onZoomIn: _zoomIn,
+              onZoomOut: _zoomOut,
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _MapControls extends StatelessWidget {
+  const _MapControls({
+    required this.nearbyLoading,
+    required this.onFindNearby,
+    required this.onRecenter,
+    required this.onZoomIn,
+    required this.onZoomOut,
+  });
+
+  final bool nearbyLoading;
+  final VoidCallback onFindNearby;
+  final VoidCallback onRecenter;
+  final VoidCallback onZoomIn;
+  final VoidCallback onZoomOut;
+
+  @override
+  Widget build(BuildContext context) {
+    return RepaintBoundary(
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.94),
+          borderRadius: BorderRadius.circular(22),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.10),
+              blurRadius: 18,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _ControlButton(
+              icon: nearbyLoading ? null : Icons.restaurant_rounded,
+              onTap: nearbyLoading ? null : onFindNearby,
+              foreground: const Color(0xFFF97316),
+              child: nearbyLoading
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : null,
+            ),
+            const SizedBox(height: 10),
+            _ControlButton(
+              icon: Icons.my_location_rounded,
+              onTap: onRecenter,
+            ),
+            const SizedBox(height: 10),
+            _ControlButton(
+              icon: Icons.add_rounded,
+              onTap: onZoomIn,
+            ),
+            const SizedBox(height: 10),
+            _ControlButton(
+              icon: Icons.remove_rounded,
+              onTap: onZoomOut,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ControlButton extends StatelessWidget {
+  const _ControlButton({
+    required this.icon,
+    required this.onTap,
+    this.foreground = const Color(0xFF111827),
+    this.child,
+  });
+
+  final IconData? icon;
+  final VoidCallback? onTap;
+  final Color foreground;
+  final Widget? child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: foreground.withValues(alpha: 0.08),
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: SizedBox(
+          width: 44,
+          height: 44,
+          child: Center(
+            child: child ??
+                Icon(
+                  icon,
+                  color: foreground,
+                  size: 22,
+                ),
+          ),
+        ),
       ),
     );
   }

@@ -1,7 +1,7 @@
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
 import '../../../models/places_model.dart';
@@ -13,35 +13,47 @@ class NearbyPlacesLayer {
   final List<Symbol> _symbols = [];
   final Set<String> _imageNames = {};
   final Map<String, GoongNearbyPlace> _placeBySymbolId = {};
+  final Map<String, Uint8List> _markerCache = {};
+  List<String> _lastPlaceIds = const [];
 
   Future<void> showPlaces(
     List<GoongNearbyPlace> places, {
     bool animate = true,
     double zoom = 14,
   }) async {
-    await clear();
     if (places.isEmpty) return;
+    final nextPlaceIds = places.map((place) => place.id).toList(growable: false);
+    final samePlaces =
+        listEquals(_lastPlaceIds, nextPlaceIds) && _symbols.length == places.length;
 
-    for (var i = 0; i < places.length; i++) {
-      final place = places[i];
-      final latLng = LatLng(place.lat, place.lng);
+    if (!samePlaces) {
+      await clear();
+    }
 
-      final imageName = 'nearby_photo_${place.id}_$i';
-      final markerBytes = await _buildMarkerImage(place.photoUrl);
-      await _controller.addImage(imageName, markerBytes);
-      _imageNames.add(imageName);
+    if (!samePlaces) {
+      for (var i = 0; i < places.length; i++) {
+        final place = places[i];
+        final latLng = LatLng(place.lat, place.lng);
 
-      final symbol = await _controller.addSymbol(
-        SymbolOptions(
-          geometry: latLng,
-          iconImage: imageName,
-          iconSize: 1.8,
-          iconAnchor: 'bottom',
-          zIndex: 10,
-        ),
-      );
-      _symbols.add(symbol);
-      _placeBySymbolId[symbol.id] = place;
+        final imageName = 'nearby_photo_${place.id}_$i';
+        final markerBytes = await _buildMarkerImage(place);
+        await _controller.addImage(imageName, markerBytes);
+        _imageNames.add(imageName);
+
+        final symbol = await _controller.addSymbol(
+          SymbolOptions(
+            geometry: latLng,
+            iconImage: imageName,
+            iconSize: 1.8,
+            iconAnchor: 'bottom',
+            zIndex: 10,
+          ),
+        );
+        _symbols.add(symbol);
+        _placeBySymbolId[symbol.id] = place;
+      }
+
+      _lastPlaceIds = nextPlaceIds;
     }
 
     if (animate) {
@@ -65,13 +77,18 @@ class NearbyPlacesLayer {
     // Anh style se duoc clear khi style reload; tai day chi clear danh sach local.
     _imageNames.clear();
     _placeBySymbolId.clear();
+    _lastPlaceIds = const [];
   }
 
   GoongNearbyPlace? placeForSymbol(Symbol symbol) {
     return _placeBySymbolId[symbol.id];
   }
 
-  Future<Uint8List> _buildMarkerImage(String photoUrl) async {
+  Future<Uint8List> _buildMarkerImage(GoongNearbyPlace place) async {
+    final cacheKey = '${place.id}|${place.photoUrl.trim()}';
+    final cached = _markerCache[cacheKey];
+    if (cached != null) return cached;
+
     final recorder = ui.PictureRecorder();
     final canvas = ui.Canvas(recorder);
     const width = 84.0;
@@ -102,7 +119,7 @@ class NearbyPlacesLayer {
     canvas.drawCircle(headCenter, headRadius, redPaint);
     canvas.drawCircle(headCenter, headRadius, whiteStroke);
 
-    final image = await _loadNetworkImage(photoUrl);
+    final image = await _loadNetworkImage(place.photoUrl);
     if (image != null) {
       final clip = ui.Path()
         ..addOval(
@@ -128,7 +145,9 @@ class NearbyPlacesLayer {
     final picture = recorder.endRecording();
     final finalImage = await picture.toImage(width.toInt(), height.toInt());
     final png = await finalImage.toByteData(format: ui.ImageByteFormat.png);
-    return png!.buffer.asUint8List();
+    final bytes = png!.buffer.asUint8List();
+    _markerCache[cacheKey] = bytes;
+    return bytes;
   }
 
   Future<ui.Image?> _loadNetworkImage(String url) async {
