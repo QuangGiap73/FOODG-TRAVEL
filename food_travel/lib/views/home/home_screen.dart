@@ -378,6 +378,7 @@ class _HomeFeedState extends State<_HomeFeed> {
       id,
       name,
       slug,
+      ...province.mergedFrom,
       nameSlug,
       normCode,
       normId,

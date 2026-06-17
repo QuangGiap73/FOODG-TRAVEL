@@ -51,6 +51,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage>{
       province.code,
       province.name,
       province.id,
+      ...province.mergedFrom,
     ]
         .map((value) => value.trim())
         .where((value) => value.isNotEmpty)

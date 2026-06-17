@@ -33,6 +33,9 @@ class DishModel {
   final Map<String, String> tagsI18n;
   final Map<String, String> provinceI18n;
   final Map<String, String> regionI18n;
+  final String provinceCode34;
+  final String provinceName34;
+  final String legacyProvinceCode;
 
   const DishModel({
     required this.id,
@@ -66,6 +69,9 @@ class DishModel {
     this.tagsI18n = const {'vi': '', 'en': ''},
     this.provinceI18n = const {'vi': '', 'en': ''},
     this.regionI18n = const {'vi': '', 'en': ''},
+    this.provinceCode34 = '',
+    this.provinceName34 = '',
+    this.legacyProvinceCode = '',
   });
 
   factory DishModel.fromDoc(DocumentSnapshot doc) {
@@ -82,6 +88,9 @@ class DishModel {
         _toI18n(data['Best_season'] ?? data['best_season'] ?? '');
     final priceRangeI18n = _toI18n(data['price_range'] ?? '');
     final tagsI18n = _toI18n(data['Tags'] ?? data['tags'] ?? '');
+    final provinceCode34 = _asString(data['provinceCode34'] ?? '');
+    final provinceName34 = _asString(data['provinceName34'] ?? '');
+    final legacyProvinceCode = _asString(data['legacyProvinceCode'] ?? '');
     final provinceI18n = _toI18n(
       data['province_code'] ??
           data['provinceCode'] ??
@@ -102,9 +111,15 @@ class DishModel {
       name: _pickLang(nameI18n, languageCode),
       imageUrl: imageUrl,
       imageUrls: _mergeImages(imageUrl, imageList),
-      provinceCode: _pickLang(provinceI18n, languageCode),
+      provinceCode: provinceCode34.isNotEmpty
+          ? provinceCode34
+          : _pickLang(provinceI18n, languageCode),
       provinceName: _asString(
-        data['province_name_vi'] ?? data['province_name'] ?? data['province'] ?? '',
+        data['provinceName34'] ??
+            data['province_name_vi'] ??
+            data['province_name'] ??
+            data['province'] ??
+            '',
       ),
       regionCode: _pickLang(regionI18n, languageCode),
       slug: _asString(data['slug'] ?? ''),
@@ -131,6 +146,9 @@ class DishModel {
       tagsI18n: tagsI18n,
       provinceI18n: provinceI18n,
       regionI18n: regionI18n,
+      provinceCode34: provinceCode34,
+      provinceName34: provinceName34,
+      legacyProvinceCode: legacyProvinceCode,
     );
   }
 

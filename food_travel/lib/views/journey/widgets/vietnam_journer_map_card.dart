@@ -91,12 +91,18 @@ class _VietnamJourneyMapCardState extends State<VietnamJourneyMapCard> {
         .collection(JourneyCollections.journeyRoot)
         .doc(JourneyDocumentIds.summary);
 
-    return root.collection(JourneyCollections.provinces).snapshots().map((
-      snapshot,
-    ) {
+    final canonicalCollection = root.collection(
+      '${JourneyCollections.provinces}_v2',
+    );
+    final legacyCollection = root.collection(JourneyCollections.provinces);
+
+    return canonicalCollection.snapshots().asyncMap((snapshot) async {
+      final effectiveSnapshot = snapshot.docs.isNotEmpty
+          ? snapshot
+          : await legacyCollection.get();
       final progressByKey = <String, JourneyProvinceProgress>{};
 
-      for (final doc in snapshot.docs) {
+      for (final doc in effectiveSnapshot.docs) {
         final progress = JourneyProvinceProgress.fromDoc(doc);
         for (final key in _canonicalKeys(
           progress.provinceCode,

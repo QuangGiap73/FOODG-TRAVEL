@@ -1,0 +1,12 @@
+{
+  "_comment": "Replace every placeholder with your real 64 -> 34 mapping.",
+  "ha_noi": "ha_noi",
+  "hai_phong": "hai_phong",
+  "da_nang": "da_nang",
+  "can_tho": "can_tho",
+  "thua_thien_hue": "hue",
+  "vinh_phuc": "phu_tho_moi",
+  "phu_tho": "phu_tho_moi",
+  "hoa_binh": "phu_tho_moi",
+  "placeholder_legacy_code": "placeholder_canonical_code"
+}

@@ -11,22 +11,37 @@ class FoodService {
   factory FoodService() => _instance;
 
   final _db = FirebaseFirestore.instance;
+  static const _canonicalProvinceCollection = 'provinces_v2';
+  static const _legacyProvinceCollection = 'provinces';
 
   /// Lang nghe danh sach tinh (sap xep theo ten).
   Stream<List<ProvinceModel>> watchProvinces() {
     return _db
-        .collection('provinces')
+        .collection(_canonicalProvinceCollection)
         .orderBy('name')
         .snapshots()
-        .map((snapshot) => snapshot.docs.map(ProvinceModel.fromDoc).toList());
+        .asyncMap((snapshot) async {
+          if (snapshot.docs.isNotEmpty) {
+            return snapshot.docs.map(ProvinceModel.fromDoc).toList();
+          }
+          final legacy = await _db
+              .collection(_legacyProvinceCollection)
+              .orderBy('name')
+              .get();
+          return legacy.docs.map(ProvinceModel.fromDoc).toList();
+        });
   }
 
   Stream<ProvinceModel?> watchProvinceById(String id) {
     return _db
-        .collection('provinces')
+        .collection(_canonicalProvinceCollection)
         .doc(id)
         .snapshots()
-        .map((doc) => doc.exists ? ProvinceModel.fromDoc(doc) : null);
+        .asyncMap((doc) async {
+          if (doc.exists) return ProvinceModel.fromDoc(doc);
+          final legacy = await _db.collection(_legacyProvinceCollection).doc(id).get();
+          return legacy.exists ? ProvinceModel.fromDoc(legacy) : null;
+        });
   }
 
   /// Lay mon an theo ma tinh.
@@ -38,10 +53,16 @@ class FoodService {
     return _db.collection('dishes').limit(300).snapshots().map((snapshot) {
       final all = snapshot.docs.map(DishModel.fromDoc).toList();
       return all.where((dish) {
+        final code34 = _normalize(dish.provinceCode34);
+        final name34 = _normalize(dish.provinceName34);
+        final legacy = _normalize(dish.legacyProvinceCode);
         final vi = _normalize(dish.provinceI18n['vi'] ?? dish.provinceCode);
         final en = _normalize(dish.provinceI18n['en'] ?? '');
         final raw = _normalize(dish.provinceCode);
-        return vi == normalizedTarget ||
+        return code34 == normalizedTarget ||
+            name34 == normalizedTarget ||
+            legacy == normalizedTarget ||
+            vi == normalizedTarget ||
             en == normalizedTarget ||
             raw == normalizedTarget;
       }).take(20).toList();
@@ -83,6 +104,9 @@ class FoodService {
       final all = snap.docs.map(DishModel.fromDoc).toList();
       return all.where((dish) {
         final candidates = <String>{
+          _normalize(dish.provinceCode34),
+          _normalize(dish.provinceName34),
+          _normalize(dish.legacyProvinceCode),
           _normalize(dish.provinceCode),
           _normalize(dish.provinceI18n['vi'] ?? ''),
           _normalize(dish.provinceI18n['en'] ?? ''),
@@ -109,10 +133,16 @@ class FoodService {
         .map(DishModel.fromDoc)
         .where((d) {
           if (normalizedProvince.isEmpty) return true;
+          final canonicalCode = _normalize(d.provinceCode34);
+          final canonicalName = _normalize(d.provinceName34);
+          final legacy = _normalize(d.legacyProvinceCode);
           final vi = _normalize(d.provinceI18n['vi'] ?? d.provinceCode);
           final en = _normalize(d.provinceI18n['en'] ?? '');
           final raw = _normalize(d.provinceCode);
-          return vi == normalizedProvince ||
+          return canonicalCode == normalizedProvince ||
+              canonicalName == normalizedProvince ||
+              legacy == normalizedProvince ||
+              vi == normalizedProvince ||
               en == normalizedProvince ||
               raw == normalizedProvince;
         })

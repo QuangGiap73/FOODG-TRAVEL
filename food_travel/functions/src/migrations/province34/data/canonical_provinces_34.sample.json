@@ -1,0 +1,50 @@
+[
+  {
+    "code": "ha_noi",
+    "name": "Hà Nội",
+    "slug": "ha_noi",
+    "regionCode": "dong_bang_song_hong",
+    "primaryLegacyCode": "ha_noi",
+    "status": "active"
+  },
+  {
+    "code": "hai_phong",
+    "name": "Hải Phòng",
+    "slug": "hai_phong",
+    "regionCode": "dong_bang_song_hong",
+    "primaryLegacyCode": "hai_phong",
+    "status": "active"
+  },
+  {
+    "code": "da_nang",
+    "name": "Đà Nẵng",
+    "slug": "da_nang",
+    "regionCode": "duyen_hai_nam_trung_bo",
+    "primaryLegacyCode": "da_nang",
+    "status": "active"
+  },
+  {
+    "code": "can_tho",
+    "name": "Cần Thơ",
+    "slug": "can_tho",
+    "regionCode": "dong_bang_song_cuu_long",
+    "primaryLegacyCode": "can_tho",
+    "status": "active"
+  },
+  {
+    "code": "hue",
+    "name": "Huế",
+    "slug": "hue",
+    "regionCode": "bac_trung_bo",
+    "primaryLegacyCode": "thua_thien_hue",
+    "status": "active"
+  },
+  {
+    "code": "phu_tho_moi",
+    "name": "Phú Thọ",
+    "slug": "phu_tho_moi",
+    "regionCode": "trung_du_mien_nui_bac_bo",
+    "primaryLegacyCode": "phu_tho",
+    "status": "active"
+  }
+]
