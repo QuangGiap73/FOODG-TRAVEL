@@ -1,0 +1,842 @@
+[
+  {
+    "STT": 162,
+    "id": "bun_thang_luon_pho_hien",
+    "slug": "bun-thang-luon-pho-hien",
+    "Name": {
+      "vi": "Bún thang lươn Phố Hiến",
+      "en": "Pho Hien Eel Bún Thang"
+    },
+    "description": {
+      "vi": "Bún thang lươn Phố Hiến là biến tấu độc đáo của món bún thang truyền thống, trong đó phần thịt gà được thay bằng thịt lươn đồng xào thơm. Nước dùng ngọt thanh, tô bún đầy đủ trứng, giò, lươn, rau thơm tạo nên hương vị tinh tế, nhẹ nhàng mà vẫn đậm đà.",
+      "en": "A distinctive Pho Hien twist on the classic Hanoi bún thang, replacing chicken with fragrant stir-fried field eel. The broth is clear and delicately sweet; the bowl is topped with shredded egg, Vietnamese pork roll, eel, and herbs—light yet richly savory."
+    },
+    "category": {
+      "vi": "Bún nước – bún thang",
+      "en": "Broth noodles – bún thang"
+    },
+    "ingredients": {
+      "vi": "Lươn đồng, bún sợi nhỏ, xương gà hoặc xương lợn ninh nước dùng, trứng gà, giò lụa, củ cải khô, nấm hương, hành khô, hành lá, rau răm, mùi tàu, nước mắm, gia vị (muối, tiêu, một ít mắm tôm tùy khẩu vị).",
+      "en": "Field eel, thin rice vermicelli, chicken or pork bones for stock, eggs, Vietnamese pork roll (giò lụa), dried radish, shiitake mushrooms, shallots, scallions, Vietnamese coriander (rau răm), sawtooth herb (mùi tàu), fish sauce, seasonings (salt, pepper; optional shrimp paste)."
+    },
+    "instructions": {
+      "vi": "Xương gà/xương lợn rửa sạch, ninh lấy nước dùng trong, có thể thêm củ cải khô và nấm hương cho ngọt. Lươn làm sạch, luộc hoặc hấp chín rồi gỡ thịt, xào với hành khô và gia vị cho thơm. Trứng gà tráng mỏng, thái sợi; giò thái chỉ. Khi ăn, chần bún vào bát, xếp lươn xào, trứng, giò, rau răm, mùi tàu lên trên, chan nước dùng nóng, nêm thêm vài giọt mắm tôm nếu thích.",
+      "en": "Simmer chicken/pork bones for a clear stock; add dried radish and shiitake for sweetness. Clean eel, boil/steam until cooked, remove meat, then stir-fry with shallots and seasonings. Make a thin omelet and slice into fine strips; slice pork roll into matchsticks. Blanch vermicelli, arrange eel, egg, pork roll, and herbs on top, then ladle in hot broth. Add a few drops of shrimp paste if desired."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Hưng Yên",
+      "en": "Hung Yen"
+    },
+    "Best_time": {
+      "vi": "Ăn sáng hoặc ăn trưa nhẹ tại Phố Hiến – Hưng Yên",
+      "en": "Breakfast or a light lunch in Pho Hien, Hung Yen."
+    },
+    "Best_season": {
+      "vi": "Quanh năm; ngon nhất khi có lươn đồng vào mùa mưa",
+      "en": "Year-round; best when field eels are abundant during the rainy season."
+    },
+    "origin_story": {
+      "vi": "Phố Hiến (Hưng Yên) từng là thương cảng sầm uất với nhiều giao thoa ẩm thực. Từ nền tảng món bún thang Hà Nội, người dân địa phương đã biến tấu, sử dụng lươn đồng sẵn có ở vùng trung du, tạo nên món bún thang lươn mang dấu ấn riêng của Phố Hiến.",
+      "en": "Pho Hien (Hung Yen) was once a bustling trading port with diverse culinary influences. Building on Hanoi’s bún thang, locals adapted the dish using field eel—common in the region’s waterways—creating an eel bún thang that carries Pho Hien’s own identity."
+    },
+    "price_range": {
+      "vi": "30.000–50.000đ/bát",
+      "en": "30,000–50,000 VND/bowl"
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bún thang lươn,Phố Hiến,Hưng Yên,bún nước,ẩm thực Hưng Yên",
+      "en": "eel bún thang,Pho Hien,Hung Yen,broth noodles,Hung Yen cuisine"
+    },
+    "spicy_level": 1,
+    "satiety_level": 4
+  },
+  {
+    "STT": 163,
+    "id": "cha_ga_tieu_quan",
+    "slug": "cha-ga-tieu-quan",
+    "Name": {
+      "vi": "Chả gà Tiểu Quan",
+      "en": "Tieu Quan Chicken Sausage (Chả gà)"
+    },
+    "description": {
+      "vi": "Chả gà Tiểu Quan là đặc sản làng Tiểu Quan (Hưng Yên), nổi tiếng với những miếng chả gà vàng thơm, giòn bên ngoài, mềm ngọt bên trong, mùi lá chanh, tiêu quyện lại rất bắt miệng.",
+      "en": "A specialty of Tieu Quan village (Hung Yen), known for golden, fragrant patties—crisp outside, tender and sweet inside, perfumed with kaffir lime leaves and black pepper."
+    },
+    "category": {
+      "vi": "Món chiên/nướng – chả gà, món mặn/nhắm",
+      "en": "Fried/grilled – chicken sausage; savory dish/snack"
+    },
+    "ingredients": {
+      "vi": "Thịt gà ta (cả nạc và chút da), trứng gà, bột năng hoặc bột ngô (ít), hành khô, tỏi, lá chanh, hạt tiêu, nước mắm, muối, dầu ăn.",
+      "en": "Free-range chicken (lean meat with a little skin), eggs, a small amount of tapioca or cornstarch, shallots, garlic, kaffir lime leaves, black pepper, fish sauce, salt, cooking oil."
+    },
+    "instructions": {
+      "vi": "Thịt gà lọc bỏ xương, băm hoặc xay nhuyễn, trộn với trứng, bột, hành tỏi băm, lá chanh thái chỉ, tiêu và gia vị. Hỗn hợp được quết kỹ cho dẻo, sau đó nặn thành miếng dẹt. Chiên ngập dầu hoặc rán áp chảo đến khi chả chín vàng đều hai mặt, tỏa mùi thơm. Có nơi nướng chả để giảm dầu mỡ. Ăn nóng là ngon nhất.",
+      "en": "Debone chicken, mince or grind. Mix with eggs, starch, minced shallots/garlic, finely sliced kaffir lime leaves, pepper, and seasonings. Pound/knead until sticky and springy, then shape into flat patties. Deep-fry or pan-fry until evenly golden. Some places grill to reduce oil. Best served hot."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Hưng Yên",
+      "en": "Hung Yen"
+    },
+    "Best_time": {
+      "vi": "Bữa chính, tiệc gia đình, làm món nhắm",
+      "en": "Main meals, family parties, or as a drinking snack."
+    },
+    "Best_season": {
+      "vi": "Quanh năm",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Làng Tiểu Quan từ lâu nổi tiếng với nghề nuôi gà và làm chả gà. Nhờ bí quyết nêm nếm, quết chả và cách rán/nướng, chả gà Tiểu Quan có độ dai, thơm đặc trưng, trở thành món ăn được nhiều người tìm mua khi ghé Hưng Yên.",
+      "en": "Tieu Quan village has long been known for raising chickens and making chicken sausage. Thanks to distinctive seasoning, thorough pounding, and careful frying/grilling, it has a pleasantly chewy texture and aroma, becoming a sought-after specialty when visiting Hung Yen."
+    },
+    "price_range": {
+      "vi": "120.000–200.000đ/kg chả hoặc 50.000–100.000đ/đĩa tại quán",
+      "en": "120,000–200,000 VND/kg, or 50,000–100,000 VND/plate at eateries"
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "chả gà Tiểu Quan,đặc sản Hưng Yên,chả gà,làng nghề",
+      "en": "Tieu Quan chicken sausage,Hung Yen specialty,chả gà,craft village"
+    },
+    "spicy_level": 1,
+    "satiety_level": 4
+  },
+  {
+    "STT": 164,
+    "id": "ech_om_phuong_tuong",
+    "slug": "ech-om-phuong-tuong",
+    "Name": {
+      "vi": "Ếch om Phượng Tường",
+      "en": "Phuong Tuong Braised Frog with Green Banana"
+    },
+    "description": {
+      "vi": "Ếch om Phượng Tường là món đặc sản dân dã của vùng Phượng Tường (Hưng Yên), ếch đồng được om với chuối xanh, mẻ, lá lốt, tía tô cho vị chua nhẹ, béo bùi, rất đưa cơm.",
+      "en": "A rustic specialty from Phuong Tuong (Hung Yen). Field frogs are braised with green bananas, fermented rice (mẻ), and herbs like wild betel leaf and perilla, giving a gentle tang, rich savoriness, and a comforting rice-friendly taste."
+    },
+    "category": {
+      "vi": "Món om/kho – ếch om chuối đậu kiểu địa phương",
+      "en": "Braised dish – local frog stew with banana (and tofu)"
+    },
+    "ingredients": {
+      "vi": "Ếch đồng, chuối xanh, đậu phụ (tùy nơi), lá lốt, tía tô, hành khô, tỏi, nghệ, mẻ hoặc sấu, ớt, nước mắm, muối, dầu ăn.",
+      "en": "Field frogs, green bananas, tofu (optional), wild betel leaf (lá lốt), perilla (tía tô), shallots, garlic, turmeric, fermented rice (mẻ) or sour fruit (sấu), chili, fish sauce, salt, cooking oil."
+    },
+    "instructions": {
+      "vi": "Ếch làm sạch, chặt miếng, ướp với nghệ, hành tỏi băm, mắm, muối. Chuối xanh gọt vỏ, thái miếng, ngâm nước muối cho bớt chát. Phi thơm hành tỏi, cho ếch vào xào săn, thêm chuối, mẻ (hoặc sấu), đổ nước vừa đủ, om nhỏ lửa. Khi chuối mềm, ếch chín, nêm lại gia vị, cho lá lốt, tía tô thái nhỏ vào, đun thêm vài phút rồi tắt bếp.",
+      "en": "Clean frogs, chop, and marinate with turmeric, minced shallot/garlic, fish sauce, and salt. Peel and cut green bananas; soak in salted water to reduce astringency. Sauté shallot/garlic, stir-fry frogs until firm, add bananas and mẻ (or sấu), then add enough water and simmer gently. When bananas are tender and frogs cooked, adjust seasoning, add sliced lá lốt and tía tô, simmer a few minutes, then serve."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Hưng Yên",
+      "en": "Hung Yen"
+    },
+    "Best_time": {
+      "vi": "Ăn trưa, ăn tối, món mặn ăn cùng cơm trắng",
+      "en": "Lunch or dinner as a savory dish with steamed rice."
+    },
+    "Best_season": {
+      "vi": "Mùa ếch đồng (mùa mưa) nhưng cũng có quanh năm ở quán ăn",
+      "en": "Best during field-frog season (rainy season), but available year-round at eateries."
+    },
+    "origin_story": {
+      "vi": "Vùng Phượng Tường có nhiều ruộng đồng, ao mương, ếch đồng khá sẵn. Từ những nguyên liệu quen thuộc như chuối xanh, lá lốt, mẻ chua, người dân sáng tạo nên món ếch om đặc trưng, dần dần trở thành món 'đặc sản quê' được nhắc đến khi nói về ẩm thực Hưng Yên.",
+      "en": "Phuong Tuong has many rice fields and ponds where field frogs are plentiful. Using familiar ingredients—green bananas, sour mẻ, aromatic leaves—locals created a distinctive braise that gradually became a noted ‘countryside specialty’ in Hung Yen cuisine."
+    },
+    "price_range": {
+      "vi": "80.000–150.000đ/nồi/đĩa tại quán",
+      "en": "80,000–150,000 VND/pot or plate at eateries"
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "ếch om Phượng Tường,ếch om chuối đậu,Hưng Yên,món đồng quê",
+      "en": "Phuong Tuong frog stew,frog braised with banana,Hung Yen,countryside dish"
+    },
+    "spicy_level": 2,
+    "satiety_level": 4
+  },
+  {
+    "STT": 165,
+    "id": "ga_ong_tao",
+    "slug": "ga-ong-tao",
+    "Name": {
+      "vi": "Gà Đông Tảo",
+      "en": "Dong Tao Chicken"
+    },
+    "description": {
+      "vi": "Gà Đông Tảo là giống gà quý hiếm có cặp chân to, thân hình vạm vỡ, thịt săn chắc. Đây là đặc sản nổi tiếng của xã Đông Tảo (Khoái Châu – Hưng Yên), thường dùng trong các dịp trọng lễ, đãi khách.",
+      "en": "A rare native chicken breed famous for its unusually large legs and firm, flavorful meat. Originating from Dong Tao commune (Khoai Chau, Hung Yen), it is often served at important ceremonies and to honor guests."
+    },
+    "category": {
+      "vi": "Nguyên liệu/thịt đặc sản – gà ta bản địa",
+      "en": "Specialty poultry – local native chicken"
+    },
+    "ingredients": {
+      "vi": "Gà Đông Tảo nguyên con hoặc từng phần (đùi, chân, lườn…), gia vị tùy món: muối, gừng, sả, mật ong, lá chanh, ớt, tiêu, rau sống, nước chấm.",
+      "en": "Whole Dong Tao chicken or cuts (thighs, legs, breast, etc.), plus seasonings depending on the dish: salt, ginger, lemongrass, honey, kaffir lime leaves, chili, pepper, herbs, dipping sauces."
+    },
+    "instructions": {
+      "vi": "Gà Đông Tảo có thể chế biến thành nhiều món: luộc nguyên con chấm muối chanh, nướng mật ong, hấp lá chanh, lẩu gà, rang muối… Thịt gà chắc nên thường không nấu quá lâu để tránh bị khô. Chân gà to có thể hầm mềm hoặc nướng để thưởng thức phần da giòn, gân giòn đặc trưng.",
+      "en": "Dong Tao chicken can be prepared in many ways: boiled and dipped in salt-lime, honey-grilled, steamed with kaffir lime leaves, hot pot, salt-roasted, etc. Because the meat is firm, avoid overcooking to prevent dryness. The large legs can be braised until tender or grilled to enjoy the distinctive crunchy skin and tendons."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Hưng Yên",
+      "en": "Hung Yen"
+    },
+    "Best_time": {
+      "vi": "Các dịp lễ tết, cưới hỏi, đãi khách, tiệc gia đình",
+      "en": "Holidays, weddings, guest banquets, and family feasts."
+    },
+    "Best_season": {
+      "vi": "Quanh năm; cao điểm dịp Tết và mùa cưới",
+      "en": "Year-round; peak demand during Tet and wedding season."
+    },
+    "origin_story": {
+      "vi": "Gà Đông Tảo có nguồn gốc lâu đời tại xã Đông Tảo, huyện Khoái Châu, Hưng Yên. Giống gà này từng được nuôi để tiến vua nhờ hình dáng đặc biệt và chất lượng thịt ngon. Ngày nay, Đông Tảo đã trở thành thương hiệu gà nổi tiếng, được nuôi rộng rãi nhưng vùng gốc Hưng Yên vẫn được đánh giá cao nhất.",
+      "en": "Dong Tao chicken has a long history in Dong Tao commune, Khoai Chau district, Hung Yen. It was once raised as a ‘tribute chicken’ for royalty thanks to its unique appearance and meat quality. Today, although bred more widely, chickens from the original Hung Yen area are still considered the best."
+    },
+    "price_range": {
+      "vi": "250.000–400.000đ/kg gà sống; món chế biến sẵn giá theo phần",
+      "en": "250,000–400,000 VND/kg (live); cooked dishes priced by portion"
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "gà Đông Tảo,đặc sản Hưng Yên,gà tiến vua,Khoái Châu",
+      "en": "Dong Tao chicken,Hung Yen specialty,tribute chicken,Khoai Chau"
+    },
+    "spicy_level": 1,
+    "satiety_level": 5
+  },
+  {
+    "STT": 166,
+    "id": "banh_day_lang_gau",
+    "slug": "banh-day-lang-gau",
+    "Name": {
+      "vi": "Bánh dày làng Gàu",
+      "en": "Lang Gau Glutinous Rice Cake (Bánh dày)"
+    },
+    "description": {
+      "vi": "Bánh dày làng Gàu là loại bánh nếp dẻo, trắng, thơm, thường xuất hiện trong mâm cỗ lễ, cưới hỏi, hay dùng kẹp với chả, giò, mang đậm hương vị quê Hưng Yên.",
+      "en": "A white, chewy glutinous rice cake commonly seen in ceremonial trays, weddings, and memorial feasts. Often eaten with pork roll (giò/chả), it carries the simple, rustic taste of Hung Yen countryside."
+    },
+    "category": {
+      "vi": "Bánh nếp – bánh lễ/ăn chơi",
+      "en": "Sticky rice cake – ceremonial/snack cake"
+    },
+    "ingredients": {
+      "vi": "Gạo nếp ngon, muối, đôi khi có thêm nhân đậu xanh, lá chuối/lá dong để lót.",
+      "en": "Quality glutinous rice, salt; sometimes mung bean filling; banana or dong leaves for lining."
+    },
+    "instructions": {
+      "vi": "Gạo nếp vo sạch, ngâm mềm rồi đồ chín. Nếp chín được cho vào cối giã đều tay đến khi dẻo mịn, không vón cục. Khối bột nếp sau đó được nặn thành từng chiếc bánh tròn dẹt. Bánh có thể ăn không, kẹp chả lụa hoặc dùng trong các nghi lễ truyền thống.",
+      "en": "Rinse and soak glutinous rice, then steam until cooked. Pound the hot rice in a mortar until smooth, elastic, and glossy. Shape into flat round cakes. Eat plain, sandwich with pork roll, or serve in traditional ceremonies."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Hưng Yên",
+      "en": "Hung Yen"
+    },
+    "Best_time": {
+      "vi": "Dịp lễ tết, cưới hỏi, giỗ chạp, hoặc ăn sáng/ăn xế",
+      "en": "Holidays, weddings, memorial feasts; also breakfast or afternoon snack."
+    },
+    "Best_season": {
+      "vi": "Quanh năm; nhiều nhất vào mùa lễ tết",
+      "en": "Year-round; most common during festival and holiday seasons."
+    },
+    "origin_story": {
+      "vi": "Làng Gàu (thuộc Hưng Yên) có truyền thống làm bánh dày phục vụ lễ hội và cưới hỏi. Bánh dày ở đây nổi tiếng bởi độ dẻo và mùi thơm của nếp, cùng tay nghề giã bánh khéo léo. Theo thời gian, bánh dày làng Gàu trở thành sản phẩm đặc trưng mỗi khi người ta nhắc đến bánh nếp Hưng Yên.",
+      "en": "Lang Gau (in Hung Yen) has a tradition of making bánh dày for festivals and weddings. The cakes are praised for their chewiness and fragrant rice aroma, reflecting skilled pounding techniques passed down over generations."
+    },
+    "price_range": {
+      "vi": "3.000–7.000đ/chiếc; mâm bánh lễ giá cao hơn tùy đặt",
+      "en": "3,000–7,000 VND/cake; ceremonial trays cost more depending on order"
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh dày làng Gàu,bánh nếp,Hưng Yên,bánh lễ",
+      "en": "Lang Gau bánh dày,sticky rice cake,Hung Yen,ceremonial cake"
+    },
+    "spicy_level": 0,
+    "satiety_level": 3
+  },
+  {
+    "STT": 167,
+    "id": "banh_cuon_phu_thi",
+    "slug": "banh-cuon-phu-thi",
+    "Name": {
+      "vi": "Bánh cuốn Phú Thị",
+      "en": "Phu Thi Steamed Rice Rolls (Bánh cuốn)"
+    },
+    "description": {
+      "vi": "Bánh cuốn Phú Thị nổi tiếng với lớp bánh mỏng, dai mềm vừa phải, nhân thịt mộc nhĩ đậm đà, ăn kèm chả và nước mắm chua ngọt, là món ăn sáng được nhiều người yêu thích.",
+      "en": "Known for thin, silky-yet-chewy sheets filled with minced pork and wood ear mushrooms, served with sweet-sour fish sauce and pork roll—an adored breakfast for many."
+    },
+    "category": {
+      "vi": "Bánh cuốn – món ăn sáng",
+      "en": "Steamed rice rolls – breakfast dish"
+    },
+    "ingredients": {
+      "vi": "Bột gạo tẻ, nước, dầu ăn, nhân thịt lợn băm, mộc nhĩ, hành khô, nước mắm, đường, giấm, tỏi, ớt, chả lụa, rau thơm.",
+      "en": "Non-glutinous rice flour, water, cooking oil; filling: minced pork, wood ear mushrooms, shallots; dipping sauce: fish sauce, sugar, vinegar, garlic, chili; served with Vietnamese pork roll and herbs."
+    },
+    "instructions": {
+      "vi": "Bột gạo pha loãng với nước, để lắng và lọc cho mịn. Dùng nồi tráng bánh, đổ bột thành lớp mỏng trên mặt vải, hấp chín, xúc ra mặt mâm có phết dầu. Nhân thịt băm xào với mộc nhĩ, hành. Trải bánh, cho nhân, cuốn lại. Nước chấm pha từ nước mắm, đường, giấm, tỏi, ớt. Ăn kèm chả, rau thơm.",
+      "en": "Mix rice flour with water, let settle, and strain for a smooth batter. Steam a thin layer on cloth over a pot, lift onto an oiled tray. Stir-fry filling of pork and wood ear with shallots. Place filling on each sheet and roll. Make dipping sauce with fish sauce, sugar, vinegar, garlic, and chili. Serve with pork roll and herbs."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Hưng Yên",
+      "en": "Hung Yen"
+    },
+    "Best_time": {
+      "vi": "Bữa sáng, đôi khi bữa tối nhẹ",
+      "en": "Breakfast; sometimes a light dinner."
+    },
+    "Best_season": {
+      "vi": "Quanh năm",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Phú Thị là vùng giáp ranh Hưng Yên – Hà Nội, nơi nghề làm bánh cuốn phát triển lâu năm. Nhờ nguồn gạo ngon và kinh nghiệm tráng bánh, bánh cuốn Phú Thị có tiếng thơm ngon, được nhiều thực khách đi qua khu vực này tìm ăn.",
+      "en": "Phu Thi sits near the Hung Yen–Hanoi border, where the craft of making bánh cuốn has developed for a long time. With good rice and skilled steaming, Phu Thi rice rolls are well known and often sought by travelers passing through."
+    },
+    "price_range": {
+      "vi": "20.000–35.000đ/suất",
+      "en": "20,000–35,000 VND/serving"
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh cuốn Phú Thị,ăn sáng,Hưng Yên,bánh cuốn",
+      "en": "Phu Thi bánh cuốn,breakfast,Hung Yen,bánh cuốn"
+    },
+    "spicy_level": 1,
+    "satiety_level": 3
+  },
+  {
+    "STT": 168,
+    "id": "canh_ca_ro_ong_hung_yen",
+    "slug": "canh-ca-ro-ong-hung-yen",
+    "Name": {
+      "vi": "Canh cá rô đồng Hưng Yên",
+      "en": "Hung Yen Field Perch Soup (Canh cá rô đồng)"
+    },
+    "description": {
+      "vi": "Canh cá rô đồng Hưng Yên là món canh dân dã, thanh mát, nấu từ cá rô đồng tươi với rau cải, rau cần, vị ngọt tự nhiên của cá kết hợp chút cay nhẹ của tiêu, rất hợp bữa cơm gia đình.",
+      "en": "A humble, refreshing family soup made from fresh field perch with mustard greens or celery. The fish gives a natural sweetness with a light peppery warmth—perfect with steamed rice."
+    },
+    "category": {
+      "vi": "Canh – canh cá rô",
+      "en": "Soup – field perch soup"
+    },
+    "ingredients": {
+      "vi": "Cá rô đồng, rau cải hoặc rau cần, hành khô, gừng, thì là, hành lá, nước mắm, muối, tiêu.",
+      "en": "Field perch (cá rô đồng), mustard greens or celery, shallots, ginger, dill, scallions, fish sauce, salt, pepper."
+    },
+    "instructions": {
+      "vi": "Cá rô làm sạch, có thể rán sơ cho thơm rồi cho vào nồi nước sôi cùng gừng đập dập. Khi cá chín, vớt ra, gỡ thịt, bỏ xương; xương có thể ninh lại cho ngọt nước rồi lọc. Cho rau cải/cần vào nồi, nấu chín tới, thả thịt cá vào, nêm gia vị, rắc thì là, hành lá, tắt bếp. Canh ăn nóng với cơm trắng rất dễ ăn.",
+      "en": "Clean fish; optionally pan-fry briefly for aroma, then simmer in boiling water with crushed ginger. When cooked, remove and pick the meat, discarding bones; simmer bones again for sweetness and strain if desired. Cook greens until just tender, add fish meat back in, season to taste, then finish with dill and scallions. Serve hot with rice."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Hưng Yên",
+      "en": "Hung Yen"
+    },
+    "Best_time": {
+      "vi": "Bữa trưa hoặc bữa tối trong gia đình",
+      "en": "Family lunch or dinner."
+    },
+    "Best_season": {
+      "vi": "Quanh năm; mùa cá đồng nhiều càng ngon",
+      "en": "Year-round; even better when field fish are abundant."
+    },
+    "origin_story": {
+      "vi": "Hưng Yên là vùng đồng bằng sông Hồng với hệ thống sông, mương, ao hồ dày đặc, cá rô đồng rất sẵn. Người dân tận dụng nguồn cá tươi sống nấu canh cùng rau trong vườn, tạo nên món canh cá rô đồng trở nên quen thuộc trong bữa cơm quê.",
+      "en": "As part of the Red River Delta, Hung Yen has many canals, ponds, and rivers where field perch are common. Locals have long used fresh fish with garden greens to make this everyday countryside soup."
+    },
+    "price_range": {
+      "vi": "25.000–40.000đ/bát khi ăn tại quán",
+      "en": "25,000–40,000 VND/bowl at eateries"
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "canh cá rô đồng,Hưng Yên,món quê,canh cá",
+      "en": "field perch soup,Hung Yen,countryside dish,fish soup"
+    },
+    "spicy_level": 1,
+    "satiety_level": 3
+  },
+  {
+    "STT": 169,
+    "id": "ca_moi_hung_yen",
+    "slug": "ca-moi-hung-yen",
+    "Name": {
+      "vi": "Cá mòi Hưng Yên",
+      "en": "Hung Yen River Sardine (Cá mòi)"
+    },
+    "description": {
+      "vi": "Cá mòi Hưng Yên là món đặc sản theo mùa ở vùng ven sông Hồng, cá có nhiều mỡ, thịt thơm, thường được rán, nướng hoặc kho riềng, ăn rất đưa cơm.",
+      "en": "A seasonal specialty from the Red River area. The fish is fatty and fragrant, commonly fried, grilled, or braised with galangal—very rice-friendly and deeply comforting."
+    },
+    "category": {
+      "vi": "Món mặn – cá kho/nướng",
+      "en": "Savory fish dish – braised/grilled fish"
+    },
+    "ingredients": {
+      "vi": "Cá mòi tươi, riềng, nghệ, hành khô, tỏi, nước mắm, muối, tiêu, ớt, dầu ăn; hoặc thêm lá chè xanh, khế chua, mía (nếu kho kiểu truyền thống).",
+      "en": "Fresh river sardines, galangal, turmeric, shallots, garlic, fish sauce, salt, pepper, chili, cooking oil; for traditional braise: green tea leaves, sour starfruit, sugarcane (optional)."
+    },
+    "instructions": {
+      "vi": "Cá mòi làm sạch, bỏ mang, có thể bỏ bớt đầu và ruột. Với món rán/nướng, cá được ướp muối, nghệ, sau đó rán vàng hoặc nướng than. Với món kho, xếp cá vào nồi cùng riềng thái lát, khế, mía, nêm nước mắm, đun nhỏ lửa lâu cho cá nhừ, xương mềm, thấm gia vị.",
+      "en": "Clean fish, remove gills; optionally trim head and gut. For frying/grilling: marinate with salt and turmeric, then fry until golden or grill over charcoal. For braising: layer fish with sliced galangal, starfruit, and sugarcane, season with fish sauce, then simmer on low heat for a long time until bones soften and flavors penetrate."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Hưng Yên",
+      "en": "Hung Yen"
+    },
+    "Best_time": {
+      "vi": "Bữa trưa, tối trong mùa cá mòi, dùng với cơm nóng",
+      "en": "Lunch/dinner during sardine season, served with hot rice."
+    },
+    "Best_season": {
+      "vi": "Mùa cá mòi (thường khoảng cuối đông – đầu xuân)",
+      "en": "Sardine season (typically late winter to early spring)."
+    },
+    "origin_story": {
+      "vi": "Vùng ven sông Hồng thuộc Hưng Yên vào mùa cá mòi là thời điểm người dân đánh bắt nhộn nhịp. Cá mòi béo, nhiều mỡ nên thường được chế biến thành những món kho, nướng đậm đà, trở thành hương vị gắn bó với ký ức mùa nước của nhiều người dân địa phương.",
+      "en": "Along the Red River in Hung Yen, sardine season brings lively fishing. Because the fish is rich and fatty, locals favor bold preparations like braising or grilling—flavors closely tied to the seasonal memories of river communities."
+    },
+    "price_range": {
+      "vi": "40.000–80.000đ/kg cá tươi; món kho/nướng tính theo đĩa",
+      "en": "40,000–80,000 VND/kg (fresh); cooked dishes priced per plate"
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "cá mòi Hưng Yên,cá sông Hồng,đặc sản theo mùa,cá kho",
+      "en": "Hung Yen sardines,Red River fish,seasonal specialty,braised fish"
+    },
+    "spicy_level": 2,
+    "satiety_level": 4
+  },
+  {
+    "STT": 170,
+    "id": "che_sen_long_nhan_hung_yen",
+    "slug": "che-sen-long-nhan-hung-yen",
+    "Name": {
+      "vi": "Chè sen long nhãn Hưng Yên",
+      "en": "Hung Yen Longan & Lotus Seed Sweet Soup"
+    },
+    "description": {
+      "vi": "Chè sen long nhãn Hưng Yên là món chè tinh tế, trong đó hạt sen được bọc trong múi nhãn lồng, nấu với nước đường thanh, cho vị ngọt dịu, thơm mùi sen và nhãn, rất thích hợp giải nhiệt mùa hè.",
+      "en": "A refined dessert where tender lotus seeds are tucked inside Hung Yen longan arils, served in lightly sweet syrup. Delicately fragrant and cooling—especially loved in summer."
+    },
+    "category": {
+      "vi": "Chè ngọt – món tráng miệng, giải khát",
+      "en": "Sweet soup – dessert/refreshing drink"
+    },
+    "ingredients": {
+      "vi": "Hạt sen tươi hoặc khô, nhãn lồng Hưng Yên (nhãn to, cùi dày), đường phèn hoặc đường cát, lá dứa (tùy chọn), muối (một chút).",
+      "en": "Fresh or dried lotus seeds, Hung Yen longan (large, thick flesh), rock sugar or granulated sugar, pandan leaves (optional), a pinch of salt."
+    },
+    "instructions": {
+      "vi": "Hạt sen ninh mềm nhưng không nát. Nhãn bóc vỏ, bỏ hạt, giữ nguyên múi. Nhồi từng hạt sen vào trong múi nhãn, xếp ra bát. Nấu nước đường phèn với chút muối và lá dứa cho thơm, để nguội bớt rồi nhẹ nhàng đổ vào bát nhãn sen. Có thể để lạnh trong tủ mát trước khi ăn.",
+      "en": "Simmer lotus seeds until tender but intact. Peel longans, remove pits, keep arils whole. Stuff a lotus seed into each longan. Cook rock sugar syrup with a pinch of salt and pandan for fragrance, cool slightly, then pour gently over the longan-lotus. Chill before serving if desired."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Hưng Yên",
+      "en": "Hung Yen"
+    },
+    "Best_time": {
+      "vi": "Món tráng miệng hoặc ăn vặt mùa hè",
+      "en": "Dessert or summer snack."
+    },
+    "Best_season": {
+      "vi": "Mùa nhãn Hưng Yên (thường tháng 7–8 dương lịch)",
+      "en": "Hung Yen longan season (usually July–August)."
+    },
+    "origin_story": {
+      "vi": "Hưng Yên nổi tiếng với nhãn lồng, quả to, cùi dày, thơm. Người dân đã kết hợp nhãn với hạt sen – một nguyên liệu truyền thống – để tạo nên món chè sen long nhãn vừa thanh mát vừa sang trọng, thường xuất hiện trong các dịp tiếp khách, lễ hội mùa nhãn.",
+      "en": "Hung Yen is famed for its longan. Locals paired it with lotus seeds—another classic ingredient—to create an elegant, cooling dessert often served for guests and during longan festivals."
+    },
+    "price_range": {
+      "vi": "20.000–40.000đ/cốc khi bán tại quán chè",
+      "en": "20,000–40,000 VND/cup at dessert shops"
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "chè sen long nhãn,nhãn lồng Hưng Yên,món tráng miệng,chè mát",
+      "en": "longan lotus sweet soup,Hung Yen longan,dessert,cooling sweet soup"
+    },
+    "spicy_level": 0,
+    "satiety_level": 2
+  },
+  {
+    "STT": 171,
+    "id": "vai_trung_hung_yen",
+    "slug": "vai-trung-hung-yen",
+    "Name": {
+      "vi": "Vải trứng Hưng Yên",
+      "en": "Hung Yen Egg Lychee (Vải trứng)"
+    },
+    "description": {
+      "vi": "Vải trứng Hưng Yên là giống vải có quả nhỏ vừa, hình hơi tròn, phần vỏ có chấm như vỏ trứng, cùi dày, ngọt đậm, là loại trái cây đặc sản bên cạnh nhãn lồng.",
+      "en": "A lychee variety with medium-small, slightly round fruit and speckled skin reminiscent of eggshell. It has thick flesh and an intensely sweet taste—one of Hung Yen’s notable fruits alongside longan."
+    },
+    "category": {
+      "vi": "Trái cây tươi – vải",
+      "en": "Fresh fruit – lychee"
+    },
+    "ingredients": {
+      "vi": "Quả vải trứng trồng tại các vùng chuyên canh ở Hưng Yên.",
+      "en": "Egg lychee fruit grown in Hung Yen’s specialized farming areas."
+    },
+    "instructions": {
+      "vi": "Vải trứng được trồng, chăm sóc và thu hoạch theo mùa. Thường được tiêu thụ ở dạng quả tươi, ngoài ra có thể sấy khô, làm siro, mứt hoặc nước ép tùy nhu cầu.",
+      "en": "Grown and harvested seasonally; typically eaten fresh. It can also be dried, made into syrup, jam, or juice as desired."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Hưng Yên",
+      "en": "Hung Yen"
+    },
+    "Best_time": {
+      "vi": "Ăn tráng miệng, giải khát mùa hè",
+      "en": "Dessert fruit and summer refreshment."
+    },
+    "Best_season": {
+      "vi": "Mùa vải (thường cuối xuân – đầu hè)",
+      "en": "Lychee season (typically late spring to early summer)."
+    },
+    "origin_story": {
+      "vi": "Không chỉ nổi tiếng với nhãn lồng, Hưng Yên còn trồng nhiều loại cây ăn quả khác, trong đó có vải trứng. Nhờ đất phù sa ven sông và kinh nghiệm canh tác, vải trứng Hưng Yên có hương vị ngọt và thơm, được bán ở các chợ địa phương và một phần cung cấp cho thị trường lớn.",
+      "en": "Beyond longan, Hung Yen cultivates various fruit trees, including egg lychee. Thanks to fertile alluvial soil and farming experience, it is sweet and fragrant, sold in local markets and supplied to larger cities."
+    },
+    "price_range": {
+      "vi": "20.000–50.000đ/kg tùy mùa và chất lượng",
+      "en": "20,000–50,000 VND/kg depending on season and quality"
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "vải trứng Hưng Yên,trái cây,hoa quả,đặc sản Hưng Yên",
+      "en": "Hung Yen egg lychee,fruit,specialty produce,Hung Yen"
+    },
+    "spicy_level": 0,
+    "satiety_level": 1
+  },
+  {
+    "STT": 172,
+    "id": "keo_siu_chau_hung_yen",
+    "slug": "keo-siu-chau-hung-yen",
+    "Name": {
+      "vi": "Kẹo Sìu Châu Hưng Yên",
+      "en": "Siu Chau Peanut Brittle (Hung Yen)"
+    },
+    "description": {
+      "vi": "Kẹo Sìu Châu là loại kẹo lạc đặc sản Phố Hiến – Hưng Yên, kẹo giòn, thơm mùi lạc rang và vừng, ngọt vừa phải, thường dùng làm quà biếu và ăn kèm trà nóng.",
+      "en": "A Pho Hien specialty peanut candy. Crisp and fragrant with roasted peanuts and sesame, moderately sweet, often enjoyed with hot tea and bought as a gift."
+    },
+    "category": {
+      "vi": "Kẹo truyền thống – quà biếu/ăn vặt",
+      "en": "Traditional candy – gift/snack"
+    },
+    "ingredients": {
+      "vi": "Lạc (đậu phộng) rang, vừng, đường, mạch nha, chút vani hoặc hương liệu nhẹ, một ít bột nếp/bột áo để chống dính.",
+      "en": "Roasted peanuts, sesame seeds, sugar, malt syrup, a little vanilla/flavoring, a dusting of glutinous rice flour to prevent sticking."
+    },
+    "instructions": {
+      "vi": "Lạc rang chín, bóc vỏ; vừng rang thơm. Đun đường và mạch nha đến khi sánh, cho lạc và vừng vào trộn đều. Đổ hỗn hợp ra mặt phẳng đã rắc bột, cán mỏng, cắt thành miếng nhỏ. Kẹo để nguội sẽ giòn, có thể đóng gói trong túi hoặc hộp để bảo quản lâu.",
+      "en": "Roast peanuts (remove skins) and toast sesame. Cook sugar with malt syrup until thick, stir in peanuts and sesame. Pour onto a floured surface, roll flat, and cut into small pieces. Once cooled, the candy becomes crisp; package to store."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Hưng Yên",
+      "en": "Hung Yen"
+    },
+    "Best_time": {
+      "vi": "Ăn vặt, nhâm nhi cùng trà, làm quà biếu",
+      "en": "Snack with tea; popular gift."
+    },
+    "Best_season": {
+      "vi": "Quanh năm; cao điểm dịp lễ tết",
+      "en": "Year-round; peak around holidays and Tet."
+    },
+    "origin_story": {
+      "vi": "Kẹo Sìu Châu gắn liền với Phố Hiến, nơi từng là đô thị buôn bán sầm uất. Ban đầu, kẹo chủ yếu phục vụ dân địa phương và thương nhân, sau dần trở thành sản phẩm quà biếu đặc trưng. Đến nay, nhiều cơ sở sản xuất kẹo Sìu Châu vẫn giữ bí quyết rang lạc, nấu mạch nha để kẹo giòn mà không quá cứng.",
+      "en": "Linked to Pho Hien, once a prosperous trading town. Initially made for locals and merchants, it gradually became a signature gift. Many producers still keep traditional methods for roasting peanuts and cooking malt syrup to make candy that’s crisp but not overly hard."
+    },
+    "price_range": {
+      "vi": "30.000–80.000đ/hộp/túi tùy trọng lượng",
+      "en": "30,000–80,000 VND/box or bag depending on weight"
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "kẹo Sìu Châu,Phố Hiến,kẹo lạc,đặc sản Hưng Yên,quà biếu",
+      "en": "Siu Chau candy,Pho Hien,peanut brittle,Hung Yen specialty,gift"
+    },
+    "spicy_level": 0,
+    "satiety_level": 2
+  },
+  {
+    "STT": 173,
+    "id": "tuong_ban_ban_yen_nhan",
+    "slug": "tuong-ban-ban-yen-nhan",
+    "Name": {
+      "vi": "Tương Bần (Bần Yên Nhân)",
+      "en": "Ban Soybean Paste (Tương Bần)"
+    },
+    "description": {
+      "vi": "Tương Bần là loại tương (nước chấm lên men từ đậu nành) nổi tiếng cả nước, có màu nâu sánh, vị mặn ngọt hài hòa, thơm mùi đậu và thính, thường dùng chấm rau luộc, thịt luộc, bún.",
+      "en": "One of Vietnam’s best-known fermented soybean pastes, thick and brown with a balanced salty-sweet taste and a distinctive bean aroma. Commonly used as a dip for boiled vegetables, boiled pork, and noodles."
+    },
+    "category": {
+      "vi": "Gia vị/nước chấm lên men – tương đậu nành",
+      "en": "Fermented condiment – soybean paste"
+    },
+    "ingredients": {
+      "vi": "Đậu nành, gạo hoặc nếp để làm mốc/thính, muối, nước; chum sành để ủ tương.",
+      "en": "Soybeans, rice or glutinous rice for starter mold/roasted rice powder, salt, water; earthen jars for fermentation."
+    },
+    "instructions": {
+      "vi": "Đậu nành rang chín, xay/bóc vỏ, nấu chín rồi ủ với mốc gạo/nếp để lên men. Sau đó cho đậu đã lên men vào chum cùng nước muối, phơi nắng, khuấy đều định kỳ trong nhiều tháng đến khi tương sánh, thơm. Cuối cùng lọc thô hoặc để nguyên hạt tùy loại, đóng chai/chum sử dụng.",
+      "en": "Roast soybeans, dehull/grind, cook, then ferment with rice starter mold. Transfer to jars with brine, sun-age and stir periodically for months until thick and fragrant. Bottle for use—either with whole beans or partially strained depending on style."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Hưng Yên",
+      "en": "Hung Yen"
+    },
+    "Best_time": {
+      "vi": "Dùng quanh năm làm nước chấm trong bữa cơm gia đình, quán ăn",
+      "en": "Used year-round as a dipping sauce/condiment in home meals and eateries."
+    },
+    "Best_season": {
+      "vi": "Phơi, ủ tương tốt nhất vào mùa nắng; sử dụng quanh năm",
+      "en": "Best fermented and sun-aged in sunny season; used year-round."
+    },
+    "origin_story": {
+      "vi": "Làng Bần Yên Nhân (Mỹ Hào – Hưng Yên) là cái nôi của tương Bần, với lịch sử hàng trăm năm. Nhờ điều kiện khí hậu, nguồn nước và bí quyết ủ tương truyền thống, sản phẩm tương Bần có hương vị riêng, trở thành một trong những loại tương nổi tiếng nhất Việt Nam.",
+      "en": "Ban Yen Nhan village (My Hao, Hung Yen) is the cradle of tương Bần, with a history spanning hundreds of years. Thanks to climate, water, and traditional know-how, it developed a unique flavor and became one of Vietnam’s most famous soybean pastes."
+    },
+    "price_range": {
+      "vi": "30.000–70.000đ/chai hoặc theo lít tại cơ sở làng nghề",
+      "en": "30,000–70,000 VND/bottle or sold by liter at craft villages"
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "tương Bần,Bần Yên Nhân,nước chấm,đặc sản Hưng Yên,làng nghề",
+      "en": "tương Bần,Ban Yen Nhan,dipping sauce,Hung Yen specialty,craft village"
+    },
+    "spicy_level": 0,
+    "satiety_level": 1
+  },
+  {
+    "STT": 174,
+    "id": "banh_day_phu_thi",
+    "slug": "banh-day-phu-thi",
+    "Name": {
+      "vi": "Bánh dày Phú Thị",
+      "en": "Phu Thi Glutinous Rice Cake (Bánh dày)"
+    },
+    "description": {
+      "vi": "Bánh dày Phú Thị là loại bánh nếp dẻo thơm, thường đi kèm với giò chả, được sử dụng nhiều trong lễ hỏi, cưới xin và làm quà biếu ở vùng Phú Thị – Hưng Yên.",
+      "en": "A chewy, fragrant glutinous rice cake often served with pork roll. Widely used in engagement and wedding ceremonies and also given as a local gift in Phu Thi (Hung Yen)."
+    },
+    "category": {
+      "vi": "Bánh nếp – bánh lễ/ăn chơi",
+      "en": "Sticky rice cake – ceremonial/snack cake"
+    },
+    "ingredients": {
+      "vi": "Gạo nếp, muối, đôi khi có nhân đậu xanh, lá chuối/lá dong để lót và gói.",
+      "en": "Glutinous rice, salt; sometimes mung bean filling; banana/dong leaves for lining and wrapping."
+    },
+    "instructions": {
+      "vi": "Gạo nếp ngâm mềm, đồ chín, sau đó cho vào cối giã nhuyễn đến khi dẻo mịn, bóng. Khối bột được nặn thành bánh tròn, có thể làm đôi bánh kẹp lại. Bánh thường ăn kèm giò lụa hoặc bày trên mâm lễ trong các dịp quan trọng.",
+      "en": "Soak and steam glutinous rice, then pound until smooth, elastic, and glossy. Shape into round cakes, sometimes made as paired “sandwich” cakes. Often served with pork roll or arranged on ceremonial trays for important occasions."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Hưng Yên",
+      "en": "Hung Yen"
+    },
+    "Best_time": {
+      "vi": "Dịp lễ hỏi, cưới, Tết; cũng có thể ăn sáng hoặc ăn xế",
+      "en": "Engagement/wedding ceremonies, Tet; also breakfast or snack."
+    },
+    "Best_season": {
+      "vi": "Quanh năm; cao điểm vào mùa cưới và Tết",
+      "en": "Year-round; peak during wedding season and Tet."
+    },
+    "origin_story": {
+      "vi": "Phú Thị là vùng có nghề làm bánh dày truyền thống, đáp ứng nhu cầu bánh lễ cho khu vực lân cận. Bánh dày Phú Thị có tiếng bởi độ dẻo và cách trình bày đẹp, thường được đặt theo cặp, theo mâm cho lễ nghi truyền thống.",
+      "en": "Phu Thi has a long-standing craft of making bánh dày to meet ceremonial needs in surrounding areas. Its cakes are known for chewiness and neat presentation, commonly ordered in pairs or trays for rituals."
+    },
+    "price_range": {
+      "vi": "3.000–8.000đ/chiếc; bộ bánh lễ tính theo mâm",
+      "en": "3,000–8,000 VND/cake; ceremonial sets priced by tray"
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh dày Phú Thị,bánh nếp,Hưng Yên,bánh lễ",
+      "en": "Phu Thi bánh dày,sticky rice cake,Hung Yen,ceremonial cake"
+    },
+    "spicy_level": 0,
+    "satiety_level": 3
+  },
+  {
+    "STT": 175,
+    "id": "banh_rang_bua_phung_cong_van_giang",
+    "slug": "banh-rang-bua-phung-cong-van-giang",
+    "Name": {
+      "vi": "Bánh răng bừa Phụng Công (Văn Giang)",
+      "en": "Phung Cong ‘Plow-Tooth’ Rice Cakes (Bánh răng bừa)"
+    },
+    "description": {
+      "vi": "Bánh răng bừa Phụng Công (Văn Giang) là loại bánh làm từ bột gạo, gói lá dong thành hình dài như răng bừa, nhân thịt, mộc nhĩ, tiêu, khi ăn mềm, thơm, rất dễ gây nghiện.",
+      "en": "A leaf-wrapped savory cake made from rice batter, shaped long like a plow tooth, filled with pork, wood ear mushrooms, and pepper. Soft, fragrant, and pleasantly addictive."
+    },
+    "category": {
+      "vi": "Bánh gói – bánh mặn ăn sáng/ăn chơi",
+      "en": "Leaf-wrapped savory cake – breakfast/snack"
+    },
+    "ingredients": {
+      "vi": "Gạo tẻ xay bột, thịt lợn băm, mộc nhĩ, hành khô, hạt tiêu, nước mắm, muối, lá dong/lá chuối, dây buộc.",
+      "en": "Ground rice batter, minced pork, wood ear mushrooms, shallots, black pepper, fish sauce, salt, dong/banana leaves, tying strings."
+    },
+    "instructions": {
+      "vi": "Gạo tẻ ngâm rồi xay thành bột nước, khuấy nhẹ trên bếp cho bột hơi sánh. Nhân gồm thịt băm trộn mộc nhĩ, hành, nêm nước mắm, tiêu. Khi gói, múc bột vào lá, cho nhân vào giữa, cuộn lá thành hình dài, buộc lạt hai đầu. Đem bánh hấp chín trong khoảng 30–45 phút. Bánh chín ăn mềm, thơm mùi gạo và lá dong.",
+      "en": "Soak rice, grind into wet batter, then cook lightly over low heat until slightly thick. Mix filling: minced pork with wood ear and shallot, season with fish sauce and pepper. Spoon batter onto leaves, add filling in the center, roll into a long shape and tie both ends. Steam 30–45 minutes until cooked."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Hưng Yên",
+      "en": "Hung Yen"
+    },
+    "Best_time": {
+      "vi": "Ăn sáng, ăn xế, làm quà quê mang đi xa",
+      "en": "Breakfast, snack, or a countryside gift to take away."
+    },
+    "Best_season": {
+      "vi": "Quanh năm",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Xã Phụng Công (Văn Giang – Hưng Yên) nổi tiếng với nghề làm bánh răng bừa truyền thống. Tên bánh xuất phát từ hình dáng giống chiếc răng của cái bừa trong nông nghiệp. Bánh răng bừa nơi đây có vỏ mỏng, nhân đậm, trở thành món quà quê thân thuộc của người Hưng Yên.",
+      "en": "Phung Cong commune (Van Giang, Hung Yen) is known for making bánh răng bừa. The name comes from its shape resembling the tooth of an agricultural plow. With thin wrapper and savory filling, it became a familiar rural gift in Hung Yen."
+    },
+    "price_range": {
+      "vi": "2.000–4.000đ/chiếc; bó nhiều chiếc 20.000–40.000đ",
+      "en": "2,000–4,000 VND/cake; bundles of many cakes 20,000–40,000 VND"
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh răng bừa Phụng Công,bánh quê,Văn Giang,Hưng Yên",
+      "en": "Phung Cong bánh răng bừa,countryside cake,Van Giang,Hung Yen"
+    },
+    "spicy_level": 0,
+    "satiety_level": 2
+  },
+  {
+    "STT": 176,
+    "id": "banh_cuoc_banh_te_van_giang",
+    "slug": "banh-cuoc-banh-te-van-giang",
+    "Name": {
+      "vi": "Bánh cuốc (bánh tẻ) – Văn Giang",
+      "en": "Van Giang Rice Cakes (Bánh cuốc/Bánh tẻ)"
+    },
+    "description": {
+      "vi": "Bánh cuốc (bánh tẻ) Văn Giang là loại bánh mặn làm từ bột gạo, nhân thịt mộc nhĩ, hình dạng thon dài, ăn mềm, thơm, là món ăn chơi quen thuộc của người dân địa phương.",
+      "en": "A savory rice cake with pork and wood ear filling, wrapped into a slender shape. Soft, fragrant, and a common local snack or light meal in Van Giang."
+    },
+    "category": {
+      "vi": "Bánh mặn – bánh tẻ/bánh gói",
+      "en": "Savory rice cake – bánh tẻ/leaf-wrapped cake"
+    },
+    "ingredients": {
+      "vi": "Gạo tẻ xay bột, thịt lợn băm, mộc nhĩ, hành khô, hạt tiêu, nước mắm, muối, lá dong hoặc lá chuối, dây buộc.",
+      "en": "Ground rice batter, minced pork, wood ear mushrooms, shallots, black pepper, fish sauce, salt, dong or banana leaves, tying strings."
+    },
+    "instructions": {
+      "vi": "Gạo tẻ ngâm, xay, lọc lấy bột, khuấy với nước đến khi bột hơi sánh. Nhân thịt băm trộn mộc nhĩ, hành, nêm gia vị. Khi gói, trải lá, đổ lớp bột mỏng, cho nhân vào, gập lá tạo thành chiếc bánh thon dài. Buộc lạt rồi hấp chín. Khi ăn, bóc lá, bánh mềm, nhân thơm, có thể chấm nước mắm hoặc tương Bần.",
+      "en": "Soak rice, grind and strain to get batter; cook slightly until it thickens. Prepare filling of pork and wood ear seasoned with shallot and spices. Spoon a thin layer of batter onto leaves, add filling, fold to form a slim cake, tie, and steam until cooked. Serve with fish sauce or Ban soy paste (tương Bần)."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Hưng Yên",
+      "en": "Hung Yen"
+    },
+    "Best_time": {
+      "vi": "Ăn sáng, ăn vặt, dùng trong bữa nhẹ",
+      "en": "Breakfast, snack, or a light meal."
+    },
+    "Best_season": {
+      "vi": "Quanh năm",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Văn Giang là vùng ven đô giàu truyền thống ẩm thực, trong đó bánh tẻ/bánh cuốc là món dân dã xuất hiện lâu đời. Nhờ nguồn gạo và lá dong sẵn có, người dân duy trì nghề làm bánh, cung cấp cho chợ quê và người đi xa mua làm quà.",
+      "en": "Van Giang is a peri-urban area with a rich food tradition. Bánh tẻ/bánh cuốc has long been a rustic staple. With readily available rice and leaves, locals maintained the craft to supply village markets and travelers buying gifts."
+    },
+    "price_range": {
+      "vi": "3.000–6.000đ/chiếc",
+      "en": "3,000–6,000 VND/cake"
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh cuốc,bánh tẻ Văn Giang,bánh quê,Hưng Yên",
+      "en": "bánh cuốc,Van Giang bánh tẻ,countryside cake,Hung Yen"
+    },
+    "spicy_level": 0,
+    "satiety_level": 2
+  }
+]

@@ -4,6 +4,7 @@ import 'package:food_travel/l10n/app_localizations.dart';
 import '../../../controller/journey/journey_controller.dart';
 import '../../../models/journey/checkin_result.dart';
 import '../../../models/places_model.dart';
+import '../../../services/map/geocode_service.dart';
 import '../../../services/restaurants/place_review_service.dart';
 import '../../../views/journey/widgets2/checkin_success_dialog.dart';
 
@@ -23,6 +24,7 @@ class _PlaceStickyActionBarState extends State<PlaceStickyActionBar> {
 
   // Dung de lay placeId dong nhat voi collection places.
   final _reviewService = PlaceReviewService();
+  final _geocodeService = GeocodeService();
 
   bool _isCheckingIn = false;
 
@@ -57,6 +59,17 @@ class _PlaceStickyActionBarState extends State<PlaceStickyActionBar> {
       _isCheckingIn = true;
     });
 
+    final provinceResolution = await _geocodeService.resolveProvince34WithFallback(
+      lat: widget.place.lat,
+      lng: widget.place.lng,
+      fallbackTexts: [
+        widget.place.address,
+        widget.place.district,
+        widget.place.name,
+        widget.place.category,
+      ],
+    );
+
     // Controller se:
     // - tu lay GPS hien tai
     // - goi Cloud Function createCheckin
@@ -78,6 +91,8 @@ class _PlaceStickyActionBarState extends State<PlaceStickyActionBar> {
       placeType: widget.place.category?.trim().isNotEmpty == true
           ? widget.place.category!.trim()
           : null,
+      provinceCode: provinceResolution?.provinceCode,
+      provinceName: provinceResolution?.provinceName,
     );
 
     if (!mounted) return;

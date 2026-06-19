@@ -630,7 +630,8 @@ export const createCheckin = onCall(async (request) => {
   const checkinsCol = summaryRef.collection("checkins");
   const placeVisitsCol = summaryRef.collection("placeVisits");
   const dailyStatsCol = summaryRef.collection("dailyStats");
-  const provincesCol = summaryRef.collection("provinces");
+  const canonicalProvincesCol = summaryRef.collection("provinces_v2");
+  const legacyProvincesCol = summaryRef.collection("provinces");
   const badgesCol = summaryRef.collection("badges");
   const placeVisitRef = placeVisitsCol.doc(placeId);
   const todayDailyRef = dailyStatsCol.doc(getVietnamDateKey(new Date()));
@@ -698,7 +699,12 @@ export const createCheckin = onCall(async (request) => {
     }
 
     // Province bonus chi hoat dong neu client co cung cap province.
-    const provinceRef = provinceCode ? provincesCol.doc(provinceCode) : null;
+    const provinceRef = provinceCode ?
+      canonicalProvincesCol.doc(provinceCode) :
+      null;
+    const legacyProvinceRef = provinceCode ?
+      legacyProvincesCol.doc(provinceCode) :
+      null;
     const provinceSnap = provinceRef ? await tx.get(provinceRef) : null;
     const badgeSnaps = await Promise.all([
       tx.get(badgesCol.doc("first_bite")),
@@ -835,25 +841,30 @@ export const createCheckin = onCall(async (request) => {
         toInt(provinceData.uniquePlacesCount) + (isNewPlace ? 1 : 0);
       const provinceTotalPoints =
         toInt(provinceData.totalPoints) + pointsEarned;
+      const provincePayload = {
+        provinceCode,
+        provinceName: provinceName || toStringSafe(provinceData.provinceName),
+        checkinCount: provinceCheckinCount,
+        uniquePlacesCount: provinceUniquePlacesCount,
+        districtsCount: toInt(provinceData.districtsCount),
+        totalPoints: provinceTotalPoints,
+        isDiscovered: true,
+        firstCheckinAt:
+          provinceData.firstCheckinAt ??
+          admin.firestore.FieldValue.serverTimestamp(),
+        lastCheckinAt: admin.firestore.FieldValue.serverTimestamp(),
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      };
 
       tx.set(
         provinceRef,
-        {
-          provinceCode,
-          provinceName: provinceName || toStringSafe(provinceData.provinceName),
-          checkinCount: provinceCheckinCount,
-          uniquePlacesCount: provinceUniquePlacesCount,
-          districtsCount: toInt(provinceData.districtsCount),
-          totalPoints: provinceTotalPoints,
-          isDiscovered: true,
-          firstCheckinAt:
-            provinceData.firstCheckinAt ??
-            admin.firestore.FieldValue.serverTimestamp(),
-          lastCheckinAt: admin.firestore.FieldValue.serverTimestamp(),
-          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-        },
+        provincePayload,
         {merge: true},
       );
+
+      if (legacyProvinceRef) {
+        tx.set(legacyProvinceRef, provincePayload, {merge: true});
+      }
     }
 
     // Badge MVP.

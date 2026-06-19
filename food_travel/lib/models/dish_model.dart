@@ -36,6 +36,7 @@ class DishModel {
   final String provinceCode34;
   final String provinceName34;
   final String legacyProvinceCode;
+  final String legacyProvinceName;
 
   const DishModel({
     required this.id,
@@ -72,6 +73,7 @@ class DishModel {
     this.provinceCode34 = '',
     this.provinceName34 = '',
     this.legacyProvinceCode = '',
+    this.legacyProvinceName = '',
   });
 
   factory DishModel.fromDoc(DocumentSnapshot doc) {
@@ -91,6 +93,7 @@ class DishModel {
     final provinceCode34 = _asString(data['provinceCode34'] ?? '');
     final provinceName34 = _asString(data['provinceName34'] ?? '');
     final legacyProvinceCode = _asString(data['legacyProvinceCode'] ?? '');
+    final legacyProvinceName = _asString(data['legacyProvinceName'] ?? '');
     final provinceI18n = _toI18n(
       data['province_code'] ??
           data['provinceCode'] ??
@@ -149,7 +152,26 @@ class DishModel {
       provinceCode34: provinceCode34,
       provinceName34: provinceName34,
       legacyProvinceCode: legacyProvinceCode,
+      legacyProvinceName: legacyProvinceName,
     );
+  }
+
+  String get effectiveProvinceName {
+    if (provinceName34.trim().isNotEmpty) return provinceName34.trim();
+    if (provinceName.trim().isNotEmpty) return provinceName.trim();
+    return '';
+  }
+
+  String get effectiveLegacyProvinceName {
+    if (legacyProvinceName.trim().isNotEmpty) return legacyProvinceName.trim();
+    if (legacyProvinceCode.trim().isEmpty) return '';
+    return _humanizeProvinceCode(legacyProvinceCode);
+  }
+
+  String get legacyOriginBadge {
+    final name = effectiveLegacyProvinceName;
+    if (name.isEmpty) return '';
+    return '$name cũ';
   }
 
   String textByLang(Map<String, String> i18n, String languageCode) {
@@ -230,5 +252,17 @@ class DishModel {
       addIf(v);
     }
     return out;
+  }
+
+  static String _humanizeProvinceCode(String value) {
+    final normalized = _asString(value).replaceAll('_', ' ').replaceAll('-', ' ');
+    if (normalized.isEmpty) return '';
+    final words = normalized.split(RegExp(r'\s+'));
+    return words
+        .map((word) {
+          if (word.isEmpty) return word;
+          return word[0].toUpperCase() + word.substring(1);
+        })
+        .join(' ');
   }
 }

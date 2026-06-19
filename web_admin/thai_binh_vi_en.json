@@ -1,0 +1,702 @@
+[
+  {
+    "STT": 318,
+    "id": "canh_ca_quynh_coi",
+    "slug": "canh-ca-quynh-coi",
+    "Name": {
+      "vi": "Canh cá Quỳnh Côi",
+      "en": "Quynh Coi Fish Noodle Soup (Canh cá)"
+    },
+    "description": {
+      "vi": "Canh cá Quỳnh Côi là món đặc sản nổi tiếng nhất Thái Bình, bát canh nóng với cá rô đồng rút xương, chiên vàng rồi nấu cùng nước dùng ngọt thanh và bánh đa, rau xanh.",
+      "en": "Quynh Coi fish noodle soup is Thai Binh’s most famous specialty. A steaming bowl features deboned field perch (cá rô đồng) fried until golden, served in a clear, gently sweet broth with bánh đa (rice crackers) or noodles and greens."
+    },
+    "category": {
+      "vi": "Món nước – canh/bún cá",
+      "en": "Soup – fish noodle soup"
+    },
+    "ingredients": {
+      "vi": "Cá rô đồng, xương lợn (nấu nước dùng), bánh đa hoặc bún, rau cải, thì là, hành lá, gừng, nước mắm, muối, tiêu, ớt.",
+      "en": "Field perch (cá rô đồng), pork bones (for stock), bánh đa (rice crackers) or vermicelli, mustard greens, dill, scallions, ginger, fish sauce, salt, pepper, chili."
+    },
+    "instructions": {
+      "vi": "Cá rô làm sạch, luộc sơ, gỡ bỏ xương rồi chiên vàng. Hầm xương lợn lấy nước dùng, nêm gia vị. Cho bánh đa/bún vào tô, xếp cá chiên lên trên, chan nước canh nóng cùng rau cải, thì là, hành lá thái nhỏ, thêm gừng và ớt lát.",
+      "en": "Clean the fish, blanch briefly, debone, then fry until golden. Simmer pork bones to make a clear stock and season to taste. Place bánh đa/noodles in a bowl, top with fried fish, then ladle over hot broth. Add blanched greens, chopped dill and scallions, and finish with sliced ginger and chili."
+    },
+    "region_code": "Miền Bắc",
+    "province_code": "Thái Bình",
+    "Best_time": {
+      "vi": "Ăn sáng hoặc trưa, những ngày trời se lạnh rất hợp.",
+      "en": "Breakfast or lunch—especially good on cool days."
+    },
+    "Best_season": {
+      "vi": "Quanh năm, đặc biệt mùa đông – đầu xuân.",
+      "en": "Year-round, particularly in winter and early spring."
+    },
+    "origin_story": {
+      "vi": "Món canh cá gắn với vùng Quỳnh Côi, Thái Bình, nơi có đồng ruộng trù phú, cá rô đồng nhiều. Người dân sáng tạo nên bát canh cá dùng bánh đa thay vì bún, trở thành niềm tự hào ẩm thực quê lúa.",
+      "en": "The dish is associated with Quynh Coi (Thai Binh), an area of fertile rice fields rich in freshwater perch. Locals created this fish soup using bánh đa instead of vermicelli, and it became a culinary pride of the “rice-bowl” province."
+    },
+    "price_range": {
+      "vi": "25.000–35.000đ/tô tại quán địa phương",
+      "en": "About VND 25,000–35,000 per bowl at local shops."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "canh cá Quỳnh Côi,đặc sản Thái Bình,bánh đa cá,tô canh cá rô",
+      "en": "Quynh Coi fish noodle soup,Thai Binh specialty,banh da fish soup,field perch soup"
+    },
+    "spicy_level": 1,
+    "satiety_level": 4
+  },
+  {
+    "STT": 319,
+    "id": "banh_cay_lang_nguyen",
+    "slug": "banh-cay-lang-nguyen",
+    "Name": {
+      "vi": "Bánh cáy làng Nguyễn",
+      "en": "Lang Nguyen ‘Bánh Cáy’ (Sticky Rice Sweet)"
+    },
+    "description": {
+      "vi": "Bánh cáy làng Nguyễn là đặc sản nổi tiếng nhất nhì Thái Bình, là loại bánh nếp ngọt có nhiều màu, dẻo giòn, thơm mùi gừng, vừng, lạc, thường ăn cùng trà nóng.",
+      "en": "Lang Nguyen bánh cáy is one of Thai Binh’s best-known specialties. This colorful sweet is made from glutinous rice and malt syrup, with ginger, sesame, peanuts, coconut, and candied winter melon—chewy yet lightly crisp and perfect with hot tea."
+    },
+    "category": {
+      "vi": "Bánh nếp – món ngọt, ăn vặt, quà tặng",
+      "en": "Glutinous rice sweet – snack/dessert, gift"
+    },
+    "ingredients": {
+      "vi": "Gạo nếp cái hoa vàng, mạch nha, đường, vừng, lạc, dừa nạo, mứt bí, gừng, gấc, dành dành (tạo màu).",
+      "en": "Glutinous rice (nếp cái hoa vàng), malt syrup, sugar, sesame, peanuts, shredded coconut, candied winter melon, ginger; natural colorings such as gac and gardenia fruit."
+    },
+    "instructions": {
+      "vi": "Gạo nếp đồ chín, giã dẻo rồi thái thành hạt nhỏ. Trộn với mạch nha, đường, vừng, lạc rang, mứt bí, dừa, gừng, các phần nếp màu khác nhau. Hỗn hợp được nén trong khuôn, để nguội rồi cắt thành thanh bánh cáy.",
+      "en": "Steam glutinous rice, pound until elastic, then cut into small bits. Mix with malt syrup and sugar, add toasted sesame and peanuts, candied winter melon, coconut, ginger, and colored rice bits. Press the mixture firmly into a mold, let cool, then cut into bars."
+    },
+    "region_code": "Miền Bắc",
+    "province_code": "Thái Bình",
+    "Best_time": {
+      "vi": "Ăn vặt, tráng miệng, nhâm nhi cùng trà nóng.",
+      "en": "Snack or dessert; best enjoyed with hot tea."
+    },
+    "Best_season": {
+      "vi": "Quanh năm; thường được mua nhiều dịp lễ tết, làm quà.",
+      "en": "Year-round; especially popular as a gift during holidays and Tet."
+    },
+    "origin_story": {
+      "vi": "Bánh cáy có nguồn gốc từ làng Nguyễn (Nguyên Xá, Đông Hưng). Tương truyền bánh từng là đặc sản dùng để tiến vua, về sau trở thành món quà quê tiêu biểu của Thái Bình.",
+      "en": "Bánh cáy originated in Lang Nguyen (Nguyen Xa, Dong Hung). Legend says it was once offered to the royal court, and later became a signature countryside gift of Thai Binh."
+    },
+    "price_range": {
+      "vi": "20.000–60.000đ/hộp tùy trọng lượng",
+      "en": "About VND 20,000–60,000 per box, depending on weight."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh cáy làng Nguyễn,quà quê Thái Bình,bánh nếp ngọt,đặc sản tiến vua",
+      "en": "Lang Nguyen banh cay,Thai Binh gift,glutinous rice sweet,royal-offering specialty"
+    },
+    "spicy_level": 0,
+    "satiety_level": 2
+  },
+  {
+    "STT": 320,
+    "id": "banh_nghe_thai_binh",
+    "slug": "banh-nghe-thai-binh",
+    "Name": {
+      "vi": "Bánh nghệ Thái Bình",
+      "en": "Thai Binh Turmeric Steamed Cake (Bánh nghệ)"
+    },
+    "description": {
+      "vi": "Bánh nghệ là món bánh dân dã của vùng Tiền Hải – Thái Bình, có màu vàng bắt mắt từ nghệ tươi, ăn mềm, thơm, hơi béo và ấm bụng.",
+      "en": "Bánh nghệ is a humble cake from Tien Hai (Thai Binh), notable for its bright yellow color from fresh turmeric. Soft, fragrant, and lightly rich, it’s a warm, filling bite that locals love for breakfast or as an afternoon snack."
+    },
+    "category": {
+      "vi": "Bánh mặn dân dã – ăn sáng, ăn vặt",
+      "en": "Rustic savory cake – breakfast/snack"
+    },
+    "ingredients": {
+      "vi": "Gạo tẻ, nghệ tươi, hành lá, tóp mỡ hoặc mỡ lợn, hành khô, gia vị (muối, nước mắm, tiêu).",
+      "en": "Non-glutinous rice flour, fresh turmeric, scallions, crispy pork fat or lard, fried shallots, seasonings (salt, fish sauce, pepper)."
+    },
+    "instructions": {
+      "vi": "Nghệ luộc chín, giã lấy nước màu vàng trộn với bột gạo. Đổ bột vào khuôn hấp chín, ở giữa có nhân làm từ hành phi, tóp mỡ hoặc mỡ rán. Bánh chín cắt miếng, ăn nóng rất thơm.",
+      "en": "Boil turmeric, pound and strain to obtain a yellow liquid. Mix the turmeric water with rice flour to form a batter. Pour into molds and steam until set, with a center filling of fried shallots and crispy pork fat/lard. Cut into pieces and serve hot."
+    },
+    "region_code": "Miền Bắc",
+    "province_code": "Thái Bình",
+    "Best_time": {
+      "vi": "Ăn sáng, ăn nhẹ buổi chiều; hợp ngày trời mát, hơi lạnh.",
+      "en": "Breakfast or a light afternoon meal; great in cool weather."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Bánh nghệ gắn với vùng Tiền Hải và một số huyện ven biển Thái Bình, tận dụng nghệ tươi và gạo tẻ địa phương tạo thành món bánh bình dị nhưng độc đáo.",
+      "en": "Associated with Tien Hai and some coastal districts of Thai Binh, bánh nghệ makes use of local rice and fresh turmeric to create a simple yet distinctive village cake."
+    },
+    "price_range": {
+      "vi": "8.000–15.000đ/chiếc tại chợ quê",
+      "en": "About VND 8,000–15,000 each at local markets."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh nghệ Thái Bình,bánh dân dã,Tiền Hải,ăn sáng quê lúa",
+      "en": "Thai Binh banh nghe,Tien Hai cake,rustic breakfast,Turmeric steamed cake"
+    },
+    "spicy_level": 0,
+    "satiety_level": 3
+  },
+  {
+    "STT": 321,
+    "id": "banh_gai_ai_ong",
+    "slug": "banh-gai-ai-ong",
+    "Name": {
+      "vi": "Bánh gai Đại Đồng",
+      "en": "Dai Dong Ramie Leaf Cake (Bánh gai)"
+    },
+    "description": {
+      "vi": "Bánh gai Đại Đồng là món bánh nếp nổi tiếng của huyện Vũ Thư, Thái Bình, vỏ bánh đen óng từ lá gai, nhân đậu xanh dừa béo, thơm mùi lá chuối.",
+      "en": "Dai Dong bánh gai is a well-known specialty of Vu Thu District, Thai Binh. The glossy black glutinous-rice skin is colored with ramie leaves (lá gai), while the filling of mung bean and coconut is rich and fragrant, wrapped in dried banana leaves."
+    },
+    "category": {
+      "vi": "Bánh nếp – món ngọt, quà tặng",
+      "en": "Glutinous rice cake – sweet gift"
+    },
+    "ingredients": {
+      "vi": "Gạo nếp, lá gai, đậu xanh, dừa nạo, đường, mỡ lợn hoặc dầu, vừng, lá chuối khô để gói.",
+      "en": "Glutinous rice, ramie leaves, mung beans, shredded coconut, sugar, lard or oil, sesame seeds, dried banana leaves for wrapping."
+    },
+    "instructions": {
+      "vi": "Lá gai luộc chín, xay nhuyễn, trộn với bột nếp và đường làm vỏ. Nhân gồm đậu xanh đồ chín, giã nhuyễn với đường, dừa, mỡ. Nặn bánh, gói trong lá chuối, buộc lạt rồi đem đồ chín.",
+      "en": "Boil ramie leaves until soft, then blend into a paste and mix with glutinous rice flour and sugar for the dough. Steam mung beans, mash and mix with sugar, coconut, and a little lard/oil for the filling. Shape cakes, wrap tightly in banana leaves, tie with string, then steam until cooked."
+    },
+    "region_code": "Miền Bắc",
+    "province_code": "Thái Bình",
+    "Best_time": {
+      "vi": "Ăn vặt, tráng miệng, mua làm quà sau chuyến đi.",
+      "en": "Snack/dessert; commonly bought as a gift."
+    },
+    "Best_season": {
+      "vi": "Quanh năm; nhất là dịp lễ hội, tết.",
+      "en": "Year-round, especially during festivals and Tet."
+    },
+    "origin_story": {
+      "vi": "Làng Đại Đồng (Vũ Thư) nổi tiếng hàng trăm năm với nghề làm bánh gai. Bánh gai Đại Đồng đã trở thành thương hiệu gắn liền với ẩm thực Thái Bình.",
+      "en": "Dai Dong village (Vu Thu) has been famous for making bánh gai for hundreds of years. The cake became a recognized brand closely associated with Thai Binh cuisine."
+    },
+    "price_range": {
+      "vi": "10.000–20.000đ/chiếc",
+      "en": "About VND 10,000–20,000 per cake."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh gai Đại Đồng,bánh nếp lá gai,đặc sản Vũ Thư,quà Thái Bình",
+      "en": "Dai Dong banh gai,ramie leaf cake,VU Thu specialty,Thai Binh gift"
+    },
+    "spicy_level": 0,
+    "satiety_level": 3
+  },
+  {
+    "STT": 322,
+    "id": "banh_cuon_nhan_tom_diem_ien",
+    "slug": "banh-cuon-nhan-tom-diem-ien",
+    "Name": {
+      "vi": "Bánh cuốn nhân tôm Diêm Điền",
+      "en": "Diem Dien Shrimp-Filled Rice Rolls (Bánh cuốn)"
+    },
+    "description": {
+      "vi": "Bánh cuốn Diêm Điền có lớp vỏ mỏng mềm từ bột gạo, nhân tôm biển tươi xào hành, ăn kèm nước mắm chua cay và rau sống, mang hương vị vùng biển Thái Bình.",
+      "en": "Diem Dien bánh cuốn features thin, silky steamed rice sheets filled with sautéed sea shrimp. Served with a tangy sweet–spicy fish sauce and fresh herbs, it carries a distinct coastal flavor of Thai Binh."
+    },
+    "category": {
+      "vi": "Món nước – bánh cuốn nhân tôm",
+      "en": "Steamed rice rolls – shrimp filling"
+    },
+    "ingredients": {
+      "vi": "Bột gạo, tôm biển bóc vỏ, hành khô, mộc nhĩ (tùy chọn), nước mắm, chanh, ớt, tỏi, rau sống.",
+      "en": "Rice batter (rice flour + water), peeled sea shrimp, shallots, wood ear mushrooms (optional), fish sauce, lime, chili, garlic, fresh herbs/greens."
+    },
+    "instructions": {
+      "vi": "Pha bột gạo với nước, tráng mỏng trên nồi hơi. Tôm biển xào với hành phi, gia vị làm nhân. Cuốn tôm trong lớp bánh mỏng, cắt khúc, ăn kèm nước mắm pha chua ngọt và rau sống.",
+      "en": "Mix rice batter and steam thin sheets over a cloth-covered steamer. Sauté shrimp with fried shallots and season lightly. Roll shrimp filling in the rice sheet, cut into segments, and serve with sweet–sour fish sauce with garlic and chili, plus fresh greens."
+    },
+    "region_code": "Miền Bắc",
+    "province_code": "Thái Bình",
+    "Best_time": {
+      "vi": "Ăn sáng hoặc tối nhẹ, nhất là khi đi biển Diêm Điền.",
+      "en": "Breakfast or a light dinner, especially when visiting Diem Dien."
+    },
+    "Best_season": {
+      "vi": "Quanh năm; mùa biển đẹp càng đông khách.",
+      "en": "Year-round; busier during the beach-travel season."
+    },
+    "origin_story": {
+      "vi": "Món bánh cuốn nhân tôm gắn với thị trấn Diêm Điền, huyện Thái Thụy – nơi có nguồn tôm cá dồi dào, tạo nên nét riêng so với bánh cuốn các vùng khác.",
+      "en": "This shrimp-filled rice roll is associated with Diem Dien town (Thai Thuy District), where plentiful seafood gives the dish a distinctive identity compared with rice rolls in other regions."
+    },
+    "price_range": {
+      "vi": "25.000–40.000đ/phần",
+      "en": "About VND 25,000–40,000 per serving."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh cuốn Diêm Điền,bánh cuốn nhân tôm,đặc sản biển Thái Bình",
+      "en": "Diem Dien banh cuon,shrimp rice rolls,Thai Binh coastal specialty"
+    },
+    "spicy_level": 1,
+    "satiety_level": 3
+  },
+  {
+    "STT": 323,
+    "id": "goi_nhech_thai_binh",
+    "slug": "goi-nhech-thai-binh",
+    "Name": {
+      "vi": "Gỏi nhệch Thái Bình",
+      "en": "Thai Binh ‘Nhệch’ Fish Salad (Gỏi nhệch)"
+    },
+    "description": {
+      "vi": "Gỏi nhệch là món đặc sản trứ danh vùng biển Thái Thụy – Thái Bình, làm từ cá nhệch tươi trộn thính, ăn kèm lá sung, rau sống và chấm chẻo xương cá đậm đà.",
+      "en": "Gỏi nhệch is a celebrated specialty of the Thai Thuy coastal area in Thai Binh. Fresh nhệch (a slender brackish-water fish similar to eel) is sliced and mixed with roasted rice powder (thính), aromatics, and herbs, then eaten with fig leaves and a robust warm dipping sauce (chẻo) made from the pounded fish bones."
+    },
+    "category": {
+      "vi": "Món gỏi – hải sản sống/trộn thính",
+      "en": "Salad/gỏi – seafood mixed with roasted rice powder"
+    },
+    "ingredients": {
+      "vi": "Cá nhệch tươi, thính gạo rang, riềng, tỏi, ớt, lá chanh, lá sung, rau thơm, mẻ, xương nhệch nấu chẻo, gia vị (muối, nước mắm).",
+      "en": "Fresh nhệch fish, toasted rice powder (thính), galangal, garlic, chili, kaffir lime leaves, fig leaves, mixed herbs, fermented rice (mẻ) (optional), fish sauce, salt; nhệch bones for making chẻo dipping sauce."
+    },
+    "instructions": {
+      "vi": "Cá nhệch làm sạch nhớt, lọc bỏ xương, thái lát mỏng, trộn thính, riềng, tỏi, ớt. Da chiên giòn để ăn kèm. Xương giã nhỏ, nấu với gia vị làm chẻo chấm. Khi ăn cuốn gỏi với lá sung, rau sống, chấm chẻo nóng.",
+      "en": "Clean the fish thoroughly to remove slime, fillet and debone, then slice thin. Toss with thính, minced galangal, garlic, chili, and shredded kaffir lime leaves. Fry the skin until crisp to serve alongside. Pound the bones, simmer with seasonings (and optionally mẻ) to make a warm, savory chẻo dipping sauce. Wrap the salad with fig leaves and herbs and dip in hot chẻo."
+    },
+    "region_code": "Miền Bắc",
+    "province_code": "Thái Bình",
+    "Best_time": {
+      "vi": "Bữa trưa, tối; món nhậu hoặc món đặc sản ăn chung nhiều người.",
+      "en": "Lunch or dinner; great as a shared specialty and drinking dish."
+    },
+    "Best_season": {
+      "vi": "Mùa biển nhệch nhiều, nhưng các quán đặc sản có quanh năm.",
+      "en": "Best when nhệch is in season, though specialty restaurants often serve it year-round."
+    },
+    "origin_story": {
+      "vi": "Gỏi nhệch gắn liền với cư dân vùng biển Thái Thụy, tận dụng loài cá nhệch thân dài sống nhiều ở khu vực ven biển, dần thành món đặc sản nổi tiếng cả nước.",
+      "en": "Thai Thuy coastal communities made use of abundant nhệch in brackish waters. Over time, the roasted-rice-powder salad and its distinctive chẻo dip became a famous regional specialty recognized nationwide."
+    },
+    "price_range": {
+      "vi": "80.000–120.000đ/đĩa",
+      "en": "About VND 80,000–120,000 per plate."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "gỏi nhệch Thái Bình,đặc sản Thái Thụy,gỏi cá thính,chẻo nhệch",
+      "en": "Thai Binh goi nhech,Thai Thuy specialty,thinh fish salad,cheo dipping sauce"
+    },
+    "spicy_level": 2,
+    "satiety_level": 3
+  },
+  {
+    "STT": 324,
+    "id": "nom_sua_thai_thuy",
+    "slug": "nom-sua-thai-thuy",
+    "Name": {
+      "vi": "Nộm sứa Thái Thụy",
+      "en": "Thai Thuy Jellyfish Salad (Nộm sứa)"
+    },
+    "description": {
+      "vi": "Nộm sứa Thái Thụy là món ăn mát lành, giòn sần sật, kết hợp sứa biển với rau thơm, lạc rang và nước trộn chua ngọt, rất hợp ăn ngày hè.",
+      "en": "Thai Thuy jellyfish salad is a cool, crunchy dish—refreshingly crisp and lightly tangy. Blanched jellyfish is mixed with herbs and vegetables and dressed in a sweet-and-sour fish sauce, topped with roasted peanuts—perfect for hot summer days."
+    },
+    "category": {
+      "vi": "Món nộm/gỏi – hải sản",
+      "en": "Salad/gỏi – seafood"
+    },
+    "ingredients": {
+      "vi": "Sứa sơ chế, cà rốt, dưa chuột, hành tây, rau thơm, lạc rang, nước mắm, chanh/giấm, đường, tỏi, ớt.",
+      "en": "Prepared jellyfish, carrot, cucumber, onion, mixed herbs, roasted peanuts, fish sauce, lime juice or vinegar, sugar, garlic, chili."
+    },
+    "instructions": {
+      "vi": "Sứa rửa sạch, chần nhanh nếu cần rồi để ráo, cắt miếng vừa ăn. Trộn cùng rau, cà rốt, dưa chuột thái sợi, hành tây. Pha nước mắm chua ngọt tỏi ớt, rưới vào, trộn đều, rắc lạc rang và rau thơm.",
+      "en": "Rinse jellyfish well; blanch briefly if needed, drain, and cut into bite-size pieces. Toss with julienned carrot and cucumber, sliced onion, and herbs. Mix a sweet–sour fish sauce with garlic and chili, pour over, toss well, then finish with roasted peanuts and extra herbs."
+    },
+    "region_code": "Miền Bắc",
+    "province_code": "Thái Bình",
+    "Best_time": {
+      "vi": "Ăn khai vị, ăn kèm bữa chính, đặc biệt trong những ngày nóng.",
+      "en": "Appetizer or side dish, especially in hot weather."
+    },
+    "Best_season": {
+      "vi": "Mùa hè, mùa du lịch biển.",
+      "en": "Summer and the beach-travel season."
+    },
+    "origin_story": {
+      "vi": "Thái Thụy là huyện ven biển của Thái Bình, có nguồn hải sản phong phú. Nộm sứa vừa dễ ăn vừa phù hợp thời tiết nóng nên trở thành món được nhiều du khách ưa chuộng.",
+      "en": "Thai Thuy is a coastal district with abundant seafood. This easy-to-eat, cooling salad suits the region’s hot days and became a popular choice among visitors."
+    },
+    "price_range": {
+      "vi": "50.000–90.000đ/đĩa",
+      "en": "About VND 50,000–90,000 per plate."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "nộm sứa Thái Thụy,gỏi sứa,đặc sản biển Thái Bình,món mát ngày hè",
+      "en": "Thai Thuy jellyfish salad,jellyfish goi,Thai Binh coastal specialty,cooling summer dish"
+    },
+    "spicy_level": 1,
+    "satiety_level": 2
+  },
+  {
+    "STT": 325,
+    "id": "bun_bung_thai_binh",
+    "slug": "bun-bung-thai-binh",
+    "Name": {
+      "vi": "Bún bung Thái Bình",
+      "en": "Thai Binh Bún Bung"
+    },
+    "description": {
+      "vi": "Bún bung Thái Bình là món bún nước với nước dùng trong, ngọt từ xương, ăn kèm chân giò, mọc, hoa chuối thái nhỏ – điểm khác biệt so với bún bung nơi khác.",
+      "en": "Thai Binh bún bung is a hearty noodle soup with a clear, bone-sweet broth, served with pork hock and meatballs (mọc). A notable local twist is the use of finely shredded banana blossom, giving a pleasant crunch and aroma."
+    },
+    "category": {
+      "vi": "Món nước – bún",
+      "en": "Noodle soup – bún"
+    },
+    "ingredients": {
+      "vi": "Bún tươi, chân giò lợn, xương lợn, mọc (giò sống), hoa chuối, cà chua, hành lá, thì là, gia vị.",
+      "en": "Fresh vermicelli, pork hock, pork bones, meatballs (giò sống), banana blossom, tomatoes, scallions, dill, seasonings."
+    },
+    "instructions": {
+      "vi": "Hầm xương và chân giò lấy nước dùng, nêm gia vị. Viên mọc cho vào nồi nước dùng. Hoa chuối thái mỏng ngâm nước chua cho bớt chát. Khi ăn, cho bún vào bát, xếp chân giò, mọc, hoa chuối, chan nước dùng nóng, rắc hành thì là.",
+      "en": "Simmer pork bones and pork hock to make the broth; season to taste. Form meatballs and cook them in the broth. Slice banana blossom thinly and soak in acidulated water to reduce astringency. To serve, place vermicelli in a bowl, add pork hock, meatballs, and banana blossom, ladle over hot broth, and sprinkle with scallions and dill."
+    },
+    "region_code": "Miền Bắc",
+    "province_code": "Thái Bình",
+    "Best_time": {
+      "vi": "Ăn sáng hoặc trưa; món nước no bụng, dễ ăn.",
+      "en": "Breakfast or lunch; filling yet easy to eat."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Bún bung có ở nhiều tỉnh phía Bắc, nhưng phiên bản Thái Bình dùng hoa chuối thay dọc mùng, tạo hương vị riêng cho món ăn quê lúa.",
+      "en": "Bún bung exists across northern Vietnam, but Thai Binh’s version uses banana blossom instead of dọc mùng (taro stem), creating a distinctive local flavor in the “rice-bowl” region."
+    },
+    "price_range": {
+      "vi": "25.000–35.000đ/bát",
+      "en": "About VND 25,000–35,000 per bowl."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bún bung Thái Bình,bún chân giò hoa chuối,đặc sản quê lúa",
+      "en": "Thai Binh bun bung,pork hock vermicelli,banana blossom noodle soup,rice-bowl province specialty"
+    },
+    "spicy_level": 1,
+    "satiety_level": 4
+  },
+  {
+    "STT": 326,
+    "id": "gio_cha_tien_hai",
+    "slug": "gio-cha-tien-hai",
+    "Name": {
+      "vi": "Giò chả Tiền Hải",
+      "en": "Tien Hai Pork Sausage & Ham (Giò chả)"
+    },
+    "description": {
+      "vi": "Giò chả Tiền Hải nổi tiếng nhờ dùng thịt heo tươi nóng, quết nhuyễn với nước mắm Diêm Điền, tạo nên cây giò dai giòn, thơm đậm đà.",
+      "en": "Tien Hai giò chả is famous for using freshly butchered pork, pounded smooth and seasoned with Diem Dien fish sauce, producing a springy, fragrant, savory loaf. It’s a staple for family feasts and a popular gift."
+    },
+    "category": {
+      "vi": "Giò chả – món mặn ăn kèm, quà biếu",
+      "en": "Pork sausage/ham – side dish, gift"
+    },
+    "ingredients": {
+      "vi": "Thịt mông heo tươi, mỡ, nước mắm ngon, muối, tiêu, lá chuối, lạt buộc.",
+      "en": "Fresh lean pork (ham), pork fat, quality fish sauce, salt, pepper, banana leaves, string."
+    },
+    "instructions": {
+      "vi": "Thịt heo nóng vừa mổ được lọc sạch, xay hoặc giã nhuyễn với gia vị, nước mắm. Gói chặt trong lá chuối thành cây giò và đem hấp chín. Để nguội rồi thái khoanh.",
+      "en": "Trim and mince/hammer fresh pork with seasonings and fish sauce until very smooth and elastic. Wrap tightly in banana leaves into a log and steam until cooked. Cool, then slice into rounds."
+    },
+    "region_code": "Miền Bắc",
+    "province_code": "Thái Bình",
+    "Best_time": {
+      "vi": "Ăn kèm cơm, xôi, bánh chưng; xuất hiện nhiều trong cỗ cưới hỏi, lễ tết.",
+      "en": "Served with rice, sticky rice, or bánh chưng; common at weddings, holidays, and Tet."
+    },
+    "Best_season": {
+      "vi": "Quanh năm; cao điểm dịp tết.",
+      "en": "Year-round; peak demand around Tet."
+    },
+    "origin_story": {
+      "vi": "Tiền Hải là huyện ven biển Thái Bình, nơi có nghề làm giò chả lâu đời. Kết hợp thịt heo tươi với nước mắm địa phương tạo nên thương hiệu giò chả Tiền Hải.",
+      "en": "Tien Hai is a coastal district with a long tradition of making giò chả. Combining fresh pork with local fish sauce helped build the reputation of Tien Hai sausage as a Thai Binh specialty."
+    },
+    "price_range": {
+      "vi": "120.000–180.000đ/kg",
+      "en": "About VND 120,000–180,000 per kg."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "giò chả Tiền Hải,đặc sản Thái Bình,giò chả ngon làm quà",
+      "en": "Tien Hai gio cha,Thai Binh specialty,traditional Vietnamese pork sausage,gift"
+    },
+    "spicy_level": 0,
+    "satiety_level": 4
+  },
+  {
+    "STT": 327,
+    "id": "nuoc_mam_diem_ien",
+    "slug": "nuoc-mam-diem-ien",
+    "Name": {
+      "vi": "Nước mắm Diêm Điền",
+      "en": "Diem Dien Fish Sauce (Nước mắm)"
+    },
+    "description": {
+      "vi": "Nước mắm Diêm Điền là đặc sản nước chấm nổi tiếng của Thái Bình, làm từ cá biển ủ chượp lâu ngày, cho vị mặn ngọt hài hòa, thơm dịu.",
+      "en": "Diem Dien fish sauce is a well-known Thai Binh condiment, made by fermenting sea fish with salt for many months. The result is a balanced salty-sweet taste and a gentle, aromatic fragrance—excellent for dipping and cooking."
+    },
+    "category": {
+      "vi": "Gia vị – nước chấm",
+      "en": "Seasoning – fish sauce"
+    },
+    "ingredients": {
+      "vi": "Cá biển (thường là cá nục, cá cơm, cá tạp nhỏ), muối hạt, nước sạch, thùng/chum ủ chượp.",
+      "en": "Sea fish (commonly scad, anchovy, or small mixed fish), coarse salt, clean water; fermentation barrels/jars."
+    },
+    "instructions": {
+      "vi": "Cá trộn muối theo tỉ lệ phù hợp, cho vào chum/thùng ủ nắng nhiều tháng đến khi chín mắm. Lọc, kéo rút nước mắm cốt, có thể pha thêm nước muối chín để tạo các độ đạm khác nhau.",
+      "en": "Mix fish and salt at the proper ratio, pack into barrels/jars, and ferment under the sun for many months until fully matured. Draw off and filter the first-press fish sauce (nước mắm cốt). Adjust salinity/strength by blending with matured brine to create different grades."
+    },
+    "region_code": "Miền Bắc",
+    "province_code": "Thái Bình",
+    "Best_time": {
+      "vi": "Dùng hàng ngày làm nước chấm, nêm nấu.",
+      "en": "Everyday use for dipping and seasoning dishes."
+    },
+    "Best_season": {
+      "vi": "Quanh năm; mùa cá biển rộ giúp chất lượng mắm tốt hơn.",
+      "en": "Year-round; peak fishing seasons often yield better raw materials."
+    },
+    "origin_story": {
+      "vi": "Diêm Điền là thị trấn cảng biển của huyện Thái Thụy. Người dân nơi đây có truyền thống làm nước mắm lâu đời, sản phẩm được bán khắp vùng đồng bằng Bắc Bộ.",
+      "en": "Diem Dien is a seaport town of Thai Thuy District. Locals have made fish sauce for generations, supplying products throughout the Red River Delta region."
+    },
+    "price_range": {
+      "vi": "50.000–120.000đ/lít tùy độ đạm và thương hiệu",
+      "en": "About VND 50,000–120,000 per liter, depending on protein level and brand."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "nước mắm Diêm Điền,nước mắm truyền thống,đặc sản Thái Bình",
+      "en": "Diem Dien fish sauce,traditional fish sauce,Thai Binh condiment"
+    },
+    "spicy_level": 0,
+    "satiety_level": 1
+  },
+  {
+    "STT": 328,
+    "id": "nem_chao_vi_thuy",
+    "slug": "nem-chao-vi-thuy",
+    "Name": {
+      "vi": "Nem chạo Vị Thủy",
+      "en": "Vi Thuy ‘Nem Chạo’ (Roasted-Rice Pork Salad)"
+    },
+    "description": {
+      "vi": "Nem chạo Vị Thủy là món nem sống trộn thính nổi tiếng của Thái Bình, ăn kèm lá sung và rau sống, chấm nước mắm tỏi ớt rất đưa cơm và đưa rượu.",
+      "en": "Vi Thuy nem chạo is a well-known Thai Binh specialty: cooked pork and pork skin are finely chopped and mixed with toasted rice powder (thính), garlic, chili, and lime-leaf strips. Eaten with fig leaves and herbs, it’s both rice-friendly and a classic drinking dish."
+    },
+    "category": {
+      "vi": "Món nem sống – gỏi thịt trộn thính",
+      "en": "Pork salad – thính-mixed ‘nem’"
+    },
+    "ingredients": {
+      "vi": "Thịt lợn nạc và bì lợn, thính gạo rang, tỏi, ớt, lá chanh, lá sung, rau thơm, nước mắm, muối.",
+      "en": "Lean pork and pork skin, toasted rice powder (thính), garlic, chili, kaffir lime leaves (or lime-leaf strips), fig leaves, herbs, fish sauce, salt."
+    },
+    "instructions": {
+      "vi": "Thịt và bì lợn luộc chín, thái nhỏ, trộn với thính gạo, tỏi, ớt, lá chanh thái sợi, nêm gia vị. Để nem ngấm vài giờ. Khi ăn, cuốn nem với lá sung, rau sống, chấm nước mắm tỏi ớt.",
+      "en": "Boil pork and pork skin until cooked, then chop finely. Toss with toasted rice powder, minced garlic and chili, and thinly sliced lime leaves; season to taste. Let sit for a few hours to absorb flavors. Serve wrapped in fig leaves and herbs, dipped in garlic-chili fish sauce."
+    },
+    "region_code": "Miền Bắc",
+    "province_code": "Thái Bình",
+    "Best_time": {
+      "vi": "Bữa nhậu, liên hoan; có thể ăn kèm cơm.",
+      "en": "Parties and drinking sessions; also eaten with rice."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Vị Thủy (ở Thái Bình) nổi tiếng với nghề làm nem chạo. Món nem xuất hiện thường xuyên trong cỗ bàn, đám cưới, lễ hội của người dân địa phương.",
+      "en": "Vi Thuy (Thai Binh) is known for making nem chạo, a dish that appears frequently at weddings, festivals, and communal feasts in the area."
+    },
+    "price_range": {
+      "vi": "80.000–150.000đ/phần hoặc hộp nem chạo",
+      "en": "About VND 80,000–150,000 per portion/box, depending on size."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "nem chạo Vị Thủy,nem thính Thái Bình,món nhậu miền Bắc",
+      "en": "Vi Thuy nem chao,Thai Binh nem thinh,drinking food,northern Vietnam specialty"
+    },
+    "spicy_level": 2,
+    "satiety_level": 3
+  },
+  {
+    "STT": 329,
+    "id": "cha_ruoi_kien_xuong",
+    "slug": "cha-ruoi-kien-xuong",
+    "Name": {
+      "vi": "Chả rươi Kiến Xương",
+      "en": "Kien Xuong Sandworm Fritter (Chả rươi)"
+    },
+    "description": {
+      "vi": "Chả rươi Kiến Xương tận dụng rươi từ vùng nước lợ để làm món chả chiên vàng, thơm mùi thì là, vỏ quýt, trứng, béo bùi khó quên.",
+      "en": "Kien Xuong chả rươi is made from rươi (a seasonal brackish-water sandworm) mixed with egg, dill, scallions, and finely shredded tangerine peel, then pan-fried until golden. Rich, fragrant, and unforgettable, it’s a prized autumn delicacy."
+    },
+    "category": {
+      "vi": "Món chiên – chả rươi",
+      "en": "Fried dish – rươi fritter"
+    },
+    "ingredients": {
+      "vi": "Rươi tươi, trứng gà/vịt, thì là, hành lá, vỏ quýt thái nhỏ, nước mắm, hạt tiêu, dầu ăn.",
+      "en": "Fresh rươi, chicken/duck eggs, dill, scallions, finely shredded tangerine peel, fish sauce, black pepper, cooking oil."
+    },
+    "instructions": {
+      "vi": "Rươi làm sạch, trộn với trứng, thì là, hành lá, vỏ quýt, gia vị. Múc từng thìa hỗn hợp vào chảo dầu nóng, chiên đến khi vàng đều hai mặt. Ăn nóng với cơm hoặc bún.",
+      "en": "Clean rươi carefully. Mix with eggs, dill, scallions, tangerine peel, and seasonings. Spoon the mixture into hot oil and pan-fry until golden on both sides. Serve hot with rice or vermicelli."
+    },
+    "region_code": "Miền Bắc",
+    "province_code": "Thái Bình",
+    "Best_time": {
+      "vi": "Mùa rươi, thường vào cuối thu; ăn nóng trong bữa trưa, tối.",
+      "en": "During rươi season (late autumn); best eaten hot at lunch or dinner."
+    },
+    "Best_season": {
+      "vi": "Mùa rươi (tháng 9–11 âm lịch).",
+      "en": "Rươi season (around the 9th–11th lunar months)."
+    },
+    "origin_story": {
+      "vi": "Kiến Xương là huyện có nhiều khu vực nước lợ, rươi sinh sôi dồi dào. Người dân chế biến thành chả rươi – món đặc sản theo mùa rất được săn đón.",
+      "en": "Kien Xuong has brackish-water areas where rươi thrive. Locals turned this seasonal ingredient into chả rươi, a highly sought-after specialty each year."
+    },
+    "price_range": {
+      "vi": "50.000–120.000đ/phần chả rươi tùy lượng rươi và nhà hàng",
+      "en": "About VND 50,000–120,000 per portion, depending on rươi quantity and venue."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "chả rươi Kiến Xương,rươi Thái Bình,đặc sản theo mùa",
+      "en": "Kien Xuong cha ruoi,Thai Binh ruoi,seasonal specialty,autumn delicacy"
+    },
+    "spicy_level": 1,
+    "satiety_level": 3
+  },
+  {
+    "STT": 330,
+    "id": "ca_nuong_thai_xuyen",
+    "slug": "ca-nuong-thai-xuyen",
+    "Name": {
+      "vi": "Cá nướng Thái Xuyên",
+      "en": "Thai Xuyen Banana-Leaf Grilled Fish"
+    },
+    "description": {
+      "vi": "Cá nướng Thái Xuyên là món cá chép hoặc cá trắm tẩm ướp riềng, sả, nghệ, gói lá chuối nướng than, thịt cá thơm, ngọt và ít tanh.",
+      "en": "Thai Xuyen grilled fish is typically carp or grass carp marinated with galangal, lemongrass, turmeric, and spices, wrapped in banana leaves, and grilled over charcoal. The fish turns fragrant and sweet with minimal fishiness."
+    },
+    "category": {
+      "vi": "Món nướng – cá nướng lá chuối",
+      "en": "Grilled dish – banana-leaf grilled fish"
+    },
+    "ingredients": {
+      "vi": "Cá trắm/cá chép, riềng, sả, nghệ, tỏi, ớt, lá chuối, muối, nước mắm, dầu ăn.",
+      "en": "Grass carp/carp, galangal, lemongrass, turmeric, garlic, chili, banana leaves, salt, fish sauce, cooking oil."
+    },
+    "instructions": {
+      "vi": "Cá làm sạch, khía thân, ướp với riềng, sả, nghệ băm, tỏi, ớt, gia vị. Gói cá trong lá chuối, buộc chặt rồi nướng trên than đến khi cá chín, tỏa mùi thơm. Mở lá, ăn nóng chấm muối tiêu chanh hoặc nước mắm gừng.",
+      "en": "Clean the fish and score the body. Marinate with minced galangal, lemongrass, turmeric, garlic, chili, and seasonings. Wrap tightly in banana leaves and tie securely, then grill over charcoal until cooked through and aromatic. Unwrap and serve hot with lime-pepper salt or ginger fish sauce."
+    },
+    "region_code": "Miền Bắc",
+    "province_code": "Thái Bình",
+    "Best_time": {
+      "vi": "Bữa trưa, tối; các bữa liên hoan, tụ tập gia đình.",
+      "en": "Lunch or dinner; great for family gatherings and parties."
+    },
+    "Best_season": {
+      "vi": "Quanh năm, nhất là mùa du lịch biển.",
+      "en": "Year-round; especially popular in the beach-travel season."
+    },
+    "origin_story": {
+      "vi": "Thái Xuyên (Thái Thụy) có truyền thống đánh bắt và chế biến cá. Cá nướng gói lá chuối là cách làm dân dã, giữ trọn vị ngọt tự nhiên của cá.",
+      "en": "Thai Xuyen (Thai Thuy) has a tradition of fishing and fish cookery. Grilling fish in banana leaves is a rustic method that helps retain the fish’s natural sweetness."
+    },
+    "price_range": {
+      "vi": "120.000–200.000đ/con tùy kích cỡ",
+      "en": "About VND 120,000–200,000 per fish, depending on size."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "cá nướng Thái Xuyên,cá nướng lá chuối,đặc sản Thái Thụy",
+      "en": "Thai Xuyen grilled fish,banana-leaf grilled fish,Thai Thuy specialty"
+    },
+    "spicy_level": 1,
+    "satiety_level": 4
+  },
+  {
+    "STT": 331,
+    "id": "oi_bo_thai_binh",
+    "slug": "oi-bo-thai-binh",
+    "Name": {
+      "vi": "Ổi Bo Thái Bình",
+      "en": "Thai Binh ‘Bo’ Guava"
+    },
+    "description": {
+      "vi": "Ổi Bo là giống ổi đặc sản nổi tiếng của Thái Bình, quả nhỏ vừa, vỏ xanh, ruột giòn ngọt, thơm mùi ổi rất đặc trưng.",
+      "en": "Bo guava is a well-known Thai Binh variety—medium-small fruit with green skin and crisp, sweet flesh with a distinctive guava aroma. Enjoyed fresh, it’s also used for juice or salads."
+    },
+    "category": {
+      "vi": "Trái cây đặc sản – ăn tươi",
+      "en": "Specialty fruit – fresh eating"
+    },
+    "ingredients": {
+      "vi": "Ổi Bo tươi (dùng ăn trực tiếp, làm nước ép, nộm).",
+      "en": "Fresh Bo guava (eaten fresh, juiced, or used in salads)."
+    },
+    "instructions": {
+      "vi": "Rửa sạch, ăn trực tiếp hoặc cắt miếng chấm muối ớt; có thể ép lấy nước hoặc trộn nộm với cà rốt, dưa chuột.",
+      "en": "Rinse and eat fresh, or slice and dip in chili-salt. You can also juice it, or make a crunchy salad by mixing guava with carrot and cucumber."
+    },
+    "region_code": "Miền Bắc",
+    "province_code": "Thái Bình",
+    "Best_time": {
+      "vi": "Ăn vặt, tráng miệng trong ngày.",
+      "en": "Snacking or dessert during the day."
+    },
+    "Best_season": {
+      "vi": "Mùa ổi chính vụ (thường từ mùa hè đến đầu thu).",
+      "en": "Peak guava season (often from summer to early autumn)."
+    },
+    "origin_story": {
+      "vi": "Ổi Bo gắn với vùng đất Bo (Thái Bình), giống ổi này được trồng lâu đời, trở thành một trong những trái cây đặc sản khi nhắc tới quê lúa.",
+      "en": "The guava is associated with the Bo area of Thai Binh, where it has been cultivated for a long time and became one of the province’s best-known fruits."
+    },
+    "price_range": {
+      "vi": "15.000–35.000đ/kg tùy mùa",
+      "en": "About VND 15,000–35,000 per kg, depending on season."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "ổi Bo Thái Bình,trái cây đặc sản,ổi giòn ngọt,quê lúa Thái Bình",
+      "en": "Thai Binh Bo guava,specialty fruit,crisp sweet guava,rice-bowl province"
+    },
+    "spicy_level": 0,
+    "satiety_level": 2
+  }
+]

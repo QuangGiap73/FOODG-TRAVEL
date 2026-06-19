@@ -1,0 +1,842 @@
+[
+  {
+    "STT": 147,
+    "id": "com_lam_hoa_binh",
+    "slug": "com-lam-hoa-binh",
+    "Name": {
+      "vi": "Cơm lam Hòa Bình",
+      "en": "Hoa Binh Bamboo-Tube Sticky Rice (Cơm lam)"
+    },
+    "description": {
+      "vi": "Cơm lam Hòa Bình là món ăn truyền thống của đồng bào dân tộc vùng núi, gạo nếp được nấu chín trong ống nứa/bương, thơm mùi tre nứa, dẻo bùi, thường ăn kèm muối vừng, thịt nướng trong các bữa cơm bản và dịp lễ hội.",
+      "en": "A traditional dish of mountain ethnic communities. Glutinous rice is cooked inside young bamboo tubes, giving it a gentle bamboo aroma and a chewy, nutty texture. It’s often eaten with sesame-salt or grilled meats during communal meals and festivals in Mai Chau and other highland areas of Hoa Binh."
+    },
+    "category": {
+      "vi": "Cơm nếp – món no, ăn kèm món mặn",
+      "en": "Sticky rice – filling staple served with savory dishes"
+    },
+    "ingredients": {
+      "vi": "Gạo nếp nương, ống nứa hoặc ống bương non, nước suối, muối, lá chuối/lá dong để bịt đầu ống, muối vừng hoặc thịt nướng ăn kèm.",
+      "en": "Mountain glutinous rice, young bamboo tube, spring/stream water, salt, banana leaves or dong leaves to plug the tube, sesame-salt or grilled meat as accompaniment."
+    },
+    "instructions": {
+      "vi": "Gạo nếp vo sạch, ngâm cho nở rồi để ráo. Cho gạo vào ống nứa, đổ nước suối vừa đủ, bịt đầu ống bằng lá chuối/lá dong. Đặt ống nứa lên than hồng hoặc bếp lửa, trở đều tay cho cơm chín đều. Khi ống nứa cháy xém lớp ngoài, cơm bên trong chín dẻo, thơm. Khi ăn, chẻ dọc ống, bóc lớp nứa ngoài, cắt cơm thành khoanh.",
+      "en": "Rinse glutinous rice, soak until plump, then drain well. Put rice into a bamboo tube, add just enough stream water, and plug the opening with banana/dong leaves. Roast the tube over hot embers or an open fire, turning frequently so it cooks evenly. When the outer bamboo layer is lightly charred, the rice inside is cooked, fragrant, and sticky. Split the tube lengthwise, peel back the outer bamboo, and cut the rice into rounds to serve."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Hòa Bình",
+      "en": "Hoa Binh"
+    },
+    "Best_time": {
+      "vi": "Ăn trong các bữa cơm bản, dã ngoại, tham quan bản làng Mai Châu, vùng cao Hòa Bình",
+      "en": "Village meals, picnics, and visits to Mai Chau stilt-house villages and Hoa Binh highlands"
+    },
+    "Best_season": {
+      "vi": "Quanh năm; mùa du lịch bản làng (tháng 9–4) khách ăn nhiều",
+      "en": "Year-round; especially popular in village-tourism season (roughly Sep–Apr)"
+    },
+    "origin_story": {
+      "vi": "Cơm lam xuất phát từ tập quán sinh hoạt của đồng bào dân tộc thiểu số (như người Thái, Mường) ở vùng núi Hòa Bình và Tây Bắc. Trước kia, khi đi nương rẫy, họ tận dụng ống nứa, nước suối và gạo nếp sẵn có để nấu cơm, vừa tiện mang theo, vừa giữ được hương vị tự nhiên. Theo thời gian, cơm lam trở thành món đặc trưng trong ẩm thực bản địa, gắn với hình ảnh lửa trại, nhà sàn, tiếng cồng chiêng của Hòa Bình – Mai Châu.",
+      "en": "Cơm lam comes from the daily life of ethnic groups (such as Thai and Muong) in Hoa Binh and the Northwest. When working in the fields and forests, people used what they had—bamboo tubes, stream water, and glutinous rice—to cook portable rice that stayed fragrant and moist. Over time, it became a signature local specialty tied to campfires, stilt houses, and the cultural image of Hoa Binh–Mai Chau."
+    },
+    "price_range": {
+      "vi": "10.000–25.000đ/ống (tùy kích thước và địa điểm du lịch)",
+      "en": "10,000–25,000 VND/tube (depending on size and tourist area)"
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "cơm lam,,ẩm thực dân tộc,đặc sản Hòa Bình,ẩm thực Mai Châu",
+      "en": "cơm lam,ethnic cuisine,Hoa Binh specialty,Mai Chau cuisine"
+    },
+    "spicy_level": 0,
+    "satiety_level": 5
+  },
+  {
+    "STT": 148,
+    "id": "thit_lon_muoi_chua_hoa_binh",
+    "slug": "thit-lon-muoi-chua-hoa-binh",
+    "Name": {
+      "vi": "Thịt lợn muối chua Hòa Bình",
+      "en": "Hoa Binh Fermented Pork (Thịt lợn muối chua)"
+    },
+    "description": {
+      "vi": "Thịt lợn muối chua là món đặc sản của người Mường, thịt được ướp muối, thính, lá rừng rồi lên men tự nhiên, cho vị chua nhẹ, béo bùi, thường ăn kèm rau sống, chấm tương ớt trong các bữa rượu cần.",
+      "en": "A Muong specialty: pork is salted, mixed with roasted-rice powder and aromatic leaves/spices, then naturally fermented. The result is mildly sour, rich, and nutty. It’s commonly eaten with raw vegetables and chili sauce, especially with rice wine at gatherings."
+    },
+    "category": {
+      "vi": "Món lên men – món nhắm, ăn kèm",
+      "en": "Fermented dish – drinking snack / side"
+    },
+    "ingredients": {
+      "vi": "Thịt lợn (thường là ba chỉ, phần có cả nạc và mỡ), muối, thính gạo rang xay, riềng, tỏi, ớt, một số lá thơm (tùy vùng), hũ sành/keo thủy tinh để ủ.",
+      "en": "Pork (often belly with both lean and fat), salt, roasted-rice powder (thính), galangal, garlic, chili, aromatic leaves (varies by area), and a ceramic jar/glass jar for fermenting."
+    },
+    "instructions": {
+      "vi": "Thịt lợn được làm sạch, luộc sơ cho săn, để ráo rồi thái miếng. Trộn thịt với muối, thính, riềng, tỏi, ớt và các loại lá thơm, cho vào hũ nén chặt. Ủ ở nơi khô thoáng trong vài ngày đến vài tuần tùy thời tiết cho đến khi thịt lên men, dậy mùi chua nhẹ. Khi ăn, gắp thịt ra, có thể nướng sơ hoặc ăn trực tiếp với rau sống, chấm tương ớt.",
+      "en": "Clean the pork and parboil briefly to firm it up; drain and slice. Mix with salt, roasted-rice powder, galangal, garlic, chili, and aromatic leaves; pack tightly into a jar and press down. Ferment in a dry, airy place for several days to a few weeks depending on weather until pleasantly sour. Serve as-is or lightly grill, with raw vegetables and chili sauce."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Hòa Bình",
+      "en": "Hoa Binh"
+    },
+    "Best_time": {
+      "vi": "Làm món nhậu, món ăn kèm trong các dịp lễ hội, tụ họp, uống rượu cần",
+      "en": "Drinking snack and side dish during festivals, gatherings, and jar-wine (rượu cần) sessions"
+    },
+    "Best_season": {
+      "vi": "Quanh năm; mùa lạnh ăn rất hợp",
+      "en": "Year-round; especially enjoyable in cool weather"
+    },
+    "origin_story": {
+      "vi": "Người Mường ở Hòa Bình có truyền thống làm các món lên men để bảo quản thực phẩm lâu dài. Thịt lợn muối chua ra đời từ nhu cầu dự trữ thịt sau mỗi dịp mổ lợn, kết hợp thính gạo và gia vị bản địa. Món ăn hiện nay đã trở thành đặc sản được nhiều du khách biết đến khi ghé thăm các bản Mường, làng du lịch cộng đồng tại Hòa Bình.",
+      "en": "Muong people in Hoa Binh have long used fermentation to preserve food. Fermented pork developed from the need to store meat after slaughtering pigs, combining local roasted rice and spices. Today it’s a well-known specialty for visitors to Muong villages and community-based tourism areas in Hoa Binh."
+    },
+    "price_range": {
+      "vi": "250.000–400.000đ/kg (tùy nơi và thương hiệu)",
+      "en": "250,000–400,000 VND/kg (varies by producer/brand)"
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "thịt lợn muối chua,đặc sản người Mường,lên men,Hòa Bình",
+      "en": "fermented pork,Muong specialty,fermentation,Hoa Binh"
+    },
+    "spicy_level": 2,
+    "satiety_level": 4
+  },
+  {
+    "STT": 149,
+    "id": "lon_man_thui_luoc_hoa_binh",
+    "slug": "lon-man-thui-luoc-hoa-binh",
+    "Name": {
+      "vi": "Lợn mán thui luộc Hòa Bình",
+      "en": "Hoa Binh Free-Range Pig, Singed & Boiled (Lợn mán thui luộc)"
+    },
+    "description": {
+      "vi": "Lợn mán thui luộc là món đặc trưng vùng núi Hòa Bình, sử dụng lợn mán (lợn bản địa) nuôi thả rông, da dày, thịt săn chắc, được thui vàng rồi luộc hoặc nướng, cho hương vị thơm ngon, ít mỡ.",
+      "en": "A hallmark mountain dish made from indigenous free-range pigs. The skin is singed over straw to create a smoky aroma, then the meat is boiled (or sometimes grilled). The pork is firm, fragrant, and not overly fatty—perfect for family feasts and drinking tables."
+    },
+    "category": {
+      "vi": "Món mặn – thịt lợn bản địa, món chính/nhậu",
+      "en": "Savory dish – indigenous pork main/drinking dish"
+    },
+    "ingredients": {
+      "vi": "Lợn mán nguyên con hoặc từng mảng thịt lớn, rơm hoặc đuốc để thui, nước, muối, gừng, sả, các loại rau gia vị (lá mơ, rau thơm), mắm, ớt, chanh.",
+      "en": "Free-range ‘lợn mán’ pork (whole pig or large cuts), straw/torch for singeing, water, salt, ginger, lemongrass, herbs (wild betel leaf/lá mơ, mixed herbs), dipping sauces, chili, lime."
+    },
+    "instructions": {
+      "vi": "Lợn mán sau khi làm sạch được thui trên lửa rơm cho cháy sém lớp da, tạo mùi thơm đặc trưng, sau đó cạo sạch, rửa lại rồi mang luộc chín với gừng, sả hoặc chặt miếng để nướng. Thịt chín được thái mỏng, ăn kèm các loại rau sống, chấm muối chanh ớt hoặc chẩm chéo (nếu có).",
+      "en": "After cleaning the pig, singe the skin over straw flame until lightly charred to remove hair and add aroma. Scrape clean, rinse, then boil with ginger and lemongrass until cooked. Slice thin and serve with fresh herbs, dipped in chili-lime salt or local dipping spices (such as chẩm chéo if available)."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Hòa Bình",
+      "en": "Hoa Binh"
+    },
+    "Best_time": {
+      "vi": "Bữa nhậu, tiệc gia đình, đám cưới, dịp lễ hội bản làng",
+      "en": "Family parties, weddings, village festivals, and celebratory feasts"
+    },
+    "Best_season": {
+      "vi": "Quanh năm; mùa lạnh ăn càng ngon",
+      "en": "Year-round; even better in cool weather"
+    },
+    "origin_story": {
+      "vi": "Lợn mán là giống lợn bản địa được nuôi lâu đời ở vùng núi Hòa Bình, chủ yếu thả rông, ăn rau rừng, ngô, sắn. Người dân thường dùng cách thui lửa rơm để xử lý lông, đồng thời tạo hương thơm đặc biệt cho phần da. Từ đó, món lợn mán thui luộc trở thành thức ăn không thể thiếu trong các dịp trọng đại của đồng bào vùng cao Hòa Bình.",
+      "en": "Indigenous pigs have long been raised in Hoa Binh’s mountainous areas, often free-ranged and fed on forest greens, corn, and cassava. Singeing over straw is both a practical way to process the skin and a technique that creates the dish’s signature smoky fragrance. Over time, singed-and-boiled free-range pig became a staple in important occasions for highland communities."
+    },
+    "price_range": {
+      "vi": "150.000–300.000đ/phần; 120.000–180.000đ/kg thịt sống tùy thời điểm",
+      "en": "150,000–300,000 VND/portion; 120,000–180,000 VND/kg raw pork depending on season"
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "lợn mán thui,lợn bản,Hòa Bình,ẩm thực núi rừng,món nhậu",
+      "en": "free-range pig,Hoa Binh,highland cuisine,drinking dish"
+    },
+    "spicy_level": 1,
+    "satiety_level": 5
+  },
+  {
+    "STT": 150,
+    "id": "mang_chua_nau_thit_ga_hoa_binh",
+    "slug": "mang-chua-nau-thit-ga-hoa-binh",
+    "Name": {
+      "vi": "Măng chua nấu thịt gà Hòa Bình",
+      "en": "Hoa Binh Sour Bamboo Shoots Chicken Soup"
+    },
+    "description": {
+      "vi": "Măng chua nấu thịt gà là món canh đặc trưng của vùng núi Hòa Bình, kết hợp vị chua nhẹ của măng lên men với vị ngọt của thịt gà đồi, tạo nên món canh vừa thanh vừa đưa cơm.",
+      "en": "A comforting mountain soup that combines mildly sour fermented bamboo shoots with the natural sweetness of free-range hill chicken. Light yet deeply savory, it’s especially loved on cool days and goes perfectly with rice."
+    },
+    "category": {
+      "vi": "Canh – măng chua nấu gà",
+      "en": "Soup – chicken with sour bamboo shoots"
+    },
+    "ingredients": {
+      "vi": "Măng chua (măng rừng đã muối chua), thịt gà đồi, hành khô, tỏi, gừng, rau thơm (hành lá, mùi tàu), gia vị (muối, nước mắm, tiêu, ớt).",
+      "en": "Fermented sour bamboo shoots (măng chua), hill chicken, shallots, garlic, ginger, herbs (scallions, culantro), seasonings (salt, fish sauce, pepper, chili)."
+    },
+    "instructions": {
+      "vi": "Măng chua rửa bớt vị chua gắt, thái nhỏ, xào qua với hành tỏi. Gà chặt miếng vừa ăn, xào săn cùng gia vị, sau đó cho nước vào nấu sôi. Thêm măng chua vào nồi, ninh đến khi gà mềm, măng thấm, nêm lại vừa ăn. Trước khi tắt bếp, rắc hành lá, mùi tàu, có thể thêm chút ớt cho dậy vị.",
+      "en": "Rinse sour bamboo shoots to reduce harsh acidity; slice and stir-fry briefly with shallots/garlic. Chop chicken into bite-size pieces, stir-fry until firm with seasonings, then add water and bring to a boil. Add sour bamboo shoots and simmer until chicken is tender and shoots are well flavored; adjust seasoning. Finish with scallions and culantro; add chili if desired."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Hòa Bình",
+      "en": "Hoa Binh"
+    },
+    "Best_time": {
+      "vi": "Ăn trong bữa cơm gia đình, đặc biệt hợp những ngày trời mát/lạnh",
+      "en": "Family meals; especially good on cool/chilly days"
+    },
+    "Best_season": {
+      "vi": "Quanh năm; mùa măng rừng thu hoạch nhiều (mùa mưa) dễ có măng ngon",
+      "en": "Year-round; rainy season offers the best forest bamboo shoots"
+    },
+    "origin_story": {
+      "vi": "Hòa Bình có nhiều rừng tre, nứa, vầu, cung cấp nguồn măng phong phú. Người dân thường muối măng chua để dùng quanh năm, kết hợp với thịt gà đồi nuôi thả, tạo nên món canh măng chua nấu gà quen thuộc. Món ăn vừa tận dụng nguyên liệu địa phương, vừa thể hiện phong cách ẩm thực núi rừng giản dị mà đậm đà.",
+      "en": "Hoa Binh’s forests provide abundant bamboo shoots, and locals often ferment shoots to store them year-round. Paired with free-range hill chicken, the dish reflects simple mountain cooking that uses local ingredients efficiently while delivering bold, comforting flavors."
+    },
+    "price_range": {
+      "vi": "40.000–80.000đ/phần khi ăn tại quán/bản du lịch",
+      "en": "40,000–80,000 VND/portion at eateries or community-tourism villages"
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "măng chua nấu gà,canh măng,ẩm thực Hòa Bình,gà đồi,món dân tộc",
+      "en": "sour bamboo shoots chicken soup,bamboo shoot soup,Hoa Binh,hill chicken"
+    },
+    "spicy_level": 2,
+    "satiety_level": 4
+  },
+  {
+    "STT": 151,
+    "id": "cha_cuon_la_buoi_hoa_binh",
+    "slug": "cha-cuon-la-buoi-hoa-binh",
+    "Name": {
+      "vi": "Chả cuốn lá bưởi Hòa Bình",
+      "en": "Hoa Binh Pomelo-Leaf Pork Rolls (Chả cuốn lá bưởi)"
+    },
+    "description": {
+      "vi": "Chả cuốn lá bưởi là món ăn độc đáo của người Mường Hòa Bình, thịt băm ướp gia vị được cuốn trong lá bưởi rồi nướng hoặc rán, tạo mùi thơm rất riêng, vừa lạ miệng vừa đậm chất núi rừng.",
+      "en": "A distinctive Muong dish: seasoned minced pork is wrapped in young pomelo leaves and grilled or pan-fried. The leaves perfume the meat with a unique citrusy aroma—unusual, rustic, and addictive."
+    },
+    "category": {
+      "vi": "Món nướng/chiên – món nhắm/món mặn",
+      "en": "Grilled/fried dish – savory snack/main"
+    },
+    "ingredients": {
+      "vi": "Thịt lợn băm (có cả nạc và mỡ), lá bưởi non, hành, tỏi, ớt, riềng (tùy biến), muối, nước mắm, tiêu, dầu ăn hoặc than để nướng.",
+      "en": "Minced pork (mix of lean and fat), young pomelo leaves, shallot, garlic, chili, optional galangal, salt, fish sauce, pepper, cooking oil or charcoal for grilling."
+    },
+    "instructions": {
+      "vi": "Thịt lợn băm trộn với hành, tỏi băm, gia vị, có thể thêm riềng cho thơm. Lá bưởi non rửa sạch, để ráo. Trải lá bưởi, cho thịt vào, cuộn lại rồi dùng tăm ghim hoặc gập khéo. Có thể nướng trên than hoặc rán trong chảo dầu. Khi lá bưởi cháy xém, thịt bên trong chín thơm, tỏa mùi đặc trưng.",
+      "en": "Mix minced pork with minced shallot and garlic plus seasonings; optionally add galangal for extra fragrance. Wash and dry young pomelo leaves. Place pork on a leaf, roll up, and secure with a toothpick or fold tightly. Grill over charcoal or pan-fry until the leaf is lightly charred and the meat is cooked through and fragrant."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Hòa Bình",
+      "en": "Hoa Binh"
+    },
+    "Best_time": {
+      "vi": "Làm món nhắm rượu, món mặn ăn với cơm trong các bữa liên hoan nhỏ, sinh hoạt bản làng",
+      "en": "Drinking snack and savory side for rice during small parties and village gatherings"
+    },
+    "Best_season": {
+      "vi": "Quanh năm; mùa có lá bưởi non càng ngon",
+      "en": "Year-round; best when young pomelo leaves are plentiful"
+    },
+    "origin_story": {
+      "vi": "Ở các bản Mường Hòa Bình, cây bưởi được trồng nhiều quanh nhà. Người dân tận dụng lá bưởi non có mùi thơm để cuốn thịt làm chả, vừa chống ngán, vừa tạo hương vị mới lạ. Dần dần, chả cuốn lá bưởi trở thành món ăn tiêu biểu khi nhắc đến ẩm thực người Mường Hòa Bình.",
+      "en": "Pomelo trees are common around Muong homes in Hoa Binh. Locals discovered that young pomelo leaves add a pleasant aroma and help cut richness when used to wrap seasoned meat. Over time, pomelo-leaf rolls became a signature dish associated with Muong cuisine in Hoa Binh."
+    },
+    "price_range": {
+      "vi": "70.000–150.000đ/đĩa tại các nhà hàng/quán bản",
+      "en": "70,000–150,000 VND/plate at village eateries and restaurants"
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "chả cuốn lá bưởi,món Mường,ẩm thực núi rừng,đặc sản lạ",
+      "en": "pomelo-leaf rolls,Muong dish,Hoa Binh,forest flavors"
+    },
+    "spicy_level": 2,
+    "satiety_level": 3
+  },
+  {
+    "STT": 152,
+    "id": "ca_nuong_o_hoa_binh",
+    "slug": "ca-nuong-o-hoa-binh",
+    "Name": {
+      "vi": "Cá nướng đồ Hòa Bình",
+      "en": "Hoa Binh Leaf-Wrapped Grilled Fish (Cá nướng đồ)"
+    },
+    "description": {
+      "vi": "Cá nướng đồ (cá đồ nướng) là món cá được tẩm ướp rồi gói lá, nướng trên than hồng, thịt cá chín thơm, giữ được độ ngọt, thường xuất hiện trong các bữa ăn vùng sông suối Hòa Bình.",
+      "en": "Fish is marinated, wrapped in banana/dong leaves, then grilled over charcoal. The leaf wrap keeps the flesh moist and sweet while infusing a gentle smoky aroma—common in stream-and-river areas of Hoa Binh."
+    },
+    "category": {
+      "vi": "Món nướng – cá nướng lá",
+      "en": "Grilled dish – leaf-wrapped fish"
+    },
+    "ingredients": {
+      "vi": "Cá suối hoặc cá sông (cá trôi, cá mè nhỏ, cá rô…), lá chuối hoặc lá dong để gói, sả, gừng, tỏi, hành, ớt, mắc khén hoặc hạt tiêu (tùy vùng), muối, nước mắm.",
+      "en": "Stream/river fish (carp, silver carp, perch/tilapia, etc.), banana leaves or dong leaves for wrapping, lemongrass, ginger, garlic, onion/shallot, chili, pepper or local spices, salt, fish sauce."
+    },
+    "instructions": {
+      "vi": "Cá làm sạch, khía thân, ướp với muối, nước mắm, sả, gừng, tỏi, ớt, gia vị khoảng 30 phút–1 giờ. Gói cá trong lá chuối/lá dong, dùng lạt buộc, sau đó đặt lên bếp than nướng, trở đều tay đến khi cá chín, lá bên ngoài cháy xém, dậy mùi thơm. Khi ăn, mở lớp lá, thịt cá bên trong mềm, thấm gia vị.",
+      "en": "Clean fish and score the sides. Marinate with salt, fish sauce, lemongrass, ginger, garlic, chili, and spices for 30–60 minutes. Wrap in banana/dong leaves and tie. Grill over charcoal, turning frequently until cooked and fragrant and the leaves are lightly charred. Unwrap and serve; the fish inside should be tender and well seasoned."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Hòa Bình",
+      "en": "Hoa Binh"
+    },
+    "Best_time": {
+      "vi": "Ăn trong bữa cơm bản, tiệc ngoài trời, liên hoan gia đình",
+      "en": "Village meals, outdoor picnics, family gatherings"
+    },
+    "Best_season": {
+      "vi": "Quanh năm; mùa nước suối trong, cá nhiều càng ngon",
+      "en": "Year-round; especially good when streams are clear and fish are plentiful"
+    },
+    "origin_story": {
+      "vi": "Tận dụng nguồn cá từ sông Đà, suối, hồ ở Hòa Bình, người dân địa phương đã nghĩ ra cách nướng cá gói lá để giữ được vị ngọt tự nhiên, đồng thời tiện chế biến ngoài trời. Món cá nướng đồ vì thế gắn liền với những dịp tụ họp, những bữa ăn bên bếp lửa ở núi rừng Hòa Bình.",
+      "en": "With abundant fish from the Da River, streams, and lakes, locals developed leaf-wrapped grilling to preserve natural sweetness and make outdoor cooking easier. The dish is closely tied to mountain gatherings around the fire in Hoa Binh."
+    },
+    "price_range": {
+      "vi": "80.000–200.000đ/con/đĩa tùy loại cá và kích cỡ",
+      "en": "80,000–200,000 VND/fish or plate depending on size and type"
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "cá nướng đồ,cá nướng lá,ẩm thực Hòa Bình,cá suối,cá sông Đà",
+      "en": "leaf-wrapped grilled fish,Hoa Binh,stream fish,Da River cuisine"
+    },
+    "spicy_level": 2,
+    "satiety_level": 4
+  },
+  {
+    "STT": 153,
+    "id": "mang_ang_hoa_binh",
+    "slug": "mang-ang-hoa-binh",
+    "Name": {
+      "vi": "Măng đắng Hòa Bình",
+      "en": "Hoa Binh Bitter Bamboo Shoots (Măng đắng)"
+    },
+    "description": {
+      "vi": "Măng đắng Hòa Bình là loại măng rừng có vị đắng nhẹ, thường được luộc, xào, nướng, ngâm chua, là món ăn vừa lạ vừa gây nghiện với những ai thích hương vị núi rừng.",
+      "en": "Wild bamboo shoots with a gentle bitterness—boiled, stir-fried, grilled, or pickled. The bittersweet, forest-like taste is addictive for those who love mountain flavors."
+    },
+    "category": {
+      "vi": "Nguyên liệu/món ăn kèm – măng rừng",
+      "en": "Ingredient/side – wild bamboo shoots"
+    },
+    "ingredients": {
+      "vi": "Măng đắng tươi (măng vầu, măng tre, măng nứa rừng), muối, ớt, tỏi, các gia vị khác tùy món chế biến.",
+      "en": "Fresh bitter bamboo shoots (from wild bamboo species), salt, chili, garlic, and seasonings depending on preparation."
+    },
+    "instructions": {
+      "vi": "Măng đắng tươi thường được gọt vỏ, thái lát, luộc sơ để bớt đắng rồi xào/nấu canh; hoặc được nướng trực tiếp trên than rồi chấm chẩm chéo; cũng có thể ngâm với ớt tỏi làm măng chua ăn dần. Tùy khẩu vị, người chế biến điều chỉnh độ đắng bằng thời gian luộc/ngâm.",
+      "en": "Peel and slice shoots. Boil briefly to reduce bitterness, then stir-fry or cook in soups. Alternatively, grill whole shoots over charcoal and dip in local spices; or pickle with garlic and chili for a tangy side. Adjust bitterness by boiling/soaking time to taste."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Hòa Bình",
+      "en": "Hoa Binh"
+    },
+    "Best_time": {
+      "vi": "Ăn kèm trong bữa cơm, làm món nhậu cùng rượu cần",
+      "en": "Side dish with family meals; great as a drinking snack with jar wine"
+    },
+    "Best_season": {
+      "vi": "Mùa măng rừng (thường từ đầu hè đến đầu thu); dạng muối chua dùng quanh năm",
+      "en": "Bamboo-shoot season (often early summer to early autumn); pickled versions are enjoyed year-round"
+    },
+    "origin_story": {
+      "vi": "Măng đắng xuất hiện nhiều trong rừng núi Hòa Bình, là nguồn thực phẩm quan trọng của đồng bào dân tộc. Ban đầu, măng đắng được hái về ăn trong gia đình, sau dần được bán ra chợ, trở thành đặc sản được nhiều người săn tìm, đặc biệt là khách du lịch muốn trải nghiệm hương vị núi rừng nguyên sơ.",
+      "en": "Bitter bamboo shoots are abundant in Hoa Binh’s forests and have long been an important food source for local ethnic communities. Once mainly a household food, they became a sought-after specialty for visitors wanting an authentic ‘taste of the forest.’"
+    },
+    "price_range": {
+      "vi": "30.000–70.000đ/kg măng tươi; măng muối chua giá cao hơn theo loại",
+      "en": "30,000–70,000 VND/kg fresh; pickled shoots are priced higher depending on type"
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "măng đắng,măng rừng,đặc sản Hòa Bình,ẩm thực dân tộc",
+      "en": "bitter bamboo shoots,wild shoots,Hoa Binh,ethnic cuisine"
+    },
+    "spicy_level": 1,
+    "satiety_level": 2
+  },
+  {
+    "STT": 154,
+    "id": "xoi_nep_nuong_mai_chau",
+    "slug": "xoi-nep-nuong-mai-chau",
+    "Name": {
+      "vi": "Xôi nếp nương Mai Châu",
+      "en": "Mai Chau Mountain Sticky Rice (Xôi nếp nương)"
+    },
+    "description": {
+      "vi": "Xôi nếp nương Mai Châu là món xôi dẻo thơm, nấu từ gạo nếp trồng trên nương rẫy vùng Mai Châu, hạt tròn, thơm, thường được đồ thành xôi trắng hoặc xôi ngũ sắc, ăn kèm muối vừng, thịt nướng.",
+      "en": "Fragrant, chewy sticky rice made from upland glutinous rice grown on Mai Chau’s fields. Served as plain white sticky rice or as five-color sticky rice, often paired with sesame-salt, grilled meats, or roast chicken."
+    },
+    "category": {
+      "vi": "Xôi nếp – món no, ăn sáng/ăn chính",
+      "en": "Sticky rice – filling staple (breakfast/main)"
+    },
+    "ingredients": {
+      "vi": "Gạo nếp nương, nước, lá dứa hoặc các loại lá tạo màu (nếu làm xôi ngũ sắc), muối; muối vừng, gà nướng, thịt nướng ăn kèm.",
+      "en": "Upland glutinous rice, water, salt; pandan or natural plant dyes (for five-color sticky rice); sesame-salt, grilled pork, or roast chicken on the side."
+    },
+    "instructions": {
+      "vi": "Gạo nếp nương vo sạch, ngâm vài giờ cho nở, để ráo. Nếu làm xôi ngũ sắc, chia gạo ngâm với các loại nước lá tạo màu. Cho nếp vào chõ đồ xôi, canh lửa vừa để xôi chín đều, dẻo mà không nát. Xôi chín được đảo đều, đậy kín cho giữ nóng. Ăn kèm muối vừng, thịt nướng, gà nướng tùy ý.",
+      "en": "Rinse rice, soak for a few hours, then drain. For five-color sticky rice, divide and soak in natural dye waters. Steam in a bamboo steamer until tender, fluffy, and chewy. Fluff and cover to keep warm. Serve with sesame-salt and grilled dishes as desired."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Hòa Bình",
+      "en": "Hoa Binh"
+    },
+    "Best_time": {
+      "vi": "Ăn sáng hoặc ăn trong các bữa cơm bản, tiệc đón khách tại Mai Châu",
+      "en": "Breakfast, village meals, and welcoming feasts for guests in Mai Chau"
+    },
+    "Best_season": {
+      "vi": "Quanh năm; mùa lúa nương thu hoạch xong (cuối năm) có nếp ngon nhất",
+      "en": "Year-round; the best rice is often after harvest toward the end of the year"
+    },
+    "origin_story": {
+      "vi": "Mai Châu là thung lũng nổi tiếng của Hòa Bình với ruộng nương bậc thang trồng lúa nếp. Người Thái, người Mường nơi đây từ lâu đã gắn bó với món xôi nếp trong sinh hoạt hàng ngày và lễ hội. Xôi nếp nương Mai Châu vì thế trở thành món ăn biểu tượng, thường được giới thiệu với du khách trong các tour du lịch cộng đồng.",
+      "en": "Mai Chau is a famous valley in Hoa Binh with terraced fields producing glutinous rice. Thai and Muong communities have long featured sticky rice in daily life and festivals. As tourism grew, Mai Chau mountain sticky rice became a symbolic dish introduced to visitors in community-based tours."
+    },
+    "price_range": {
+      "vi": "10.000–30.000đ/phần xôi; set xôi kèm đồ nướng giá cao hơn",
+      "en": "10,000–30,000 VND/portion; combo sets with grilled items cost more"
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "xôi nếp nương,xôi Mai Châu,ẩm thực Tây Bắc,Hòa Bình,xôi ngũ sắc",
+      "en": "Mai Chau sticky rice,upland glutinous rice,Hoa Binh,five-color sticky rice"
+    },
+    "spicy_level": 0,
+    "satiety_level": 5
+  },
+  {
+    "STT": 155,
+    "id": "thit_trau_la_lom_hoa_binh",
+    "slug": "thit-trau-la-lom-hoa-binh",
+    "Name": {
+      "vi": "Thịt trâu lá lồm Hòa Bình",
+      "en": "Hoa Binh Buffalo with ‘Lá lồm’ Sour Leaves"
+    },
+    "description": {
+      "vi": "Thịt trâu lá lồm là món đặc sản nổi tiếng của Hòa Bình, trong đó thịt trâu được nấu cùng lá lồm chua, tạo vị chua dịu, thơm, giúp thịt mềm, giảm độ ngấy, rất đưa cơm và hợp làm món nhậu.",
+      "en": "A famous Hoa Binh specialty: buffalo meat is stewed with lá lồm—local sour forest leaves—creating a gentle tang that tenderizes the meat and cuts richness. Savory, aromatic, and extremely rice-friendly."
+    },
+    "category": {
+      "vi": "Món hầm/kho – món mặn ăn với cơm",
+      "en": "Stew/braise – savory main dish with rice"
+    },
+    "ingredients": {
+      "vi": "Thịt trâu (thường là bắp, vai), lá lồm (loại lá chua đặc trưng vùng núi), hành, tỏi, gừng, gia vị (muối, nước mắm, mẻ, ớt).",
+      "en": "Buffalo meat (shank/shoulder), lá lồm sour leaves, shallot, garlic, ginger, seasonings (salt, fish sauce), optional fermented rice (mẻ) and chili."
+    },
+    "instructions": {
+      "vi": "Thịt trâu thái miếng, ướp với muối, nước mắm, gừng, tỏi, có thể thêm mẻ cho mềm. Lá lồm rửa sạch, vò nhẹ. Xào săn thịt trâu, cho lá lồm vào đảo đều, thêm nước vừa đủ, đun nhỏ lửa đến khi thịt mềm, lá lồm tan, nước sốt sánh, có vị chua nhẹ đặc trưng.",
+      "en": "Slice buffalo meat and marinate with salt, fish sauce, ginger, and garlic (optionally add mẻ to help tenderize). Rinse lá lồm and lightly bruise. Sauté meat until sealed, add lá lồm, pour in enough water, then simmer gently until meat is tender and the leaves soften into the sauce. The sauce should become lightly thick with a characteristic mild sourness; adjust seasoning."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Hòa Bình",
+      "en": "Hoa Binh"
+    },
+    "Best_time": {
+      "vi": "Ăn trong bữa cơm gia đình, tụ tập bạn bè, đặc biệt hợp với rượu cần",
+      "en": "Family meals and friend gatherings; especially great with jar wine"
+    },
+    "Best_season": {
+      "vi": "Quanh năm; mùa lạnh món ăn càng được ưa chuộng",
+      "en": "Year-round; particularly popular in cold season"
+    },
+    "origin_story": {
+      "vi": "Lá lồm là loại lá rừng có vị chua, mọc nhiều ở Hòa Bình và vùng Tây Bắc. Người dân địa phương đã kết hợp lá lồm với thịt trâu – loại thịt phổ biến trong chăn nuôi vùng cao – để tạo ra món ăn vừa dân dã vừa đặc sắc. Thịt trâu lá lồm hiện được xem là một trong những món nên thử khi đến Hòa Bình.",
+      "en": "Lá lồm is a naturally sour forest leaf common in Hoa Binh and the Northwest. Locals paired it with buffalo meat—an important livestock meat in mountain areas—to create a rustic yet distinctive dish. Today, buffalo with lá lồm is one of the must-try dishes in Hoa Binh cuisine."
+    },
+    "price_range": {
+      "vi": "80.000–150.000đ/phần tại quán; mua chế biến sẵn có thể cao hơn",
+      "en": "80,000–150,000 VND/portion at eateries; higher for ready-to-eat specialty products"
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "thịt trâu lá lồm,đặc sản Hòa Bình,món trâu,ẩm thực núi rừng",
+      "en": "buffalo with sour leaves,Hoa Binh specialty,buffalo dish,forest cuisine"
+    },
+    "spicy_level": 2,
+    "satiety_level": 4
+  },
+  {
+    "STT": 156,
+    "id": "ruou_can_hoa_binh",
+    "slug": "ruou-can-hoa-binh",
+    "Name": {
+      "vi": "Rượu cần Hòa Bình",
+      "en": "Hoa Binh Jar Wine (Rượu cần)"
+    },
+    "description": {
+      "vi": "Rượu cần Hòa Bình là loại rượu truyền thống của đồng bào dân tộc, ủ trong ché, uống bằng cần trúc trong các dịp lễ hội, đón khách, mang đậm tính cộng đồng và văn hóa bản địa.",
+      "en": "A traditional communal wine fermented in large jars and drunk through bamboo straws during festivals and welcoming ceremonies. More than a drink, it represents hospitality and community spirit in local ethnic culture."
+    },
+    "category": {
+      "vi": "Đồ uống có cồn – rượu truyền thống",
+      "en": "Alcoholic beverage – traditional rice wine"
+    },
+    "ingredients": {
+      "vi": "Gạo nếp, ngô hoặc sắn (tùy nơi), men rượu làm từ các vị thuốc/bột lá rừng, nước, ché sành, cần trúc/bương dùng để uống.",
+      "en": "Glutinous rice, corn or cassava (varies), herbal yeast starter made from forest leaves/medicinal plants, water, ceramic jar, bamboo straws."
+    },
+    "instructions": {
+      "vi": "Gạo nếp hoặc nguyên liệu tinh bột được đồ chín, để nguội, trộn với men rượu rồi cho vào ché sành, ủ kín trong nhiều tháng. Khi uống, đổ nước sạch vào ché, cắm cần trúc, nhiều người quây quần uống chung, nước trong ché được bổ sung thêm dần cho đến khi rượu nhạt.",
+      "en": "Cook glutinous rice or starchy ingredients, cool, mix with yeast starter, then pack into a jar and seal for months. To drink, add clean water, insert bamboo straws, and share the jar together; add more water gradually until the wine becomes light."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Hòa Bình",
+      "en": "Hoa Binh"
+    },
+    "Best_time": {
+      "vi": "Dịp lễ hội, đón khách, giao lưu văn hóa, sinh hoạt cộng đồng",
+      "en": "Festivals, guest welcoming, cultural exchange, and community gatherings"
+    },
+    "Best_season": {
+      "vi": "Quanh năm; nhiều nhất vào mùa lễ hội, du lịch (thu – xuân)",
+      "en": "Year-round; most common in festival and tourism season (autumn–spring)"
+    },
+    "origin_story": {
+      "vi": "Rượu cần gắn liền với đời sống tinh thần của nhiều dân tộc ở Hòa Bình như người Mường, người Thái. Không chỉ là thức uống, rượu cần còn biểu tượng cho sự gắn kết cộng đồng, hiếu khách. Ngày nay, rượu cần Hòa Bình được đóng chai, quảng bá rộng rãi, nhưng trải nghiệm uống ngay tại bản vẫn được coi là đáng nhớ nhất.",
+      "en": "Jar wine is central to the spiritual and social life of several ethnic groups in Hoa Binh, such as Muong and Thai. It symbolizes togetherness and hospitality. Today it’s also bottled and sold, but drinking jar wine in a village setting remains the most memorable experience for many visitors."
+    },
+    "price_range": {
+      "vi": "150.000–400.000đ/ché hoặc bình (tùy dung tích và loại men)",
+      "en": "150,000–400,000 VND per jar or container depending on size and yeast type"
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "rượu cần,rượu cần Hòa Bình,đồ uống truyền thống,du lịch cộng đồng",
+      "en": "jar wine,Hoa Binh jar wine,traditional drink,community tourism"
+    },
+    "spicy_level": 1,
+    "satiety_level": 1
+  },
+  {
+    "STT": 157,
+    "id": "ca_suoi_nuong_hoa_binh_mai_chau",
+    "slug": "ca-suoi-nuong-hoa-binh-mai-chau",
+    "Name": {
+      "vi": "Cá suối nướng Hòa Bình – Mai Châu",
+      "en": "Hoa Binh – Mai Chau Grilled Stream Fish"
+    },
+    "description": {
+      "vi": "Cá suối nướng Hòa Bình – Mai Châu là món đặc sản từ những con cá nhỏ bắt ở suối, được tẩm ướp rồi nướng trên than, xương mềm, có thể ăn cả con, rất đưa cơm và hợp nhậu.",
+      "en": "Small stream fish are marinated and grilled over charcoal until golden and fragrant. The bones are often soft enough to eat, making it a perfect rustic dish with sticky rice, bamboo-tube rice, and jar wine."
+    },
+    "category": {
+      "vi": "Món nướng – cá suối",
+      "en": "Grilled dish – stream fish"
+    },
+    "ingredients": {
+      "vi": "Cá suối tươi (cá mương, cá suối nhỏ), muối, sả, ớt, lá chanh, mắc khén/tiêu (tùy vùng), xiên tre hoặc vỉ nướng, than hồng.",
+      "en": "Fresh stream fish (small local species), salt, lemongrass, chili, kaffir lime leaves, pepper or local spices, bamboo skewers/grill rack, hot charcoal."
+    },
+    "instructions": {
+      "vi": "Cá suối làm sạch, để nguyên con hoặc mổ bỏ ruột, ướp với muối, sả, ớt, gia vị. Xếp cá lên vỉ hoặc xiên tre, nướng trên than hồng, trở đều đến khi cá vàng giòn, dậy mùi thơm. Có thể chấm với muối chanh ớt hoặc chẩm chéo khi ăn.",
+      "en": "Clean fish; keep whole or remove guts. Marinate with salt, lemongrass, chili, and seasonings. Grill over charcoal, turning until evenly crisp and aromatic. Serve with chili-lime salt or local dipping spices (chẩm chéo)."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Hòa Bình",
+      "en": "Hoa Binh"
+    },
+    "Best_time": {
+      "vi": "Bữa tối, tiệc ngoài trời, ăn cùng cơm lam, xôi nếp nương, rượu cần",
+      "en": "Dinner, outdoor parties; pairs well with cơm lam, sticky rice, and jar wine"
+    },
+    "Best_season": {
+      "vi": "Quanh năm; mùa nước suối trong mát, cá nhiều càng ngon",
+      "en": "Year-round; best when stream water is clear and fish are plentiful"
+    },
+    "origin_story": {
+      "vi": "Nhờ hệ thống suối, khe nước dày đặc ở Hòa Bình – Mai Châu, cá suối trở thành nguồn thực phẩm quan trọng. Người dân bản địa thường nướng cá trên bếp than trong các bữa cơm hoặc đãi khách. Qua thời gian, cá suối nướng trở thành món 'must try' trong các tour du lịch bản làng tại Mai Châu, Hòa Bình.",
+      "en": "Thanks to many streams and creeks in Hoa Binh–Mai Chau, stream fish has long been a key local food. Villagers often grill fish over coals for meals and to welcome guests. With tourism, grilled stream fish became a ‘must-try’ dish on village tours in Mai Chau and Hoa Binh."
+    },
+    "price_range": {
+      "vi": "60.000–120.000đ/đĩa tùy loại cá và số lượng",
+      "en": "60,000–120,000 VND/plate depending on fish type and quantity"
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "cá suối nướng,Mai Châu Hòa Bình,món nướng,ẩm thực núi rừng",
+      "en": "grilled stream fish,Mai Chau,Hoa Binh,forest cuisine"
+    },
+    "spicy_level": 2,
+    "satiety_level": 3
+  },
+  {
+    "STT": 158,
+    "id": "ga_oi_hoa_binh_ga_chay_bo",
+    "slug": "ga-oi-hoa-binh-ga-chay-bo",
+    "Name": {
+      "vi": "Gà đồi Hòa Bình (gà chạy bộ)",
+      "en": "Hoa Binh Hill Chicken (Free-Range Chicken)"
+    },
+    "description": {
+      "vi": "Gà đồi Hòa Bình, còn gọi là gà chạy bộ, được nuôi thả trên đồi, thịt săn chắc, da giòn, là nguyên liệu chính cho nhiều món như gà nướng, gà hấp, gà luộc chấm muối chanh.",
+      "en": "Also nicknamed ‘running chicken,’ this free-range hill chicken is raised on hillsides, resulting in firm, flavorful meat and crispy skin. It’s used for many dishes—grilled, steamed, boiled with lime-salt dip—and is a highlight in local meals and tourism menus."
+    },
+    "category": {
+      "vi": "Nguyên liệu/món mặn – gà đồi",
+      "en": "Ingredient/savory dish – hill chicken"
+    },
+    "ingredients": {
+      "vi": "Gà đồi Hòa Bình, các gia vị tùy món chế biến: muối, gừng, sả, lá chanh, ớt, mật ong (nếu nướng), rau sống, gia vị chấm.",
+      "en": "Hoa Binh hill chicken plus seasonings depending on preparation: salt, ginger, lemongrass, kaffir lime leaves, chili, honey (for grilling), herbs, dipping sauces."
+    },
+    "instructions": {
+      "vi": "Gà đồi có thể được chế biến theo nhiều cách: luộc chín chấm muối chanh, nướng than mật ong, hấp lá chanh… Điểm quan trọng là không chế biến quá lâu để thịt không bị khô, giữ được độ giòn của da và độ ngọt của thịt.",
+      "en": "Hill chicken can be boiled and dipped in chili-lime salt, grilled with honey over charcoal, or steamed with lime leaves. Key is not overcooking so the meat stays juicy while keeping the skin pleasantly crisp."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Hòa Bình",
+      "en": "Hoa Binh"
+    },
+    "Best_time": {
+      "vi": "Bữa trưa, tối, tiệc gia đình, liên hoan, khi đi du lịch bản làng",
+      "en": "Lunch/dinner, family feasts, gatherings, and village tourism meals"
+    },
+    "Best_season": {
+      "vi": "Quanh năm",
+      "en": "Year-round"
+    },
+    "origin_story": {
+      "vi": "Địa hình đồi núi của Hòa Bình rất thuận lợi cho mô hình nuôi gà đồi thả tự nhiên. Nhờ vận động nhiều và ăn thức ăn tự nhiên, gà có chất lượng thịt thơm ngon, dần hình thành thương hiệu 'gà chạy bộ' Hòa Bình. Du khách khi đến các khu du lịch thường được giới thiệu các món chế biến từ gà đồi địa phương.",
+      "en": "Hoa Binh’s hilly terrain is ideal for free-range chicken farming. With plenty of movement and natural feed, the chickens develop better texture and flavor, forming the well-known local ‘running chicken’ reputation. Visitors are often introduced to hill-chicken dishes at tourist villages and local restaurants."
+    },
+    "price_range": {
+      "vi": "250.000–400.000đ/con tại bản/quán; suất ăn theo món từ 80.000–150.000đ",
+      "en": "250,000–400,000 VND/chicken at villages/eateries; dishes typically 80,000–150,000 VND"
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "gà đồi Hòa Bình,gà chạy bộ,đặc sản núi,rượu cần,ẩm thực bản",
+      "en": "Hoa Binh hill chicken,free-range chicken,highland specialty"
+    },
+    "spicy_level": 1,
+    "satiety_level": 5
+  },
+  {
+    "STT": 159,
+    "id": "banh_oc_mai_chau",
+    "slug": "banh-oc-mai-chau",
+    "Name": {
+      "vi": "Bánh ốc Mai Châu",
+      "en": "Mai Chau ‘Snail-Shaped’ Sticky Rice Cake (Bánh ốc)"
+    },
+    "description": {
+      "vi": "Bánh ốc Mai Châu là loại bánh dân tộc có hình dạng xoắn như con ốc, làm từ bột nếp, nhân đậu hoặc đường, thường xuất hiện trong các dịp lễ tết của người Thái ở Mai Châu.",
+      "en": "A traditional ethnic cake shaped like a snail shell. Made from glutinous rice dough with sweet fillings (mung bean or sugar/molasses), it’s commonly prepared for Thai people’s holidays and Tet in Mai Chau."
+    },
+    "category": {
+      "vi": "Bánh truyền thống – bánh lễ/ăn chơi",
+      "en": "Traditional cake – festive/ceremonial sweet"
+    },
+    "ingredients": {
+      "vi": "Gạo nếp, bột gạo nếp, đường hoặc mật, đậu xanh (tùy biến), dầu/mỡ để rán (nếu là bánh chiên), lá chuối để bọc (nếu là bánh luộc/hấp).",
+      "en": "Glutinous rice or glutinous rice flour, sugar or molasses, mung beans (optional), oil/fat for frying (if fried version), banana leaves for wrapping (if steamed/boiled)."
+    },
+    "instructions": {
+      "vi": "Bột nếp được nhào với nước đến khi dẻo, sau đó vê thành dây nhỏ, cuốn xoắn lại như hình con ốc. Có nơi chiên bánh vàng giòn, có nơi luộc/hấp rồi áo lớp mật đường. Một số biến thể có thêm nhân đậu xanh bên trong. Bánh thường được dùng trong mâm cỗ tết hoặc làm quà cho trẻ nhỏ.",
+      "en": "Knead glutinous rice dough until smooth and elastic. Roll into thin ropes and coil into a spiral ‘snail’ shape. Depending on the variant, fry until golden, or steam/boil and then coat with a sugar/molasses glaze. Some versions include mung bean filling. Typically served during Tet feasts or as a treat for children."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Hòa Bình",
+      "en": "Hoa Binh"
+    },
+    "Best_time": {
+      "vi": "Dịp lễ tết, hội làng, ăn chơi trong gia đình",
+      "en": "Tet/holiday celebrations, village festivals, and family snacks"
+    },
+    "Best_season": {
+      "vi": "Quanh năm; xuất hiện nhiều nhất dịp Tết",
+      "en": "Year-round; most common around Lunar New Year"
+    },
+    "origin_story": {
+      "vi": "Bánh ốc là món bánh truyền thống của người Thái ở vùng Mai Châu, Hòa Bình. Hình dạng bánh giống con ốc tượng trưng cho sự sinh sôi, no đủ. Bánh thường được làm trong dịp lễ tết, dần dần trở thành một phần không thể thiếu trong văn hóa ẩm thực bản Thái Mai Châu.",
+      "en": "Bánh ốc is a traditional Thai ethnic cake in Mai Chau. Its spiral shape symbolizes growth and abundance. Made for holidays and Tet, it gradually became a recognizable part of Mai Chau’s culinary culture."
+    },
+    "price_range": {
+      "vi": "20.000–50.000đ/gói/bó (tùy số lượng bánh và nơi bán)",
+      "en": "20,000–50,000 VND per bundle/package depending on quantity and seller"
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh ốc Mai Châu,bánh dân tộc,ẩm thực Thái",
+      "en": "Mai Chau bánh ốc,ethnic cake,Thai cuisine"
+    },
+    "spicy_level": 0,
+    "satiety_level": 2
+  },
+  {
+    "STT": 160,
+    "id": "banh_khao_hoa_binh",
+    "slug": "banh-khao-hoa-binh",
+    "Name": {
+      "vi": "Bánh khảo Hòa Bình",
+      "en": "Hoa Binh ‘Bánh khảo’ Toasted Sticky Rice Cake"
+    },
+    "description": {
+      "vi": "Bánh khảo Hòa Bình là loại bánh khô truyền thống làm từ bột nếp rang, nhân đậu, mỡ đường, thường dùng trong dịp Tết, có vị ngọt bùi, thơm mùi nếp rang, tan nhẹ trong miệng.",
+      "en": "A traditional dry cake made from toasted glutinous rice flour with mung bean filling and candied pork fat. Sweet, nutty, and lightly crumbly—often enjoyed with hot tea during Tet and as a gift."
+    },
+    "category": {
+      "vi": "Bánh khô – bánh Tết, quà biếu",
+      "en": "Dry cake – Tet cake / gift"
+    },
+    "ingredients": {
+      "vi": "Gạo nếp rang xay mịn, đậu xanh đồ chín, đường, mỡ lợn (hoặc dầu), vừng (tùy nơi), giấy bản/giấy gói bánh.",
+      "en": "Toasted glutinous rice flour, cooked mung beans, sugar, pork fat (or oil), sesame (optional), traditional wrapping paper."
+    },
+    "instructions": {
+      "vi": "Gạo nếp rang vàng, xay mịn thành bột, trộn với đường. Nhân gồm đậu xanh đồ chín, giã nhuyễn, trộn với đường và mỡ. Bột và nhân được ép nhiều lớp trong khuôn, sau đó cắt thành thanh hoặc miếng nhỏ, gói bằng giấy bản hoặc giấy nhiều màu. Bánh ngon nhất khi để vài ngày cho quyện vị.",
+      "en": "Toast glutinous rice until fragrant and grind into fine flour; mix with sugar. Make filling by steaming mung beans, mashing, then mixing with sugar and candied pork fat. Press flour and filling in layers into a mold, then cut into bars or small pieces and wrap. Let sit for a day or two for flavors to meld."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Hòa Bình",
+      "en": "Hoa Binh"
+    },
+    "Best_time": {
+      "vi": "Dùng trong dịp Tết, cúng lễ, làm quà biếu, ăn kèm trà nóng",
+      "en": "Tet offerings, festivals, gifting, and tea-time snacks"
+    },
+    "Best_season": {
+      "vi": "Mùa Tết Nguyên Đán là cao điểm; một số nơi làm quanh năm",
+      "en": "Peak around Lunar New Year; some places make it year-round"
+    },
+    "origin_story": {
+      "vi": "Bánh khảo là loại bánh truyền thống xuất hiện trong mâm cỗ Tết của nhiều dân tộc vùng núi phía Bắc, trong đó có Hòa Bình. Cách rang nếp, làm nhân và ép bánh ở mỗi vùng có khác nhau đôi chút, tạo nên hương vị riêng. Bánh khảo Hòa Bình với sự kết hợp giữa văn hóa Mường, Thái đã góp phần làm phong phú thêm bản sắc ẩm thực địa phương.",
+      "en": "Bánh khảo appears on Tet trays across several northern mountain ethnic groups, including in Hoa Binh. Each area has slight differences in toasting, filling, and pressing techniques. In Hoa Binh, the blend of Muong and Thai cultural touches adds local character to this traditional cake."
+    },
+    "price_range": {
+      "vi": "30.000–70.000đ/hộp/gói (tùy kích cỡ và thương hiệu)",
+      "en": "30,000–70,000 VND/box or pack depending on size and brand"
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh khảo Hòa Bình,bánh Tết,bánh khô,đặc sản núi,rượu cần",
+      "en": "bánh khảo,Hoa Binh,Tet cake,dry cake"
+    },
+    "spicy_level": 0,
+    "satiety_level": 2
+  },
+  {
+    "STT": 161,
+    "id": "mat_ong_rung_hoa_binh",
+    "slug": "mat-ong-rung-hoa-binh",
+    "Name": {
+      "vi": "Mật ong rừng Hòa Bình",
+      "en": "Hoa Binh Wild Forest Honey"
+    },
+    "description": {
+      "vi": "Mật ong rừng Hòa Bình là sản phẩm từ ong khai thác trong rừng núi, mật có màu vàng sậm, hương thơm tự nhiên, vị ngọt dịu, thường được dùng như thực phẩm và vị thuốc.",
+      "en": "Harvested from forest bees or free-range beekeeping near forests, Hoa Binh honey is amber to dark gold with a natural floral aroma and a gentle sweetness. Used as food and traditional remedy—popular for drinks, garlic-honey, and gifting."
+    },
+    "category": {
+      "vi": "Sản vật tự nhiên – mật ong",
+      "en": "Natural product – honey"
+    },
+    "ingredients": {
+      "vi": "Mật ong thu từ các tổ ong rừng hoặc ong nuôi thả tự nhiên trong rừng núi Hòa Bình.",
+      "en": "Honey collected from wild bee hives or naturally foraged bees near Hoa Binh forests."
+    },
+    "instructions": {
+      "vi": "Người dân địa phương thường đi rừng tìm tổ ong, khai thác mật một cách khéo léo để giữ đàn ong. Ngày nay, nhiều hộ nuôi ong bán tự nhiên gần rừng, cho ong hút mật từ hoa rừng. Mật sau khi thu được lọc sạch sáp, đóng chai, bảo quản nơi khô mát.",
+      "en": "Traditionally, locals searched for wild hives and harvested honey carefully to keep colonies intact. Today many households practice semi-wild beekeeping near forests so bees forage on forest blossoms. Honey is filtered to remove wax, bottled, and stored in a cool, dry place."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Hòa Bình",
+      "en": "Hoa Binh"
+    },
+    "Best_time": {
+      "vi": "Dùng làm đồ uống, pha với chanh, ngâm tỏi, làm quà biếu, chế biến món ăn",
+      "en": "For drinks (lemon-honey), garlic-honey, cooking, and gifting"
+    },
+    "Best_season": {
+      "vi": "Mùa hoa rừng (xuân – hè) cho mật ngon nhất; dùng được quanh năm",
+      "en": "Forest flowering season (spring–summer) produces the best honey; usable year-round"
+    },
+    "origin_story": {
+      "vi": "Hòa Bình có hệ sinh thái rừng phong phú, tạo điều kiện cho nghề khai thác và nuôi ong phát triển. Mật ong rừng từ lâu đã được người dân sử dụng như vị thuốc dân gian, đồng thời trở thành đặc sản mang về làm quà. Ngày nay, nhiều cơ sở đã xây dựng thương hiệu mật ong Hòa Bình với tiêu chí sạch, tự nhiên, góp phần nâng cao giá trị sản vật địa phương.",
+      "en": "Hoa Binh’s rich forest ecosystem supports both wild-honey harvesting and beekeeping. Honey has long been used in folk remedies and as a valued local product. Today, several producers have built cleaner, more traceable ‘Hoa Binh honey’ brands to increase the value of local forest products."
+    },
+    "price_range": {
+      "vi": "200.000–500.000đ/lít (tùy độ nguyên chất và nguồn gốc)",
+      "en": "200,000–500,000 VND/liter depending on purity and source"
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "mật ong rừng Hòa Bình,đặc sản núi,sản vật thiên nhiên,mật ong",
+      "en": "Hoa Binh forest honey,mountain specialty,natural product,honey"
+    },
+    "spicy_level": 0,
+    "satiety_level": 1
+  }
+]

@@ -834,7 +834,6 @@ class _ProvinceMapItem {
           : feature.displayName;
 
   bool get isDiscovered =>
-      feature.key == 'nghe_an' ||
       progress.isDiscovered ||
       progress.checkinCount > 0;
 }
@@ -1117,6 +1116,7 @@ String _normalizeProvinceKey(String input) {
 }
 
 const Map<String, String> _provinceAliases = {
+  'thanh_pho_ho_chi_minh': 'tp_ho_chi_minh',
   'tp_ho_chi_minh': 'ho_chi_minh_city',
   'ho_chi_minh_city': 'ho_chi_minh_city',
   'tp_hcm': 'ho_chi_minh_city',

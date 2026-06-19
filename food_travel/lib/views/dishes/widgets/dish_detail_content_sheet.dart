@@ -4,6 +4,7 @@ import '../../../models/dish_model.dart';
 
 class DishDetailContentSheet extends StatelessWidget {
   const DishDetailContentSheet({
+    super.key,
     required this.dish,
     required this.descExpanded,
     required this.onToggleDesc,
@@ -28,7 +29,6 @@ class DishDetailContentSheet extends StatelessWidget {
     final instructions = dish.getInstructions(lang);
     final priceRange = dish.getPriceRange(lang);
     final province = dish.getProvince(lang);
-    final region = dish.getRegion(lang);
 
     final spicy = _clampLevel(dish.spicyLevel);
     final satiety = _clampLevel(dish.satietyLevel);

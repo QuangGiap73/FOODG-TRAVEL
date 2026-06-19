@@ -1,0 +1,1010 @@
+[
+  {
+    "STT": 211,
+    "id": "thang_co_lao_cai",
+    "slug": "thang-co-lao-cai",
+    "Name": {
+      "vi": "Thắng cố Lào Cai",
+      "en": "Lao Cai Thắng Cố (Highland Horse-Offal Stew)"
+    },
+    "description": {
+      "vi": "Thắng cố là món canh/hầm truyền thống nổi tiếng của vùng cao Lào Cai (Bắc Hà, Sa Pa…), thường nấu từ thịt, xương và nội tạng ngựa (nay có thêm bò, trâu), hầm cùng nhiều loại gia vị đặc trưng, hương vị đậm, hơi nồng, rất hợp làm món nhắm trong các phiên chợ vùng cao.",
+      "en": "A famous traditional highland stew from Lao Cai (Bac Ha, Sa Pa, etc.). It is commonly cooked from horse meat, bones, and offal (now sometimes beef or buffalo), simmered for hours with mountain spices. The flavor is rich and aromatic, with a distinctive bold smell—often enjoyed as a drinking dish at local markets."
+    },
+    "category": {
+      "vi": "Món hầm/canh – nội tạng, món nhậu đặc sản",
+      "en": "Stew/soup – offal-based highland specialty, great with drinks"
+    },
+    "ingredients": {
+      "vi": "Thịt, xương, nội tạng ngựa (hoặc bò/trâu), xương ống, nước, sả, gừng, thảo quả, quế, hồi, mắc khén, rau thơm, muối, mắm, ớt; ăn kèm rau sống, mèn mén hoặc bún.",
+      "en": "Horse meat, bones, and offal (or beef/buffalo), marrow bones, water, lemongrass, ginger, black cardamom, cinnamon, star anise, mắc khén (mountain pepper), herbs, salt, fish sauce, chili; served with herbs, mèn mén (cornmeal), or vermicelli."
+    },
+    "instructions": {
+      "vi": "Thịt, xương và nội tạng được làm sạch, chần qua rồi cho vào nồi lớn hầm với nước. Thêm các loại gia vị vùng cao như sả, gừng, quế, hồi, thảo quả, mắc khén… hầm trong nhiều giờ cho mềm. Nêm muối, mắm, ớt vừa ăn. Khi ăn, múc thắng cố ra bát, ăn nóng kèm mèn mén, bún hoặc uống cùng rượu ngô.",
+      "en": "Clean the meat, bones, and offal thoroughly, blanch briefly, then place in a large pot with water. Add mountain spices such as lemongrass, ginger, cinnamon, star anise, black cardamom, and mắc khén, then simmer for several hours until tender. Season with salt, fish sauce, and chili to taste. Serve hot with mèn mén, vermicelli, and corn wine."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Lào Cai",
+      "en": "Lao Cai"
+    },
+    "Best_time": {
+      "vi": "Chiều tối, trong các buổi tụ tập bạn bè, phiên chợ vùng cao",
+      "en": "Late afternoon/evening gatherings and at highland market days."
+    },
+    "Best_season": {
+      "vi": "Mùa lạnh, mùa lễ hội; nhưng nhiều quán vẫn bán quanh năm",
+      "en": "Cold season and festival time; many eateries sell it year-round."
+    },
+    "origin_story": {
+      "vi": "Thắng cố được cho là món ăn có nguồn gốc từ người Mông ở vùng cao Tây Bắc, sau đó lan rộng ra các cộng đồng dân tộc khác và trở thành biểu tượng ẩm thực vùng cao. Tại Lào Cai, đặc biệt là Bắc Hà và Sa Pa, thắng cố xuất hiện nhiều trong các phiên chợ, lễ hội, gắn liền với hình ảnh chợ tình, chợ phiên và những cuộc rượu rộn ràng của đồng bào.",
+      "en": "Thắng cố is believed to originate from the H’Mong people in the Northwest highlands, later spreading to other ethnic communities and becoming an iconic mountain dish. In Lao Cai—especially Bac Ha and Sa Pa—it appears frequently at markets and festivals, linked to the lively atmosphere of highland fairs and communal drinking."
+    },
+    "price_range": {
+      "vi": "50.000–150.000đ/bát hoặc theo nồi/nhóm người",
+      "en": "About 50,000–150,000 VND per bowl, or by pot/group."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "thắng cố,Bắc Hà,Sa Pa,món hầm,đặc sản vùng cao",
+      "en": "thắng cố,Bac Ha,Sa Pa,highland stew,mountain specialty"
+    },
+    "spicy_level": 2,
+    "satiety_level": 4
+  },
+  {
+    "STT": 212,
+    "id": "ca_hoi_sa_pa",
+    "slug": "ca-hoi-sa-pa",
+    "Name": {
+      "vi": "Cá hồi Sa Pa",
+      "en": "Sa Pa Salmon"
+    },
+    "description": {
+      "vi": "Cá hồi Sa Pa là một trong những loại cá nước lạnh nổi tiếng nhất Việt Nam, được nuôi trong nguồn nước mát lạnh quanh năm của Sa Pa, thịt hồng, săn chắc, ít mỡ, thích hợp làm sashimi, nướng, lẩu hoặc áp chảo.",
+      "en": "One of Vietnam’s best-known cold-water fish specialties. Raised in Sa Pa’s year-round cool streams, the salmon has firm pink flesh and is suited for sashimi, grilling, hot pot, or pan-searing."
+    },
+    "category": {
+      "vi": "Nguyên liệu – cá nước lạnh, món mặn",
+      "en": "Ingredient – cold-water fish, savory dishes"
+    },
+    "ingredients": {
+      "vi": "Cá hồi tươi Sa Pa (phi lê hoặc nguyên con), chanh, muối, tiêu, dầu ô liu hoặc dầu ăn, rau ăn kèm (xà lách, cải, rau thơm), gia vị tùy món (bơ, tỏi, gừng…).",
+      "en": "Fresh Sa Pa salmon (fillet or whole), lemon, salt, pepper, olive oil or cooking oil, side greens (lettuce, mustard greens, herbs), seasonings as needed (butter, garlic, ginger, etc.)."
+    },
+    "instructions": {
+      "vi": "Cá hồi có thể được chế biến thành nhiều món: – Sashimi: cá hồi phi lê tươi cắt lát mỏng, ăn sống với mù tạt và xì dầu. – Nướng/áp chảo: tẩm muối, tiêu, dầu, nướng hoặc áp chảo cho vàng mặt ngoài, phần trong vẫn mềm. – Lẩu cá hồi: đầu, xương nấu nước dùng với cà chua, dứa, rau, ăn kèm bún hoặc mì.",
+      "en": "Salmon can be prepared in many ways: – Sashimi: slice very fresh fillet thinly and eat with wasabi and soy sauce. – Grilled/pan-seared: season with salt and pepper, brush with oil, then grill or sear until golden outside while still tender inside. – Salmon hot pot: simmer head and bones with tomato and pineapple; add vegetables and enjoy with vermicelli or noodles."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Lào Cai",
+      "en": "Lao Cai"
+    },
+    "Best_time": {
+      "vi": "Bữa trưa, tối trong các nhà hàng, quán đặc sản Sa Pa",
+      "en": "Lunch or dinner at Sa Pa specialty restaurants."
+    },
+    "Best_season": {
+      "vi": "Quanh năm; mùa lạnh ăn lẩu cá hồi rất hợp",
+      "en": "Year-round; salmon hot pot is especially great in cold weather."
+    },
+    "origin_story": {
+      "vi": "Nhờ khí hậu mát lạnh quanh năm và nguồn nước suối trong lành, Sa Pa là một trong những nơi đầu tiên ở Việt Nam phát triển thành công mô hình nuôi cá nước lạnh như cá hồi. Cá hồi Sa Pa nhanh chóng trở thành thương hiệu, thu hút du khách đến thưởng thức khi lên vùng cao.",
+      "en": "Thanks to Sa Pa’s cool climate and clean mountain water, it became one of the first places in Vietnam to successfully farm cold-water fish such as salmon. Sa Pa salmon quickly turned into a recognizable brand and a must-try for visitors."
+    },
+    "price_range": {
+      "vi": "200.000–400.000đ/kg cá tươi; món lẩu/nướng tính theo suất",
+      "en": "About 200,000–400,000 VND/kg for fresh fish; hot pot/grilled dishes priced per set."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "cá hồi Sa Pa,cá nước lạnh,Lào Cai,lẩu cá hồi,sashimi cá hồi",
+      "en": "Sa Pa salmon,cold-water fish,Lao Cai,salmon hot pot,salmon sashimi"
+    },
+    "spicy_level": 1,
+    "satiety_level": 4
+  },
+  {
+    "STT": 213,
+    "id": "ca_tam_sa_pa",
+    "slug": "ca-tam-sa-pa",
+    "Name": {
+      "vi": "Cá tầm Sa Pa",
+      "en": "Sa Pa Sturgeon"
+    },
+    "description": {
+      "vi": "Cá tầm Sa Pa là một đặc sản cá nước lạnh khác bên cạnh cá hồi, thịt trắng, chắc, ngọt, thường được dùng nấu lẩu, hấp, om, nướng, rất được thực khách yêu thích.",
+      "en": "Another popular cold-water specialty alongside salmon. Sa Pa sturgeon has firm, sweet white flesh and is commonly cooked in hot pot, steamed with ginger, braised, grilled, or fried."
+    },
+    "category": {
+      "vi": "Nguyên liệu – cá nước lạnh, món mặn",
+      "en": "Ingredient – cold-water fish, savory dishes"
+    },
+    "ingredients": {
+      "vi": "Cá tầm tươi (cắt khúc), xương hoặc đầu cá tầm để hầm nước dùng, rau cho lẩu (cải, nấm, cà chua, dứa), gừng, hành, gia vị (muối, nước mắm, tiêu).",
+      "en": "Fresh sturgeon (cut into pieces), sturgeon head/bones for broth, hot pot vegetables (mustard greens, mushrooms, tomato, pineapple), ginger, scallions, seasonings (salt, fish sauce, pepper)."
+    },
+    "instructions": {
+      "vi": "Thông dụng nhất là lẩu cá tầm: xương/đầu cá hầm lấy nước ngọt, cho cà chua, dứa, gia vị vào làm nước lẩu. Thịt cá tầm cắt khúc nhúng chín trong nồi lẩu, ăn kèm rau, bún hoặc mì. Ngoài ra, cá tầm có thể đem hấp gừng, nướng, chiên giòn hoặc om măng chua tùy khẩu vị.",
+      "en": "Most common is sturgeon hot pot: simmer head/bones for a naturally sweet broth, add tomato, pineapple, and seasonings. Dip sturgeon pieces in the boiling pot and eat with vegetables and vermicelli/noodles. Sturgeon can also be steamed with ginger, grilled, fried, or braised with pickled bamboo shoots."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Lào Cai",
+      "en": "Lao Cai"
+    },
+    "Best_time": {
+      "vi": "Bữa trưa, tối, đặc biệt là khi đi du lịch Sa Pa cùng gia đình/bạn bè",
+      "en": "Lunch/dinner, especially when traveling in Sa Pa with family or friends."
+    },
+    "Best_season": {
+      "vi": "Quanh năm; mùa đông ăn lẩu là lý tưởng",
+      "en": "Year-round; winter hot pot is ideal."
+    },
+    "origin_story": {
+      "vi": "Cá tầm được nuôi trong các hồ nước lạnh ở Sa Pa, nhờ điều kiện tự nhiên tương đối giống với vùng ôn đới, rất phù hợp để phát triển cá nước lạnh. Cùng với cá hồi, cá tầm Sa Pa trở thành một trong những sản phẩm đặc trưng của ngành nuôi trồng thủy sản vùng cao Lào Cai.",
+      "en": "Sturgeon is farmed in Sa Pa’s cold-water lakes and streams, where conditions resemble temperate zones. Together with salmon, Sa Pa sturgeon became a signature aquaculture product of highland Lao Cai."
+    },
+    "price_range": {
+      "vi": "180.000–350.000đ/kg; món lẩu tính theo suất",
+      "en": "About 180,000–350,000 VND/kg; hot pot priced per set."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "cá tầm Sa Pa,cá nước lạnh,Lào Cai,lẩu cá tầm",
+      "en": "Sa Pa sturgeon,cold-water fish,Lao Cai,sturgeon hot pot"
+    },
+    "spicy_level": 1,
+    "satiety_level": 4
+  },
+  {
+    "STT": 214,
+    "id": "lon_cap_nach_lao_cai",
+    "slug": "lon-cap-nach-lao-cai",
+    "Name": {
+      "vi": "Lợn cắp nách Lào Cai",
+      "en": "Lao Cai ‘Armpit Pig’ (Free-Range Small Pig)"
+    },
+    "description": {
+      "vi": "Lợn cắp nách Lào Cai là giống lợn bản địa được nuôi thả tự nhiên trên nương rẫy, trọng lượng nhỏ, thịt chắc, thơm, ít mỡ. Thịt thường được quay, nướng hoặc hấp, là món ăn nổi bật trong các bữa tiệc vùng cao.",
+      "en": "A native highland pig raised free-range on fields and forested slopes. The pigs are small, with firm, fragrant meat and little fat. The meat is often roasted, grilled, or steamed and is a highlight at mountain feasts."
+    },
+    "category": {
+      "vi": "Món mặn – thịt lợn bản địa",
+      "en": "Savory dish – local free-range pork"
+    },
+    "ingredients": {
+      "vi": "Lợn cắp nách nguyên con hoặc từng mảng, muối, mắm, gừng, sả, tỏi, ớt, mắc khén, lá chanh, rau sống ăn kèm, chanh, tiêu.",
+      "en": "Whole or cut armpit pig, salt, fish sauce, ginger, lemongrass, garlic, chili, mắc khén, kaffir lime leaves; fresh herbs, lime, and pepper for serving."
+    },
+    "instructions": {
+      "vi": "Lợn sau khi làm sạch được ướp với muối, nước mắm, gừng, sả, tỏi, ớt, mắc khén trong vài giờ. Sau đó đem quay trên than hồng hoặc nướng, trở đều tay cho chín, da vàng giòn. Thịt chín được chặt miếng, ăn cùng muối chanh ớt, rau sống, cơm hoặc xôi.",
+      "en": "Clean the pig and marinate with salt, fish sauce, ginger, lemongrass, garlic, chili, and mắc khén for a few hours. Roast or grill over charcoal, turning frequently until cooked through and the skin is golden and crisp. Chop into pieces and serve with chili-lime salt, herbs, rice, or sticky rice."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Lào Cai",
+      "en": "Lao Cai"
+    },
+    "Best_time": {
+      "vi": "Bữa trưa, tối; các dịp lễ tết, đón khách, hội bản",
+      "en": "Lunch/dinner; Tet holidays, welcoming guests, village festivals."
+    },
+    "Best_season": {
+      "vi": "Quanh năm; mùa đông ăn càng ngon",
+      "en": "Year-round; especially satisfying in winter."
+    },
+    "origin_story": {
+      "vi": "Lợn cắp nách được nuôi nhiều bởi các dân tộc Mông, Dao, Tày… ở vùng cao Lào Cai. Tên gọi 'cắp nách' bắt nguồn từ việc lợn nhỏ, dễ mang ra chợ bằng cách kẹp vào nách. Nhờ chăn thả tự nhiên, ăn cỏ cây, củ rừng, thịt lợn có hương vị đặc biệt, trở thành món đặc sản hấp dẫn du khách.",
+      "en": "Many ethnic groups in Lao Cai (H’Mong, Dao, Tay, etc.) raise small pigs. The name ‘armpit pig’ comes from how small pigs were traditionally carried to market tucked under the arm. With natural foraging on grasses and roots, the meat develops a distinctive flavor—making it a sought-after specialty for travelers."
+    },
+    "price_range": {
+      "vi": "150.000–250.000đ/kg; nguyên con tùy trọng lượng",
+      "en": "About 150,000–250,000 VND/kg; whole pig depends on weight."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "lợn cắp nách,lợn bản địa,Lào Cai,đặc sản vùng cao",
+      "en": "armpit pig,local pork,Lao Cai,highland specialty"
+    },
+    "spicy_level": 1,
+    "satiety_level": 5
+  },
+  {
+    "STT": 215,
+    "id": "ga_oi_ban_sa_pa_ga_ban_ga_ac",
+    "slug": "ga-oi-ban-sa-pa-ga-ban-ga-ac",
+    "Name": {
+      "vi": "Gà đồi bản Sa Pa (gà bản, gà ác)",
+      "en": "Sa Pa Village Hill Chicken (Free-Range / Black Chicken)"
+    },
+    "description": {
+      "vi": "Gà đồi bản Sa Pa là giống gà chạy bộ, thịt săn, thơm; trong đó có loại gà đen/gà ác, thường được nướng, luộc, hấp hoặc hầm thuốc bắc, là món ăn giàu dinh dưỡng ở vùng núi Lào Cai.",
+      "en": "Free-range hill chicken from Sa Pa is lean and fragrant. Some are black chickens (gà ác), often cooked as grilled chicken, boiled chicken, steamed dishes, or herbal stews—valued for nutrition in the highlands."
+    },
+    "category": {
+      "vi": "Nguyên liệu/món mặn – thịt gà bản địa",
+      "en": "Ingredient/savory dish – local chicken"
+    },
+    "ingredients": {
+      "vi": "Gà bản (gà thả đồi, gà đen), muối, tiêu, gừng, sả, lá chanh; nếu hầm thì thêm thuốc bắc (táo tàu, kỷ tử…), nấm, rau củ tùy món.",
+      "en": "Free-range village chicken (including black chicken), salt, pepper, ginger, lemongrass, kaffir lime leaves; for herbal stew: Chinese herbs (red dates, goji berries, etc.), mushrooms, and vegetables as desired."
+    },
+    "instructions": {
+      "vi": "Gà có thể được chế biến nhiều kiểu: – Gà nướng: ướp muối, tiêu, sả, gừng, mật ong, nướng than. – Gà luộc: luộc với gừng, hành, chặt miếng, chấm muối tiêu chanh. – Gà hầm thuốc bắc: hầm gà đen với thuốc bắc, nêm muối vừa ăn, dùng nóng để bồi bổ sức khỏe.",
+      "en": "Common preparations: – Grilled: marinate with salt, pepper, lemongrass, ginger (and honey if desired), then grill over charcoal. – Boiled: simmer with ginger and scallion, chop, and dip in pepper-lime salt. – Herbal stew: simmer black chicken with herbs, season lightly, and serve hot as a nourishing soup."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Lào Cai",
+      "en": "Lao Cai"
+    },
+    "Best_time": {
+      "vi": "Bữa trưa, tối; các dịp đãi khách, sum họp gia đình",
+      "en": "Lunch/dinner; family meals and guest meals."
+    },
+    "Best_season": {
+      "vi": "Quanh năm; mùa lạnh món hầm đặc biệt được ưa chuộng",
+      "en": "Year-round; herbal stews are especially popular in cold weather."
+    },
+    "origin_story": {
+      "vi": "Cư dân vùng cao Lào Cai có truyền thống nuôi gà thả đồi, đặc biệt là gà đen/gà ác, gắn với các món ăn lễ tết và món bồi bổ sức khỏe. Sa Pa và nhiều huyện vùng cao đã phát triển gà bản thành sản phẩm đặc sản phục vụ du lịch.",
+      "en": "Highland communities in Lao Cai traditionally raise free-range chickens, especially black chicken used for festive meals and nourishing soups. Sa Pa and nearby districts developed village chicken as a tourism specialty."
+    },
+    "price_range": {
+      "vi": "150.000–300.000đ/con sống tùy loại; món chế biến tính theo suất",
+      "en": "About 150,000–300,000 VND per live chicken depending on type; cooked dishes priced per set."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "gà đồi Sa Pa,gà ác,gà bản,Lào Cai,món bồi bổ",
+      "en": "Sa Pa hill chicken,black chicken,village chicken,Lao Cai,nourishing dishes"
+    },
+    "spicy_level": 0,
+    "satiety_level": 4
+  },
+  {
+    "STT": 216,
+    "id": "ruou_ngo_bac_ha",
+    "slug": "ruou-ngo-bac-ha",
+    "Name": {
+      "vi": "Rượu ngô Bắc Hà",
+      "en": "Bac Ha Corn Wine"
+    },
+    "description": {
+      "vi": "Rượu ngô Bắc Hà là đặc sản nức tiếng của huyện Bắc Hà (Lào Cai), được nấu từ ngô bản địa và men lá truyền thống, vị thơm, êm, ít đau đầu, thường xuất hiện trong các phiên chợ vùng cao và mâm cơm đãi khách.",
+      "en": "A renowned specialty from Bac Ha District (Lao Cai). Made from local corn and traditional leaf yeast, it is fragrant, smooth, and often enjoyed at highland markets and when welcoming guests."
+    },
+    "category": {
+      "vi": "Đồ uống có cồn – rượu ngô",
+      "en": "Alcoholic drink – corn liquor"
+    },
+    "ingredients": {
+      "vi": "Ngô hạt, men lá (men rượu truyền thống), nước suối, nồi nấu rượu, chum/bình chứa.",
+      "en": "Corn kernels, traditional leaf yeast, spring water, distillation pot, storage jars/bottles."
+    },
+    "instructions": {
+      "vi": "Ngô được đồ chín rồi để nguội bớt, trộn với men lá, ủ trong thùng hoặc chum kín để lên men. Sau đó hỗn hợp được chưng cất bằng nồi nấu rượu, hơi rượu ngưng tụ thành rượu thành phẩm. Rượu ngon trong, thơm nhẹ, uống êm, ít gắt.",
+      "en": "Steam cooked corn, cool slightly, mix with leaf yeast, then ferment in a sealed container. Distill the fermented mash; the condensed vapor becomes the finished liquor. Good corn wine is clear, lightly aromatic, smooth, and not too harsh."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Lào Cai",
+      "en": "Lao Cai"
+    },
+    "Best_time": {
+      "vi": "Dịp lễ hội, tiếp khách, trong bữa cơm vùng cao, chợ phiên Bắc Hà",
+      "en": "Festivals, hosting guests, highland meals, Bac Ha market days."
+    },
+    "Best_season": {
+      "vi": "Quanh năm; mùa thu hoạch ngô rượu càng dồi dào",
+      "en": "Year-round; especially abundant after corn harvest."
+    },
+    "origin_story": {
+      "vi": "Huyện Bắc Hà được coi là 'cao nguyên trắng' với những cánh đồng ngô rộng. Người dân tộc Mông, Dao… tại đây đã biết nấu rượu ngô từ lâu, dùng trong sinh hoạt cộng đồng, lễ tết. Rượu ngô Bắc Hà ngày nay trở thành thương hiệu riêng, thường được du khách mua về làm quà.",
+      "en": "Bac Ha is known as the ‘White Plateau’ with large corn fields. Ethnic communities such as H’Mong and Dao have long made corn wine for communal life and holidays. Today, Bac Ha corn wine is a distinctive brand and a popular gift for visitors."
+    },
+    "price_range": {
+      "vi": "50.000–150.000đ/lít tùy loại và độ ngon",
+      "en": "About 50,000–150,000 VND per liter depending on quality."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "rượu ngô Bắc Hà,Lào Cai,rượu ngô,đặc sản vùng cao",
+      "en": "Bac Ha corn wine,Lao Cai,corn liquor,highland specialty"
+    },
+    "spicy_level": 1,
+    "satiety_level": 1
+  },
+  {
+    "STT": 217,
+    "id": "banh_ao_bac_ha_banh_giay_tam_coc",
+    "slug": "banh-ao-bac-ha-banh-giay-tam-coc",
+    "Name": {
+      "vi": "Bánh đao Bắc Hà (bánh giầy Tam Cốc)",
+      "en": "Bac Ha ‘Bánh Đao’ (Tam Coc Sticky Rice Cake)"
+    },
+    "description": {
+      "vi": "Bánh đao Bắc Hà, còn được gọi là bánh giầy Tam Cốc, là loại bánh nếp truyền thống, bánh dẻo, thơm mùi gạo nếp, thường ăn kèm vừng, lạc hoặc chả, hay dùng trong dịp lễ tết, hội chợ vùng cao.",
+      "en": "Also called Tam Coc bánh giầy, this is a traditional glutinous rice cake—soft, chewy, and fragrant. It’s often eaten with sesame, peanuts, or Vietnamese sausage, and commonly appears at Tet and highland festivals."
+    },
+    "category": {
+      "vi": "Bánh nếp – bánh lễ, bánh tết",
+      "en": "Sticky rice cake – holiday & festival cake"
+    },
+    "ingredients": {
+      "vi": "Gạo nếp, nước, muối, có thể thêm đậu xanh, mè (vừng), mỡ hành tùy cách làm.",
+      "en": "Glutinous rice, water, salt; optional mung bean filling, sesame, scallion oil depending on the style."
+    },
+    "instructions": {
+      "vi": "Gạo nếp vo sạch, ngâm cho mềm rồi đồ chín trong chõ. Nếp chín được cho vào cối giã đến khi dẻo mịn, sau đó nặn thành từng miếng bánh tròn, dẹt. Bánh có thể ăn kèm vừng rang, lạc giã, chả, giò hoặc chấm mật ong tùy khẩu vị.",
+      "en": "Rinse and soak glutinous rice, then steam until cooked. Pound the hot rice in a mortar until smooth and elastic, then shape into round, flat cakes. Serve with toasted sesame, crushed peanuts, sausage, or honey to taste."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Lào Cai",
+      "en": "Lao Cai"
+    },
+    "Best_time": {
+      "vi": "Dịp lễ tết, hội chợ Bắc Hà; ăn sáng hoặc ăn chơi",
+      "en": "Tet holidays, Bac Ha fairs; breakfast or snack."
+    },
+    "Best_season": {
+      "vi": "Cao điểm mùa lễ hội, nhưng một số nơi bán quanh năm",
+      "en": "Peak during festival season; some places sell it year-round."
+    },
+    "origin_story": {
+      "vi": "Bánh nếp là món truyền thống của nhiều dân tộc vùng cao. Tại Bắc Hà (Lào Cai), bánh đao/bánh giầy trở thành món không thể thiếu trong phiên chợ, ngày hội, thể hiện sự no đủ, gắn bó với cây lúa nếp vùng cao.",
+      "en": "Glutinous rice cakes are common across highland ethnic groups. In Bac Ha, bánh đao/bánh giầy is a must-have at markets and spring festivals, symbolizing abundance and connection to upland sticky rice."
+    },
+    "price_range": {
+      "vi": "5.000–10.000đ/chiếc; mâm bánh tính theo set",
+      "en": "About 5,000–10,000 VND each; sold as sets/platters."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh đao Bắc Hà,bánh giầy,Lào Cai,bánh nếp,chợ vùng cao",
+      "en": "Bac Ha bánh đao,sticky rice cake,Lao Cai,highland market cake"
+    },
+    "spicy_level": 0,
+    "satiety_level": 3
+  },
+  {
+    "STT": 218,
+    "id": "mien_ao_bac_ha",
+    "slug": "mien-ao-bac-ha",
+    "Name": {
+      "vi": "Miến đao Bắc Hà",
+      "en": "Bac Ha Arrowroot-Vermicelli (Miến dong)"
+    },
+    "description": {
+      "vi": "Miến đao Bắc Hà là loại miến làm từ củ dong (dong riềng) trồng ở vùng núi Lào Cai, sợi miến to, trong, dai, khi nấu không nát, được dùng để nấu lẩu, xào, nấu canh rất ngon.",
+      "en": "A specialty vermicelli made from dong riềng (canna/arrowroot) grown in Lao Cai’s mountains. The strands are thick, clear, chewy, and don’t go mushy—great for hot pot, stir-fries, and soups."
+    },
+    "category": {
+      "vi": "Nguyên liệu khô – miến dong",
+      "en": "Dried ingredient – arrowroot vermicelli"
+    },
+    "ingredients": {
+      "vi": "Củ dong riềng, nước, một chút bột phụ gia truyền thống (nếu có), khuôn ép miến.",
+      "en": "Dong riềng (canna) roots, water, traditional processing aids (if any), vermicelli molds/press."
+    },
+    "instructions": {
+      "vi": "Củ dong riềng được rửa sạch, xay nhuyễn rồi lọc lấy tinh bột. Tinh bột để lắng, gạn nước, trộn với nước theo tỷ lệ thích hợp, sau đó tráng hoặc ép thành sợi miến rồi phơi khô ngoài nắng. Miến khô khi dùng ngâm nước cho mềm, rồi nấu các món miến xào, miến gà, miến lẩu…",
+      "en": "Wash and grind the roots, then filter to collect starch. Let the starch settle, drain off water, then mix with water to the right consistency. Extrude into strands (or sheet-and-cut), then sun-dry. When cooking, soak dried vermicelli until softened, then use for stir-fry vermicelli, chicken vermicelli soup, or hot pot."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Lào Cai",
+      "en": "Lao Cai"
+    },
+    "Best_time": {
+      "vi": "Dùng quanh năm trong bữa ăn gia đình, tiệc, lẩu",
+      "en": "Year-round for family meals, parties, and hot pot."
+    },
+    "Best_season": {
+      "vi": "Sản xuất mạnh sau vụ thu hoạch dong riềng; dùng được quanh năm",
+      "en": "Produced heavily after dong riềng harvest; used year-round."
+    },
+    "origin_story": {
+      "vi": "Vùng Bắc Hà và một số huyện Lào Cai có điều kiện phù hợp để trồng dong riềng. Tận dụng nguồn nguyên liệu này, người dân đã làm ra miến dong, trở thành sản phẩm đặc sản địa phương, được bán rộng rãi trong và ngoài tỉnh.",
+      "en": "Bac Ha and other areas in Lao Cai suit dong riềng cultivation. Locals turn the roots into high-quality vermicelli, creating a well-known local specialty sold both inside and outside the province."
+    },
+    "price_range": {
+      "vi": "60.000–120.000đ/kg miến dong tùy loại",
+      "en": "About 60,000–120,000 VND/kg depending on grade."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "miến đao Bắc Hà,miến dong,Lào Cai,đặc sản khô",
+      "en": "Bac Ha miến dong,arrowroot vermicelli,Lao Cai,dried specialty"
+    },
+    "spicy_level": 0,
+    "satiety_level": 3
+  },
+  {
+    "STT": 219,
+    "id": "pho_chua_lao_cai",
+    "slug": "pho-chua-lao-cai",
+    "Name": {
+      "vi": "Phở chua Lào Cai",
+      "en": "Lao Cai Sour Pho (Phở chua)"
+    },
+    "description": {
+      "vi": "Phở chua Lào Cai là món phở trộn với nước sốt chua ngọt, ăn kèm thịt quay, lạc rang, rau sống, hành phi, rất hợp với khí hậu vùng cao và khẩu vị người địa phương.",
+      "en": "A refreshing mixed pho dressed with a sweet-and-sour sauce. It’s served with roast meat, roasted peanuts, herbs, and crispy shallots—especially easy to enjoy in the highland climate."
+    },
+    "category": {
+      "vi": "Phở trộn – món khô",
+      "en": "Mixed pho – dry noodles"
+    },
+    "ingredients": {
+      "vi": "Bánh phở, thịt vịt quay hoặc thịt lợn quay, lạc rang, rau sống, dưa chuột, hành phi, giấm, đường, nước mắm, tỏi, ớt, dầu ăn.",
+      "en": "Pho noodles, roast duck or roast pork, roasted peanuts, herbs, cucumber, fried shallots; vinegar, sugar, fish sauce, garlic, chili, and a little oil."
+    },
+    "instructions": {
+      "vi": "Bánh phở chần qua nước nóng rồi để ráo. Thịt quay thái miếng mỏng. Pha nước sốt từ giấm, đường, nước mắm, tỏi, ớt, dầu ăn cho vị chua ngọt vừa miệng. Cho phở vào bát, xếp thịt quay, dưa chuột, rau sống, lạc rang, hành phi, rưới nước sốt, trộn đều trước khi ăn.",
+      "en": "Blanch pho noodles and drain. Slice roast meat thinly. Mix a dressing from vinegar, sugar, fish sauce, minced garlic/chili, and a little oil for a balanced sweet-sour taste. Assemble noodles with meat, cucumber, herbs, peanuts, and shallots; pour dressing and toss before eating."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Lào Cai",
+      "en": "Lao Cai"
+    },
+    "Best_time": {
+      "vi": "Ăn sáng, ăn trưa hoặc bữa xế",
+      "en": "Breakfast, lunch, or an afternoon meal."
+    },
+    "Best_season": {
+      "vi": "Quanh năm; mùa hè ăn rất mát và dễ ăn",
+      "en": "Year-round; especially refreshing in summer."
+    },
+    "origin_story": {
+      "vi": "Phở chua xuất hiện ở nhiều tỉnh miền núi phía Bắc. Tại Lào Cai, món ăn này chịu ảnh hưởng từ ẩm thực dân tộc Tày, Nùng và người Hoa, được biến tấu với thịt quay, rau bản địa, trở thành món ăn quen thuộc trong các khu chợ và quán nhỏ.",
+      "en": "Sour pho exists in several northern mountain provinces. In Lao Cai, it reflects influences from Tay, Nung, and Chinese-Vietnamese cuisine, combining roast meats and local greens to create a familiar market-stall favorite."
+    },
+    "price_range": {
+      "vi": "30.000–45.000đ/bát",
+      "en": "About 30,000–45,000 VND per bowl."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "phở chua Lào Cai,phở trộn,đặc sản vùng cao",
+      "en": "Lao Cai sour pho,mixed pho,highland specialty"
+    },
+    "spicy_level": 1,
+    "satiety_level": 4
+  },
+  {
+    "STT": 220,
+    "id": "rau_cai_meo_sa_pa",
+    "slug": "rau-cai-meo-sa-pa",
+    "Name": {
+      "vi": "Rau cải mèo Sa Pa",
+      "en": "Sa Pa ‘Cải Mèo’ Mustard Greens"
+    },
+    "description": {
+      "vi": "Rau cải mèo Sa Pa là giống cải đặc trưng vùng núi lạnh, lá xoăn, vị hơi đắng nhẹ rồi ngọt, thường được dùng để luộc, xào, nấu canh, là món rau rất được ưa chuộng ở Sa Pa.",
+      "en": "A signature cold-climate mustard green with curly leaves and a mild bitterness that turns sweet. Commonly boiled, stir-fried, or used in soups—very popular in Sa Pa meals."
+    },
+    "category": {
+      "vi": "Rau tươi – món luộc/xào/canh",
+      "en": "Fresh vegetable – boiled/stir-fried/soup greens"
+    },
+    "ingredients": {
+      "vi": "Rau cải mèo tươi, tỏi, dầu ăn, muối/nước mắm, hạt nêm; có thể thêm thịt/bò cho món xào.",
+      "en": "Fresh cải mèo greens, garlic, cooking oil, salt/fish sauce, seasoning; optional beef/pork for stir-fry."
+    },
+    "instructions": {
+      "vi": "Rau cải mèo nhặt bỏ lá già, rửa sạch. Có thể luộc chín rồi chấm nước mắm tỏi ớt, hoặc xào với tỏi, thịt bò/thịt lợn. Khi xào nên để rau chín tới để giữ độ giòn, vị đặc trưng.",
+      "en": "Remove old leaves and wash well. Boil and dip in garlic-chili fish sauce, or stir-fry quickly with garlic (and beef/pork if desired). Cook just until tender-crisp to keep its crunch and distinctive taste."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Lào Cai",
+      "en": "Lao Cai"
+    },
+    "Best_time": {
+      "vi": "Bữa trưa, tối như một món rau trong mâm cơm",
+      "en": "Lunch/dinner as a vegetable side dish."
+    },
+    "Best_season": {
+      "vi": "Mùa lạnh, thu – đông là thời gian rau ngon nhất",
+      "en": "Best in cold season (autumn–winter)."
+    },
+    "origin_story": {
+      "vi": "Nhờ khí hậu mát lạnh quanh năm, Sa Pa là nơi trồng được nhiều loại rau đặc sản, trong đó có cải mèo. Loại rau này gắn liền với bữa ăn hằng ngày của người dân bản địa và dần trở thành món 'phải thử' đối với du khách đến đây.",
+      "en": "Thanks to Sa Pa’s cool year-round climate, many special vegetables thrive there—cải mèo among the most notable. It’s part of local daily meals and became a ‘must-try’ green for visitors."
+    },
+    "price_range": {
+      "vi": "20.000–50.000đ/bó hoặc/đĩa tại quán",
+      "en": "About 20,000–50,000 VND per bunch or per plate at restaurants."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "rau cải mèo,rau Sa Pa,Lào Cai,rau đặc sản",
+      "en": "cải mèo,Sa Pa vegetables,Lao Cai,specialty greens"
+    },
+    "spicy_level": 0,
+    "satiety_level": 1
+  },
+  {
+    "STT": 221,
+    "id": "thit_ga_en_lao_cai",
+    "slug": "thit-ga-en-lao-cai",
+    "Name": {
+      "vi": "Thịt gà đen Lào Cai",
+      "en": "Lao Cai Black Chicken (Silkie Chicken)"
+    },
+    "description": {
+      "vi": "Thịt gà đen (gà ác) Lào Cai có da, thịt và xương màu sẫm, được coi là thực phẩm bổ dưỡng, thường dùng để hầm thuốc bắc, nấu canh cho người ốm, người cần bồi bổ.",
+      "en": "Black chicken (gà ác) has dark skin, meat, and bones and is considered nourishing. It’s commonly stewed with Chinese herbs or cooked into soups for people who need recovery and strength."
+    },
+    "category": {
+      "vi": "Món hầm/bồi bổ – gà đen",
+      "en": "Herbal stew/nourishing dish – black chicken"
+    },
+    "ingredients": {
+      "vi": "Gà đen nguyên con, thuốc bắc (kỷ tử, táo tàu, đẳng sâm…), gừng, hành, muối, có thể thêm nấm hương, rau củ tùy khẩu vị.",
+      "en": "Whole black chicken, Chinese herbs (goji berries, red dates, dang sam, etc.), ginger, scallion, salt; optional shiitake mushrooms and vegetables."
+    },
+    "instructions": {
+      "vi": "Gà đen làm sạch, có thể để nguyên con. Thuốc bắc rửa sạch. Cho gà, thuốc bắc, gừng vào nồi, đổ nước vừa đủ, hầm nhỏ lửa đến khi gà chín mềm, nước dùng ngọt. Nêm muối vừa ăn. Món ăn thường được dùng nóng để phát huy tác dụng bồi bổ.",
+      "en": "Clean the chicken and keep whole if desired. Rinse herbs. Simmer chicken with herbs and ginger over low heat until very tender and the broth is sweet. Season lightly with salt. Serve hot for a nourishing meal."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Lào Cai",
+      "en": "Lao Cai"
+    },
+    "Best_time": {
+      "vi": "Bữa ăn bồi bổ, dành cho người mệt, người mới khỏi bệnh, phụ nữ sau sinh",
+      "en": "Nourishing meals for fatigue, recovery, and postpartum support."
+    },
+    "Best_season": {
+      "vi": "Quanh năm; mùa lạnh càng được ưa chuộng",
+      "en": "Year-round; especially favored in cold weather."
+    },
+    "origin_story": {
+      "vi": "Gà đen là giống gà bản địa của nhiều vùng núi phía Bắc, trong đó có Lào Cai. Trong dân gian, gà đen được xem là có giá trị dinh dưỡng cao, nên thường xuất hiện trong các món hầm thuốc bắc truyền thống.",
+      "en": "Black chicken is native to many northern mountain areas including Lao Cai. In folk tradition it’s valued for high nutrition, so it appears in herbal stews and restorative soups."
+    },
+    "price_range": {
+      "vi": "150.000–300.000đ/con sống tùy trọng lượng; món hầm tính theo suất",
+      "en": "About 150,000–300,000 VND per live chicken depending on size; stews priced per set."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "gà đen,gà ác,Lào Cai,món hầm,bồi bổ sức khỏe",
+      "en": "black chicken,gà ác,Lao Cai,herbal stew,nourishing food"
+    },
+    "spicy_level": 0,
+    "satiety_level": 4
+  },
+  {
+    "STT": 222,
+    "id": "mam_a_sa_pa",
+    "slug": "mam-a-sa-pa",
+    "Name": {
+      "vi": "Mầm đá Sa Pa",
+      "en": "Sa Pa ‘Mầm Đá’ (Crisp Highland Sprouts)"
+    },
+    "description": {
+      "vi": "Mầm đá là loại rau đặc biệt ở vùng núi Sa Pa, là phần mầm non mọc từ gốc một số cây, thân tròn, giòn, thường được xào, luộc, mang vị ngọt mát, hơi giòn và lạ miệng.",
+      "en": "A unique Sa Pa vegetable made from young sprouts that grow from the base of certain plants. The stems are round, crisp, and mildly sweet, often boiled or quickly stir-fried—refreshing and unusual for many visitors."
+    },
+    "category": {
+      "vi": "Rau đặc sản – món xào/luộc",
+      "en": "Specialty vegetable – stir-fried/boiled"
+    },
+    "ingredients": {
+      "vi": "Mầm đá tươi, tỏi, dầu ăn, muối/nước mắm, hạt nêm; có thể thêm thịt bò/trứng.",
+      "en": "Fresh mầm đá sprouts, garlic, cooking oil, salt/fish sauce, seasoning; optional beef or egg."
+    },
+    "instructions": {
+      "vi": "Mầm đá nhặt sạch, rửa kỹ, có thể tước bớt sơ già. Luộc chín tới rồi chấm mắm tỏi ớt, hoặc xào nhanh với tỏi, nêm gia vị vừa ăn. Nếu xào với thịt bò/trứng, cho thịt hoặc trứng vào cùng, đảo đều cho chín.",
+      "en": "Trim and wash well, peeling tougher outer fibers if needed. Boil briefly and dip in garlic-chili fish sauce, or stir-fry quickly with garlic and seasonings. For beef/egg versions, add meat or egg and toss until cooked."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Lào Cai",
+      "en": "Lao Cai"
+    },
+    "Best_time": {
+      "vi": "Bữa trưa, tối như một món rau đặc sản",
+      "en": "Lunch/dinner as a specialty vegetable dish."
+    },
+    "Best_season": {
+      "vi": "Mùa lạnh và thời điểm mầm đá phát triển mạnh (thường cuối đông – đầu xuân)",
+      "en": "Cold season and when sprouts peak (often late winter to early spring)."
+    },
+    "origin_story": {
+      "vi": "Mầm đá gắn với nhiều giai thoại và câu chuyện dân gian, nhưng thực tế là một loại mầm rau vùng núi, được người dân Sa Pa khai thác làm thực phẩm. Nhờ khí hậu đặc thù, mầm đá Sa Pa có chất lượng tốt, trở thành món rau 'lạ' đối với du khách.",
+      "en": "Mầm đá is a highland sprout vegetable gathered and grown in Sa Pa’s climate. Thanks to local conditions, Sa Pa mầm đá is especially crisp and became a ‘curious must-try’ green for travelers."
+    },
+    "price_range": {
+      "vi": "40.000–80.000đ/đĩa tại nhà hàng; giá rau tươi tùy mùa",
+      "en": "About 40,000–80,000 VND per plate at restaurants; fresh price varies by season."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "mầm đá,rau đặc sản Sa Pa,Lào Cai,món xào,món luộc",
+      "en": "mầm đá,Sa Pa specialty vegetable,Lao Cai,stir-fry,boiled greens"
+    },
+    "spicy_level": 0,
+    "satiety_level": 1
+  },
+  {
+    "STT": 223,
+    "id": "con_sui_lao_cai",
+    "slug": "con-sui-lao-cai",
+    "Name": {
+      "vi": "Cốn sủi Lào Cai",
+      "en": "Lao Cai ‘Cốn Sủi’ (Thick Noodles with Gravy)"
+    },
+    "description": {
+      "vi": "Cốn sủi là món mì nước đặc trưng của người Hoa ở Lào Cai, sợi mì dày, nước sốt sánh như sốt chan lên trên chứ không ngập, ăn kèm thịt, trứng, lạc, rau thơm, mang hương vị rất riêng.",
+      "en": "A signature noodle dish of the Chinese community in Lao Cai. The noodles are thick, and instead of a full soup, a glossy, thick gravy is ladled over the bowl. It’s served with meat, egg, peanuts, and herbs—very distinctive."
+    },
+    "category": {
+      "vi": "Mì nước/sốt – món ăn no",
+      "en": "Noodles with gravy – filling meal"
+    },
+    "ingredients": {
+      "vi": "Sợi mì (bột gạo hoặc bột mì), thịt bò hoặc thịt lợn, trứng gà, lạc rang, hành lá, rau mùi, xương để nấu nước dùng, bột năng hoặc bột bắp để tạo độ sánh, gia vị.",
+      "en": "Noodles (rice or wheat), beef or pork, eggs, roasted peanuts, scallions, cilantro; bones for stock; tapioca/corn starch to thicken; seasonings."
+    },
+    "instructions": {
+      "vi": "Xương ninh lấy nước dùng. Thịt thái miếng, xào sơ với gia vị. Nước dùng được nêm lại và khuấy với bột năng/bột bắp để tạo độ sánh, giống như sốt. Mì trụng chín, cho vào bát, xếp thịt, trứng luộc, lạc rang, rau lên trên, chan nước sốt sánh thay vì chan ngập như phở. Ăn nóng.",
+      "en": "Simmer bones for stock. Slice meat and stir-fry lightly with seasonings. Season the stock, then thicken it with starch slurry to create a gravy. Blanch noodles and place in a bowl; add meat, boiled egg, peanuts, and herbs, then ladle the hot gravy over the top (not like a fully submerged pho). Serve hot."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Lào Cai",
+      "en": "Lao Cai"
+    },
+    "Best_time": {
+      "vi": "Ăn sáng, ăn trưa",
+      "en": "Breakfast or lunch."
+    },
+    "Best_season": {
+      "vi": "Quanh năm; mùa lạnh ăn càng ngon",
+      "en": "Year-round; even better in cold weather."
+    },
+    "origin_story": {
+      "vi": "Cốn sủi có nguồn gốc từ cộng đồng người Hoa sinh sống tại Lào Cai. Theo thời gian, món ăn được Việt hóa dần nhưng vẫn giữ nét đặc trưng là nước sốt sánh, trở thành một trong những món mì tiêu biểu khi nhắc đến ẩm thực Lào Cai.",
+      "en": "Cốn sủi comes from Lao Cai’s Chinese-Vietnamese community. Over time it was localized but kept its hallmark thick gravy, becoming one of the province’s most recognizable noodle dishes."
+    },
+    "price_range": {
+      "vi": "30.000–45.000đ/bát",
+      "en": "About 30,000–45,000 VND per bowl."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "cốn sủi,Lào Cai,mì nước,ẩm thực người Hoa",
+      "en": "cốn sủi,Lao Cai,noodles,Chinese-Vietnamese cuisine"
+    },
+    "spicy_level": 1,
+    "satiety_level": 4
+  },
+  {
+    "STT": 224,
+    "id": "banh_day_lao_cai",
+    "slug": "banh-day-lao-cai",
+    "Name": {
+      "vi": "Bánh dày Lào Cai",
+      "en": "Lao Cai Sticky Rice Cakes (Bánh dày)"
+    },
+    "description": {
+      "vi": "Bánh dày là món bánh nếp phổ biến trong các bản làng người Mông, Dao ở Lào Cai, bánh dẻo thơm, tượng trưng cho sự no đủ, thường xuất hiện dịp Tết, lễ hội, chợ phiên.",
+      "en": "A common glutinous rice cake in H’Mong and Dao villages in Lao Cai. Soft and chewy, it symbolizes abundance and is often made for Tet, festivals, and market days."
+    },
+    "category": {
+      "vi": "Bánh nếp – bánh lễ, bánh tết",
+      "en": "Sticky rice cake – holiday & festival cake"
+    },
+    "ingredients": {
+      "vi": "Gạo nếp nương, nước, muối; có thể thêm nhân đậu xanh, mè, mật ong khi ăn.",
+      "en": "Mountain glutinous rice, water, salt; optional mung bean filling, sesame, or honey for serving."
+    },
+    "instructions": {
+      "vi": "Gạo nếp vo sạch, ngâm mềm rồi đồ chín. Nếp chín còn nóng được cho vào cối giã liên tục đến khi thật dẻo. Sau đó nặn thành bánh tròn dẹt. Bánh có thể ăn không, nướng cho hơi xém hoặc ăn kèm vừng, mật ong, chả, giò.",
+      "en": "Rinse and soak glutinous rice, then steam until cooked. Pound the hot rice until very elastic, then shape into flat round cakes. Eat plain, lightly grill to toast, or serve with sesame, honey, sausage, or pork roll."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Lào Cai",
+      "en": "Lao Cai"
+    },
+    "Best_time": {
+      "vi": "Dịp Tết, hội xuân; ăn sáng hoặc ăn chơi trong ngày chợ phiên",
+      "en": "Tet, spring festivals, breakfast or snacks on market days."
+    },
+    "Best_season": {
+      "vi": "Mùa Tết, lễ hội; một số nơi bán quanh năm",
+      "en": "Tet and festival season; some places sell year-round."
+    },
+    "origin_story": {
+      "vi": "Bánh dày gắn với truyền thống của người Mông và một số dân tộc khác ở vùng cao Lào Cai. Việc giã bánh dày thường là hoạt động mang tính cộng đồng trong dịp lễ tết, vừa là món ăn vừa là nét văn hóa sinh hoạt của bản làng.",
+      "en": "Pounding bánh dày is often a communal activity during holidays among H’Mong and other highland groups in Lao Cai. It’s both food and cultural practice that reflects village togetherness."
+    },
+    "price_range": {
+      "vi": "5.000–10.000đ/chiếc; mâm bánh tính theo set",
+      "en": "About 5,000–10,000 VND each; sold as sets."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh dày,Mông,Lào Cai,bánh nếp,Tết vùng cao",
+      "en": "bánh dày,H’Mong,Lao Cai,sticky rice cake,highland Tet"
+    },
+    "spicy_level": 0,
+    "satiety_level": 3
+  },
+  {
+    "STT": 225,
+    "id": "thit_gung_nung_din",
+    "slug": "thit-gung-nung-din",
+    "Name": {
+      "vi": "Thịt gừng Nùng Dín",
+      "en": "Nung Din Ginger Pork"
+    },
+    "description": {
+      "vi": "Thịt gừng Nùng Dín là món ăn truyền thống của người Nùng Dín ở Lào Cai, thịt lợn thái miếng, ướp nhiều gừng giã và gia vị, kho hoặc rang đến khi săn, thơm nức mùi gừng.",
+      "en": "A traditional dish of the Nung Din people in Lao Cai. Pork is cut into pieces, heavily seasoned with pounded fresh ginger and spices, then stir-fried or braised until firm and fragrant with ginger."
+    },
+    "category": {
+      "vi": "Món kho/rang – thịt heo",
+      "en": "Braised/stir-fried dish – pork"
+    },
+    "ingredients": {
+      "vi": "Thịt lợn (ba chỉ hoặc nạc vai), gừng tươi giã nhỏ, tỏi, hành, nước mắm, muối, một ít rượu, đường (tùy khẩu vị), ớt.",
+      "en": "Pork belly or shoulder, pounded fresh ginger, garlic, shallots, fish sauce, salt, a splash of rice wine, sugar (optional), chili."
+    },
+    "instructions": {
+      "vi": "Thịt thái miếng vừa ăn, ướp với gừng giã, tỏi, hành, nước mắm, muối, chút rượu. Để ngấm khoảng 20–30 phút, sau đó cho lên chảo rang/kho trên lửa vừa, đảo đến khi thịt săn, hơi cháy cạnh, dậy mùi gừng. Nêm lại vừa ăn, có thể thêm ớt nếu thích cay.",
+      "en": "Cut pork into bite-size pieces. Marinate with pounded ginger, garlic, shallots, fish sauce, salt, and a little rice wine for 20–30 minutes. Stir-fry/braise over medium heat until the meat firms up and edges slightly caramelize, releasing a strong ginger aroma. Adjust seasoning; add chili if you like it spicy."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Lào Cai",
+      "en": "Lao Cai"
+    },
+    "Best_time": {
+      "vi": "Bữa trưa, tối, ăn cùng cơm trắng, rất đưa cơm",
+      "en": "Lunch/dinner with steamed rice."
+    },
+    "Best_season": {
+      "vi": "Quanh năm; mùa lạnh ăn thịt gừng càng ấm người",
+      "en": "Year-round; especially warming in cold weather."
+    },
+    "origin_story": {
+      "vi": "Người Nùng Dín sinh sống tại một số xã vùng cao Lào Cai, có truyền thống dùng gừng và các gia vị mạnh để chế biến món ăn, giúp giữ ấm cơ thể. Thịt gừng là một trong những món đơn giản nhưng mang đậm hương vị ẩm thực Nùng Dín.",
+      "en": "Nung Din communities in parts of Lao Cai use ginger and bold spices to keep the body warm in mountain climates. Ginger pork is a simple yet deeply characteristic dish of their cuisine."
+    },
+    "price_range": {
+      "vi": "60.000–120.000đ/đĩa tại quán đặc sản",
+      "en": "About 60,000–120,000 VND per plate at specialty eateries."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "thịt gừng Nùng Dín,Lào Cai,món rang,kho,ẩm thực dân tộc",
+      "en": "Nung Din ginger pork,Lao Cai,braised dish,ethnic cuisine"
+    },
+    "spicy_level": 2,
+    "satiety_level": 4
+  },
+  {
+    "STT": 226,
+    "id": "com_lao_cai",
+    "slug": "com-lao-cai",
+    "Name": {
+      "vi": "Cốm Lào Cai",
+      "en": "Lao Cai Green Rice Flakes (Cốm)"
+    },
+    "description": {
+      "vi": "Cốm Lào Cai là món cốm làm từ lúa nếp non, hạt mềm dẻo, thơm mùi lúa mới, thường được gói trong lá xanh, ăn kèm chuối chín hoặc dùng làm quà biếu dịp thu về.",
+      "en": "Made from young glutinous rice harvested early. The flakes are soft, chewy, and fragrant with ‘new rice’ aroma, often wrapped in green leaves and eaten with ripe bananas or given as an autumn gift."
+    },
+    "category": {
+      "vi": "Ngũ cốc – ăn vặt/ăn chơi, quà biếu",
+      "en": "Grain snack – treats & gifts"
+    },
+    "ingredients": {
+      "vi": "Lúa nếp non (gạo nếp cái), nước, lá dong hoặc lá sen để gói, chuối, dừa (nếu dùng kèm).",
+      "en": "Young glutinous rice, water, dong or lotus leaves for wrapping; bananas and shredded coconut (optional)."
+    },
+    "instructions": {
+      "vi": "Lúa nếp non được tuốt, đãi sạch, rang trên chảo với lửa nhỏ cho hạt chín tới, sau đó giã trong cối và sàng bỏ vỏ trấu, giữ lại phần hạt cốm dẹt, xanh. Cốm được gói trong lá xanh để giữ hương thơm, thường ăn cùng chuối chín hoặc dừa nạo.",
+      "en": "Pick young rice, clean, and roast gently over low heat until just cooked. Pound in a mortar and winnow to remove husks, keeping the flattened green flakes. Wrap in fresh leaves to preserve aroma; eat with ripe bananas or coconut."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Lào Cai",
+      "en": "Lao Cai"
+    },
+    "Best_time": {
+      "vi": "Ăn vặt, ăn chơi, làm quà tặng vào mùa thu",
+      "en": "Snacking and gifting in autumn."
+    },
+    "Best_season": {
+      "vi": "Mùa lúa nếp non (thường vào mùa thu)",
+      "en": "Young-rice season (usually autumn)."
+    },
+    "origin_story": {
+      "vi": "Nhiều vùng trồng lúa nếp ở Lào Cai tận dụng vụ lúa non để làm cốm, tương tự như một số nơi ở đồng bằng nhưng mang hương vị vùng núi. Cốm trở thành món quà mang theo hương đồng gió nội của người Lào Cai mỗi độ thu về.",
+      "en": "In areas of Lao Cai that grow glutinous rice, people make cốm from the early harvest—similar to lowland regions but with a mountain touch. It’s a seasonal treat that carries the scent of the fields when autumn arrives."
+    },
+    "price_range": {
+      "vi": "80.000–200.000đ/kg tùy thời điểm và chất lượng",
+      "en": "About 80,000–200,000 VND/kg depending on season and quality."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "cốm Lào Cai,lúa nếp non,quà thu,ăn vặt",
+      "en": "Lao Cai cốm,green rice flakes,autumn gift,snack"
+    },
+    "spicy_level": 0,
+    "satiety_level": 2
+  },
+  {
+    "STT": 227,
+    "id": "mang_luoi_lon_lao_cai",
+    "slug": "mang-luoi-lon-lao-cai",
+    "Name": {
+      "vi": "Măng lưỡi lợn Lào Cai",
+      "en": "Lao Cai ‘Pig-Tongue’ Bamboo Shoots (Măng lưỡi lợn)"
+    },
+    "description": {
+      "vi": "Măng lưỡi lợn là loại măng rừng có hình dáng giống lưỡi lợn, thịt măng dày, giòn, ít đắng, thường được dùng để muối chua, xào, nấu canh, là nguyên liệu quen thuộc trong bếp của người vùng cao Lào Cai.",
+      "en": "A wild bamboo shoot variety shaped like a pig’s tongue. The shoots are thick, crisp, and mildly bitter (often less bitter than other shoots). They are used for pickling, stir-fries, soups, and braises—common in Lao Cai highland cooking."
+    },
+    "category": {
+      "vi": "Nguyên liệu – măng rừng, món xào/kho/canh",
+      "en": "Ingredient – wild bamboo shoots for stir-fries/soups/braises"
+    },
+    "ingredients": {
+      "vi": "Măng lưỡi lợn tươi hoặc măng lưỡi lợn muối chua, thịt, xương, gia vị, rau thơm tùy món.",
+      "en": "Fresh shoots or pickled shoots, meat/bones for soups, seasonings, herbs as needed."
+    },
+    "instructions": {
+      "vi": "Măng tươi được gọt vỏ, thái lát, luộc nhiều lần cho bớt đắng rồi dùng để xào với thịt, nấu canh xương hoặc kho cá. Măng cũng có thể được muối chua trong hũ để dùng dần, lúc ăn xào hoặc nấu canh chua rất ngon.",
+      "en": "For fresh shoots: peel, slice, and boil several times to reduce bitterness, then stir-fry with meat, simmer in bone soup, or braise with fish. Shoots can also be pickled in jars to use later for sour soups and stir-fries."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Lào Cai",
+      "en": "Lao Cai"
+    },
+    "Best_time": {
+      "vi": "Dùng quanh năm trong bữa cơm gia đình",
+      "en": "Year-round as a family meal ingredient."
+    },
+    "Best_season": {
+      "vi": "Mùa măng rừng; măng muối chua dùng quanh năm",
+      "en": "Harvest season for wild shoots; pickled shoots used year-round."
+    },
+    "origin_story": {
+      "vi": "Lào Cai có diện tích rừng lớn, trong đó măng rừng là nguồn thực phẩm quan trọng. Măng lưỡi lợn nhờ hình dáng đặc trưng và độ giòn đã được người dân thu hái, chế biến thành nhiều món, trở thành một trong những loại măng đặc sản của vùng.",
+      "en": "Lao Cai’s forests provide many edible shoots. Thanks to its distinctive shape and crunch, măng lưỡi lợn is widely harvested and cooked, becoming a well-known local bamboo-shoot specialty."
+    },
+    "price_range": {
+      "vi": "60.000–150.000đ/kg tùy loại (tươi, khô, muối)",
+      "en": "About 60,000–150,000 VND/kg depending on type (fresh/dried/pickled)."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "măng lưỡi lợn,măng rừng,Lào Cai,nguyên liệu đặc sản",
+      "en": "măng lưỡi lợn,wild bamboo shoots,Lao Cai,specialty ingredient"
+    },
+    "spicy_level": 0,
+    "satiety_level": 2
+  },
+  {
+    "STT": 228,
+    "id": "banh_khao_lao_cai",
+    "slug": "banh-khao-lao-cai",
+    "Name": {
+      "vi": "Bánh khảo Lào Cai",
+      "en": "Lao Cai Bánh Khảo"
+    },
+    "description": {
+      "vi": "Bánh khảo là loại bánh truyền thống của người Tày, Nùng ở Lào Cai, làm từ bột gạo nếp rang xay, nhân lạc hoặc vừng, đường, bánh khô, thơm, tan trong miệng, thường dùng trong dịp Tết.",
+      "en": "A traditional dry cake of Tay and Nung communities. Made from roasted glutinous rice flour with peanut or sesame filling and sugar, it’s fragrant, crumbly, and melts in the mouth—popular for Tet."
+    },
+    "category": {
+      "vi": "Bánh khô – bánh Tết, bánh lễ",
+      "en": "Dry cake – Tet & ceremonial cake"
+    },
+    "ingredients": {
+      "vi": "Gạo nếp, lạc rang hoặc vừng, đường, mỡ lợn (hoặc dầu thực vật), giấy gói bánh.",
+      "en": "Glutinous rice, roasted peanuts or sesame, sugar, pork lard (or vegetable oil), wrapping paper."
+    },
+    "instructions": {
+      "vi": "Gạo nếp rang chín vàng, xay mịn thành bột. Lạc rang giã dập, trộn với đường và chút mỡ. Bột nếp được trộn đều với phần nhân ngọt, sau đó ép vào khuôn, nén chặt, cắt thành miếng và gói giấy. Bánh để nơi khô ráo, khi ăn có vị bùi ngọt, thơm mùi nếp và lạc.",
+      "en": "Roast glutinous rice until aromatic and grind into fine flour. Crush roasted peanuts and mix with sugar and a little fat. Combine flour with the filling mixture, press firmly into molds, then cut and wrap. Store in a dry place; it tastes nutty, sweet, and fragrant."
+    },
+    "region_code": {
+      "vi": "Miền Bắc",
+      "en": "Northern Vietnam"
+    },
+    "province_code": {
+      "vi": "Lào Cai",
+      "en": "Lao Cai"
+    },
+    "Best_time": {
+      "vi": "Dịp Tết, lễ hội; ăn vặt cùng trà nóng",
+      "en": "Tet holidays and festivals; snacking with hot tea."
+    },
+    "Best_season": {
+      "vi": "Sản xuất nhiều trước Tết Nguyên đán; dùng quanh năm nếu bảo quản tốt",
+      "en": "Made mostly before Lunar New Year; available year-round if stored well."
+    },
+    "origin_story": {
+      "vi": "Bánh khảo là món bánh truyền thống gắn liền với người Tày, Nùng ở vùng núi phía Bắc, trong đó có Lào Cai. Bánh thường xuất hiện trong mâm cúng tổ tiên và được trao tặng nhau dịp Tết, thể hiện tình cảm và sự no đủ.",
+      "en": "Bánh khảo is a classic cake of Tay and Nung people across northern mountains, including Lao Cai. It’s often offered on ancestral altars and exchanged as Tet gifts, symbolizing warmth and abundance."
+    },
+    "price_range": {
+      "vi": "30.000–80.000đ/hộp/túi tùy khối lượng và cách đóng gói",
+      "en": "About 30,000–80,000 VND per box/bag depending on weight and packaging."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh khảo,Lào Cai,bánh Tày Nùng,bánh Tết,đặc sản khô",
+      "en": "bánh khảo,Lao Cai,Tay Nung cake,Tet cake,dry specialty"
+    },
+    "spicy_level": 0,
+    "satiety_level": 2
+  }
+]

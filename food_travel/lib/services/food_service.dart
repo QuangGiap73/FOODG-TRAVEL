@@ -13,6 +13,8 @@ class FoodService {
   final _db = FirebaseFirestore.instance;
   static const _canonicalProvinceCollection = 'provinces_v2';
   static const _legacyProvinceCollection = 'provinces';
+  static const _provinceDishQueryLimit = 120;
+  static const _provinceDishDisplayLimit = 60;
 
   /// Lang nghe danh sach tinh (sap xep theo ten).
   Stream<List<ProvinceModel>> watchProvinces() {
@@ -50,22 +52,18 @@ class FoodService {
     final normalizedTarget = _normalize(provinceCode);
     if (normalizedTarget.isEmpty) return Stream.value(const <DishModel>[]);
 
-    return _db.collection('dishes').limit(300).snapshots().map((snapshot) {
+    return _db
+        .collection('dishes')
+        .limit(_provinceDishQueryLimit)
+        .snapshots()
+        .map((snapshot) {
       final all = snapshot.docs.map(DishModel.fromDoc).toList();
-      return all.where((dish) {
-        final code34 = _normalize(dish.provinceCode34);
-        final name34 = _normalize(dish.provinceName34);
-        final legacy = _normalize(dish.legacyProvinceCode);
-        final vi = _normalize(dish.provinceI18n['vi'] ?? dish.provinceCode);
-        final en = _normalize(dish.provinceI18n['en'] ?? '');
-        final raw = _normalize(dish.provinceCode);
-        return code34 == normalizedTarget ||
-            name34 == normalizedTarget ||
-            legacy == normalizedTarget ||
-            vi == normalizedTarget ||
-            en == normalizedTarget ||
-            raw == normalizedTarget;
-      }).take(20).toList();
+      final filtered = all
+          .where((dish) => _matchesProvinceTarget(dish, normalizedTarget))
+          .toList()
+        ..sort((a, b) => _provinceMatchScore(b, normalizedTarget)
+            .compareTo(_provinceMatchScore(a, normalizedTarget)));
+      return filtered.take(_provinceDishDisplayLimit).toList();
     });
   }
 
@@ -100,19 +98,15 @@ class FoodService {
 
     final keySet = keys.map(_normalize).where((e) => e.isNotEmpty).toSet();
 
-    return _db.collection('dishes').limit(500).snapshots().map((snap) {
+    return _db.collection('dishes').limit(_provinceDishQueryLimit).snapshots().map((snap) {
       final all = snap.docs.map(DishModel.fromDoc).toList();
-      return all.where((dish) {
-        final candidates = <String>{
-          _normalize(dish.provinceCode34),
-          _normalize(dish.provinceName34),
-          _normalize(dish.legacyProvinceCode),
-          _normalize(dish.provinceCode),
-          _normalize(dish.provinceI18n['vi'] ?? ''),
-          _normalize(dish.provinceI18n['en'] ?? ''),
-        };
+      final filtered = all.where((dish) {
+        final candidates = _provinceCandidates(dish);
         return candidates.any(keySet.contains);
-      }).take(20).toList();
+      }).toList()
+        ..sort((a, b) => _provinceKeysMatchScore(b, keySet)
+            .compareTo(_provinceKeysMatchScore(a, keySet)));
+      return filtered.take(_provinceDishDisplayLimit).toList();
     });
   }
 
@@ -178,5 +172,46 @@ class FoodService {
       buf.write(i == -1 ? ch : to[i]);
     }
     return buf.toString().replaceAll(RegExp(r'[^a-z0-9]+'), ' ').trim();
+  }
+
+  Set<String> _provinceCandidates(DishModel dish) {
+    return <String>{
+      _normalize(dish.provinceCode34),
+      _normalize(dish.provinceName34),
+      _normalize(dish.legacyProvinceCode),
+      _normalize(dish.provinceCode),
+      _normalize(dish.provinceI18n['vi'] ?? ''),
+      _normalize(dish.provinceI18n['en'] ?? ''),
+    }.where((value) => value.isNotEmpty).toSet();
+  }
+
+  bool _matchesProvinceTarget(DishModel dish, String normalizedTarget) {
+    return _provinceCandidates(dish).contains(normalizedTarget);
+  }
+
+  int _provinceMatchScore(DishModel dish, String normalizedTarget) {
+    var score = 0;
+    if (_normalize(dish.provinceCode34) == normalizedTarget) score += 10;
+    if (_normalize(dish.provinceName34) == normalizedTarget) score += 8;
+    if (_normalize(dish.legacyProvinceCode) == normalizedTarget) score += 6;
+    if (_normalize(dish.provinceCode) == normalizedTarget) score += 4;
+    if (_normalize(dish.provinceI18n['vi'] ?? '') == normalizedTarget) score += 3;
+    if (_normalize(dish.provinceI18n['en'] ?? '') == normalizedTarget) score += 2;
+    return score;
+  }
+
+  int _provinceKeysMatchScore(DishModel dish, Set<String> normalizedKeys) {
+    var score = 0;
+    if (normalizedKeys.contains(_normalize(dish.provinceCode34))) score += 10;
+    if (normalizedKeys.contains(_normalize(dish.provinceName34))) score += 8;
+    if (normalizedKeys.contains(_normalize(dish.legacyProvinceCode))) score += 6;
+    if (normalizedKeys.contains(_normalize(dish.provinceCode))) score += 4;
+    if (normalizedKeys.contains(_normalize(dish.provinceI18n['vi'] ?? ''))) {
+      score += 3;
+    }
+    if (normalizedKeys.contains(_normalize(dish.provinceI18n['en'] ?? ''))) {
+      score += 2;
+    }
+    return score;
   }
 }
