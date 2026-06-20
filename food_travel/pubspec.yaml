@@ -100,6 +100,8 @@ flutter:
     - assets/community/community_post3.png
     - assets/journey/jourfood_1A.png
     - assets/journey/checkin_success_mascot.png
+    - assets/provinces/journey/banners/
+    - assets/provinces/journey/avatars/
     - assets/person/
     - assets/maps/
     - assets/maps/geojson/vietnam_provinces_34.geojson

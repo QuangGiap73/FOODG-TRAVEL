@@ -106,6 +106,8 @@ class FoodJourneyPage extends StatelessWidget {
               ),
               _JourneyHeroBanner(userId: user?.uid),
               const SizedBox(height: 20),
+              VietnamJourneyMapCard(userId: user?.uid),
+              const SizedBox(height: 20),
               DailyMissionSection(
                 userId: user?.uid,
                 onMissionTap: (mission) {
@@ -116,8 +118,6 @@ class FoodJourneyPage extends StatelessWidget {
                   );
                 },
               ),
-              const SizedBox(height: 20),
-              VietnamJourneyMapCard(userId: user?.uid),
               const SizedBox(height: 300),
             ],
           ),
@@ -521,4 +521,3 @@ class _JourneyProgressBlock extends StatelessWidget {
     );
   }
 }
-

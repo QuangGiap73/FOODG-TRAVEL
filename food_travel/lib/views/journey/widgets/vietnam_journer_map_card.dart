@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 
 import '../../../models/journey/journey_province_progress.dart';
 import '../../../models/journey/journey_schema.dart';
+import '../pages/journey_province_detail_page.dart';
 
 class VietnamJourneyMapCard extends StatefulWidget {
   const VietnamJourneyMapCard({super.key, required this.userId});
@@ -63,8 +64,7 @@ class _VietnamJourneyMapCardState extends State<VietnamJourneyMapCard> {
                       return _JourneyMapContent(
                         data: data,
                         onShowAll: () => _showProvinceListSheet(context, data),
-                        onProvinceTap:
-                            (item) => _showProvinceSheet(context, item),
+                        onProvinceTap: (item) => _openProvinceDetail(context, item),
                       );
                     },
                   );
@@ -138,101 +138,24 @@ class _VietnamJourneyMapCardState extends State<VietnamJourneyMapCard> {
     });
   }
 
-  void _showProvinceSheet(BuildContext context, _ProvinceMapItem item) {
-    final progress = item.progress;
+  void _openProvinceDetail(BuildContext context, _ProvinceMapItem item) {
+    final userId = widget.userId;
+    if (userId == null || userId.trim().isEmpty) {
+      return;
+    }
 
-    showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (context) {
-        return Container(
-          decoration: const BoxDecoration(
-            color: Color(0xFFFFFCF7),
-            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-          ),
-          padding: const EdgeInsets.fromLTRB(20, 14, 20, 24),
-          child: SafeArea(
-            top: false,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 42,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFE5D7C8),
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 18),
-                Text(
-                  item.displayName,
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w900,
-                    color: Color(0xFF1F2937),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  item.isDiscovered
-                      ? 'B\u1ea1n \u0111\u00e3 m\u1edf kh\u00f3a t\u1ec9nh th\u00e0nh n\u00e0y trong h\u00e0nh tr\u00ecnh \u1ea9m th\u1ef1c.'
-                      : 'Ch\u01b0a c\u00f3 check-in n\u00e0o t\u1ea1i t\u1ec9nh th\u00e0nh n\u00e0y.',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    height: 1.4,
-                    color: Color(0xFF6B7280),
-                  ),
-                ),
-                const SizedBox(height: 18),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _ProvinceMetricCard(
-                        label: 'Check-in',
-                        value: '${progress.checkinCount}',
-                        color: const Color(0xFFFF8A00),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: _ProvinceMetricCard(
-                        label: 'Qu\u00e1n kh\u00e1c nhau',
-                        value: '${progress.uniquePlacesCount}',
-                        color: const Color(0xFFEF6C00),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _ProvinceMetricCard(
-                        label: 'Qu\u1eadn/Huy\u1ec7n',
-                        value: '${progress.districtsCount}',
-                        color: const Color(0xFFFFB300),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: _ProvinceMetricCard(
-                        label: '\u0110i\u1ec3m nh\u1eadn \u0111\u01b0\u1ee3c',
-                        value: '${progress.totalPoints}',
-                        color: const Color(0xFFD97706),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => JourneyProvinceDetailPage(
+          userId: userId,
+          provinceCode: item.progress.provinceCode.trim().isNotEmpty
+              ? item.progress.provinceCode
+              : item.feature.key,
+          provinceName: item.progress.provinceName.trim().isNotEmpty
+              ? item.progress.provinceName
+              : item.displayName,
+        ),
+      ),
     );
   }
 
@@ -298,7 +221,7 @@ class _VietnamJourneyMapCardState extends State<VietnamJourneyMapCard> {
                         contentPadding: EdgeInsets.zero,
                         onTap: () {
                           Navigator.of(context).pop();
-                          _showProvinceSheet(context, item);
+                          _openProvinceDetail(context, item);
                         },
                         leading: Container(
                           width: 12,
@@ -460,18 +383,20 @@ class _Header extends StatelessWidget {
 class _JourneyMapPanel extends StatelessWidget {
   const _JourneyMapPanel({required this.data, required this.onProvinceTap});
 
+  static const double _mapPanelHeight = 300;
+
   final _JourneyProvinceSnapshot data;
   final ValueChanged<_ProvinceMapItem> onProvinceTap;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 340,
+      height: _mapPanelHeight,
       child: LayoutBuilder(
         builder: (context, constraints) {
           final geometry = _GeoMapLayout.build(
             items: data.items,
-            size: Size(constraints.maxWidth, 340),
+            size: Size(constraints.maxWidth, _mapPanelHeight),
           );
 // báº¥m vÃ o 1 tá»‰nh 
           return DecoratedBox(
@@ -480,32 +405,35 @@ class _JourneyMapPanel extends StatelessWidget {
               borderRadius: BorderRadius.circular(26),
               border: Border.all(color: const Color(0xFFF6E7D8)),
             ),
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTapDown: (details) {
-                final tapped = geometry.hitTest(details.localPosition);
-                if (tapped != null) {
-                  onProvinceTap(tapped);
-                }
-              },
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: RepaintBoundary(
-                      child: CustomPaint(
-                        painter: _VietnamGeoJsonPainter(geometry: geometry),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(26),
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTapDown: (details) {
+                  final tapped = geometry.hitTest(details.localPosition);
+                  if (tapped != null) {
+                    onProvinceTap(tapped);
+                  }
+                },
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: RepaintBoundary(
+                        child: CustomPaint(
+                          painter: _VietnamGeoJsonPainter(geometry: geometry),
+                        ),
                       ),
                     ),
-                  ),
-                  Positioned(
-                    left: 14,
-                    top: 18,
-                    child: _DiscoverySummaryCard(
-                      discoveredCount: data.discoveredCount,
-                      totalCount: data.items.length,
+                    Positioned(
+                      left: 12,
+                      top: 70,
+                      child: _DiscoverySummaryCard(
+                        discoveredCount: data.discoveredCount,
+                        totalCount: data.items.length,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );
@@ -573,16 +501,16 @@ class _DiscoverySummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 100,
-      padding: const EdgeInsets.all(14),
+      width: 88,
+      padding: const EdgeInsets.fromLTRB(12, 12, 12, 10),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.95),
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: const [
           BoxShadow(
             color: Color(0x12000000),
-            blurRadius: 16,
-            offset: Offset(0, 6),
+            blurRadius: 14,
+            offset: Offset(0, 5),
           ),
         ],
       ),
@@ -592,19 +520,19 @@ class _DiscoverySummaryCard extends StatelessWidget {
           const Text(
             '\u0110\u00e3 kh\u00e1m ph\u00e1',
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 11,
               color: Color(0xFF6B7280),
               fontWeight: FontWeight.w700,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
           RichText(
             text: TextSpan(
               children: [
                 TextSpan(
                   text: '$discoveredCount',
                   style: const TextStyle(
-                    fontSize: 32,
+                    fontSize: 28,
                     height: 1,
                     fontWeight: FontWeight.w900,
                     color: Color(0xFFFF8A00),
@@ -613,7 +541,7 @@ class _DiscoverySummaryCard extends StatelessWidget {
                 TextSpan(
                   text: '/$totalCount',
                   style: const TextStyle(
-                    fontSize: 20,
+                    fontSize: 17,
                     height: 1.1,
                     fontWeight: FontWeight.w800,
                     color: Color(0xFF374151),
@@ -622,59 +550,13 @@ class _DiscoverySummaryCard extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 3),
           const Text(
             't\u1ec9nh th\u00e0nh',
             style: TextStyle(
-              fontSize: 13,
+              fontSize: 12,
               color: Color(0xFF374151),
               fontWeight: FontWeight.w800,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ProvinceMetricCard extends StatelessWidget {
-  const _ProvinceMetricCard({
-    required this.label,
-    required this.value,
-    required this.color,
-  });
-
-  final String label;
-  final String value;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFF2E7DA)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 12,
-              color: Color(0xFF6B7280),
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w900,
-              color: color,
             ),
           ),
         ],
@@ -770,7 +652,7 @@ class _MapLoadingState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const SizedBox(
-      height: 340,
+      height: _JourneyMapPanel._mapPanelHeight,
       child: Center(child: CircularProgressIndicator()),
     );
   }
@@ -931,6 +813,7 @@ class _GeoMapLayout {
   const _GeoMapLayout({required this.shapes});
 
   final List<_ProjectedProvinceShape> shapes;
+  static const double _mapScaleBoost = 1.16;
 
   factory _GeoMapLayout.build({
     required List<_ProvinceMapItem> items,
@@ -956,20 +839,25 @@ class _GeoMapLayout {
         .reduce((a, b) => a > b ? a : b);
 // váº½ báº£n Ä‘á»“ 
     final geoBounds = Rect.fromLTRB(minX, minY, maxX, maxY);
-    const leftPanelWidth = 108.0;
-    const horizontalPadding = 18.0;
-    const verticalPadding = 14.0;
+    const leftPanelWidth = 92.0;
+    const horizontalPadding = 8.0;
+    const verticalPadding = 6.0;
     final availableWidth = size.width - leftPanelWidth - horizontalPadding * 2;
     final availableHeight = size.height - verticalPadding * 2;
-    final scale =
+    final baseScale =
         availableWidth / geoBounds.width < availableHeight / geoBounds.height
             ? availableWidth / geoBounds.width
             : availableHeight / geoBounds.height;
+    final scale = baseScale * _mapScaleBoost;
     final drawnWidth = geoBounds.width * scale;
     final drawnHeight = geoBounds.height * scale;
     final offsetX =
-        leftPanelWidth + horizontalPadding + (availableWidth - drawnWidth) / 2;
-    final offsetY = verticalPadding + (availableHeight - drawnHeight) / 2;
+        leftPanelWidth +
+        horizontalPadding +
+        (availableWidth - drawnWidth) / 2 +
+        8;
+    final offsetY =
+        verticalPadding + (availableHeight - drawnHeight) / 2 - 6;
 
     final shapes =
         items.map((item) {
@@ -1124,5 +1012,3 @@ const Map<String, String> _provinceAliases = {
   'sai_gon': 'ho_chi_minh_city',
   'thua_thien_hue': 'hue',
 };
-
-
