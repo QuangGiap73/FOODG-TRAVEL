@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/journey/mission_model.dart';
 
-class DailyMissionSection extends StatelessWidget {
+class DailyMissionSection extends StatefulWidget {
   const DailyMissionSection({
     super.key,
     required this.userId,
@@ -14,6 +15,41 @@ class DailyMissionSection extends StatelessWidget {
   final String? userId;
   final VoidCallback? onViewAll;
   final ValueChanged<JourneyMission>? onMissionTap;
+
+  @override
+  State<DailyMissionSection> createState() => _DailyMissionSectionState();
+}
+
+class _DailyMissionSectionState extends State<DailyMissionSection> {
+  static const List<String> _missionOrder = [
+    'favorite_any_place',
+    'first_checkin_before_9am',
+    'evening_checkin_after_18h',
+    'checkin_high_rating_place',
+    'earn_30_points_in_day',
+    'revisit_a_place',
+    'unlock_new_province',
+    'checkin_new_place',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _ensureDailyMissions();
+  }
+
+  Future<void> _ensureDailyMissions() async {
+    final uid = widget.userId?.trim();
+    if (uid == null || uid.isEmpty) return;
+
+    try {
+      await FirebaseFunctions.instance
+          .httpsCallable('ensureDailyMissions')
+          .call(<String, dynamic>{
+        'dateKey': _getVietnamDateKey(DateTime.now()),
+      });
+    } catch (_) {}
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +83,7 @@ class DailyMissionSection extends StatelessWidget {
           child: Column(
             children: [
               _SectionHeader(
-                onViewAll: onViewAll,
+                onViewAll: widget.onViewAll,
               ),
 
               const SizedBox(height: 12),
@@ -65,7 +101,7 @@ class DailyMissionSection extends StatelessWidget {
                       ),
                       child: _MissionItemCard(
                         mission: mission,
-                        onTap: () => onMissionTap?.call(mission),
+                        onTap: () => widget.onMissionTap?.call(mission),
                       ),
                     );
                   },
@@ -78,7 +114,7 @@ class DailyMissionSection extends StatelessWidget {
   }
 
   Stream<List<JourneyMission>> _missionStream() {
-    final uid = userId?.trim();
+    final uid = widget.userId?.trim();
 
     if (uid == null || uid.isEmpty) {
       return Stream.value(
@@ -110,11 +146,9 @@ class DailyMissionSection extends StatelessWidget {
           .map(JourneyMission.fromDoc)
           .toList();
 
-      missions.sort((a, b) {
-        return _missionSortValue(a.type).compareTo(
-          _missionSortValue(b.type),
-        );
-      });
+      missions.sort(
+        (a, b) => _missionSortValue(a.id).compareTo(_missionSortValue(b.id)),
+      );
 
       return missions;
     });
@@ -422,6 +456,21 @@ class _MissionIcon extends StatelessWidget {
 
       case 'save':
         return Icons.bookmark_rounded;
+
+      case 'clock':
+        return Icons.schedule_rounded;
+
+      case 'night':
+        return Icons.dark_mode_rounded;
+
+      case 'points':
+        return Icons.workspace_premium_rounded;
+
+      case 'repeat':
+        return Icons.replay_rounded;
+
+      case 'province':
+        return Icons.explore_rounded;
 
       case 'review':
         return Icons.star_rounded;

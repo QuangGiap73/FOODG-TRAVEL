@@ -152,9 +152,74 @@ type DailyMissionDefinition = {
   iconKey: string;
   targetCount: number;
   rewardPoints: number;
+  isFixedDaily?: boolean;
 };
 
 const DAILY_MISSION_DEFINITIONS: DailyMissionDefinition[] = [
+  {
+    id: "favorite_any_place",
+    title: "Luu 1 quan yeu thich",
+    description: "Danh dau yeu thich bat ky mot quan an nao.",
+    type: "favorite_any_place",
+    iconKey: "save",
+    targetCount: 1,
+    rewardPoints: 10,
+    isFixedDaily: true,
+  },
+  {
+    id: "first_checkin_before_9am",
+    title: "Check-in dau ngay truoc 9h",
+    description: "Hoan thanh check-in dau tien trong ngay truoc 9h sang.",
+    type: "first_checkin_before_9am",
+    iconKey: "clock",
+    targetCount: 1,
+    rewardPoints: 25,
+  },
+  {
+    id: "evening_checkin_after_18h",
+    title: "Check-in buoi toi sau 18h",
+    description: "Ghe quan vao buoi toi va check-in sau 18h.",
+    type: "evening_checkin_after_18h",
+    iconKey: "night",
+    targetCount: 1,
+    rewardPoints: 20,
+  },
+  {
+    id: "checkin_high_rating_place",
+    title: "Check-in quan tu 4.5 sao",
+    description: "Check-in 1 quan co diem danh gia tu 4.5 tro len.",
+    type: "checkin_high_rating_place",
+    iconKey: "review",
+    targetCount: 1,
+    rewardPoints: 25,
+  },
+  {
+    id: "earn_30_points_in_day",
+    title: "Tich luy 30 diem trong ngay",
+    description: "Kiem tong cong it nhat 30 diem check-in trong hom nay.",
+    type: "earn_30_points_in_day",
+    iconKey: "points",
+    targetCount: 30,
+    rewardPoints: 30,
+  },
+  {
+    id: "revisit_a_place",
+    title: "Quay lai quan da tung check-in",
+    description: "Check-in lai mot quan ban da ghe truoc do.",
+    type: "revisit_a_place",
+    iconKey: "repeat",
+    targetCount: 1,
+    rewardPoints: 20,
+  },
+  {
+    id: "unlock_new_province",
+    title: "Mo khoa 1 tinh moi",
+    description: "Lan dau check-in tai mot tinh thanh moi trong hanh trinh.",
+    type: "unlock_new_province",
+    iconKey: "province",
+    targetCount: 1,
+    rewardPoints: 40,
+  },
   {
     id: "checkin_new_place",
     title: "Check-in 1 quan moi",
@@ -164,25 +229,9 @@ const DAILY_MISSION_DEFINITIONS: DailyMissionDefinition[] = [
     targetCount: 1,
     rewardPoints: 30,
   },
-  {
-    id: "try_vietnamese_food",
-    title: "Thu mot mon Viet",
-    description: "Kham pha mot mon an Viet Nam hom nay.",
-    type: "try_vietnamese_food",
-    iconKey: "food",
-    targetCount: 1,
-    rewardPoints: 20,
-  },
-  {
-    id: "save_wishlist_place",
-    title: "Luu 1 quan muon an",
-    description: "Luu mot quan vao danh sach yeu thich.",
-    type: "save_wishlist_place",
-    iconKey: "save",
-    targetCount: 1,
-    rewardPoints: 10,
-  },
 ];
+
+const DAILY_RANDOM_MISSION_COUNT = 4;
 
 /**
  * Ep an input thanh chuoi an toan.
@@ -190,6 +239,18 @@ const DAILY_MISSION_DEFINITIONS: DailyMissionDefinition[] = [
 function toStringSafe(value: unknown): string {
   if (value === null || value === undefined) return "";
   return String(value).trim();
+}
+
+/**
+ * Chuan hoa ten quan/huyen thanh key on dinh de luu district da di qua.
+ */
+function normalizeDistrictKey(value: string): string {
+  return toStringSafe(value)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
 }
 
 /**
@@ -231,6 +292,51 @@ function getVietnamDateKey(date: Date): string {
   const month = String(vn.getUTCMonth() + 1).padStart(2, "0");
   const day = String(vn.getUTCDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
+}
+
+/**
+ * Lay gio hien tai theo mui gio Viet Nam.
+ */
+function getVietnamHour(date: Date): number {
+  const vn = new Date(date.getTime() + VN_OFFSET_MS);
+  return vn.getUTCHours();
+}
+
+/**
+ * Tao hash on dinh de chon mission random theo user + ngay.
+ */
+function stableHash(value: string): number {
+  let hash = 0;
+  for (let index = 0; index < value.length; index += 1) {
+    hash = ((hash * 31) + value.charCodeAt(index)) >>> 0;
+  }
+  return hash;
+}
+
+/**
+ * Chon bo daily mission cho user trong ngay.
+ */
+function selectDailyMissionDefinitions(
+  uid: string,
+  dateKey: string,
+): DailyMissionDefinition[] {
+  const fixed = DAILY_MISSION_DEFINITIONS.filter(
+    (mission) => mission.isFixedDaily,
+  );
+  const randomPool = DAILY_MISSION_DEFINITIONS.filter(
+    (mission) => !mission.isFixedDaily,
+  );
+
+  const ranked = [...randomPool].sort((a, b) => {
+    const left = stableHash(`${uid}:${dateKey}:${a.id}`);
+    const right = stableHash(`${uid}:${dateKey}:${b.id}`);
+    return left - right;
+  });
+
+  return [
+    ...fixed,
+    ...ranked.slice(0, Math.min(DAILY_RANDOM_MISSION_COUNT, ranked.length)),
+  ];
 }
 
 /**
@@ -395,37 +501,43 @@ function writeDailyMissionProgress(
   tx.set(missionRef, data, {merge: true});
 }
 
-/**
- * Kiem tra check-in co tinh la nhiem vu thu mon Viet hay khong.
- */
-function isVietnameseFoodMissionMatched(params: {
-  placeName: string;
-  placeAddress: string;
-  placeType: string;
-  provinceCode: string;
-  provinceName: string;
-}): boolean {
-  const combined = [
-    params.placeName,
-    params.placeAddress,
-    params.placeType,
-    params.provinceCode,
-    params.provinceName,
-  ]
-    .join(" ")
-    .toLowerCase();
+type DailyMissionCheckinContext = {
+  dailyCountBefore: number;
+  dailyPointsBefore: number;
+  pointsEarned: number;
+  vietnamHour: number;
+  isNewPlace: boolean;
+  isNewProvince: boolean;
+  isReturnVisit: boolean;
+  placeRating: number;
+};
 
-  return (
-    combined.includes("viet") ||
-    combined.includes("vietnam") ||
-    combined.includes("viet nam") ||
-    combined.includes("mon viet") ||
-    combined.includes("pho") ||
-    combined.includes("bun") ||
-    combined.includes("banh") ||
-    params.provinceCode.trim().length > 0 ||
-    params.provinceName.trim().length > 0
-  );
+/**
+ * Xac dinh mission nao can tang tien do sau moi lan check-in.
+ */
+function shouldIncreaseMissionFromCheckin(
+  mission: DailyMissionDefinition,
+  context: DailyMissionCheckinContext,
+): boolean {
+  switch (mission.type) {
+  case "checkin_new_place":
+    return context.isNewPlace;
+  case "first_checkin_before_9am":
+    return context.dailyCountBefore === 0 && context.vietnamHour < 9;
+  case "evening_checkin_after_18h":
+    return context.vietnamHour >= 18;
+  case "checkin_high_rating_place":
+    return context.placeRating >= 4.5;
+  case "earn_30_points_in_day":
+    return context.dailyPointsBefore < 30 &&
+      context.dailyPointsBefore + context.pointsEarned >= 30;
+  case "revisit_a_place":
+    return context.isReturnVisit;
+  case "unlock_new_province":
+    return context.isNewProvince;
+  default:
+    return false;
+  }
 }
 
 export const ensureDailyMissions = onCall(async (request) => {
@@ -449,11 +561,16 @@ export const ensureDailyMissions = onCall(async (request) => {
     .doc(dateKey);
 
   const missionsCol = dailyMissionRef.collection("missions");
-  const missionRefs = DAILY_MISSION_DEFINITIONS.map((mission) =>
+  const selectedMissions = selectDailyMissionDefinitions(uid, dateKey);
+  const selectedMissionIds = new Set(
+    selectedMissions.map((mission) => mission.id),
+  );
+  const missionRefs = selectedMissions.map((mission) =>
     missionsCol.doc(mission.id),
   );
 
   await db.runTransaction(async (tx) => {
+    const existingMissionSnapshot = await tx.get(missionsCol);
     const missionSnaps = await Promise.all(
       missionRefs.map((missionRef) => tx.get(missionRef)),
     );
@@ -462,12 +579,13 @@ export const ensureDailyMissions = onCall(async (request) => {
       dailyMissionRef,
       {
         dateKey,
+        missionIds: selectedMissions.map((mission) => mission.id),
         updatedAt: admin.firestore.FieldValue.serverTimestamp(),
       },
       {merge: true},
     );
 
-    DAILY_MISSION_DEFINITIONS.forEach((mission, index) => {
+    selectedMissions.forEach((mission, index) => {
       writeDailyMissionSeed(
         tx,
         missionRefs[index],
@@ -475,6 +593,12 @@ export const ensureDailyMissions = onCall(async (request) => {
         mission,
         dateKey,
       );
+    });
+
+    existingMissionSnapshot.docs.forEach((doc) => {
+      if (!selectedMissionIds.has(doc.id)) {
+        tx.delete(doc.ref);
+      }
     });
   });
 
@@ -603,6 +727,7 @@ export const createCheckin = onCall(async (request) => {
   const placeLat = toDouble(payload.placeLat);
   const placeLng = toDouble(payload.placeLng);
   const placePhotoUrl = toStringSafe(payload.photoUrl);
+  const placeRating = toDouble(payload.placeRating);
   const districtName = toStringSafe(payload.districtName);
   const placeType = toStringSafe(payload.placeType) || "restaurant";
   const provinceCode = toStringSafe(payload.provinceCode);
@@ -633,6 +758,7 @@ export const createCheckin = onCall(async (request) => {
   const canonicalProvincesCol = summaryRef.collection("provinces_v2");
   const legacyProvincesCol = summaryRef.collection("provinces");
   const badgesCol = summaryRef.collection("badges");
+  const districtVisitsCol = summaryRef.collection("districtVisits");
   const placeVisitRef = placeVisitsCol.doc(placeId);
   const todayDailyRef = dailyStatsCol.doc(getVietnamDateKey(new Date()));
   const checkinRef = checkinsCol.doc();
@@ -674,6 +800,7 @@ export const createCheckin = onCall(async (request) => {
     const dailySnap = await tx.get(todayDailyRef);
     const dailyData = dailySnap.data() ?? {};
     const dailyCountBefore = toInt(dailyData.checkinCount);
+    const dailyPointsBefore = toInt(dailyData.pointsEarned);
     if (dailyCountBefore >= MAX_DAILY_CHECKINS) {
       throw new HttpsError(
         "resource-exhausted",
@@ -705,7 +832,14 @@ export const createCheckin = onCall(async (request) => {
     const legacyProvinceRef = provinceCode ?
       legacyProvincesCol.doc(provinceCode) :
       null;
+    const normalizedDistrictKey = normalizeDistrictKey(districtName);
+    const districtVisitRef = provinceCode && normalizedDistrictKey ?
+      districtVisitsCol.doc(`${provinceCode}__${normalizedDistrictKey}`) :
+      null;
     const provinceSnap = provinceRef ? await tx.get(provinceRef) : null;
+    const districtVisitSnap = districtVisitRef ?
+      await tx.get(districtVisitRef) :
+      null;
     const badgeSnaps = await Promise.all([
       tx.get(badgesCol.doc("first_bite")),
       tx.get(badgesCol.doc("food_explorer")),
@@ -721,16 +855,26 @@ export const createCheckin = onCall(async (request) => {
       .collection("daily_missions")
       .doc(todayKey);
     const missionsCol = dailyMissionRef.collection("missions");
-    const missionRefs = DAILY_MISSION_DEFINITIONS.map((mission) =>
-      missionsCol.doc(mission.id),
-    );
-    const missionSnaps = await Promise.all(
-      missionRefs.map((missionRef) => tx.get(missionRef)),
-    );
+    const missionQuerySnap = await tx.get(missionsCol);
+    const selectedMissions = selectDailyMissionDefinitions(uid, todayKey);
+    const activeMissionDefinitions = missionQuerySnap.empty ?
+      selectedMissions :
+      missionQuerySnap.docs
+        .map(
+          (doc) => DAILY_MISSION_DEFINITIONS.find(
+            (mission) => mission.id === doc.id,
+          ),
+        )
+        .filter(
+          (mission): mission is DailyMissionDefinition => Boolean(mission),
+        );
 
     const isNewPlace = !placeVisitSnap.exists;
     const isNewProvince = Boolean(
       provinceRef && provinceCode && !(provinceSnap?.exists),
+    );
+    const isNewDistrict = Boolean(
+      districtVisitRef && normalizedDistrictKey && !(districtVisitSnap?.exists),
     );
 
     // Tinh diem MVP.
@@ -787,6 +931,7 @@ export const createCheckin = onCall(async (request) => {
     if (!isNewPlace) {
       nextPlaceVisitCount = toInt(placeVisitSnap.data()?.checkinCount) + 1;
     }
+    const isReturnVisit = nextPlaceVisitCount > 1;
 
     tx.set(
       placeVisitRef,
@@ -803,12 +948,31 @@ export const createCheckin = onCall(async (request) => {
       {merge: true},
     );
 
+    if (districtVisitRef && normalizedDistrictKey) {
+      tx.set(
+        districtVisitRef,
+        {
+          provinceCode,
+          provinceName,
+          districtKey: normalizedDistrictKey,
+          districtName,
+          firstCheckinAt:
+            districtVisitSnap?.data()?.firstCheckinAt ??
+            admin.firestore.FieldValue.serverTimestamp(),
+          lastCheckinAt: admin.firestore.FieldValue.serverTimestamp(),
+          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        },
+        {merge: true},
+      );
+    }
+
     // Cap nhat bo dem theo ngay.
     tx.set(
       todayDailyRef,
       {
         dateKey: todayKey,
         checkinCount: dailyCountBefore + 1,
+        pointsEarned: dailyPointsBefore + pointsEarned,
         updatedAt: admin.firestore.FieldValue.serverTimestamp(),
       },
       {merge: true},
@@ -839,6 +1003,8 @@ export const createCheckin = onCall(async (request) => {
       const provinceCheckinCount = toInt(provinceData.checkinCount) + 1;
       const provinceUniquePlacesCount =
         toInt(provinceData.uniquePlacesCount) + (isNewPlace ? 1 : 0);
+      const provinceDistrictsCount =
+        toInt(provinceData.districtsCount) + (isNewDistrict ? 1 : 0);
       const provinceTotalPoints =
         toInt(provinceData.totalPoints) + pointsEarned;
       const provincePayload = {
@@ -846,7 +1012,7 @@ export const createCheckin = onCall(async (request) => {
         provinceName: provinceName || toStringSafe(provinceData.provinceName),
         checkinCount: provinceCheckinCount,
         uniquePlacesCount: provinceUniquePlacesCount,
-        districtsCount: toInt(provinceData.districtsCount),
+        districtsCount: provinceDistrictsCount,
         totalPoints: provinceTotalPoints,
         isDiscovered: true,
         firstCheckinAt:
@@ -904,14 +1070,6 @@ export const createCheckin = onCall(async (request) => {
       targetValue: 3,
     }, streakBadge);
 
-    const completedVietnameseMission = isVietnameseFoodMissionMatched({
-      placeName,
-      placeAddress,
-      placeType,
-      provinceCode,
-      provinceName,
-    });
-
     tx.set(
       dailyMissionRef,
       {
@@ -921,23 +1079,29 @@ export const createCheckin = onCall(async (request) => {
       {merge: true},
     );
 
-    DAILY_MISSION_DEFINITIONS.forEach((mission, index) => {
-      const existing = missionSnaps[index].data();
+    const missionContext: DailyMissionCheckinContext = {
+      dailyCountBefore,
+      dailyPointsBefore,
+      pointsEarned,
+      vietnamHour: getVietnamHour(now),
+      isNewPlace,
+      isNewProvince,
+      isReturnVisit,
+      placeRating,
+    };
 
-      const shouldIncrease =
-        (mission.id === "checkin_new_place" && isNewPlace) ||
-        (
-          mission.id === "try_vietnamese_food" &&
-          completedVietnameseMission
-        );
+    activeMissionDefinitions.forEach((mission) => {
+      const existing = missionQuerySnap.docs
+        .find((doc) => doc.id === mission.id)
+        ?.data();
 
       writeDailyMissionProgress(
         tx,
-        missionRefs[index],
+        missionsCol.doc(mission.id),
         existing,
         mission,
         todayKey,
-        shouldIncrease,
+        shouldIncreaseMissionFromCheckin(mission, missionContext),
       );
     });
 
@@ -1043,7 +1207,7 @@ export const completeSavePlaceMission = onCall(async (request) => {
     .collection("daily_missions")
     .doc(todayKey)
     .collection("missions")
-    .doc("save_wishlist_place");
+    .doc("favorite_any_place");
 
   await db.runTransaction(async (tx) => {
     const missionSnap = await tx.get(missionRef);
@@ -1059,10 +1223,10 @@ export const completeSavePlaceMission = onCall(async (request) => {
     const isCompleted = nextCount >= targetCount;
 
     const updateData: admin.firestore.DocumentData = {
-      id: "save_wishlist_place",
-      title: "Luu 1 quan muon an",
-      description: "Luu mot quan vao danh sach yeu thich.",
-      type: "save_wishlist_place",
+      id: "favorite_any_place",
+      title: "Luu 1 quan yeu thich",
+      description: "Danh dau yeu thich bat ky mot quan an nao.",
+      type: "favorite_any_place",
       iconKey: "save",
       targetCount,
       currentCount: nextCount,
@@ -1086,6 +1250,6 @@ export const completeSavePlaceMission = onCall(async (request) => {
 
   return {
     success: true,
-    missionId: "save_wishlist_place",
+    missionId: "favorite_any_place",
   };
 });

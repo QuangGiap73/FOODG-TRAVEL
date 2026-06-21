@@ -55,7 +55,7 @@ const Map<String, String> provinceJourneyAvatarAssets = {
   'ha_tinh': '$_avatarBasePath/ha_tinh_avatar.png',
   'hai_phong': '$_avatarBasePath/hai_phong_avatar.png',
   'hung_yen': '$_avatarBasePath/hung_yen_avatar.png',
-  'hue': '$_avatarBasePath/hue_avatar.png',
+  'hue': '$_avatarBasePath/hue_banner.png',
   'khanh_hoa': '$_avatarBasePath/khanh_hoa_avatar.png',
   'lai_chau': '$_avatarBasePath/lai_chau_avatar.png',
   'lam_dong': '$_avatarBasePath/lam_dong_avatar.png',
@@ -78,9 +78,85 @@ const Map<String, String> provinceJourneyAvatarAssets = {
 };
 
 String? provinceJourneyBannerAssetOf(String provinceCode) {
-  return provinceJourneyBannerAssets[provinceCode.trim().toLowerCase()];
+  return provinceJourneyBannerAssets[_normalizeJourneyProvinceKey(provinceCode)];
 }
 
 String? provinceJourneyAvatarAssetOf(String provinceCode) {
-  return provinceJourneyAvatarAssets[provinceCode.trim().toLowerCase()];
+  return provinceJourneyAvatarAssets[_normalizeJourneyProvinceKey(provinceCode)];
 }
+
+String? provinceJourneyBannerAssetFor({
+  required String provinceCode,
+  required String provinceName,
+}) {
+  return provinceJourneyBannerAssetOf(provinceCode) ??
+      provinceJourneyBannerAssets[_provinceCodeByNormalizedName[
+          _normalizeJourneyProvinceKey(provinceName)]];
+}
+
+String? provinceJourneyAvatarAssetFor({
+  required String provinceCode,
+  required String provinceName,
+}) {
+  return provinceJourneyAvatarAssetOf(provinceCode) ??
+      provinceJourneyAvatarAssets[_provinceCodeByNormalizedName[
+          _normalizeJourneyProvinceKey(provinceName)]];
+}
+
+String _normalizeJourneyProvinceKey(String input) {
+  const from =
+      'àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ';
+  const to =
+      'aaaaaaaaaaaaaaaaaeeeeeeeeeeeiiiiiooooooooooooooooouuuuuuuuuuuyyyyyd';
+
+  final lower = input.trim().toLowerCase();
+  final buffer = StringBuffer();
+  for (final ch in lower.split('')) {
+    final index = from.indexOf(ch);
+    buffer.write(index == -1 ? ch : to[index]);
+  }
+  return buffer
+      .toString()
+      .replaceAll(RegExp(r'[^a-z0-9]+'), '_')
+      .replaceAll(RegExp(r'_+'), '_')
+      .replaceAll(RegExp(r'^_|_$'), '');
+}
+
+const Map<String, String> _provinceCodeByNormalizedName = {
+  'an_giang': 'an_giang',
+  'bac_ninh': 'bac_ninh',
+  'can_tho': 'can_tho',
+  'cao_bang': 'cao_bang',
+  'ca_mau': 'ca_mau',
+  'da_nang': 'da_nang',
+  'dak_lak': 'dak_lak',
+  'dien_bien': 'dien_bien',
+  'dong_nai': 'dong_nai',
+  'dong_thap': 'dong_thap',
+  'gia_lai': 'gia_lai',
+  'ha_noi': 'ha_noi',
+  'ha_tinh': 'ha_tinh',
+  'hai_phong': 'hai_phong',
+  'hung_yen': 'hung_yen',
+  'hue': 'hue',
+  'khanh_hoa': 'khanh_hoa',
+  'lai_chau': 'lai_chau',
+  'lam_dong': 'lam_dong',
+  'lang_son': 'lang_son',
+  'lao_cai': 'lao_cai',
+  'nghe_an': 'nghe_an',
+  'ninh_binh': 'ninh_binh',
+  'phu_tho': 'phu_tho',
+  'quang_ngai': 'quang_ngai',
+  'quang_ninh': 'quang_ninh',
+  'quang_tri': 'quang_tri',
+  'son_la': 'son_la',
+  'tay_ninh': 'tay_ninh',
+  'thai_nguyen': 'thai_nguyen',
+  'thanh_hoa': 'thanh_hoa',
+  'thanh_pho_ho_chi_minh': 'thanh_pho_ho_chi_minh',
+  'tp_ho_chi_minh': 'thanh_pho_ho_chi_minh',
+  'ho_chi_minh': 'thanh_pho_ho_chi_minh',
+  'tuyen_quang': 'tuyen_quang',
+  'vinh_long': 'vinh_long',
+};

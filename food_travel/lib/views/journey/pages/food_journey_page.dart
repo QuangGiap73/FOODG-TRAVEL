@@ -2,6 +2,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../../../models/journey/badge_model.dart';
 import '../../../models/journey/journey_stats.dart';
 import '../../../views/journey/pages/mission_detail_page.dart';
 import '../../../views/journey/widgets/daily_mission_section.dart';
@@ -118,6 +119,8 @@ class FoodJourneyPage extends StatelessWidget {
                   );
                 },
               ),
+              const SizedBox(height: 20),
+              JourneyBadgesSection(userId: user?.uid),
               const SizedBox(height: 300),
             ],
           ),
@@ -521,3 +524,386 @@ class _JourneyProgressBlock extends StatelessWidget {
     );
   }
 }
+
+class JourneyBadgesSection extends StatelessWidget {
+  const JourneyBadgesSection({
+    super.key,
+    required this.userId,
+  });
+
+  final String? userId;
+
+  Stream<List<JourneyBadge>> _badgeStream() {
+    final uid = userId?.trim();
+    if (uid == null || uid.isEmpty) {
+      return Stream.value(_defaultBadges());
+    }
+
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('journey')
+        .doc('summary')
+        .collection('badges')
+        .snapshots()
+        .map((snapshot) {
+      final badgesById = {
+        for (final doc in snapshot.docs) doc.id: JourneyBadge.fromDoc(doc),
+      };
+
+      return _badgeVisuals.values.map((visual) {
+        final badge = badgesById[visual.badgeId];
+        if (badge != null) {
+          return badge.copyWith(
+            title: badge.title.isEmpty ? visual.title : badge.title,
+            description:
+                badge.description.isEmpty ? visual.description : badge.description,
+            iconKey: badge.iconKey.isEmpty ? visual.iconKey : badge.iconKey,
+          );
+        }
+
+        return JourneyBadge(
+          badgeId: visual.badgeId,
+          title: visual.title,
+          description: visual.description,
+          iconKey: visual.iconKey,
+          progress: 0,
+          currentValue: 0,
+          targetValue: visual.defaultTarget,
+        );
+      }).toList();
+    });
+  }
+
+  List<JourneyBadge> _defaultBadges() {
+    return _badgeVisuals.values
+        .map(
+          (visual) => JourneyBadge(
+            badgeId: visual.badgeId,
+            title: visual.title,
+            description: visual.description,
+            iconKey: visual.iconKey,
+            progress: 0,
+            currentValue: 0,
+            targetValue: visual.defaultTarget,
+          ),
+        )
+        .toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<List<JourneyBadge>>(
+      stream: _badgeStream(),
+      builder: (context, snapshot) {
+        final badges = snapshot.data ?? _defaultBadges();
+
+        return Container(
+          margin: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 18),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: const Color(0xFFF4E5D6)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 18,
+                offset: const Offset(0, 10),
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  const Expanded(
+                    child: Text(
+                      'Huy hiệu của bạn',
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFF1F2937),
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {},
+                    style: TextButton.styleFrom(
+                      foregroundColor: const Color(0xFF6B7280),
+                      minimumSize: Size.zero,
+                      padding: EdgeInsets.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    child: const Text(
+                      'Xem tất cả',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 14),
+              SizedBox(
+                height: 156,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: badges.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: 12),
+                  itemBuilder: (context, index) {
+                    final badge = badges[index];
+                    final visual = _badgeVisuals[badge.badgeId]!;
+                    return _JourneyBadgeCard(
+                      badge: badge,
+                      visual: visual,
+                      onTap: () => _showBadgeBottomSheet(context, badge, visual),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showBadgeBottomSheet(
+    BuildContext context,
+    JourneyBadge badge,
+    _BadgeVisual visual,
+  ) {
+    final progressText = '${badge.currentValue}/${badge.targetValue}';
+
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+          decoration: const BoxDecoration(
+            color: Color(0xFFFFFCF8),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 44,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE8DDCF),
+                  borderRadius: BorderRadius.circular(999),
+                ),
+              ),
+              const SizedBox(height: 18),
+              Image.asset(
+                badge.isUnlocked ? visual.assetPath : _lockedBadgeAsset,
+                width: 84,
+                height: 84,
+                fit: BoxFit.contain,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                visual.title,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFF1F2937),
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                visual.description,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 14,
+                  height: 1.45,
+                  color: Color(0xFF6B7280),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(color: const Color(0xFFF0E1D1)),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        badge.isUnlocked
+                            ? 'Đã mở khóa'
+                            : 'Tiến độ hiện tại: $progressText',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF374151),
+                        ),
+                      ),
+                    ),
+                    Text(
+                      badge.isUnlocked ? 'Hoàn thành' : progressText,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w800,
+                        color: badge.isUnlocked
+                            ? const Color(0xFF2E9F59)
+                            : const Color(0xFFFF8A00),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _JourneyBadgeCard extends StatelessWidget {
+  const _JourneyBadgeCard({
+    required this.badge,
+    required this.visual,
+    this.onTap,
+  });
+
+  final JourneyBadge badge;
+  final _BadgeVisual visual;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final isUnlocked = badge.isUnlocked;
+    final progress = badge.targetValue <= 0
+        ? 0.0
+        : (badge.currentValue / badge.targetValue).clamp(0.0, 1.0);
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        width: 108,
+        padding: const EdgeInsets.fromLTRB(10, 12, 10, 10),
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFFEFC),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isUnlocked
+                ? const Color(0xFFF3D4A7)
+                : const Color(0xFFE8E1D8),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.03),
+              blurRadius: 10,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: Image.asset(
+                isUnlocked ? visual.assetPath : _lockedBadgeAsset,
+                fit: BoxFit.contain,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              visual.title,
+              maxLines: 2,
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 12,
+                height: 1.2,
+                fontWeight: FontWeight.w800,
+                color: isUnlocked
+                    ? const Color(0xFF243041)
+                    : const Color(0xFF9AA3AF),
+              ),
+            ),
+            const SizedBox(height: 8),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(999),
+              child: LinearProgressIndicator(
+                value: isUnlocked ? 1 : progress,
+                minHeight: 5,
+                backgroundColor: const Color(0xFFF0ECE6),
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  isUnlocked
+                      ? const Color(0xFFFFB347)
+                      : const Color(0xFFD7CABB),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _BadgeVisual {
+  const _BadgeVisual({
+    required this.badgeId,
+    required this.title,
+    required this.description,
+    required this.assetPath,
+    required this.iconKey,
+    required this.defaultTarget,
+  });
+
+  final String badgeId;
+  final String title;
+  final String description;
+  final String assetPath;
+  final String iconKey;
+  final int defaultTarget;
+}
+
+const String _lockedBadgeAsset = 'assets/journey/badges/locked_badge.png';
+
+const Map<String, _BadgeVisual> _badgeVisuals = {
+  'first_bite': _BadgeVisual(
+    badgeId: 'first_bite',
+    title: 'First Bite',
+    description: 'Check-in lần đầu tiên trong hành trình ẩm thực.',
+    assetPath: 'assets/journey/badges/first_bite.png',
+    iconKey: 'checkin',
+    defaultTarget: 1,
+  ),
+  'food_explorer': _BadgeVisual(
+    badgeId: 'food_explorer',
+    title: 'Food Explorer',
+    description: 'Khám phá nhiều quán khác nhau trên hành trình.',
+    assetPath: 'assets/journey/badges/food_explorer.png',
+    iconKey: 'map',
+    defaultTarget: 5,
+  ),
+  'district_hunter': _BadgeVisual(
+    badgeId: 'district_hunter',
+    title: 'District Hunter',
+    description: 'Đi qua nhiều quận huyện để mở rộng bản đồ trải nghiệm.',
+    assetPath: 'assets/journey/badges/district_hunter.png',
+    iconKey: 'district',
+    defaultTarget: 3,
+  ),
+  'province_explorer': _BadgeVisual(
+    badgeId: 'province_explorer',
+    title: 'Province Explorer',
+    description: 'Mở khóa thêm các tỉnh thành mới trên bản đồ Việt Nam.',
+    assetPath: 'assets/journey/badges/province_explorer.png',
+    iconKey: 'province',
+    defaultTarget: 3,
+  ),
+};

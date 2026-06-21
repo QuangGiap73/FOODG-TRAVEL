@@ -227,6 +227,21 @@ class _MissionIconLarge extends StatelessWidget {
       case 'save':
         return Icons.bookmark_rounded;
 
+      case 'clock':
+        return Icons.schedule_rounded;
+
+      case 'night':
+        return Icons.dark_mode_rounded;
+
+      case 'points':
+        return Icons.workspace_premium_rounded;
+
+      case 'repeat':
+        return Icons.replay_rounded;
+
+      case 'province':
+        return Icons.explore_rounded;
+
       case 'review':
         return Icons.star_rounded;
 

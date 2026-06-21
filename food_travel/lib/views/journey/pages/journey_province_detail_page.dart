@@ -1,11 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../../../models/dish_model.dart';
 import '../../../models/journey/checkin_model.dart';
 import '../../../models/journey/journey_province_progress.dart';
+import '../../../models/places_model.dart';
 import '../../../services/food_service.dart';
+import '../../dishes/dish_detail_page.dart';
+import '../../favorites/place_detail_page.dart';
 import '../data/province_journey_media.dart';
+import 'journey_checkin_history_page.dart';
 
 class JourneyProvinceDetailPage extends StatelessWidget {
   const JourneyProvinceDetailPage({
@@ -38,6 +43,7 @@ class JourneyProvinceDetailPage extends StatelessWidget {
             builder: (context, checkinSnapshot) {
               final checkins = checkinSnapshot.data ?? const <JourneyCheckin>[];
               final visitedPlaces = _buildVisitedPlaces(checkins);
+              final visitedDistrictCount = _countVisitedDistricts(checkins);
 
               return StreamBuilder<List<DishModel>>(
                 stream: FoodService().watchDishesByProvinceKeys([
@@ -56,6 +62,7 @@ class JourneyProvinceDetailPage extends StatelessWidget {
                           provinceName: provinceName,
                           progress: progress,
                           visitedPlaceCount: visitedPlaces.length,
+                          visitedDistrictCount: visitedDistrictCount,
                         ),
                       ),
                       SliverToBoxAdapter(
@@ -81,7 +88,7 @@ class JourneyProvinceDetailPage extends StatelessWidget {
                                           ),
                                   ),
                                   const SizedBox(height: 12),
-                                  _FeaturedDishChips(dishes: featuredDishes),
+                                  _FeaturedDishCards(dishes: featuredDishes),
                                   const SizedBox(height: 20),
                                   _SectionTitle(
                                     title: 'Quán đã ăn',
@@ -149,7 +156,18 @@ class JourneyProvinceDetailPage extends StatelessWidget {
                                       const SizedBox(width: 10),
                                       Expanded(
                                         child: ElevatedButton.icon(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute<void>(
+                                                builder: (_) =>
+                                                    JourneyCheckinHistoryPage(
+                                                  userId: userId,
+                                                  provinceCode: provinceCode,
+                                                  provinceName: provinceName,
+                                                ),
+                                              ),
+                                            );
+                                          },
                                           icon: const Icon(
                                             Icons.history_rounded,
                                             size: 18,
@@ -249,8 +267,12 @@ class JourneyProvinceDetailPage extends StatelessWidget {
         grouped[key] = _VisitedPlaceSummary(
           placeId: item.placeId,
           placeName: item.placeName,
+          placeAddress: item.placeAddress,
+          placeLat: item.placeLat,
+          placeLng: item.placeLng,
           districtName: item.districtName ?? '',
           imageUrl: item.placeImageUrl ?? '',
+          lastDistanceMeters: item.distanceMeters,
           checkinCount: 1,
           latestCheckinAt: item.createdAt,
         );
@@ -260,12 +282,20 @@ class JourneyProvinceDetailPage extends StatelessWidget {
       grouped[key] = existing.copyWith(
         checkinCount: existing.checkinCount + 1,
         latestCheckinAt: item.createdAt ?? existing.latestCheckinAt,
+        placeAddress: existing.placeAddress.isEmpty
+            ? item.placeAddress
+            : existing.placeAddress,
+        placeLat: existing.placeLat == 0 ? item.placeLat : existing.placeLat,
+        placeLng: existing.placeLng == 0 ? item.placeLng : existing.placeLng,
         districtName: existing.districtName.isEmpty
             ? (item.districtName ?? '')
             : existing.districtName,
         imageUrl: existing.imageUrl.isEmpty
             ? (item.placeImageUrl ?? '')
             : existing.imageUrl,
+        lastDistanceMeters: item.distanceMeters > 0
+            ? item.distanceMeters
+            : existing.lastDistanceMeters,
       );
     }
 
@@ -278,6 +308,15 @@ class JourneyProvinceDetailPage extends StatelessWidget {
 
     return list;
   }
+
+  int _countVisitedDistricts(List<JourneyCheckin> checkins) {
+    return checkins
+        .map((item) => item.districtName ?? '')
+        .map((name) => name.trim().toLowerCase())
+        .where((name) => name.isNotEmpty)
+        .toSet()
+        .length;
+  }
 }
 
 class _ProvinceHeroSection extends StatelessWidget {
@@ -286,17 +325,25 @@ class _ProvinceHeroSection extends StatelessWidget {
     required this.provinceName,
     required this.progress,
     required this.visitedPlaceCount,
+    required this.visitedDistrictCount,
   });
 
   final String provinceCode;
   final String provinceName;
   final JourneyProvinceProgress progress;
   final int visitedPlaceCount;
+  final int visitedDistrictCount;
 
   @override
   Widget build(BuildContext context) {
-    final bannerAsset = provinceJourneyBannerAssetOf(provinceCode);
-    final avatarAsset = provinceJourneyAvatarAssetOf(provinceCode);
+    final bannerAsset = provinceJourneyBannerAssetFor(
+      provinceCode: provinceCode,
+      provinceName: provinceName,
+    );
+    final avatarAsset = provinceJourneyAvatarAssetFor(
+      provinceCode: provinceCode,
+      provinceName: provinceName,
+    );
 
     return SizedBox(
       height: 340,
@@ -408,6 +455,7 @@ class _ProvinceHeroSection extends StatelessWidget {
             child: _StatsCard(
               progress: progress,
               visitedPlaceCount: visitedPlaceCount,
+              visitedDistrictCount: visitedDistrictCount,
             ),
           ),
           Positioned(
@@ -460,16 +508,21 @@ class _StatsCard extends StatelessWidget {
   const _StatsCard({
     required this.progress,
     required this.visitedPlaceCount,
+    required this.visitedDistrictCount,
   });
 
   final JourneyProvinceProgress progress;
   final int visitedPlaceCount;
+  final int visitedDistrictCount;
 
   @override
   Widget build(BuildContext context) {
     final effectiveVisitedPlaceCount = visitedPlaceCount > 0
         ? visitedPlaceCount
         : progress.uniquePlacesCount;
+    final effectiveVisitedDistrictCount = visitedDistrictCount > 0
+        ? visitedDistrictCount
+        : progress.districtsCount;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
@@ -508,7 +561,7 @@ class _StatsCard extends StatelessWidget {
             child: _StatItem(
               icon: Icons.map_outlined,
               color: const Color(0xFF78B942),
-              value: progress.districtsCount,
+              value: effectiveVisitedDistrictCount,
               label: 'quận đã đi qua',
             ),
           ),
@@ -640,8 +693,8 @@ class _CountBadge extends StatelessWidget {
   }
 }
 
-class _FeaturedDishChips extends StatelessWidget {
-  const _FeaturedDishChips({required this.dishes});
+class _FeaturedDishCards extends StatelessWidget {
+  const _FeaturedDishCards({required this.dishes});
 
   final List<DishModel> dishes;
 
@@ -667,31 +720,153 @@ class _FeaturedDishChips extends StatelessWidget {
       );
     }
 
-    return Wrap(
-      spacing: 10,
-      runSpacing: 10,
-      children: dishes
-          .map(
-            (dish) => Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(999),
-                border: Border.all(color: const Color(0xFFF2E5D6)),
+    return SizedBox(
+      height: 182,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: dishes.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        itemBuilder: (context, index) {
+          final dish = dishes[index];
+          return _FeaturedDishCard(dish: dish);
+        },
+      ),
+    );
+  }
+}
+
+class _FeaturedDishCard extends StatelessWidget {
+  const _FeaturedDishCard({required this.dish});
+
+  final DishModel dish;
+
+  @override
+  Widget build(BuildContext context) {
+    final dishName = dish.getName('vi').trim().isNotEmpty
+        ? dish.getName('vi').trim()
+        : dish.name;
+
+    return SizedBox(
+      width: 148,
+      child: Material(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => DishDetailPage(dishId: dish.id),
               ),
-              child: Text(
-                dish.getName('vi').trim().isNotEmpty
-                    ? dish.getName('vi').trim()
-                    : dish.name,
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFF3A404B),
+            );
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.045),
+                  blurRadius: 18,
+                  offset: const Offset(0, 10),
                 ),
-              ),
+              ],
             ),
-          )
-          .toList(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(20),
+                  ),
+                  child: _DishImage(imageUrl: dish.imageUrl),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          dishName,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w800,
+                            color: Color(0xFF212632),
+                            height: 1.2,
+                          ),
+                        ),
+                        const Spacer(),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 5,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFFF0DF),
+                            borderRadius: BorderRadius.circular(999),
+                          ),
+                          child: const Text(
+                            'Xem chi tiết',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w800,
+                              color: Color(0xFFFF7A00),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DishImage extends StatelessWidget {
+  const _DishImage({required this.imageUrl});
+
+  final String imageUrl;
+
+  @override
+  Widget build(BuildContext context) {
+    if (imageUrl.trim().isEmpty) {
+      return Container(
+        height: 92,
+        color: const Color(0xFFFFF1E2),
+        alignment: Alignment.center,
+        child: const Icon(
+          Icons.restaurant_menu_rounded,
+          size: 34,
+          color: Color(0xFFFF7A00),
+        ),
+      );
+    }
+
+    return Image.network(
+      imageUrl,
+      height: 92,
+      width: double.infinity,
+      fit: BoxFit.cover,
+      errorBuilder: (_, __, ___) {
+        return Container(
+          height: 92,
+          color: const Color(0xFFFFF1E2),
+          alignment: Alignment.center,
+          child: const Icon(
+            Icons.restaurant_menu_rounded,
+            size: 34,
+            color: Color(0xFFFF7A00),
+          ),
+        );
+      },
     );
   }
 }
@@ -705,93 +880,128 @@ class _VisitedPlaceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: 168,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
+      child: Material(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        child: InkWell(
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.045),
-              blurRadius: 18,
-              offset: const Offset(0, 10),
+          onTap: () => _openPlaceDetail(context),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.045),
+                  blurRadius: 18,
+                  offset: const Offset(0, 10),
+                ),
+              ],
             ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ClipRRect(
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(20),
-              ),
-              child: _PlaceImage(imageUrl: item.imageUrl),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(12, 12, 12, 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Stack(
                   children: [
-                    Text(
-                      item.placeName,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w800,
-                        color: Color(0xFF212632),
-                        height: 1.2,
+                    ClipRRect(
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(20),
                       ),
+                      child: _PlaceImage(imageUrl: item.imageUrl),
                     ),
-                    const SizedBox(height: 6),
-                    if (item.districtName.isNotEmpty)
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.location_on_outlined,
-                            size: 14,
-                            color: Color(0xFFFF7A00),
+                    Positioned(
+                      top: 8,
+                      left: 8,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 5,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFF7A00),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: Text(
+                          '${item.checkinCount} lần',
+                          style: const TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
                           ),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              item.districtName,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF757B86),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    const Spacer(),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 5,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFFF0DF),
-                        borderRadius: BorderRadius.circular(999),
-                      ),
-                      child: Text(
-                        '${item.checkinCount} lần',
-                        style: const TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w800,
-                          color: Color(0xFFFF7A00),
                         ),
                       ),
                     ),
                   ],
                 ),
-              ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 12, 12, 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.placeName,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w800,
+                            color: Color(0xFF212632),
+                            height: 1.2,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        if (item.districtName.isNotEmpty)
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.location_on_outlined,
+                                size: 14,
+                                color: Color(0xFFFF7A00),
+                              ),
+                              const SizedBox(width: 4),
+                              Expanded(
+                                child: Text(
+                                  item.districtName,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF757B86),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        const SizedBox(height: 6),
+                        _VisitedPlaceMetaRow(item: item),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
+      ),
+    );
+  }
+
+  void _openPlaceDetail(BuildContext context) {
+    final seed = GoongNearbyPlace(
+      id: item.placeId,
+      name: item.placeName,
+      address: item.placeAddress,
+      district: item.districtName,
+      lat: item.placeLat,
+      lng: item.placeLng,
+      photoUrl: item.imageUrl,
+    );
+
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => FavoritePlaceDetailPage(place: seed),
       ),
     );
   }
@@ -844,6 +1054,115 @@ class _EmptyVisitedPlacesCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _VisitedPlaceMetaRow extends StatelessWidget {
+  const _VisitedPlaceMetaRow({required this.item});
+
+  final _VisitedPlaceSummary item;
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<_VisitedPlaceMeta>(
+      future: _loadMeta(),
+      builder: (context, snapshot) {
+        final meta = snapshot.data ?? _VisitedPlaceMeta.empty(item.lastDistanceMeters);
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.star_rounded,
+                        size: 14,
+                        color: Color(0xFFFFB300),
+                      ),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          meta.ratingText,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFF4B5563),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.near_me_outlined,
+                      size: 13,
+                      color: Color(0xFF6B7280),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      meta.distanceText,
+                      maxLines: 1,
+                      textAlign: TextAlign.right,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF6B7280),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<_VisitedPlaceMeta> _loadMeta() async {
+    double? rating;
+    try {
+      if (item.placeId.trim().isNotEmpty) {
+        final doc = await FirebaseFirestore.instance
+            .collection('places')
+            .doc(item.placeId)
+            .get();
+        final data = doc.data();
+        final value = data?['avg_rating'];
+        if (value is num) {
+          rating = value.toDouble();
+        } else if (value is String) {
+          rating = double.tryParse(value);
+        }
+      }
+    } catch (_) {}
+
+    double distanceMeters = item.lastDistanceMeters;
+    try {
+      final position = await Geolocator.getCurrentPosition();
+      if (item.placeLat != 0 && item.placeLng != 0) {
+        distanceMeters = Geolocator.distanceBetween(
+          position.latitude,
+          position.longitude,
+          item.placeLat,
+          item.placeLng,
+        );
+      }
+    } catch (_) {}
+
+    return _VisitedPlaceMeta(
+      rating: rating,
+      distanceMeters: distanceMeters,
     );
   }
 }
@@ -920,34 +1239,75 @@ class _VisitedPlaceSummary {
   const _VisitedPlaceSummary({
     required this.placeId,
     required this.placeName,
+    required this.placeAddress,
+    required this.placeLat,
+    required this.placeLng,
     required this.districtName,
     required this.imageUrl,
+    required this.lastDistanceMeters,
     required this.checkinCount,
     required this.latestCheckinAt,
   });
 
   final String placeId;
   final String placeName;
+  final String placeAddress;
+  final double placeLat;
+  final double placeLng;
   final String districtName;
   final String imageUrl;
+  final double lastDistanceMeters;
   final int checkinCount;
   final Timestamp? latestCheckinAt;
 
   _VisitedPlaceSummary copyWith({
     String? placeId,
     String? placeName,
+    String? placeAddress,
+    double? placeLat,
+    double? placeLng,
     String? districtName,
     String? imageUrl,
+    double? lastDistanceMeters,
     int? checkinCount,
     Timestamp? latestCheckinAt,
   }) {
     return _VisitedPlaceSummary(
       placeId: placeId ?? this.placeId,
       placeName: placeName ?? this.placeName,
+      placeAddress: placeAddress ?? this.placeAddress,
+      placeLat: placeLat ?? this.placeLat,
+      placeLng: placeLng ?? this.placeLng,
       districtName: districtName ?? this.districtName,
       imageUrl: imageUrl ?? this.imageUrl,
+      lastDistanceMeters: lastDistanceMeters ?? this.lastDistanceMeters,
       checkinCount: checkinCount ?? this.checkinCount,
       latestCheckinAt: latestCheckinAt ?? this.latestCheckinAt,
     );
+  }
+}
+
+class _VisitedPlaceMeta {
+  const _VisitedPlaceMeta({
+    required this.rating,
+    required this.distanceMeters,
+  });
+
+  final double? rating;
+  final double distanceMeters;
+
+  factory _VisitedPlaceMeta.empty(double distanceMeters) {
+    return _VisitedPlaceMeta(rating: null, distanceMeters: distanceMeters);
+  }
+
+  String get ratingText {
+    if (rating == null || rating! <= 0) return 'Chưa có đánh giá';
+    return rating!.toStringAsFixed(1);
+  }
+
+  String get distanceText {
+    if (distanceMeters <= 0) return 'Chưa xác định khoảng cách';
+    if (distanceMeters < 1000) return '${distanceMeters.round()} m';
+    return '${(distanceMeters / 1000).toStringAsFixed(1)} km';
   }
 }

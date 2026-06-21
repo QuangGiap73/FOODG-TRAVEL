@@ -85,6 +85,7 @@ class _PlaceStickyActionBarState extends State<PlaceStickyActionBar> {
       photoUrl: widget.place.photoUrl.trim().isNotEmpty
           ? widget.place.photoUrl.trim()
           : null,
+      placeRating: widget.place.rating,
       districtName: widget.place.district.trim().isNotEmpty
           ? widget.place.district.trim()
           : null,
