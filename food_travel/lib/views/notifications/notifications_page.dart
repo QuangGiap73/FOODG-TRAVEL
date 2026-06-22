@@ -186,7 +186,11 @@ List<UserNotification> _applyFilter(
         return item.type == 'like' || item.type == 'comment';
       }).toList();
     case _NotificationFilter.journey:
-      return items.where((item) => item.type == 'journey_checkin').toList();
+      return items.where((item) {
+        return item.type == 'journey_checkin' ||
+            item.type == 'journey_checkin_failed' ||
+            item.type == 'journey_badge';
+      }).toList();
     case _NotificationFilter.system:
       return items.where((item) {
         return item.type != 'like' &&
@@ -263,7 +267,9 @@ void _openNotification(
 ) {
   service.markRead(uid: uid, notificationId: notification.id);
 
-  if (notification.type == 'journey_checkin') {
+  if (notification.type == 'journey_checkin' ||
+      notification.type == 'journey_checkin_failed' ||
+      notification.type == 'journey_badge') {
     return;
   }
 
@@ -723,6 +729,20 @@ _NotificationTone _toneFor(UserNotification item) {
         icon: Icons.check_circle_rounded,
         label: 'H\u00e0nh tr\u00ecnh',
       );
+    case 'journey_checkin_failed':
+      return const _NotificationTone(
+        color: Color(0xFFDC2626),
+        softColor: Color(0xFFFEE2E2),
+        icon: Icons.location_off_rounded,
+        label: 'H\u00e0nh tr\u00ecnh',
+      );
+    case 'journey_badge':
+      return const _NotificationTone(
+        color: Color(0xFFF59E0B),
+        softColor: Color(0xFFFEF3C7),
+        icon: Icons.emoji_events_rounded,
+        label: 'Huy hi\u1ec7u',
+      );
     default:
       return const _NotificationTone(
         color: Color(0xFFF97316),
@@ -740,6 +760,14 @@ String _titleFor(UserNotification item) {
       return '$name \u0111\u00e3 b\u00ecnh lu\u1eadn';
     case 'journey_checkin':
       return 'Check-in th\u00e0nh c\u00f4ng';
+    case 'journey_checkin_failed':
+      return item.actorName.trim().isEmpty
+          ? 'Check-in thất bại'
+          : item.actorName;
+    case 'journey_badge':
+      return item.actorName.trim().isEmpty
+          ? 'Mở khóa huy hiệu mới'
+          : item.actorName;
     case 'like':
       final name = item.actorName.trim().isEmpty ? 'Ai \u0111\u00f3' : item.actorName;
       return '$name \u0111\u00e3 th\u00edch b\u00e0i vi\u1ebft c\u1ee7a b\u1ea1n';

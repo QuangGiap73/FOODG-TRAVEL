@@ -101,6 +101,36 @@ async function createJourneyNotification(params: {
 }
 
 /**
+ * Tao thong bao khi mo khoa huy hieu.
+ */
+async function createJourneyBadgeNotification(params: {
+  ownerId: string;
+  badgeId: string;
+  title: string;
+  description: string;
+}) {
+  const ref = db
+    .collection("users")
+    .doc(params.ownerId)
+    .collection("notifications")
+    .doc();
+
+  await ref.set({
+    type: "journey_badge",
+    postId: "",
+    actorId: "system",
+    actorName: "Hanh trinh am thuc",
+    actorPhoto: "",
+    snippet: `Ban vua mo khoa huy hieu ${params.title}.`,
+    badgeId: params.badgeId,
+    badgeTitle: params.title,
+    badgeDescription: params.description,
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    read: false,
+  });
+}
+
+/**
  * Gui push notification ve may.
  * - Lay token cua ownerId
  * - Gui push toi tat ca token do
@@ -364,12 +394,12 @@ function haversineMeters(
 /**
  * Upsert badge theo rule.
  */
-async function syncJourneyBadge(
+function syncJourneyBadge(
   tx: admin.firestore.Transaction,
   badgesCol: admin.firestore.CollectionReference,
   rule: BadgeRule,
   existing: admin.firestore.DocumentData,
-) {
+): boolean {
   const badgeRef = badgesCol.doc(rule.badgeId);
 
   const progress = rule.targetValue <= 0 ? 0 : Math.min(
@@ -377,6 +407,8 @@ async function syncJourneyBadge(
     1,
   );
 
+  const wasUnlocked =
+    existing.unlockedAt != null || toDouble(existing.progress) >= 1;
   let unlockedAt = existing.unlockedAt ?? null;
   if (unlockedAt === null && progress >= 1) {
     unlockedAt = admin.firestore.FieldValue.serverTimestamp();
@@ -397,6 +429,8 @@ async function syncJourneyBadge(
     },
     {merge: true},
   );
+
+  return !wasUnlocked && progress >= 1;
 }
 
 
@@ -850,6 +884,11 @@ export const createCheckin = onCall(async (request) => {
     const foodExplorerBadge = badgeSnaps[1].data() ?? {};
     const provinceExplorerBadge = badgeSnaps[2].data() ?? {};
     const streakBadge = badgeSnaps[3].data() ?? {};
+    const unlockedBadges: Array<{
+      badgeId: string;
+      title: string;
+      description: string;
+    }> = [];
 
     const dailyMissionRef = summaryRef
       .collection("daily_missions")
@@ -1034,41 +1073,65 @@ export const createCheckin = onCall(async (request) => {
     }
 
     // Badge MVP.
-    await syncJourneyBadge(tx, badgesCol, {
+    if (syncJourneyBadge(tx, badgesCol, {
       badgeId: "first_bite",
       title: "Mieng dau tien",
       description: "Check-in quan dau tien",
       iconKey: "checkin",
       currentValue: totalCheckins,
       targetValue: 1,
-    }, firstBiteBadge);
+    }, firstBiteBadge)) {
+      unlockedBadges.push({
+        badgeId: "first_bite",
+        title: "Mieng dau tien",
+        description: "Check-in quan dau tien",
+      });
+    }
 
-    await syncJourneyBadge(tx, badgesCol, {
+    if (syncJourneyBadge(tx, badgesCol, {
       badgeId: "food_explorer",
       title: "Nha kham pha am thuc",
       description: "Check-in 5 quan khac nhau",
       iconKey: "map",
       currentValue: uniquePlacesCount,
       targetValue: 5,
-    }, foodExplorerBadge);
+    }, foodExplorerBadge)) {
+      unlockedBadges.push({
+        badgeId: "food_explorer",
+        title: "Nha kham pha am thuc",
+        description: "Check-in 5 quan khac nhau",
+      });
+    }
 
-    await syncJourneyBadge(tx, badgesCol, {
+    if (syncJourneyBadge(tx, badgesCol, {
       badgeId: "province_explorer",
       title: "Kham pha tinh thanh",
       description: "Kham pha 3 tinh thanh",
       iconKey: "province",
       currentValue: uniqueProvincesCount,
       targetValue: 3,
-    }, provinceExplorerBadge);
+    }, provinceExplorerBadge)) {
+      unlockedBadges.push({
+        badgeId: "province_explorer",
+        title: "Kham pha tinh thanh",
+        description: "Kham pha 3 tinh thanh",
+      });
+    }
 
-    await syncJourneyBadge(tx, badgesCol, {
+    if (syncJourneyBadge(tx, badgesCol, {
       badgeId: "streak_3",
       title: "Giu nhip 3 ngay",
       description: "Co hoat dong trong 3 ngay lien tiep",
       iconKey: "streak",
       currentValue: currentStreak,
       targetValue: 3,
-    }, streakBadge);
+    }, streakBadge)) {
+      unlockedBadges.push({
+        badgeId: "streak_3",
+        title: "Giu nhip 3 ngay",
+        description: "Co hoat dong trong 3 ngay lien tiep",
+      });
+    }
 
     tx.set(
       dailyMissionRef,
@@ -1130,6 +1193,7 @@ export const createCheckin = onCall(async (request) => {
       placePhotoUrl,
       placeType,
       districtName,
+      unlockedBadges,
     };
   });
 
@@ -1170,6 +1234,26 @@ export const createCheckin = onCall(async (request) => {
         currentStreak: String(result.currentStreak),
       },
     );
+
+    for (const badge of result.unlockedBadges ?? []) {
+      await createJourneyBadgeNotification({
+        ownerId: uid,
+        badgeId: badge.badgeId,
+        title: badge.title,
+        description: badge.description,
+      });
+
+      await sendPush(
+        uid,
+        "Mo khoa huy hieu moi",
+        `Ban vua mo khoa huy hieu ${badge.title}.`,
+        {
+          type: "journey_badge",
+          badgeId: badge.badgeId,
+          badgeTitle: badge.title,
+        },
+      );
+    }
   } catch (error) {
     logger.error("Failed to create checkin notification", {
       uid,

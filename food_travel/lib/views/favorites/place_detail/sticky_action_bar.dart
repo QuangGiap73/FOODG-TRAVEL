@@ -5,6 +5,7 @@ import '../../../controller/journey/journey_controller.dart';
 import '../../../models/journey/checkin_result.dart';
 import '../../../models/places_model.dart';
 import '../../../services/map/geocode_service.dart';
+import '../../../services/notifications/notification_service.dart';
 import '../../../services/restaurants/place_review_service.dart';
 import '../../../views/journey/widgets2/checkin_success_dialog.dart';
 
@@ -25,6 +26,7 @@ class _PlaceStickyActionBarState extends State<PlaceStickyActionBar> {
   // Dung de lay placeId dong nhat voi collection places.
   final _reviewService = PlaceReviewService();
   final _geocodeService = GeocodeService();
+  final _notificationService = NotificationService();
 
   bool _isCheckingIn = false;
 
@@ -108,6 +110,8 @@ class _PlaceStickyActionBarState extends State<PlaceStickyActionBar> {
       return;
     }
 
+    await _createFailedCheckinNotification(placeId);
+
     messenger.showSnackBar(
       SnackBar(
         behavior: SnackBarBehavior.floating,
@@ -126,6 +130,46 @@ class _PlaceStickyActionBarState extends State<PlaceStickyActionBar> {
     result: result,
   );
 }
+
+  Future<void> _createFailedCheckinNotification(String placeId) async {
+    final uid = _journeyController.userId;
+    if (uid == null || uid.isEmpty) return;
+
+    final code = _journeyController.errorCode;
+    final title = _titleForCheckinFailure(code);
+    final snippet = _messageForError(code, _journeyController.errorMessage);
+
+    try {
+      await _notificationService.createSystemNotification(
+        uid: uid,
+        type: 'journey_checkin_failed',
+        title: title,
+        snippet: snippet,
+        extraData: {
+          'placeId': placeId,
+          'placeName': widget.place.name,
+        },
+      );
+    } catch (_) {}
+  }
+
+  String _titleForCheckinFailure(String? code) {
+    switch (code) {
+      case 'failed-precondition':
+        final message = _journeyController.errorMessage?.toLowerCase() ?? '';
+        if (message.contains('qua xa')) {
+          return 'Check-in thất bại do quá xa';
+        }
+        if (message.contains('gan day')) {
+          return 'Quán vừa được check-in';
+        }
+        return 'Check-in thất bại';
+      case 'resource-exhausted':
+        return 'Đã đạt giới hạn check-in';
+      default:
+        return 'Check-in thất bại';
+    }
+  }
 
   String _messageForError(String? code, String? message) {
     switch (code) {

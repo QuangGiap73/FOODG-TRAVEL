@@ -126,4 +126,33 @@ class NotificationService {
     }
     await batch.commit();
   }
+
+  Future<void> createSystemNotification({
+    required String uid,
+    required String type,
+    required String title,
+    required String snippet,
+    Map<String, dynamic>? extraData,
+  }) async {
+    final data = <String, dynamic>{
+      'type': type,
+      'postId': '',
+      'actorId': 'system',
+      'actorName': title,
+      'actorPhoto': '',
+      'snippet': snippet,
+      'createdAt': FieldValue.serverTimestamp(),
+      'read': false,
+    };
+
+    if (extraData != null && extraData.isNotEmpty) {
+      data.addAll(extraData);
+    }
+
+    await _db
+        .collection('users')
+        .doc(uid)
+        .collection('notifications')
+        .add(data);
+  }
 }

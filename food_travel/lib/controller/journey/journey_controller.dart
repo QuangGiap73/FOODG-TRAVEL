@@ -1,4 +1,5 @@
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -25,6 +26,7 @@ class JourneyController extends ChangeNotifier {
   String? get errorCode => _errorCode;
   String? get errorMessage => _errorMessage;
   JourneyCheckinResult? get lastCheckinResult => _lastCheckinResult;
+  String? get userId => FirebaseAuth.instance.currentUser?.uid;
 
   bool get hasResult => _lastCheckinResult != null;
 
