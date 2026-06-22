@@ -1,4 +1,4 @@
-﻿import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -6,6 +6,7 @@ import '../../../models/journey/badge_model.dart';
 import '../../../models/journey/journey_stats.dart';
 import '../../../views/journey/pages/mission_detail_page.dart';
 import '../../../views/journey/widgets/daily_mission_section.dart';
+import '../../../views/journey/widgets/recent_checkin_section.dart';
 import '../../../views/journey/widgets/vietnam_journer_map_card.dart';
 
 class FoodJourneyPage extends StatelessWidget {
@@ -45,10 +46,7 @@ class FoodJourneyPage extends StatelessWidget {
             SizedBox(height: 2),
             Text(
               'Khám phá Việt Nam qua từng món ăn',
-              style: TextStyle(
-                fontSize: 12,
-                color: Color(0xFF6B7280),
-              ),
+              style: TextStyle(fontSize: 12, color: Color(0xFF6B7280)),
             ),
           ],
         ),
@@ -62,47 +60,47 @@ class FoodJourneyPage extends StatelessWidget {
               Offstage(
                 offstage: true,
                 child: Padding(
-                padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-                child: SizedBox(
-                  height: 56,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: IconButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          icon: const Icon(
-                            Icons.arrow_back_ios_new_rounded,
-                            size: 20,
+                  padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                  child: SizedBox(
+                    height: 56,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: IconButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            icon: const Icon(
+                              Icons.arrow_back_ios_new_rounded,
+                              size: 20,
+                            ),
+                            color: const Color(0xFF111111),
                           ),
-                          color: const Color(0xFF111111),
                         ),
-                      ),
-                      const Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'Hành trình ẩm thực ',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xFF111111),
+                        const Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'Hành trình ẩm thực ',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF111111),
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            'Khám phá Việt Nam qua từng món ăn',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Color(0xFF6B7280),
+                            SizedBox(height: 4),
+                            Text(
+                              'Khám phá Việt Nam qua từng món ăn',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFF6B7280),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
                 ),
               ),
               _JourneyHeroBanner(userId: user?.uid),
@@ -119,6 +117,8 @@ class FoodJourneyPage extends StatelessWidget {
                   );
                 },
               ),
+              const SizedBox(height: 20),
+              RecentCheckinSection(userId: user?.uid),
               const SizedBox(height: 20),
               JourneyBadgesSection(userId: user?.uid),
               const SizedBox(height: 300),
@@ -526,10 +526,7 @@ class _JourneyProgressBlock extends StatelessWidget {
 }
 
 class JourneyBadgesSection extends StatelessWidget {
-  const JourneyBadgesSection({
-    super.key,
-    required this.userId,
-  });
+  const JourneyBadgesSection({super.key, required this.userId});
 
   final String? userId;
 
@@ -547,32 +544,34 @@ class JourneyBadgesSection extends StatelessWidget {
         .collection('badges')
         .snapshots()
         .map((snapshot) {
-      final badgesById = {
-        for (final doc in snapshot.docs) doc.id: JourneyBadge.fromDoc(doc),
-      };
+          final badgesById = {
+            for (final doc in snapshot.docs) doc.id: JourneyBadge.fromDoc(doc),
+          };
 
-      return _badgeVisuals.values.map((visual) {
-        final badge = badgesById[visual.badgeId];
-        if (badge != null) {
-          return badge.copyWith(
-            title: badge.title.isEmpty ? visual.title : badge.title,
-            description:
-                badge.description.isEmpty ? visual.description : badge.description,
-            iconKey: badge.iconKey.isEmpty ? visual.iconKey : badge.iconKey,
-          );
-        }
+          return _badgeVisuals.values.map((visual) {
+            final badge = badgesById[visual.badgeId];
+            if (badge != null) {
+              return badge.copyWith(
+                title: badge.title.isEmpty ? visual.title : badge.title,
+                description:
+                    badge.description.isEmpty
+                        ? visual.description
+                        : badge.description,
+                iconKey: badge.iconKey.isEmpty ? visual.iconKey : badge.iconKey,
+              );
+            }
 
-        return JourneyBadge(
-          badgeId: visual.badgeId,
-          title: visual.title,
-          description: visual.description,
-          iconKey: visual.iconKey,
-          progress: 0,
-          currentValue: 0,
-          targetValue: visual.defaultTarget,
-        );
-      }).toList();
-    });
+            return JourneyBadge(
+              badgeId: visual.badgeId,
+              title: visual.title,
+              description: visual.description,
+              iconKey: visual.iconKey,
+              progress: 0,
+              currentValue: 0,
+              targetValue: visual.defaultTarget,
+            );
+          }).toList();
+        });
   }
 
   List<JourneyBadge> _defaultBadges() {
@@ -607,7 +606,7 @@ class JourneyBadgesSection extends StatelessWidget {
             border: Border.all(color: const Color(0xFFF4E5D6)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.04),
+                color: Colors.black.withValues(alpha: 0.04),
                 blurRadius: 18,
                 offset: const Offset(0, 10),
               ),
@@ -659,7 +658,8 @@ class JourneyBadgesSection extends StatelessWidget {
                     return _JourneyBadgeCard(
                       badge: badge,
                       visual: visual,
-                      onTap: () => _showBadgeBottomSheet(context, badge, visual),
+                      onTap:
+                          () => _showBadgeBottomSheet(context, badge, visual),
                     );
                   },
                 ),
@@ -728,7 +728,10 @@ class JourneyBadgesSection extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 12,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(18),
@@ -753,9 +756,10 @@ class JourneyBadgesSection extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w800,
-                        color: badge.isUnlocked
-                            ? const Color(0xFF2E9F59)
-                            : const Color(0xFFFF8A00),
+                        color:
+                            badge.isUnlocked
+                                ? const Color(0xFF2E9F59)
+                                : const Color(0xFFFF8A00),
                       ),
                     ),
                   ],
@@ -783,9 +787,10 @@ class _JourneyBadgeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isUnlocked = badge.isUnlocked;
-    final progress = badge.targetValue <= 0
-        ? 0.0
-        : (badge.currentValue / badge.targetValue).clamp(0.0, 1.0);
+    final progress =
+        badge.targetValue <= 0
+            ? 0.0
+            : (badge.currentValue / badge.targetValue).clamp(0.0, 1.0);
 
     return InkWell(
       onTap: onTap,
@@ -797,13 +802,12 @@ class _JourneyBadgeCard extends StatelessWidget {
           color: const Color(0xFFFFFEFC),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isUnlocked
-                ? const Color(0xFFF3D4A7)
-                : const Color(0xFFE8E1D8),
+            color:
+                isUnlocked ? const Color(0xFFF3D4A7) : const Color(0xFFE8E1D8),
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.03),
+              color: Colors.black.withValues(alpha: 0.03),
               blurRadius: 10,
               offset: const Offset(0, 6),
             ),
@@ -827,9 +831,10 @@ class _JourneyBadgeCard extends StatelessWidget {
                 fontSize: 12,
                 height: 1.2,
                 fontWeight: FontWeight.w800,
-                color: isUnlocked
-                    ? const Color(0xFF243041)
-                    : const Color(0xFF9AA3AF),
+                color:
+                    isUnlocked
+                        ? const Color(0xFF243041)
+                        : const Color(0xFF9AA3AF),
               ),
             ),
             const SizedBox(height: 8),

@@ -26,10 +26,11 @@ class FoodService {
           if (snapshot.docs.isNotEmpty) {
             return snapshot.docs.map(ProvinceModel.fromDoc).toList();
           }
-          final legacy = await _db
-              .collection(_legacyProvinceCollection)
-              .orderBy('name')
-              .get();
+          final legacy =
+              await _db
+                  .collection(_legacyProvinceCollection)
+                  .orderBy('name')
+                  .get();
           return legacy.docs.map(ProvinceModel.fromDoc).toList();
         });
   }
@@ -41,7 +42,8 @@ class FoodService {
         .snapshots()
         .asyncMap((doc) async {
           if (doc.exists) return ProvinceModel.fromDoc(doc);
-          final legacy = await _db.collection(_legacyProvinceCollection).doc(id).get();
+          final legacy =
+              await _db.collection(_legacyProvinceCollection).doc(id).get();
           return legacy.exists ? ProvinceModel.fromDoc(legacy) : null;
         });
   }
@@ -57,14 +59,21 @@ class FoodService {
         .limit(_provinceDishQueryLimit)
         .snapshots()
         .map((snapshot) {
-      final all = snapshot.docs.map(DishModel.fromDoc).toList();
-      final filtered = all
-          .where((dish) => _matchesProvinceTarget(dish, normalizedTarget))
-          .toList()
-        ..sort((a, b) => _provinceMatchScore(b, normalizedTarget)
-            .compareTo(_provinceMatchScore(a, normalizedTarget)));
-      return filtered.take(_provinceDishDisplayLimit).toList();
-    });
+          final all = snapshot.docs.map(DishModel.fromDoc).toList();
+          final filtered =
+              all
+                  .where(
+                    (dish) => _matchesProvinceTarget(dish, normalizedTarget),
+                  )
+                  .toList()
+                ..sort(
+                  (a, b) => _provinceMatchScore(
+                    b,
+                    normalizedTarget,
+                  ).compareTo(_provinceMatchScore(a, normalizedTarget)),
+                );
+          return filtered.take(_provinceDishDisplayLimit).toList();
+        });
   }
 
   /// Lay mot mon an theo id.
@@ -80,34 +89,44 @@ class FoodService {
   Stream<List<DishModel>> watchDishesByProvinceKeys(
     Iterable<String> provinceKeys,
   ) {
-    final keys = provinceKeys
-        .map((key) => key.trim())
-        .where((key) => key.isNotEmpty)
-        .map((key) {
-          final lower = key.toLowerCase();
-          final noDiacritics = _normalize(lower);
-          final slug = noDiacritics.replaceAll(RegExp(r'\s+'), '_');
-          return {key, lower, noDiacritics, slug};
-        })
-        .expand((set) => set)
-        .toSet()
-        .toList();
+    final keys =
+        provinceKeys
+            .map((key) => key.trim())
+            .where((key) => key.isNotEmpty)
+            .map((key) {
+              final lower = key.toLowerCase();
+              final noDiacritics = _normalize(lower);
+              final slug = noDiacritics.replaceAll(RegExp(r'\s+'), '_');
+              return {key, lower, noDiacritics, slug};
+            })
+            .expand((set) => set)
+            .toSet()
+            .toList();
 
     debugPrint('[FoodService] query province keys=$keys');
     if (keys.isEmpty) return Stream.value(const <DishModel>[]);
 
     final keySet = keys.map(_normalize).where((e) => e.isNotEmpty).toSet();
 
-    return _db.collection('dishes').limit(_provinceDishQueryLimit).snapshots().map((snap) {
-      final all = snap.docs.map(DishModel.fromDoc).toList();
-      final filtered = all.where((dish) {
-        final candidates = _provinceCandidates(dish);
-        return candidates.any(keySet.contains);
-      }).toList()
-        ..sort((a, b) => _provinceKeysMatchScore(b, keySet)
-            .compareTo(_provinceKeysMatchScore(a, keySet)));
-      return filtered.take(_provinceDishDisplayLimit).toList();
-    });
+    return _db
+        .collection('dishes')
+        .limit(_provinceDishQueryLimit)
+        .snapshots()
+        .map((snap) {
+          final all = snap.docs.map(DishModel.fromDoc).toList();
+          final filtered =
+              all.where((dish) {
+                  final candidates = _provinceCandidates(dish);
+                  return candidates.any(keySet.contains);
+                }).toList()
+                ..sort(
+                  (a, b) => _provinceKeysMatchScore(
+                    b,
+                    keySet,
+                  ).compareTo(_provinceKeysMatchScore(a, keySet)),
+                );
+          return filtered.take(_provinceDishDisplayLimit).toList();
+        });
   }
 
   /// Tim kiem mon an theo text (khong dau), uu tien tinh neu co.
@@ -120,44 +139,96 @@ class FoodService {
     if (normalized.isEmpty) return const [];
 
     final normalizedProvince = _normalize(provinceCode ?? '');
+    final queryTokens =
+        normalized
+            .split(RegExp(r'\s+'))
+            .where((token) => token.isNotEmpty)
+            .toList();
 
     // Lay rong hon roi loc client vi Firestore chua full-text.
     final snap = await _db.collection('dishes').limit(limit * 6).get();
-    return snap.docs
-        .map(DishModel.fromDoc)
-        .where((d) {
-          if (normalizedProvince.isEmpty) return true;
-          final canonicalCode = _normalize(d.provinceCode34);
-          final canonicalName = _normalize(d.provinceName34);
-          final legacy = _normalize(d.legacyProvinceCode);
-          final vi = _normalize(d.provinceI18n['vi'] ?? d.provinceCode);
-          final en = _normalize(d.provinceI18n['en'] ?? '');
-          final raw = _normalize(d.provinceCode);
-          return canonicalCode == normalizedProvince ||
-              canonicalName == normalizedProvince ||
-              legacy == normalizedProvince ||
-              vi == normalizedProvince ||
-              en == normalizedProvince ||
-              raw == normalizedProvince;
-        })
-        .where((d) {
-          final name = d.name.toLowerCase();
-          final nameEn = d.getName('en').toLowerCase();
-          final tag = d.tag.toLowerCase();
-          final categoryEn = d.getCategory('en').toLowerCase();
-          final slug = d.slug.toLowerCase();
-          final normName = _normalize(d.name);
-          final normNameEn = _normalize(d.getName('en'));
-          return name.contains(normalized) ||
-              nameEn.contains(normalized) ||
-              tag.contains(normalized) ||
-              categoryEn.contains(normalized) ||
-              slug.contains(normalized) ||
-              normName.contains(normalized) ||
-              normNameEn.contains(normalized);
-        })
-        .take(limit)
-        .toList();
+    final ranked =
+        snap.docs
+            .map(DishModel.fromDoc)
+            .where((d) {
+              if (normalizedProvince.isEmpty) return true;
+              return _provinceCandidates(d).contains(normalizedProvince);
+            })
+            .map(
+              (dish) => MapEntry(
+                dish,
+                _dishSearchScore(dish, normalized, queryTokens),
+              ),
+            )
+            .where((entry) => entry.value > 0)
+            .toList()
+          ..sort((a, b) {
+            final scoreCompare = b.value.compareTo(a.value);
+            if (scoreCompare != 0) return scoreCompare;
+            return a.key.getName('vi').compareTo(b.key.getName('vi'));
+          });
+
+    return ranked.take(limit).map((entry) => entry.key).toList();
+  }
+
+  int _dishSearchScore(
+    DishModel dish,
+    String normalizedQuery,
+    List<String> queryTokens,
+  ) {
+    final fields = <String, int>{
+      _normalize(dish.name): 120,
+      _normalize(dish.getName('en')): 100,
+      _normalize(dish.tag): 85,
+      _normalize(dish.getCategory('en')): 75,
+      _normalize(dish.slug.replaceAll('_', ' ')): 72,
+      _normalize(dish.description): 42,
+      _normalize(dish.getDescription('en')): 34,
+      _normalize(dish.ingredients): 52,
+      _normalize(dish.getIngredients('en')): 44,
+      _normalize(dish.getTagsText('vi')): 56,
+      _normalize(dish.getTagsText('en')): 48,
+      ...{for (final tag in dish.tags) _normalize(tag): 46},
+    };
+
+    var score = 0;
+    for (final entry in fields.entries) {
+      final text = entry.key;
+      if (text.isEmpty) continue;
+      final weight = entry.value;
+
+      if (text == normalizedQuery) {
+        score += weight + 140;
+      } else if (text.startsWith(normalizedQuery)) {
+        score += weight + 90;
+      } else if (text.contains(normalizedQuery)) {
+        score += weight + 55;
+      }
+
+      for (final token in queryTokens) {
+        if (token.length < 2) continue;
+        if (text == token) {
+          score += weight + 36;
+        } else if (text.startsWith(token)) {
+          score += weight ~/ 2 + 20;
+        } else if (text.contains(token)) {
+          score += weight ~/ 3 + 12;
+        }
+      }
+    }
+
+    if (score == 0) return 0;
+
+    final provinceBoost = <String>{
+      _normalize(dish.provinceName),
+      _normalize(dish.provinceName34),
+      _normalize(dish.getProvince('vi')),
+    };
+    if (provinceBoost.any((value) => value.contains(normalizedQuery))) {
+      score += 18;
+    }
+
+    return score;
   }
 
   String _normalize(String input) {
@@ -191,21 +262,41 @@ class FoodService {
 
   int _provinceMatchScore(DishModel dish, String normalizedTarget) {
     var score = 0;
-    if (_normalize(dish.provinceCode34) == normalizedTarget) score += 10;
-    if (_normalize(dish.provinceName34) == normalizedTarget) score += 8;
-    if (_normalize(dish.legacyProvinceCode) == normalizedTarget) score += 6;
-    if (_normalize(dish.provinceCode) == normalizedTarget) score += 4;
-    if (_normalize(dish.provinceI18n['vi'] ?? '') == normalizedTarget) score += 3;
-    if (_normalize(dish.provinceI18n['en'] ?? '') == normalizedTarget) score += 2;
+    if (_normalize(dish.provinceCode34) == normalizedTarget) {
+      score += 10;
+    }
+    if (_normalize(dish.provinceName34) == normalizedTarget) {
+      score += 8;
+    }
+    if (_normalize(dish.legacyProvinceCode) == normalizedTarget) {
+      score += 6;
+    }
+    if (_normalize(dish.provinceCode) == normalizedTarget) {
+      score += 4;
+    }
+    if (_normalize(dish.provinceI18n['vi'] ?? '') == normalizedTarget) {
+      score += 3;
+    }
+    if (_normalize(dish.provinceI18n['en'] ?? '') == normalizedTarget) {
+      score += 2;
+    }
     return score;
   }
 
   int _provinceKeysMatchScore(DishModel dish, Set<String> normalizedKeys) {
     var score = 0;
-    if (normalizedKeys.contains(_normalize(dish.provinceCode34))) score += 10;
-    if (normalizedKeys.contains(_normalize(dish.provinceName34))) score += 8;
-    if (normalizedKeys.contains(_normalize(dish.legacyProvinceCode))) score += 6;
-    if (normalizedKeys.contains(_normalize(dish.provinceCode))) score += 4;
+    if (normalizedKeys.contains(_normalize(dish.provinceCode34))) {
+      score += 10;
+    }
+    if (normalizedKeys.contains(_normalize(dish.provinceName34))) {
+      score += 8;
+    }
+    if (normalizedKeys.contains(_normalize(dish.legacyProvinceCode))) {
+      score += 6;
+    }
+    if (normalizedKeys.contains(_normalize(dish.provinceCode))) {
+      score += 4;
+    }
     if (normalizedKeys.contains(_normalize(dish.provinceI18n['vi'] ?? ''))) {
       score += 3;
     }

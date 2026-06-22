@@ -21,16 +21,10 @@ class DailyMissionSection extends StatefulWidget {
 }
 
 class _DailyMissionSectionState extends State<DailyMissionSection> {
-  static const List<String> _missionOrder = [
-    'favorite_any_place',
-    'first_checkin_before_9am',
-    'evening_checkin_after_18h',
-    'checkin_high_rating_place',
-    'earn_30_points_in_day',
-    'revisit_a_place',
-    'unlock_new_province',
-    'checkin_new_place',
-  ];
+  static const int _collapsedLimit = 3;
+  static const int _expandedLimit = 5;
+
+  bool _showAll = false;
 
   @override
   void initState() {
@@ -46,8 +40,8 @@ class _DailyMissionSectionState extends State<DailyMissionSection> {
       await FirebaseFunctions.instance
           .httpsCallable('ensureDailyMissions')
           .call(<String, dynamic>{
-        'dateKey': _getVietnamDateKey(DateTime.now()),
-      });
+            'dateKey': _getVietnamDateKey(DateTime.now()),
+          });
     } catch (_) {}
   }
 
@@ -57,11 +51,9 @@ class _DailyMissionSectionState extends State<DailyMissionSection> {
       stream: _missionStream(),
       builder: (context, snapshot) {
         final todayKey = _getVietnamDateKey(DateTime.now());
-
-        final missions = snapshot.data ??
-            _defaultMissions(
-              dateKey: todayKey,
-            );
+        final missions = snapshot.data ?? _defaultMissions(dateKey: todayKey);
+        final visibleCount = _showAll ? _expandedLimit : _collapsedLimit;
+        final visibleMissions = missions.take(visibleCount).toList();
 
         return Container(
           margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -69,12 +61,10 @@ class _DailyMissionSectionState extends State<DailyMissionSection> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(22),
-            border: Border.all(
-              color: const Color(0xFFF4E5D6),
-            ),
+            border: Border.all(color: const Color(0xFFF4E5D6)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 18,
                 offset: const Offset(0, 8),
               ),
@@ -83,29 +73,27 @@ class _DailyMissionSectionState extends State<DailyMissionSection> {
           child: Column(
             children: [
               _SectionHeader(
-                onViewAll: widget.onViewAll,
+                expanded: _showAll,
+                canExpand: missions.length > _collapsedLimit,
+                onViewAll: () {
+                  setState(() => _showAll = !_showAll);
+                  widget.onViewAll?.call();
+                },
               ),
-
               const SizedBox(height: 12),
-
               if (snapshot.connectionState == ConnectionState.waiting)
                 const _MissionLoading()
               else
-                ...missions.map(
-                  (mission) {
-                    final isLast = mission.id == missions.last.id;
-
-                    return Padding(
-                      padding: EdgeInsets.only(
-                        bottom: isLast ? 0 : 10,
-                      ),
-                      child: _MissionItemCard(
-                        mission: mission,
-                        onTap: () => widget.onMissionTap?.call(mission),
-                      ),
-                    );
-                  },
-                ),
+                ...visibleMissions.map((mission) {
+                  final isLast = mission.id == visibleMissions.last.id;
+                  return Padding(
+                    padding: EdgeInsets.only(bottom: isLast ? 0 : 10),
+                    child: _MissionItemCard(
+                      mission: mission,
+                      onTap: () => widget.onMissionTap?.call(mission),
+                    ),
+                  );
+                }),
             ],
           ),
         );
@@ -115,12 +103,9 @@ class _DailyMissionSectionState extends State<DailyMissionSection> {
 
   Stream<List<JourneyMission>> _missionStream() {
     final uid = widget.userId?.trim();
-
     if (uid == null || uid.isEmpty) {
       return Stream.value(
-        _defaultMissions(
-          dateKey: _getVietnamDateKey(DateTime.now()),
-        ),
+        _defaultMissions(dateKey: _getVietnamDateKey(DateTime.now())),
       );
     }
 
@@ -136,27 +121,20 @@ class _DailyMissionSectionState extends State<DailyMissionSection> {
         .collection('missions')
         .snapshots()
         .map((snapshot) {
-      if (snapshot.docs.isEmpty) {
-        return _defaultMissions(
-          dateKey: todayKey,
-        );
-      }
+          if (snapshot.docs.isEmpty) {
+            return _defaultMissions(dateKey: todayKey);
+          }
 
-      final missions = snapshot.docs
-          .map(JourneyMission.fromDoc)
-          .toList();
-
-      missions.sort(
-        (a, b) => _missionSortValue(a.id).compareTo(_missionSortValue(b.id)),
-      );
-
-      return missions;
-    });
+          final missions =
+              snapshot.docs.map(JourneyMission.fromDoc).toList()..sort(
+                (a, b) =>
+                    _missionSortValue(a.id).compareTo(_missionSortValue(b.id)),
+              );
+          return missions;
+        });
   }
 
-  static List<JourneyMission> _defaultMissions({
-    required String dateKey,
-  }) {
+  static List<JourneyMission> _defaultMissions({required String dateKey}) {
     return [
       JourneyMission(
         id: 'checkin_new_place',
@@ -169,7 +147,6 @@ class _DailyMissionSectionState extends State<DailyMissionSection> {
         rewardPoints: 30,
         date: dateKey,
       ),
-
       JourneyMission(
         id: 'try_vietnamese_food',
         title: 'Thử một món Việt',
@@ -181,7 +158,6 @@ class _DailyMissionSectionState extends State<DailyMissionSection> {
         rewardPoints: 20,
         date: dateKey,
       ),
-
       JourneyMission(
         id: 'save_wishlist_place',
         title: 'Lưu 1 quán muốn ăn',
@@ -193,6 +169,28 @@ class _DailyMissionSectionState extends State<DailyMissionSection> {
         rewardPoints: 10,
         date: dateKey,
       ),
+      JourneyMission(
+        id: 'checkin_high_rating_place',
+        title: 'Check-in quán được đánh giá cao',
+        description: 'Ghé một quán có đánh giá tốt để tích thêm điểm.',
+        type: 'checkin_high_rating_place',
+        iconKey: 'review',
+        targetCount: 1,
+        currentCount: 0,
+        rewardPoints: 15,
+        date: dateKey,
+      ),
+      JourneyMission(
+        id: 'unlock_new_province',
+        title: 'Mở khóa thêm một tỉnh thành',
+        description: 'Check-in ở tỉnh mới để mở rộng bản đồ hành trình.',
+        type: 'unlock_new_province',
+        iconKey: 'province',
+        targetCount: 1,
+        currentCount: 0,
+        rewardPoints: 40,
+        date: dateKey,
+      ),
     ];
   }
 
@@ -200,36 +198,37 @@ class _DailyMissionSectionState extends State<DailyMissionSection> {
     switch (type) {
       case 'checkin_new_place':
         return 1;
-
       case 'try_vietnamese_food':
         return 2;
-
       case 'save_wishlist_place':
         return 3;
-
+      case 'checkin_high_rating_place':
+        return 4;
+      case 'unlock_new_province':
+        return 5;
       default:
         return 99;
     }
   }
 
   static String _getVietnamDateKey(DateTime date) {
-    final vietnamDate = date.toUtc().add(
-          const Duration(hours: 7),
-        );
-
+    final vietnamDate = date.toUtc().add(const Duration(hours: 7));
     final year = vietnamDate.year.toString();
     final month = vietnamDate.month.toString().padLeft(2, '0');
     final day = vietnamDate.day.toString().padLeft(2, '0');
-
     return '$year-$month-$day';
   }
 }
 
 class _SectionHeader extends StatelessWidget {
   const _SectionHeader({
+    required this.expanded,
+    required this.canExpand,
     this.onViewAll,
   });
 
+  final bool expanded;
+  final bool canExpand;
   final VoidCallback? onViewAll;
 
   @override
@@ -246,38 +245,37 @@ class _SectionHeader extends StatelessWidget {
             ),
           ),
         ),
-
-        GestureDetector(
-          onTap: onViewAll,
-          child: const Row(
-            children: [
-              Text(
-                'Xem tất cả',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF6B7280),
+        if (canExpand)
+          GestureDetector(
+            onTap: onViewAll,
+            child: Row(
+              children: [
+                Text(
+                  expanded ? 'Thu gọn' : 'Xem tất cả',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF6B7280),
+                  ),
                 ),
-              ),
-              SizedBox(width: 2),
-              Icon(
-                Icons.chevron_right_rounded,
-                size: 18,
-                color: Color(0xFF6B7280),
-              ),
-            ],
+                const SizedBox(width: 2),
+                Icon(
+                  expanded
+                      ? Icons.keyboard_arrow_up_rounded
+                      : Icons.chevron_right_rounded,
+                  size: 18,
+                  color: const Color(0xFF6B7280),
+                ),
+              ],
+            ),
           ),
-        ),
       ],
     );
   }
 }
 
 class _MissionItemCard extends StatelessWidget {
-  const _MissionItemCard({
-    required this.mission,
-    this.onTap,
-  });
+  const _MissionItemCard({required this.mission, this.onTap});
 
   final JourneyMission mission;
   final VoidCallback? onTap;
@@ -285,28 +283,22 @@ class _MissionItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final completed = mission.isCompleted || mission.progress >= 1.0;
-
-    final mainColor = completed
-        ? const Color(0xFF70B62C)
-        : const Color(0xFFFF8A00);
+    final mainColor =
+        completed ? const Color(0xFF70B62C) : const Color(0xFFFF8A00);
 
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(18),
       child: Container(
-        constraints: const BoxConstraints(
-          minHeight: 74,
-        ),
+        constraints: const BoxConstraints(minHeight: 74),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: const Color(0xFFFFFEFC),
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(
-            color: const Color(0xFFF1E5DA),
-          ),
+          border: Border.all(color: const Color(0xFFF1E5DA)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.035),
+              color: Colors.black.withValues(alpha: 0.035),
               blurRadius: 12,
               offset: const Offset(0, 6),
             ),
@@ -314,13 +306,8 @@ class _MissionItemCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            _MissionIcon(
-              iconKey: mission.iconKey,
-              color: mainColor,
-            ),
-
+            _MissionIcon(iconKey: mission.iconKey, color: mainColor),
             const SizedBox(width: 12),
-
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -335,9 +322,7 @@ class _MissionItemCard extends StatelessWidget {
                       color: Color(0xFF1F2937),
                     ),
                   ),
-
                   const SizedBox(height: 9),
-
                   Row(
                     children: [
                       Expanded(
@@ -353,9 +338,7 @@ class _MissionItemCard extends StatelessWidget {
                           ),
                         ),
                       ),
-
                       const SizedBox(width: 10),
-
                       Text(
                         '${mission.currentCount}/${mission.targetCount}',
                         style: const TextStyle(
@@ -369,9 +352,7 @@ class _MissionItemCard extends StatelessWidget {
                 ],
               ),
             ),
-
             const SizedBox(width: 10),
-
             SizedBox(
               width: 54,
               child: Column(
@@ -386,9 +367,7 @@ class _MissionItemCard extends StatelessWidget {
                       color: Color(0xFFFF7A00),
                     ),
                   ),
-
                   const SizedBox(height: 8),
-
                   if (completed)
                     Container(
                       width: 23,
@@ -414,10 +393,7 @@ class _MissionItemCard extends StatelessWidget {
 }
 
 class _MissionIcon extends StatelessWidget {
-  const _MissionIcon({
-    required this.iconKey,
-    required this.color,
-  });
+  const _MissionIcon({required this.iconKey, required this.color});
 
   final String iconKey;
   final Color color;
@@ -432,17 +408,13 @@ class _MissionIcon extends StatelessWidget {
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.24),
+            color: color.withValues(alpha: 0.24),
             blurRadius: 12,
             offset: const Offset(0, 6),
           ),
         ],
       ),
-      child: Icon(
-        _getIcon(iconKey),
-        color: Colors.white,
-        size: 27,
-      ),
+      child: Icon(_getIcon(iconKey), color: Colors.white, size: 27),
     );
   }
 
@@ -450,37 +422,26 @@ class _MissionIcon extends StatelessWidget {
     switch (key) {
       case 'checkin':
         return Icons.location_on_rounded;
-
       case 'food':
         return Icons.ramen_dining_rounded;
-
       case 'save':
         return Icons.bookmark_rounded;
-
       case 'clock':
         return Icons.schedule_rounded;
-
       case 'night':
         return Icons.dark_mode_rounded;
-
       case 'points':
         return Icons.workspace_premium_rounded;
-
       case 'repeat':
         return Icons.replay_rounded;
-
       case 'province':
         return Icons.explore_rounded;
-
       case 'review':
         return Icons.star_rounded;
-
       case 'photo':
         return Icons.image_rounded;
-
       case 'map':
         return Icons.map_rounded;
-
       default:
         return Icons.flag_rounded;
     }
@@ -493,26 +454,19 @@ class _MissionLoading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: List.generate(
-        3,
-        (index) {
-          return Padding(
-            padding: EdgeInsets.only(
-              bottom: index == 2 ? 0 : 10,
+      children: List.generate(3, (index) {
+        return Padding(
+          padding: EdgeInsets.only(bottom: index == 2 ? 0 : 10),
+          child: Container(
+            height: 74,
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFFEFC),
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: const Color(0xFFF1E5DA)),
             ),
-            child: Container(
-              height: 74,
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFFEFC),
-                borderRadius: BorderRadius.circular(18),
-                border: Border.all(
-                  color: const Color(0xFFF1E5DA),
-                ),
-              ),
-            ),
-          );
-        },
-      ),
+          ),
+        );
+      }),
     );
   }
 }
