@@ -17,6 +17,7 @@ import '../../widgets/favorite_button.dart';
 import '../onboarding/survey_sheet.dart';
 import '../community/community_feed_page.dart';
 import '../favorites/favorites_tabs_page.dart';
+import '../journey/pages/food_journey_page.dart';
 import '../personal/personal.dart';
 import '../map/map_page.dart';
 import '../../services/location_preference_service.dart';
@@ -25,6 +26,8 @@ import '../../services/map/geocode_service.dart';
 import '../favorites/place_detail_page.dart';
 import 'search/search_result_page.dart';
 import 'widgets/home_bottom_nav.dart';
+import 'widgets/home_community_eating_section.dart';
+import 'widgets/home_journey_section.dart';
 import 'widgets/nearby_places_section.dart';
 import 'widgets/today_eat_section.dart';
 
@@ -193,7 +196,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 actions: [
                   IconButton(
                     icon: const Icon(Icons.notifications_none_rounded),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, RouteNames.notifications);
+                    },
                     tooltip: t.notificationsTitle,
                     visualDensity: VisualDensity.compact,
                   ),
@@ -235,11 +240,14 @@ class _HomeFeed extends StatefulWidget {
 class _HomeFeedState extends State<_HomeFeed> {
   final _service = FoodService();
   final _pageController = PageController();
+  final _promoBannerController = PageController(viewportFraction: 1);
   final _searchController = TextEditingController();
   final _userService = UserService();
   StreamSubscription? _profileSub;
   Timer? _autoSlideTimer;
+  Timer? _promoBannerTimer;
   final ValueNotifier<int> _imageIndex = ValueNotifier<int>(0);
+  final ValueNotifier<int> _promoBannerIndex = ValueNotifier<int>(0);
   String? _lastProvinceId;
   List<DishModel> _dishesCache = const [];
   String? _dishesCacheProvinceId;
@@ -273,6 +281,10 @@ class _HomeFeedState extends State<_HomeFeed> {
   int _imageCount = 0;
   // Cache danh sach tinh de mo picker tu app bar.
   List<ProvinceModel> _cachedProvinces = const [];
+  static const List<String> _promoBanners = [
+    'assets/home/banner_1.png',
+    'assets/home/banner_2.png',
+  ];
 
   @override
   void initState() {
@@ -295,6 +307,8 @@ class _HomeFeedState extends State<_HomeFeed> {
     if (_gpsEnabled) {
       _resolveGpsProvince();
     }
+
+    _startPromoBannerAutoSlide();
   }
 
   @override
@@ -305,12 +319,32 @@ class _HomeFeedState extends State<_HomeFeed> {
     _stopGpsListener();
     _profileSub?.cancel();
     _autoSlideTimer?.cancel();
+    _promoBannerTimer?.cancel();
     _bootTimer?.cancel();
     _imageIndex.dispose();
+    _promoBannerIndex.dispose();
     _pageController.dispose();
+    _promoBannerController.dispose();
     _searchController.dispose();
     _nearbyHomeController.dispose();
     super.dispose();
+  }
+
+  void _startPromoBannerAutoSlide() {
+    _promoBannerTimer?.cancel();
+    if (_promoBanners.length < 2) return;
+
+    _promoBannerTimer = Timer.periodic(const Duration(seconds: 4), (_) {
+      if (!_promoBannerController.hasClients) return;
+      final current =
+          _promoBannerController.page?.round() ?? _promoBannerIndex.value;
+      final next = (current + 1) % _promoBanners.length;
+      _promoBannerController.animateToPage(
+        next,
+        duration: const Duration(milliseconds: 350),
+        curve: Curves.easeOut,
+      );
+    });
   }
 
   void _startProfileListener() {
@@ -900,6 +934,18 @@ class _HomeFeedState extends State<_HomeFeed> {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: _buildSearchField(theme, t),
         ),
+        const SizedBox(height: 14),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: _buildPromoJourneyCard(theme),
+        ),
+        const SizedBox(height: 16),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: HomeJourneySection(
+            userId: FirebaseAuth.instance.currentUser?.uid,
+          ),
+        ),
         const SizedBox(height: 16),
         if (_selectedProvince != null && _dishesStream != null)
           StreamBuilder<List<DishModel>>(
@@ -1305,6 +1351,11 @@ class _HomeFeedState extends State<_HomeFeed> {
                     },
                   ),
                 ),
+              const SizedBox(height: 20),
+              HomeCommunityEatingSection(
+                userLat: _nearbyHomeController.userLatLng?.latitude,
+                userLng: _nearbyHomeController.userLatLng?.longitude,
+              ),
             ],
           ),
         );
@@ -1339,6 +1390,191 @@ class _HomeFeedState extends State<_HomeFeed> {
           ),
           hintText: t.homeSearchHint,
           border: InputBorder.none,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPromoJourneyCard(ThemeData theme) {
+    final isDark = theme.brightness == Brightness.dark;
+    final quickActions = <_HomeQuickAction>[
+      _HomeQuickAction(
+        label: 'Gan toi',
+        icon: Icons.location_on_rounded,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder:
+                  (_) => MapPage(
+                    initialNearbyPlaces: _nearbyHomeController.places,
+                    initialNearbyQuery: 'Quan gan toi',
+                  ),
+            ),
+          );
+        },
+      ),
+      _HomeQuickAction(
+        label: 'Check-in',
+        icon: Icons.verified_rounded,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const FoodJourneyPage()),
+          );
+        },
+      ),
+      _HomeQuickAction(
+        label: 'Luu quan',
+        icon: Icons.bookmark_rounded,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const FavoritesTabsPage()),
+          );
+        },
+      ),
+      _HomeQuickAction(
+        label: 'Ban do',
+        icon: Icons.map_rounded,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const MapPage()),
+          );
+        },
+      ),
+    ];
+
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF131821) : Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: isDark ? const Color(0xFF242B36) : const Color(0xFFFFE4CB),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.18 : 0.06),
+            blurRadius: 18,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 12, 12, 10),
+        child: Column(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(18),
+              child: SizedBox(
+                height: 134,
+                child: Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: [
+                    PageView.builder(
+                      controller: _promoBannerController,
+                      itemCount: _promoBanners.length,
+                      onPageChanged: (index) => _promoBannerIndex.value = index,
+                      itemBuilder: (context, index) {
+                        return Image.asset(
+                          _promoBanners[index],
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    ),
+                    Positioned(
+                      bottom: 8,
+                      child: ValueListenableBuilder<int>(
+                        valueListenable: _promoBannerIndex,
+                        builder: (context, value, _) {
+                          return _buildPromoDots(_promoBanners.length, value);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: List.generate(quickActions.length, (index) {
+                final item = quickActions[index];
+                return Expanded(
+                  child: InkWell(
+                    onTap: item.onTap,
+                    borderRadius: BorderRadius.circular(16),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 42,
+                            height: 42,
+                            decoration: BoxDecoration(
+                              color:
+                                  isDark
+                                      ? const Color(0xFF1A2230)
+                                      : const Color(0xFFFFF4EA),
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: Icon(
+                              item.icon,
+                              color: const Color(0xFFFF7A1A),
+                              size: 22,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            item.label,
+                            style: theme.textTheme.labelMedium?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color:
+                                  isDark
+                                      ? Colors.white70
+                                      : const Color(0xFF5F5B57),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPromoDots(int count, int activeIndex) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.18),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: List.generate(count, (index) {
+            final isActive = index == activeIndex;
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 220),
+              margin: const EdgeInsets.symmetric(horizontal: 2),
+              width: isActive ? 14 : 6,
+              height: 6,
+              decoration: BoxDecoration(
+                color:
+                    isActive
+                        ? const Color(0xFFFFA144)
+                        : Colors.white.withValues(alpha: 0.72),
+                borderRadius: BorderRadius.circular(999),
+              ),
+            );
+          }),
         ),
       ),
     );
@@ -1557,4 +1793,16 @@ class _HomeFeedState extends State<_HomeFeed> {
       child: Text(text, style: TextStyle(color: Theme.of(context).hintColor)),
     );
   }
+}
+
+class _HomeQuickAction {
+  const _HomeQuickAction({
+    required this.label,
+    required this.icon,
+    required this.onTap,
+  });
+
+  final String label;
+  final IconData icon;
+  final VoidCallback onTap;
 }

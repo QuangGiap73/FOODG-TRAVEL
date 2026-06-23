@@ -105,6 +105,7 @@ flutter:
     - assets/provinces/journey/avatars/
     - assets/person/
     - assets/maps/
+    - assets/home/
     - assets/maps/geojson/vietnam_provinces_34.geojson
     - assets/maps/geojson/vietnam_provinces_34_compact.json
     - assets/maps/vietnam_34_provinces_foods.svg
