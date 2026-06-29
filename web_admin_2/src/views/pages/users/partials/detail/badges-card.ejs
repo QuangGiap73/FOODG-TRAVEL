@@ -1,0 +1,19 @@
+<section class="user-detail-card user-badges-card">
+  <div class="user-section-head">
+    <h3>Huy hiệu nổi bật</h3>
+  </div>
+
+  <% if (user.featuredBadges.length) { %>
+    <div class="user-badges-list">
+      <% user.featuredBadges.forEach(function (badge) { %>
+        <div class="user-badge user-badge--<%= badge.accentClass %>">
+          <div class="user-badge__seal"></div>
+          <strong><%= badge.title %></strong>
+          <span><%= badge.description %></span>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div class="user-empty-state">Người dùng này chưa có dữ liệu huy hiệu.</div>
+  <% } %>
+</section>

@@ -1,0 +1,31 @@
+<section class="user-detail-card user-journey-card">
+  <div class="user-section-head">
+    <h3>Hành trình khám phá</h3>
+  </div>
+
+  <div class="user-journey-card__progress">
+    <div class="user-journey-card__progress-head">
+      <span>Tiến độ khám phá tỉnh/thành</span>
+      <strong><%= user.stats[2].value %></strong>
+    </div>
+    <div class="user-progress">
+      <div class="user-progress__bar" style="width: <%= user.journeyCard.progressPercent %>%"></div>
+    </div>
+    <div class="user-journey-card__progress-foot"><%= user.journeyCard.progressLabel %></div>
+  </div>
+
+  <div class="user-journey-card__facts">
+    <div>
+      <span>Tỉnh yêu thích</span>
+      <strong><%= user.journeyCard.provinceValue %></strong>
+    </div>
+    <div>
+      <span>Danh mục ưu tiên</span>
+      <strong><%= user.journeyCard.favoriteCategory %></strong>
+    </div>
+    <div>
+      <span>Địa điểm đã ghé</span>
+      <strong><%= user.journeyCard.placeValue %></strong>
+    </div>
+  </div>
+</section>

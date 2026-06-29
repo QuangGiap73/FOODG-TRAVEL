@@ -1,0 +1,72 @@
+<div class="users-modal" id="users-create-modal" aria-hidden="true">
+  <div class="users-modal__backdrop" data-users-modal-close></div>
+  <div class="users-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="users-create-title">
+    <div class="users-modal__hero">
+      <div>
+        <p class="users-modal__eyebrow">Thêm tài khoản mới</p>
+        <h3 id="users-create-title">Tạo người dùng</h3>
+        <p class="users-modal__copy">Tạo nhanh tài khoản mới cho hệ thống admin và ứng dụng Food Journey.</p>
+      </div>
+      <button type="button" class="users-modal__close" data-users-modal-close aria-label="Dong">×</button>
+    </div>
+
+    <div class="users-modal__body">
+      <form id="users-create-form" class="users-create-form">
+        <label>
+          <span>Họ và tên *</span>
+          <input type="text" name="fullName" placeholder="Nguyễn Minh Anh" required />
+        </label>
+
+        <label>
+          <span>Email *</span>
+          <input type="email" name="email" placeholder="minhanh@gmail.com" required />
+        </label>
+
+        <label>
+          <span>Số điện thoại</span>
+          <input type="text" name="phone" placeholder="0376 070 025" />
+        </label>
+
+        <label>
+          <span>Vai trò</span>
+          <select name="role">
+            <option value="user">user</option>
+            <option value="admin">admin</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Mật khẩu *</span>
+          <input type="password" name="password" placeholder="Tối thiểu 6 ký tự" minlength="6" required />
+        </label>
+
+        <label>
+          <span>Xác nhận mật khẩu *</span>
+          <input type="password" name="passwordConfirm" placeholder="Nhập lại mật khẩu" minlength="6" required />
+        </label>
+      </form>
+
+      <aside class="users-create-side">
+        <div class="users-create-preview">
+          <div class="users-create-preview__badge">Preview</div>
+          <div class="users-create-preview__avatar" id="users-create-avatar">U</div>
+          <strong id="users-create-name">Người dùng mới</strong>
+          <small id="users-create-email">email@example.com</small>
+          <dl class="users-create-preview__meta">
+            <div><dt>Vai trò</dt><dd id="users-create-role">user</dd></div>
+            <div><dt>Trạng thái</dt><dd>Chờ kích hoạt</dd></div>
+            <div><dt>Khuyến nghị</dt><dd>Dùng email thật để gửi thông báo sau.</dd></div>
+          </dl>
+        </div>
+      </aside>
+    </div>
+
+    <div class="users-modal__footer">
+      <p class="users-modal__message" id="users-create-message"></p>
+      <div class="users-modal__actions">
+        <button type="button" class="users-ghost-button" data-users-modal-close>Hủy</button>
+        <button type="submit" class="users-primary-button" form="users-create-form" id="users-create-submit">Tạo người dùng</button>
+      </div>
+    </div>
+  </div>
+</div>

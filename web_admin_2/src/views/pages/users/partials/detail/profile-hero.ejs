@@ -1,0 +1,43 @@
+<section class="user-detail-card user-profile-hero">
+  <div class="user-profile-hero__top">
+    <div class="user-profile-hero__identity">
+      <img src="<%= user.avatar %>" alt="<%= user.fullName %>" class="user-profile-hero__avatar" />
+
+      <div class="user-profile-hero__info">
+        <div class="user-profile-hero__title-row">
+          <h2><%= user.fullName %></h2>
+          <span class="user-profile-hero__accent">👑</span>
+        </div>
+        <p>@<%= user.username %></p>
+
+        <div class="user-profile-hero__meta">
+          <span>✉ <%= user.email %></span>
+          <span>☎ <%= user.phone %></span>
+          <span>🗓 Tham gia ngày <%= user.createdAtLabel %></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="user-profile-hero__actions">
+      <div class="user-profile-hero__badges">
+        <span class="user-chip user-chip--<%= user.statusClass %>"><%= user.statusLabel %></span>
+        <span class="user-chip user-chip--level"><%= user.levelBadge %></span>
+      </div>
+
+      <div class="user-profile-hero__buttons">
+        <a href="/admin/users/<%= user.id %>/edit" class="user-outline-button">Chỉnh sửa</a>
+        <button type="button" class="user-outline-button user-outline-button--danger" data-user-delete>Xóa người dùng</button>
+        <button type="button" class="user-outline-button">Gửi thông báo</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="user-profile-hero__stats">
+    <% user.stats.forEach(function (stat) { %>
+      <div class="user-mini-stat">
+        <div class="user-mini-stat__label"><span><%= stat.icon %></span><%= stat.label %></div>
+        <strong><%= stat.value %></strong>
+      </div>
+    <% }) %>
+  </div>
+</section>

@@ -1,0 +1,21 @@
+<section class="user-detail-card user-post-card">
+  <div class="user-section-head">
+    <h3>Bài đăng cộng đồng gần đây</h3>
+    <a href="#">Xem tất cả</a>
+  </div>
+
+  <% if (user.recentPosts.length) { %>
+    <% user.recentPosts.forEach(function (item) { %>
+      <article class="user-post-item">
+        <img src="<%= item.image %>" alt="<%= item.title %>" />
+        <div class="user-post-item__body">
+          <strong><%= item.title %></strong>
+          <p><%= item.content %></p>
+          <small><%= item.meta %></small>
+        </div>
+      </article>
+    <% }) %>
+  <% } else { %>
+    <div class="user-empty-state">Người dùng này chưa có bài đăng cộng đồng.</div>
+  <% } %>
+</section>

@@ -1,0 +1,40 @@
+<%- include('../../partials/page-header', {
+  eyebrow: 'Quản lý người dùng',
+  title: 'Người dùng và hoạt động',
+  description: 'Quản lý tài khoản người dùng và hoạt động trong ứng dụng.',
+}) %>
+
+<link rel="stylesheet" href="/public/css/pages/users.css" />
+
+<section class="users-page">
+  <div class="users-main">
+    <%- include('./partials/users-stats', { stats: stats }) %>
+
+    <section class="users-card">
+      <%- include('./partials/users-toolbar') %>
+      <%- include('./partials/users-bulk-bar') %>
+      <%- include('./partials/users-table', { users: users }) %>
+      <%- include('./partials/users-pagination', { pagination: pagination }) %>
+    </section>
+
+    <%- include('./partials/users-create-modal') %>
+  </div>
+
+  <aside class="users-sidebar">
+    <%- include('./partials/users-sidebar-filter', { filters: filters }) %>
+  </aside>
+</section>
+
+<script>
+  window.__USERS_PAGE__ = <%- JSON.stringify({
+    users,
+    stats,
+    filters,
+    pagination,
+  }) %>;
+</script>
+
+<script src="/public/js/modules/users/users-table.js"></script>
+<script src="/public/js/modules/users/users-filters.js"></script>
+<script src="/public/js/modules/users/users-bulk-actions.js"></script>
+<script src="/public/js/modules/users/index.js"></script>

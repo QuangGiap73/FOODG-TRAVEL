@@ -1,0 +1,58 @@
+<section class="auth-card">
+  <p class="eyebrow">Food Travel Admin 2</p>
+  <h1>Dang nhap quan tri</h1>
+  <p class="auth-copy">Dang nhap bang Firebase Auth va cap cookie token cho toan bo khu vuc admin.</p>
+
+  <form class="auth-form" id="login-form">
+    <label>
+      <span>Email</span>
+      <input id="email" type="email" placeholder="admin@example.com" required />
+    </label>
+    <label>
+      <span>Mat khau</span>
+      <input id="password" type="password" placeholder="********" required />
+    </label>
+    <button type="submit" class="primary-button">Dang nhap</button>
+  </form>
+  <p id="login-error" class="form-error"></p>
+</section>
+
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js';
+  import { getAuth, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js';
+
+  const firebaseConfig = <%- JSON.stringify(firebaseConfig) %>;
+  const cookieName = <%- JSON.stringify(sessionCookieName) %>;
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const form = document.getElementById('login-form');
+  const errorBox = document.getElementById('login-error');
+
+  function showError(message) {
+    errorBox.textContent = message || '';
+  }
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    showError('');
+
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+
+    try {
+      const credential = await signInWithEmailAndPassword(auth, email, password);
+      const tokenResult = await credential.user.getIdTokenResult(true);
+      const role = tokenResult.claims.role || (tokenResult.claims.admin ? 'admin' : null);
+
+      if (role !== 'admin') {
+        throw new Error('Tai khoan khong co quyen admin.');
+      }
+
+      document.cookie = `${cookieName}=${tokenResult.token}; Path=/; Max-Age=3600; SameSite=Lax`;
+      window.location.href = '/admin';
+    } catch (error) {
+      console.error('[login]', error);
+      showError(error.message || 'Dang nhap that bai');
+    }
+  });
+</script>

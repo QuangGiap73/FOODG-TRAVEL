@@ -1,0 +1,25 @@
+<button class="menu-toggle" type="button" aria-label="Mo menu" data-sidebar-toggle>
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
+
+<div class="topbar-heading">
+  <div>
+    <p class="eyebrow">Admin workspace</p>
+    <h1><%= pageTitle %></h1>
+  </div>
+</div>
+
+<div class="topbar-actions">
+  <button class="icon-button" type="button" aria-label="Thong bao">
+    <span>🔔</span>
+  </button>
+  <div class="profile-chip">
+    <div class="profile-chip__avatar">A</div>
+    <div>
+      <strong><%= user.displayName %></strong>
+      <small><%= user.role %></small>
+    </div>
+  </div>
+</div>

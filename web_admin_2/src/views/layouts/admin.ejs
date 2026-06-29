@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= pageTitle %> | <%= appName %></title>
+  <link rel="stylesheet" href="/public/css/app.css" />
+</head>
+<body class="admin-body">
+  <div class="admin-overlay" data-sidebar-overlay></div>
+  <div class="admin-shell">
+    <aside class="admin-sidebar" id="admin-sidebar">
+      <%- include('../partials/sidebar') %>
+    </aside>
+    <div class="admin-main">
+      <header class="admin-topbar">
+        <%- include('../partials/topbar') %>
+      </header>
+      <main class="admin-content">
+        <%- body %>
+      </main>
+    </div>
+  </div>
+  <script src="/public/js/core/app.js"></script>
+</body>
+</html>

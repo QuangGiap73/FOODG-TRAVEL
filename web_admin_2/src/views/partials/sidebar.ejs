@@ -1,0 +1,23 @@
+<div class="sidebar-mobile-head">
+  <div class="sidebar-mobile-head__label">Dieu huong</div>
+  <button class="sidebar-close" type="button" aria-label="Dong menu" data-sidebar-close>×</button>
+</div>
+
+<div class="sidebar-brand">
+  <div class="sidebar-brand__logo">FT</div>
+  <div>
+    <div class="sidebar-brand__title">Food Travel</div>
+    <div class="sidebar-brand__subtitle">Admin v2</div>
+  </div>
+</div>
+
+<nav class="sidebar-nav">
+  <% navItems.forEach(function (item) { %>
+    <% const isActive = item.key === '/admin'
+      ? currentPath === item.key
+      : currentPath === item.key || currentPath.startsWith(item.key + '/'); %>
+    <a class="sidebar-link <%= isActive ? 'is-active' : '' %>" href="<%= item.href %>">
+      <span><%= item.label %></span>
+    </a>
+  <% }) %>
+</nav>

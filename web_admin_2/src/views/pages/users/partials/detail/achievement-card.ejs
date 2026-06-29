@@ -1,0 +1,23 @@
+<section class="user-detail-card user-achievement-card">
+  <div class="user-section-head">
+    <h3>Thanh tich</h3>
+  </div>
+
+  <% const achievementStats = Array.isArray(user.achievementStats) ? user.achievementStats : []; %>
+  <% if (achievementStats.length) { %>
+    <div class="user-achievement-grid">
+      <% achievementStats.forEach(function (item) { %>
+        <div class="user-achievement-item">
+          <div class="user-achievement-item__icon">★</div>
+          <div class="user-achievement-item__content">
+            <span><%= item.label %></span>
+            <strong><%= item.value %></strong>
+            <small><%= item.hint %></small>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div class="user-empty-state">Chua co du lieu thanh tich.</div>
+  <% } %>
+</section>

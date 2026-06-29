@@ -1,0 +1,17 @@
+<section class="user-detail-card user-moderation-card">
+  <div class="user-section-head">
+    <h3>Ghi chú & Kiểm duyệt</h3>
+    <span class="user-chip user-chip--good">Không vi phạm</span>
+  </div>
+
+  <div class="user-moderation-card__note">
+    <strong>Ghi chú nội bộ</strong>
+    <p><%= user.moderationNote %></p>
+  </div>
+
+  <div class="user-moderation-card__actions">
+    <% user.moderationStatuses.forEach(function (item) { %>
+      <button type="button" class="user-moderation-pill user-moderation-pill--<%= item.className %>"><%= item.label %></button>
+    <% }) %>
+  </div>
+</section>

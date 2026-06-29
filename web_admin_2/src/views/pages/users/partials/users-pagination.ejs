@@ -1,0 +1,19 @@
+<div class="users-pagination">
+  <div class="users-pagination__meta">
+    Hiển thị <%= pagination.from %> - <%= pagination.to %> của <%= pagination.total.toLocaleString('vi-VN') %> người dùng
+  </div>
+
+  <div class="users-pagination__controls">
+    <button type="button">‹</button>
+    <button type="button" class="active"><%= pagination.page %></button>
+    <button type="button">›</button>
+  </div>
+
+  <div class="users-pagination__size">
+    <select>
+      <option><%= pagination.pageSize %> / trang</option>
+      <option>20 / trang</option>
+      <option>50 / trang</option>
+    </select>
+  </div>
+</div>

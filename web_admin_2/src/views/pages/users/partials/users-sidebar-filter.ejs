@@ -1,0 +1,76 @@
+<section class="users-filter-card">
+  <div class="users-filter-card__head">
+    <h3>Bộ lọc</h3>
+    <button type="button" id="users-reset-filter">Đặt lại</button>
+  </div>
+
+  <div class="users-filter-group">
+    <label>Tìm kiếm</label>
+    <input type="text" id="users-filter-keyword" placeholder="Tên, email, SĐT..." />
+  </div>
+
+  <div class="users-filter-group">
+    <label>Vai trò</label>
+    <select id="users-filter-role">
+      <% filters.roles.forEach(function(role) { %>
+        <option><%= role %></option>
+      <% }) %>
+    </select>
+  </div>
+
+  <div class="users-filter-group">
+    <label>Trạng thái</label>
+    <select id="users-filter-status">
+      <% filters.statuses.forEach(function(status) { %>
+        <option><%= status %></option>
+      <% }) %>
+    </select>
+  </div>
+
+  <div class="users-filter-group">
+    <label>Tỉnh/Thành ưu tiên</label>
+    <select id="users-filter-province">
+      <% filters.provinces.forEach(function(province) { %>
+        <option><%= province %></option>
+      <% }) %>
+    </select>
+  </div>
+
+  <div class="users-filter-group">
+    <label>Ngày tham gia</label>
+    <input type="text" placeholder="Chọn khoảng thời gian" />
+  </div>
+
+  <div class="users-filter-group">
+    <label>Sắp xếp theo</label>
+    <select id="users-filter-sort">
+      <% filters.sorts.forEach(function(sort) { %>
+        <option><%= sort %></option>
+      <% }) %>
+    </select>
+  </div>
+
+  <button class="users-primary-button users-primary-button--full" type="button" id="users-apply-filter">
+    Lọc kết quả
+  </button>
+</section>
+
+<section class="users-filter-card">
+  <h3>Thống kê nhanh</h3>
+
+  <div class="users-quick-stats">
+    <div class="users-quick-chart"></div>
+    <div class="users-quick-legend">
+      <div><span class="dot active"></span> Hoạt động</div>
+      <div><span class="dot verify"></span> Chưa onboarding</div>
+      <div><span class="dot locked"></span> Admin</div>
+      <div><span class="dot inactive"></span> Chưa có journey</div>
+    </div>
+  </div>
+
+  <p class="users-quick-total">Tổng: <%= pagination.total.toLocaleString('vi-VN') %> người dùng</p>
+
+  <button class="users-ghost-button users-ghost-button--full" type="button">
+    Xem báo cáo chi tiết
+  </button>
+</section>

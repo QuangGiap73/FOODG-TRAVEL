@@ -1,0 +1,46 @@
+<link rel="stylesheet" href="/public/css/pages/users-detail.css" />
+
+<section class="user-detail-page" data-user-id="<%= detailUser.id %>">
+  <div class="user-detail-breadcrumb">
+    <a href="/admin/users">Quản lý người dùng</a>
+    <span>/</span>
+    <strong>Chi tiết người dùng</strong>
+  </div>
+
+  <div class="user-detail-top">
+    <div class="user-detail-top__main">
+      <%- include('./partials/detail/profile-hero', { user: detailUser }) %>
+    </div>
+    <aside class="user-detail-top__side">
+      <%- include('./partials/detail/account-summary', { user: detailUser }) %>
+    </aside>
+  </div>
+
+  <%- include('./partials/detail/detail-tabs') %>
+
+  <div class="user-detail-grid">
+    <div class="user-detail-grid__content">
+      <div class="user-detail-grid__overview-row">
+        <%- include('./partials/detail/overview-profile', { user: detailUser }) %>
+        <%- include('./partials/detail/journey-card', { user: detailUser }) %>
+      </div>
+
+      <div class="user-detail-grid__main">
+        <%- include('./partials/detail/achievement-card', { user: detailUser }) %>
+        <%- include('./partials/detail/recent-places', { user: detailUser }) %>
+      </div>
+
+      <div class="user-detail-grid__center">
+        <%- include('./partials/detail/badges-card', { user: detailUser }) %>
+        <%- include('./partials/detail/recent-posts', { user: detailUser }) %>
+      </div>
+    </div>
+
+    <div class="user-detail-grid__side">
+      <%- include('./partials/detail/recent-activity', { user: detailUser }) %>
+      <%- include('./partials/detail/moderation-card', { user: detailUser }) %>
+    </div>
+  </div>
+</section>
+
+<script src="/public/js/modules/users/user-detail.js"></script>

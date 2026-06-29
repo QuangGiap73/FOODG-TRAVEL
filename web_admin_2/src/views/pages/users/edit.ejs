@@ -1,0 +1,172 @@
+<link rel="stylesheet" href="/public/css/pages/users-edit.css" />
+
+<section class="user-edit-page" data-user-id="<%= editUser.id %>">
+  <div class="user-edit-breadcrumb">
+    <a href="/admin/users">Quản lý người dùng</a>
+    <span>/</span>
+    <a href="/admin/users/<%= editUser.id %>">Chi tiết người dùng</a>
+    <span>/</span>
+    <strong>Chỉnh sửa người dùng</strong>
+  </div>
+
+  <div class="user-edit-header">
+    <div>
+      <h2>Chỉnh sửa thông tin người dùng</h2>
+      <p>Cập nhật thông tin tài khoản và cài đặt của người dùng</p>
+    </div>
+    <div class="user-edit-header__actions">
+      <a class="user-edit-button user-edit-button--ghost" href="/admin/users/<%= editUser.id %>">Quay lại chi tiết</a>
+      <button class="user-edit-button user-edit-button--outline" type="button">Đặt lại mật khẩu</button>
+      <button class="user-edit-button user-edit-button--primary" type="submit" form="user-edit-form" data-user-edit-submit>Lưu thay đổi</button>
+    </div>
+  </div>
+
+  <p class="user-edit-message" data-user-edit-message></p>
+
+  <div class="user-edit-layout">
+    <form class="user-edit-card user-edit-form" id="user-edit-form">
+      <nav class="user-edit-tabs" aria-label="Cac nhom thong tin">
+        <a class="is-active" href="#basic">Thông tin cơ bản</a>
+        <a href="#security">Tài khoản & bảo mật</a>
+        <a href="#settings">Cài đặt cá nhân</a>
+        <a href="#roles">Vai trò & quyền hạn</a>
+        <a href="#notes">Ghi chú</a>
+      </nav>
+
+      <div class="user-edit-form__body user-edit-form__body--basic" id="basic">
+        <aside class="user-edit-avatar">
+          <img src="<%= editUser.avatar %>" alt="<%= editUser.fullName %>" data-user-avatar-preview />
+          <span>JPG, PNG tối đa 2MB</span>
+          <input type="file" id="user-avatar-input" name="avatar" accept="image/png,image/jpeg" hidden />
+          <button type="button" data-user-avatar-trigger>Thay đổi ảnh</button>
+        </aside>
+
+        <div class="user-edit-fields">
+          <label>
+            <span>Họ và tên <strong>*</strong></span>
+            <input name="fullName" value="<%= editUser.fullName %>" required />
+            <small class="user-edit-fields__helper user-edit-fields__helper--ghost">.</small>
+          </label>
+
+          <label>
+            <span>Tên hiển thị <strong>*</strong></span>
+            <input name="displayName" value="<%= editUser.fullName %>" />
+            <small>Tên này sẽ hiển thị trong ứng dụng</small>
+          </label>
+
+          <label>
+            <span>Email <strong>*</strong></span>
+            <input type="email" name="email" value="<%= editUser.email %>" required />
+          </label>
+
+          <label>
+            <span>Số điện thoại</span>
+            <input name="phone" value="<%= editUser.phone === 'Chua cap nhat' ? '' : editUser.phone %>" />
+          </label>
+
+          <label>
+            <span>Giới tính</span>
+            <select name="gender">
+              <option value="">Chưa cập nhật</option>
+              <option value="male" <%= editUser.gender === 'male' ? 'selected' : '' %>>Nam</option>
+              <option value="female" <%= editUser.gender === 'female' ? 'selected' : '' %>>Nữ</option>
+              <option value="other" <%= editUser.gender === 'other' ? 'selected' : '' %>>Khác</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Ngày sinh</span>
+            <input type="date" name="dateOfBirth" value="<%= editUser.dateOfBirthInput %>" />
+          </label>
+
+          <label>
+            <span>Trạng thái tài khoản</span>
+            <select name="onboardingStatus" disabled>
+              <option><%= editUser.statusLabel %></option>
+            </select>
+          </label>
+
+          <label id="roles">
+            <span>Vai trò</span>
+            <select name="role">
+              <option value="user" <%= editUser.role === 'user' ? 'selected' : '' %>>user</option>
+              <option value="admin" <%= editUser.role === 'admin' ? 'selected' : '' %>>admin</option>
+            </select>
+          </label>
+
+          <label class="user-edit-fields__full" id="notes">
+            <span>Ghi chú nội bộ</span>
+            <textarea name="note" rows="4" placeholder="Thêm ghi chú cho đội quản trị"><%= editUser.moderationNote %></textarea>
+          </label>
+        </div>
+      </div>
+
+      <section class="user-edit-section" id="security">
+        <div class="user-edit-section__title">
+          <h3>Thay đổi mật khẩu</h3>
+          <p>Nhập mật khẩu mới khi cần cấp lại quyền đăng nhập cho người dùng.</p>
+        </div>
+
+        <div class="user-edit-fields">
+          <label>
+            <span>Mật khẩu mới</span>
+            <input type="password" name="password" minlength="6" autocomplete="new-password" placeholder="Tối thiểu 6 ký tự" />
+          </label>
+
+          <label>
+            <span>Xác nhận mật khẩu mới</span>
+            <input type="password" name="passwordConfirm" minlength="6" autocomplete="new-password" placeholder="Nhập lại mật khẩu mới" />
+          </label>
+        </div>
+      </section>
+
+      <div class="user-edit-alert" id="settings">
+        <strong>Lưu ý</strong>
+        <span>Thay đổi thông tin người dùng sẽ được cập nhật trên ứng dụng ngay lập tức.</span>
+      </div>
+
+    </form>
+
+    <aside class="user-edit-side">
+      <section class="user-edit-card user-edit-status">
+        <div class="user-edit-section-head">
+          <h3>Trạng thái tài khoản</h3>
+          <span class="user-edit-chip user-edit-chip--<%= editUser.statusClass %>"><%= editUser.statusLabel %></span>
+        </div>
+        <dl>
+          <div><dt>Tham gia ngày</dt><dd><%= editUser.createdAtLabel %> <%= editUser.createdAtTimeLabel %></dd></div>
+          <div><dt>Cập nhật cuối</dt><dd><%= editUser.updatedAtLabel %></dd></div>
+          <div><dt>Email</dt><dd><%= editUser.email %></dd></div>
+          <div><dt>UID</dt><dd><%= editUser.id %></dd></div>
+        </dl>
+      </section>
+
+      <section class="user-edit-card user-edit-quick-stats">
+        <div class="user-edit-section-head">
+          <h3>Thống kê nhanh</h3>
+        </div>
+        <div class="user-edit-stat-grid">
+          <% editUser.stats.forEach(function (stat) { %>
+            <div class="user-edit-stat">
+              <span><%= stat.icon %></span>
+              <strong><%= stat.value %></strong>
+              <small><%= stat.label %></small>
+            </div>
+          <% }) %>
+        </div>
+      </section>
+
+      <section class="user-edit-card user-edit-actions">
+        <div class="user-edit-section-head">
+          <h3>Thao tác nhanh</h3>
+        </div>
+        <a href="/admin/users/<%= editUser.id %>">Xem chi tiết người dùng</a>
+        <button type="button">Xem lịch sử điểm</button>
+        <button type="button">Xem lịch sử check-in</button>
+        <button class="is-danger" type="button" data-user-delete>Xóa người dùng</button>
+      </section>
+    </aside>
+  </div>
+</section>
+
+<script src="/public/js/modules/users/user-edit.js"></script>

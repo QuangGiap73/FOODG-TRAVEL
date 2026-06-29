@@ -1,0 +1,94 @@
+<div class="users-table-wrap">
+  <table class="users-table">
+    <thead>
+      <tr>
+        <th><input type="checkbox" id="users-check-all" /></th>
+        <th>Người dùng</th>
+        <th>Email / SĐT</th>
+        <th>Vai trò</th>
+        <th>Level</th>
+        <th>Tổng điểm</th>
+        <th>Check-in</th>
+        <th>Trạng thái</th>
+        <th>Ngày tham gia</th>
+        <th>Cập nhật</th>
+        <th>Hành động</th>
+      </tr>
+    </thead>
+
+    <tbody id="users-table-body">
+      <% users.forEach(function(user) { %>
+        <tr
+          data-user-id="<%= user.id %>"
+          data-full-name="<%= user.fullName %>"
+          data-email="<%= user.email %>"
+          data-phone="<%= user.phone || '' %>"
+          data-role="<%= user.roleBadge %>"
+          data-status="<%= user.statusLabel %>"
+          data-province="<%= user.provinceName || '' %>"
+          data-created-date="<%= user.joinDate %>"
+          data-updated-date="<%= user.updatedDate %>"
+        >
+          <td>
+            <input type="checkbox" class="users-row-check" value="<%= user.id %>" />
+          </td>
+
+          <td>
+            <div class="users-person">
+              <a href="/admin/users/<%= user.id %>" class="users-person__avatar-link" aria-label="Xem chi tiết <%= user.fullName %>">
+                <img src="<%= user.avatar %>" alt="<%= user.fullName %>" />
+              </a>
+              <div>
+                <strong><%= user.fullName %></strong>
+                <small>@<%= user.username %></small>
+              </div>
+            </div>
+          </td>
+
+          <td>
+            <div class="users-contact">
+              <strong><%= user.email %></strong>
+              <small><%= user.phone || '-' %></small>
+            </div>
+          </td>
+
+          <td>
+            <span class="users-level level-blue"><%= user.roleBadge %></span>
+          </td>
+
+          <td>
+            <span class="users-level level-<%= user.levelColor %>"><%= user.level %></span>
+          </td>
+          <td><%= user.totalPoints %></td>
+          <td><%= user.totalCheckins %></td>
+
+          <td>
+            <span class="users-status status-<%= user.statusKey %>"><%= user.statusLabel %></span>
+          </td>
+
+          <td>
+            <div class="users-date">
+              <strong><%= user.joinDate %></strong>
+              <small><%= user.joinTime %></small>
+            </div>
+          </td>
+
+          <td>
+            <div class="users-date">
+              <strong><%= user.updatedDate %></strong>
+              <small><%= user.updatedTime %></small>
+            </div>
+          </td>
+
+          <td>
+            <div class="users-actions">
+              <a href="/admin/users/<%= user.id %>" aria-label="Xem">Xem</a>
+              <a href="/admin/users/<%= user.id %>/edit" aria-label="Sửa">Sửa</a>
+              <button type="button" class="users-action-danger" data-action="delete" data-id="<%= user.id %>" aria-label="Xóa">Xóa</button>
+            </div>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>

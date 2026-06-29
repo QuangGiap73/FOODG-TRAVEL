@@ -1,0 +1,11 @@
+<section class="user-detail-card user-side-summary">
+  <% user.accountSummary.forEach(function (item) { %>
+    <div class="user-side-summary__item">
+      <div class="user-side-summary__icon user-side-summary__icon--<%= item.colorClass %>"><%= item.icon %></div>
+      <div>
+        <div class="user-side-summary__label"><%= item.label %></div>
+        <strong><%= item.value %></strong>
+      </div>
+    </div>
+  <% }) %>
+</section>

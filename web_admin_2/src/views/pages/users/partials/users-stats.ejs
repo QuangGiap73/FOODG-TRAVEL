@@ -1,0 +1,13 @@
+<section class="users-stats">
+  <% stats.forEach(function(stat) { %>
+    <article class="user-stat-card">
+      <div class="user-stat-card__icon <%= stat.colorClass %>">
+        <span><%= stat.icon %></span>
+      </div>
+      <div class="user-stat-card__body">
+        <p><%= stat.label %></p>
+        <h3><%= stat.value %></h3>
+      </div>
+    </article>
+  <% }) %>
+</section>
