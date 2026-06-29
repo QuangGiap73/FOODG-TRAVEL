@@ -1,0 +1,329 @@
+<link rel="stylesheet" href="/public/css/pages/dishes.css" />
+
+<%
+  const values = formValues || {};
+  const provinceItems = provinces || [];
+  const legacyProvinceItems = legacyProvinces || [];
+%>
+
+<section class="dish-create-page">
+  <div class="dish-create-head">
+    <div class="dish-create-head__title">
+      <a class="dish-create-back" href="/admin/dishes">Quay lai danh sach</a>
+      <div>
+        <h1>Them mon an moi</h1>
+        <p>Tao moi mon an theo schema Firestore hien tai cua du an.</p>
+      </div>
+    </div>
+    <div class="dish-create-head__actions">
+      <a class="dishes-button" href="/admin/dishes">Huy</a>
+      <button class="dishes-button dishes-button--primary" type="submit" form="dish-create-form">Luu mon an</button>
+    </div>
+  </div>
+
+  <nav class="dish-create-steps" aria-label="Cac buoc tao mon">
+    <a class="is-active" href="#step-basic">1. Thong tin co ban</a>
+    <a href="#step-content">2. Noi dung song ngu</a>
+    <a href="#step-meta">3. Phan loai va chi so</a>
+    <a href="#step-images">4. Hinh anh</a>
+    <a href="#step-preview">5. Preview</a>
+  </nav>
+
+  <% if (successMessage) { %>
+    <div class="dish-create-notice dish-create-notice--success"><%= successMessage %></div>
+  <% } %>
+
+  <% if (errorMessage) { %>
+    <div class="dish-create-notice dish-create-notice--error"><%= errorMessage %></div>
+  <% } %>
+
+  <div class="dish-create-layout">
+    <form class="dish-create-form" id="dish-create-form" method="post" action="/admin/dishes/add">
+      <section class="dish-create-card" id="step-basic">
+        <div class="dish-create-card__header">
+          <div>
+            <h3>Thong tin co ban</h3>
+            <p>Nhap dinh danh mon, ten mon, STT va tinh/thanh hien tai.</p>
+          </div>
+        </div>
+
+        <div class="dish-create-grid dish-create-grid--basic">
+          <label>
+            <span>ID *</span>
+            <input type="text" name="id" id="dish-id" value="<%= values.id %>" placeholder="banh_com_ha_noi" required />
+            <small>Viet thuong, khong dau, dung dau gach duoi.</small>
+          </label>
+
+          <label class="dish-create-field-group">
+            <span>Slug *</span>
+            <div class="dish-create-inline">
+              <input type="text" name="slug" id="dish-slug" value="<%= values.slug %>" placeholder="banh-com-ha-noi" required />
+              <button class="dishes-button dishes-button--soft" type="button" id="dish-generate-slug">Tu dong tao</button>
+            </div>
+            <small>Duong dan SEO cho mon an.</small>
+          </label>
+
+          <label>
+            <span>STT</span>
+            <input type="number" name="stt" min="1" value="<%= values.stt || defaults.stt %>" />
+          </label>
+
+          <label>
+            <span>Ten mon (VI) *</span>
+            <input type="text" name="nameVi" id="dish-name-vi" value="<%= values.nameVi %>" maxlength="200" required />
+          </label>
+
+          <label>
+            <span>Ten mon (EN) *</span>
+            <input type="text" name="nameEn" value="<%= values.nameEn %>" maxlength="200" required />
+          </label>
+
+          <label>
+            <span>Tinh / Thanh hien tai *</span>
+            <select name="provinceCode34" id="dish-province-code34" required>
+              <option value="">Chon 1 tinh / thanh</option>
+              <% provinceItems.forEach(function (province) { %>
+                <option
+                  value="<%= province.code %>"
+                  data-province-name="<%= province.name %>"
+                  data-region-code="<%= province.regionCode %>"
+                  data-primary-legacy-code="<%= province.primaryLegacyCode %>"
+                  <%= values.provinceCode34 === province.code ? 'selected' : '' %>>
+                  <%= province.name %>
+                </option>
+              <% }) %>
+            </select>
+          </label>
+
+          <label>
+            <span>Ma tinh/thanh moi (34 tinh)</span>
+            <input type="text" value="<%= values.provinceCode34 %>" data-province-code-preview readonly />
+          </label>
+
+          <label>
+            <span>Tinh/thanh cu (63 tinh)</span>
+            <select name="legacyProvinceCode" id="dish-legacy-province">
+              <option value="">Chon 1 tinh/thanh cu</option>
+              <% legacyProvinceItems.forEach(function (province) { %>
+                <option value="<%= province.code %>" <%= values.legacyProvinceCode === province.name || values.legacyProvinceCode === province.code ? 'selected' : '' %>><%= province.name %></option>
+              <% }) %>
+            </select>
+          </label>
+
+          <label>
+            <span>Tinh luu vao province_code</span>
+            <input type="text" name="provinceCode" id="dish-province-code" value="<%= values.provinceCode %>" readonly />
+          </label>
+
+          <label>
+            <span>Vung luu vao region_code</span>
+            <input type="text" name="regionCode" id="dish-region-code" value="<%= values.regionCode %>" readonly />
+          </label>
+        </div>
+
+        <input type="hidden" name="provinceName34" id="dish-province-name34" value="<%= values.provinceName34 %>" />
+      </section>
+
+      <section class="dish-create-card" id="step-content">
+        <div class="dish-create-card__header">
+          <div>
+            <h3>Noi dung song ngu</h3>
+            <p>Bo tri theo cap VI / EN de nhap mo ta, nguyen lieu, cach lam va cau chuyen nguon goc.</p>
+          </div>
+        </div>
+
+        <div class="dish-create-grid dish-create-grid--content">
+          <label class="dish-create-field-wide">
+            <span>Mo ta (VI)</span>
+            <textarea name="descriptionVi" rows="4"><%= values.descriptionVi %></textarea>
+          </label>
+          <label class="dish-create-field-wide">
+            <span>Mo ta (EN)</span>
+            <textarea name="descriptionEn" rows="4"><%= values.descriptionEn %></textarea>
+          </label>
+
+          <label class="dish-create-field-wide">
+            <span>Nguyen lieu (VI)</span>
+            <textarea name="ingredientsVi" rows="5"><%= values.ingredientsVi %></textarea>
+          </label>
+          <label class="dish-create-field-wide">
+            <span>Nguyen lieu (EN)</span>
+            <textarea name="ingredientsEn" rows="5"><%= values.ingredientsEn %></textarea>
+          </label>
+
+          <label class="dish-create-field-wide">
+            <span>Huong dan (VI)</span>
+            <textarea name="instructionsVi" rows="5"><%= values.instructionsVi %></textarea>
+          </label>
+          <label class="dish-create-field-wide">
+            <span>Huong dan (EN)</span>
+            <textarea name="instructionsEn" rows="5"><%= values.instructionsEn %></textarea>
+          </label>
+
+          <label class="dish-create-field-wide">
+            <span>Cau chuyen nguon goc (VI)</span>
+            <textarea name="originStoryVi" rows="4"><%= values.originStoryVi %></textarea>
+          </label>
+          <label class="dish-create-field-wide">
+            <span>Cau chuyen nguon goc (EN)</span>
+            <textarea name="originStoryEn" rows="4"><%= values.originStoryEn %></textarea>
+          </label>
+        </div>
+      </section>
+
+      <section class="dish-create-card" id="step-meta">
+        <div class="dish-create-card__header">
+          <div>
+            <h3>Phan loai, tag va chi so</h3>
+            <p>Nhap category, tags, thoi diem an, mua ngon nhat, do cay, do no va gia tham khao.</p>
+          </div>
+        </div>
+
+        <div class="dish-create-grid">
+          <label>
+            <span>Danh muc (VI)</span>
+            <input type="text" name="categoryVi" value="<%= values.categoryVi %>" />
+          </label>
+          <label>
+            <span>Danh muc (EN)</span>
+            <input type="text" name="categoryEn" value="<%= values.categoryEn %>" />
+          </label>
+
+          <label>
+            <span>Tags (VI)</span>
+            <input type="text" name="tagsVi" value="<%= values.tagsVi %>" />
+          </label>
+          <label>
+            <span>Tags (EN)</span>
+            <input type="text" name="tagsEn" value="<%= values.tagsEn %>" />
+          </label>
+
+          <label class="dish-create-field-wide">
+            <span>Thoi diem an (VI)</span>
+            <textarea name="bestTimeVi" rows="3"><%= values.bestTimeVi %></textarea>
+          </label>
+          <label class="dish-create-field-wide">
+            <span>Thoi diem an (EN)</span>
+            <textarea name="bestTimeEn" rows="3"><%= values.bestTimeEn %></textarea>
+          </label>
+
+          <label class="dish-create-field-wide">
+            <span>Mua ngon nhat (VI)</span>
+            <textarea name="bestSeasonVi" rows="3"><%= values.bestSeasonVi %></textarea>
+          </label>
+          <label class="dish-create-field-wide">
+            <span>Mua ngon nhat (EN)</span>
+            <textarea name="bestSeasonEn" rows="3"><%= values.bestSeasonEn %></textarea>
+          </label>
+
+          <label>
+            <span>Do cay</span>
+            <select name="spicyLevel">
+              <% for (var spicy = 0; spicy <= 5; spicy++) { %>
+                <option value="<%= spicy %>" <%= Number(values.spicyLevel) === spicy ? 'selected' : '' %>><%= spicy %></option>
+              <% } %>
+            </select>
+          </label>
+
+          <label>
+            <span>Do no</span>
+            <select name="satietyLevel">
+              <% for (var satiety = 0; satiety <= 5; satiety++) { %>
+                <option value="<%= satiety %>" <%= Number(values.satietyLevel) === satiety ? 'selected' : '' %>><%= satiety %></option>
+              <% } %>
+            </select>
+          </label>
+
+          <label>
+            <span>Gia tham khao (VI)</span>
+            <input type="text" name="priceRangeVi" value="<%= values.priceRangeVi %>" />
+          </label>
+
+          <label>
+            <span>Gia tham khao (EN)</span>
+            <input type="text" name="priceRangeEn" value="<%= values.priceRangeEn %>" />
+          </label>
+        </div>
+      </section>
+
+      <section class="dish-create-card" id="step-images">
+        <div class="dish-create-card__header">
+          <div>
+            <h3>Hinh anh</h3>
+            <p>Ban co the nhap 1 anh dai dien va danh sach URL anh bo sung.</p>
+          </div>
+        </div>
+
+        <div class="dish-create-grid">
+          <label class="dish-create-field-wide">
+            <span>Anh dai dien</span>
+            <div class="dish-create-image-tools">
+              <input type="url" name="imageUrl" id="dish-image-url" value="<%= values.imageUrl %>" placeholder="https://..." />
+              <input type="file" id="dish-image-file" accept="image/png,image/jpeg,image/webp" hidden />
+              <button class="dishes-button dishes-button--soft" type="button" id="dish-upload-trigger">Chon anh tu may</button>
+            </div>
+            <small id="dish-upload-status">Ban co the dan URL hoac tai anh len Cloudinary.</small>
+          </label>
+
+          <label class="dish-create-field-wide">
+            <span>Danh sach URL anh</span>
+            <textarea name="imageUrls" rows="5" placeholder="Moi dong 1 URL"><%= values.imageUrls %></textarea>
+          </label>
+        </div>
+      </section>
+    </form>
+
+    <aside class="dish-create-side">
+      <section class="dish-create-card dish-create-card--sticky">
+        <h3>Goi y</h3>
+        <ul class="dish-create-hints">
+          <li>ID viet thuong, khong dau, khong co khoang trang.</li>
+          <li>Slug nen sinh tu ten mon de giu SEO on dinh.</li>
+          <li>Chon tinh moi de luu vao `provinceCode34`, chon tinh cu de luu legacy.</li>
+          <li>Truong co dau * la bat buoc.</li>
+        </ul>
+      </section>
+
+      <section class="dish-create-card dish-create-card--sticky">
+        <h3>Trang thai du lieu</h3>
+        <div class="dish-create-status">
+          <div>
+            <span>Thong tin bat buoc</span>
+            <strong id="dish-required-status">0/5</strong>
+          </div>
+          <div>
+            <span>Noi dung song ngu</span>
+            <strong id="dish-content-status">0/4</strong>
+          </div>
+          <div>
+            <span>Hinh anh</span>
+            <strong id="dish-image-status">0/1</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="dish-create-card dish-create-card--sticky" id="step-preview">
+        <h3>Preview nhanh</h3>
+        <div class="dish-preview">
+          <div class="dish-preview__image">
+            <img id="dish-preview-image" src="<%= values.imageUrl || '' %>" alt="" <%= values.imageUrl ? '' : 'hidden' %> />
+            <div id="dish-preview-empty" <%= values.imageUrl ? 'hidden' : '' %>>Chua co anh</div>
+          </div>
+          <div class="dish-preview__content">
+            <strong id="dish-preview-name"><%= values.nameVi || 'Ten mon se hien o day' %></strong>
+            <span id="dish-preview-name-en"><%= values.nameEn || 'English name preview' %></span>
+            <p id="dish-preview-meta"><%= values.provinceName34 || 'Chua chon tinh/thanh' %></p>
+            <code id="dish-preview-slug"><%= values.slug || 'slug-preview' %></code>
+          </div>
+        </div>
+      </section>
+    </aside>
+  </div>
+</section>
+
+<script>
+  window.__DISH_CREATE__ = {
+    provinces: <%- JSON.stringify(provinceItems) %>,
+  };
+</script>
+<script src="/public/js/modules/dishes/create.js"></script>

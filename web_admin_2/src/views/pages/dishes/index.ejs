@@ -1,10 +1,135 @@
+<link rel="stylesheet" href="/public/css/pages/dishes.css" />
+
 <%- include('../../partials/page-header', {
-  eyebrow: 'Module scaffold',
-  title: 'Mon an',
-  description: 'Module nay se uu tien toi uu query, validator va form metadata song ngu.',
+  eyebrow: 'Module món ăn',
+  title: 'Quản lý món ăn',
+  description: 'Tìm kiếm, lọc theo tỉnh thành, độ cay, sắp xếp và phân trang server-side.',
 }) %>
 
-<section class="empty-module">
-  <h3>Dishes module scaffold</h3>
-  <p>Ban moi nay se tranh viec fetch toan bo collection roi loc trong memory nhu admin cu.</p>
+<section class="dishes-page">
+  <div class="dishes-toolbar">
+    <div class="dishes-toolbar__left">
+      <label class="dishes-check">
+        <input type="checkbox" id="select-all-dishes" />
+        <span>Chọn tất cả</span>
+      </label>
+
+      <button type="button" class="dishes-button dishes-button--danger" id="btn-delete-selected-dishes" disabled>
+        Xóa đã chọn
+      </button>
+
+      <button type="button" class="dishes-button" id="btn-open-add-dish">
+        + Thêm món
+      </button>
+    </div>
+
+    <div class="dishes-toolbar__right">
+      <input id="dish-search" type="search" class="dishes-input" placeholder="Tìm theo tên hoặc slug..." />
+
+      <select id="dish-filter-province" class="dishes-input">
+        <option value="">Tất cả 34 tỉnh/thành</option>
+        <% (formData?.provinces || []).forEach(function(province) { %>
+          <option value="<%= province.code %>" <%= pagination.provinceCode34 === province.code ? 'selected' : '' %>><%= province.name %></option>
+        <% }) %>
+      </select>
+
+      <select id="dish-filter-spicy" class="dishes-input">
+        <option value="">Tất cả độ cay</option>
+        <% for (var spicy = 0; spicy <= 5; spicy++) { %>
+          <option value="<%= spicy %>" <%= String(pagination.spicyLevel) === String(spicy) ? 'selected' : '' %>><%= spicy %></option>
+        <% } %>
+      </select>
+
+      <label class="dishes-sort">
+        <span>Sắp xếp:</span>
+        <select id="dish-sort-select">
+          <option value="stt_asc" <%= pagination.sortBy === 'stt_asc' ? 'selected' : '' %>>STT tăng dần</option>
+          <option value="stt_desc" <%= pagination.sortBy === 'stt_desc' ? 'selected' : '' %>>STT giảm dần</option>
+          <option value="name_asc" <%= pagination.sortBy === 'name_asc' ? 'selected' : '' %>>Tên A-Z</option>
+          <option value="name_desc" <%= pagination.sortBy === 'name_desc' ? 'selected' : '' %>>Tên Z-A</option>
+        </select>
+      </label>
+
+      <button type="button" class="dishes-button" id="btn-export-excel">Xuất Excel</button>
+    </div>
+  </div>
+
+  <div class="dishes-table-shell">
+    <table class="dishes-table">
+      <thead>
+        <tr>
+          <th><input type="checkbox" id="select-all-dishes-table" /></th>
+          <th>STT</th>
+          <th>Ảnh</th>
+          <th>Tên món (VI)</th>
+          <th>Tên món (EN)</th>
+          <th>Tỉnh / Thành</th>
+          <th>Danh mục</th>
+          <th>Độ cay</th>
+          <th>Độ no</th>
+          <th>Giá tham khảo</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody id="dishes-table-body">
+        <% if (dishes && dishes.length) { %>
+          <% dishes.forEach(function(dish) { %>
+            <tr>
+              <td>
+                <input type="checkbox" class="dish-row-check" data-dish-id="<%= dish.id %>" />
+              </td>
+              <td><%= dish.stt %></td>
+              <td>
+                <% if (dish.imageUrl) { %>
+                  <img class="dishes-thumb" src="<%= dish.imageUrl %>" alt="" />
+                <% } else { %>
+                  <div class="dishes-thumb dishes-thumb--empty">N/A</div>
+                <% } %>
+              </td>
+              <td><%= dish.nameVi || '-' %></td>
+              <td><%= dish.nameEn || '-' %></td>
+              <td><%= dish.provinceName34 || '-' %></td>
+              <td><%= dish.categoryVi || '-' %></td>
+              <td><span class="dishes-metric">🌶 <%= dish.spicyLevel %></span></td>
+              <td><span class="dishes-metric">🍜 <%= dish.satietyLevel %></span></td>
+              <td><%= dish.priceRangeVi || '-' %></td>
+              <td>
+                <div class="dishes-actions">
+                  <button type="button" class="dishes-action" data-action="view" data-id="<%= dish.id %>">👁</button>
+                  <button type="button" class="dishes-action" data-action="edit" data-id="<%= dish.id %>">✎</button>
+                  <button type="button" class="dishes-action dishes-action--danger" data-action="delete" data-id="<%= dish.id %>">🗑</button>
+                </div>
+              </td>
+            </tr>
+          <% }) %>
+        <% } else { %>
+          <tr>
+            <td colspan="11" class="dishes-empty">Chưa có dữ liệu</td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="dishes-footer">
+    <div class="dishes-footer__info" id="dish-page-info">
+      Hiển thị trang <%= pagination.page %>/<%= pagination.totalPages %>, tổng <%= pagination.total %> món ăn trong 34 tỉnh/thành.
+    </div>
+    <nav>
+      <ul class="dishes-pagination" id="dish-page-list">
+        <% for (var page = 1; page <= pagination.totalPages; page++) { %>
+          <li class="<%= page === pagination.page ? 'is-active' : '' %>">
+    <a href="?page=<%= page %>&pageSize=<%= pagination.pageSize %>&search=<%= pagination.search || '' %>&provinceCode34=<%= pagination.provinceCode34 || '' %>&spicyLevel=<%= pagination.spicyLevel || '' %>&sortBy=<%= pagination.sortBy || 'stt_asc' %>"><%= page %></a>
+          </li>
+        <% } %>
+      </ul>
+    </nav>
+  </div>
 </section>
+
+<script>
+  window.__DISHES_INITIAL__ = {
+    pagination: <%- JSON.stringify(pagination) %>,
+  };
+</script>
+<script src="/public/js/modules/dishes/index.js"></script>
