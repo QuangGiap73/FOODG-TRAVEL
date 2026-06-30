@@ -210,7 +210,10 @@
     const action = button.dataset.action;
     const id = button.dataset.id;
 
-    if (action === 'view') alert(`Xem món: ${id}`);
+    if (action === 'view') {
+      window.location.href = `/admin/dishes/${encodeURIComponent(id)}`;
+      return;
+    }
     if (action === 'edit') alert(`Sửa món: ${id}`);
     if (action === 'delete') {
       if (window.confirm('Bạn có chắc muốn xóa món này?')) {

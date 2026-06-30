@@ -1,6 +1,7 @@
 const { asyncHandler } = require('../../core/errors/async-handler');
 const {
   getDishListPage,
+  getDishDetail,
   getDishCreateDefaults,
   exportDishesWorkbook,
   createDish,
@@ -90,6 +91,15 @@ async function getDishCreatePage(req, res) {
   });
 }
 
+async function getDishDetailPage(req, res) {
+  const dish = await getDishDetail(req.params.id);
+
+  res.render('pages/dishes/detail', {
+    pageTitle: dish.nameVi || 'Chi tiet mon an',
+    dish,
+  });
+}
+
 async function createDishPage(req, res) {
   try {
     const created = await createDish(req.body);
@@ -156,6 +166,7 @@ const uploadDishImageApi = asyncHandler(async (req, res) => {
 
 module.exports = {
   getDishesPage: asyncHandler(getDishesPage),
+  getDishDetailPage: asyncHandler(getDishDetailPage),
   getDishCreatePage: asyncHandler(getDishCreatePage),
   createDishPage: asyncHandler(createDishPage),
   getDishesApi,

@@ -3,6 +3,7 @@ const multer = require('multer');
 const { requireAdmin } = require('../../middlewares/auth.middleware');
 const {
   getDishesPage,
+  getDishDetailPage,
   getDishCreatePage,
   createDishPage,
   getDishesApi,
@@ -20,6 +21,7 @@ const upload = multer({
 router.get('/', requireAdmin, getDishesPage);
 router.get('/add', requireAdmin, getDishCreatePage);
 router.post('/add', requireAdmin, createDishPage);
+router.get('/:id', requireAdmin, getDishDetailPage);
 router.get('/api/list', requireAdmin, getDishesApi);
 router.get('/api/export', requireAdmin, exportDishesApi);
 router.post('/api/upload-image', requireAdmin, upload.single('image'), uploadDishImageApi);

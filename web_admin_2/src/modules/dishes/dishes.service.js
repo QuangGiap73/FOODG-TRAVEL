@@ -9,7 +9,7 @@ const {
   createDishInRepository,
   deleteDishFromRepository,
 } = require('./dishes.repository');
-const { toDishViewModel } = require('./dishes.mapper');
+const { toDishViewModel, toDishDetailViewModel } = require('./dishes.mapper');
 const { validateDishListQuery, validateDishCreatePayload } = require('./dishes.validator');
 
 function normalizeText(value = '') {
@@ -219,6 +219,19 @@ async function exportDishesWorkbook(filters = {}) {
   return workbook;
 }
 
+async function getDishDetail(id) {
+  if (!id) {
+    throw new AppError('Thieu ma mon', 400);
+  }
+
+  const dish = await getDishByIdFromRepository(id);
+  if (!dish) {
+    throw new AppError('Khong tim thay mon an', 404);
+  }
+
+  return toDishDetailViewModel(dish);
+}
+
 async function createDish(payload) {
   const data = validateDishCreatePayload(payload);
 
@@ -282,6 +295,7 @@ async function deleteDish(id) {
 
 module.exports = {
   getDishListPage,
+  getDishDetail,
   getDishCreateDefaults,
   exportDishesWorkbook,
   createDish,
