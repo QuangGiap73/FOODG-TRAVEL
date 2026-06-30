@@ -30,11 +30,11 @@
 
         <div class="dish-detail-meta-grid">
           <div class="dish-detail-meta-card">
-            <strong><%= dish.provinceName34 || '-' %></strong>
+            <strong title="<%= dish.provinceName34 || '-' %>"><%= dish.provinceName34 || '-' %></strong>
             <span>Tỉnh/thành hiện tại</span>
           </div>
           <div class="dish-detail-meta-card">
-            <strong><%= dish.legacyProvinceCode || '-' %></strong>
+            <strong title="<%= dish.legacyProvinceCode || '-' %>"><%= dish.legacyProvinceCode || '-' %></strong>
             <span>Nguồn gốc/tỉnh cũ</span>
           </div>
           <div class="dish-detail-meta-card">
@@ -47,21 +47,25 @@
           </div>
         </div>
 
-        <p class="dish-detail-summary" title="<%= dish.descriptionVi || 'Chưa có mô tả ngắn cho món ăn này.' %>"><%= dish.descriptionVi || 'Chưa có mô tả ngắn cho món ăn này.' %></p>
+        <div class="dish-detail-expandable" data-expandable data-lines="4">
+          <p class="dish-detail-summary" title="<%= dish.descriptionVi || 'Chưa có mô tả ngắn cho món ăn này.' %>"><%= dish.descriptionVi || 'Chưa có mô tả ngắn cho món ăn này.' %></p>
+          <button type="button" class="dish-detail-toggle" data-expand-toggle hidden>Xem thêm</button>
+        </div>
       </div>
     </article>
 
     <aside class="dish-detail-top__side">
       <section class="dish-detail-panel">
         <h3>Thông tin nhanh</h3>
-        <dl class="dish-detail-facts">
-          <div><dt>Danh mục</dt><dd title="<%= dish.categoryVi || '-' %>"><%= dish.categoryVi || '-' %></dd></div>
-          <div><dt>Thời điểm ăn</dt><dd title="<%= dish.bestTimeVi || '-' %>"><%= dish.bestTimeVi || '-' %></dd></div>
-          <div><dt>Mùa phù hợp</dt><dd title="<%= dish.bestSeasonVi || '-' %>"><%= dish.bestSeasonVi || '-' %></dd></div>
-          <div><dt>Giá (VI)</dt><dd title="<%= dish.priceRangeVi || '-' %>"><%= dish.priceRangeVi || '-' %></dd></div>
-          <div><dt>Giá (EN)</dt><dd title="<%= dish.priceRangeEn || '-' %>"><%= dish.priceRangeEn || '-' %></dd></div>
+        <dl class="dish-detail-facts" data-facts-list>
+          <div><dt>Danh mục</dt><dd class="dish-detail-fact-value" title="<%= dish.categoryVi || '-' %>"><%= dish.categoryVi || '-' %></dd></div>
+          <div><dt>Thời điểm ăn</dt><dd class="dish-detail-fact-value" title="<%= dish.bestTimeVi || '-' %>"><%= dish.bestTimeVi || '-' %></dd></div>
+          <div><dt>Mùa phù hợp</dt><dd class="dish-detail-fact-value" title="<%= dish.bestSeasonVi || '-' %>"><%= dish.bestSeasonVi || '-' %></dd></div>
+          <div><dt>Giá (VI)</dt><dd class="dish-detail-fact-value" title="<%= dish.priceRangeVi || '-' %>"><%= dish.priceRangeVi || '-' %></dd></div>
+          <div><dt>Giá (EN)</dt><dd class="dish-detail-fact-value" title="<%= dish.priceRangeEn || '-' %>"><%= dish.priceRangeEn || '-' %></dd></div>
           <div><dt>Cập nhật</dt><dd title="<%= dish.updatedAtLabel || '-' %>"><%= dish.updatedAtLabel || '-' %></dd></div>
         </dl>
+        <button type="button" class="dish-detail-toggle dish-detail-toggle--panel" data-facts-toggle hidden>Xem tất cả</button>
       </section>
     </aside>
   </div>
@@ -137,13 +141,15 @@
           <h3>Mô tả</h3>
         </div>
         <div class="dish-detail-bilingual">
-          <div>
+          <div class="dish-detail-expandable" data-expandable data-lines="5">
             <span>VI</span>
             <p><%= dish.descriptionVi || '-' %></p>
+            <button type="button" class="dish-detail-toggle" data-expand-toggle hidden>Xem thêm</button>
           </div>
-          <div>
+          <div class="dish-detail-expandable" data-expandable data-lines="5">
             <span>EN</span>
             <p><%= dish.descriptionEn || '-' %></p>
+            <button type="button" class="dish-detail-toggle" data-expand-toggle hidden>Xem thêm</button>
           </div>
         </div>
       </article>
@@ -185,7 +191,10 @@
         <div class="dish-detail-card__header">
           <h3>Câu chuyện nguồn gốc</h3>
         </div>
-        <p><%= dish.originStoryVi || '-' %></p>
+        <div class="dish-detail-expandable" data-expandable data-lines="6">
+          <p><%= dish.originStoryVi || '-' %></p>
+          <button type="button" class="dish-detail-toggle" data-expand-toggle hidden>Xem thêm</button>
+        </div>
       </article>
     </section>
 
@@ -200,16 +209,21 @@
               <div>Chưa có ảnh</div>
             <% } %>
           </div>
-          <strong><%= dish.nameVi || '-' %></strong>
+          <strong title="<%= dish.nameVi || '-' %>"><%= dish.nameVi || '-' %></strong>
           <div class="dish-detail-preview__chips">
             <span><%= dish.provinceName34 || '-' %></span>
             <span><%= dish.regionCode || '-' %></span>
           </div>
-          <p><%= dish.descriptionVi || '-' %></p>
+          <div class="dish-detail-expandable" data-expandable data-lines="4">
+            <p><%= dish.descriptionVi || '-' %></p>
+            <button type="button" class="dish-detail-toggle" data-expand-toggle hidden>Xem thêm</button>
+          </div>
           <b><%= dish.priceRangeVi || '-' %></b>
-          <small><%= dish.categoryVi || '-' %></small>
+          <small title="<%= dish.categoryVi || '-' %>"><%= dish.categoryVi || '-' %></small>
         </div>
       </section>
     </aside>
   </div>
 </section>
+
+<script src="/public/js/modules/dishes/detail.js"></script>
