@@ -6,6 +6,8 @@ const {
   getDishDetailPage,
   getDishCreatePage,
   createDishPage,
+  getDishEditPage,
+  updateDishPage,
   getDishesApi,
   exportDishesApi,
   uploadDishImageApi,
@@ -21,10 +23,12 @@ const upload = multer({
 router.get('/', requireAdmin, getDishesPage);
 router.get('/add', requireAdmin, getDishCreatePage);
 router.post('/add', requireAdmin, createDishPage);
-router.get('/:id', requireAdmin, getDishDetailPage);
 router.get('/api/list', requireAdmin, getDishesApi);
 router.get('/api/export', requireAdmin, exportDishesApi);
 router.post('/api/upload-image', requireAdmin, upload.single('image'), uploadDishImageApi);
 router.delete('/api/list/:id', requireAdmin, deleteDishApi);
+router.get('/:id/edit', requireAdmin, getDishEditPage);
+router.post('/:id/edit', requireAdmin, updateDishPage);
+router.get('/:id', requireAdmin, getDishDetailPage);
 
 module.exports = router;

@@ -3,8 +3,10 @@ const {
   getDishListPage,
   getDishDetail,
   getDishCreateDefaults,
+  getDishEditData,
   exportDishesWorkbook,
   createDish,
+  updateDish,
   uploadDishImage,
   deleteDish,
 } = require('./dishes.service');
@@ -163,12 +165,59 @@ const uploadDishImageApi = asyncHandler(async (req, res) => {
     data: uploaded,
   });
 });
+// helper render trang edit 
+async function renderEditPage(res, options = {}) {
+  const defaults = options.formValues || {};
+  const {
+    CANONICAL_PROVINCES_34,
+    LEGACY_PROVINCES_63,
+  } = require('./dishes.constants');
 
+  res.status(options.statusCode || 200).render('pages/dishes/edits', {
+    pageTitle: 'Chinh sua mon an',
+    provinces: CANONICAL_PROVINCES_34,
+    legacyProvinces: LEGACY_PROVINCES_63,
+    successMessage: options.successMessage || '',
+    errorMessage: options.errorMessage || '',
+    formValues: defaults,
+    dishId: options.dishId || '',
+  });
+}
+// get trang edit
+async function getDishEditPage(req, res) {
+  const formValues = await getDishEditData(req.params.id);
+
+  await renderEditPage(res, {
+    dishId: req.params.id,
+    formValues,
+    successMessage: req.query.updated ? 'Da cap nhat mon an thanh cong.' : '',
+  });
+}
+// post update
+async function updateDishPage(req, res) {
+  try {
+    await updateDish(req.params.id, req.body);
+
+    return res.redirect(`/admin/dishes/${encodeURIComponent(req.params.id)}/edit?updated=1`);
+  } catch (error) {
+    await renderEditPage(res, {
+      statusCode: error.statusCode || 400,
+      dishId: req.params.id,
+      errorMessage: error.message || 'Khong the cap nhat mon an',
+      formValues: {
+        ...req.body,
+        id: req.params.id,
+      },
+    });
+  }
+}
 module.exports = {
   getDishesPage: asyncHandler(getDishesPage),
   getDishDetailPage: asyncHandler(getDishDetailPage),
   getDishCreatePage: asyncHandler(getDishCreatePage),
   createDishPage: asyncHandler(createDishPage),
+  getDishEditPage: asyncHandler(getDishEditPage),
+  updateDishPage: asyncHandler(updateDishPage),
   getDishesApi,
   exportDishesApi,
   uploadDishImageApi,

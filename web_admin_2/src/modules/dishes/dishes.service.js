@@ -8,6 +8,7 @@ const {
   getNextDishSttFromRepository,
   createDishInRepository,
   deleteDishFromRepository,
+  updateDishInRepository,
 } = require('./dishes.repository');
 const { toDishViewModel, toDishDetailViewModel } = require('./dishes.mapper');
 const { validateDishListQuery, validateDishCreatePayload } = require('./dishes.validator');
@@ -292,13 +293,119 @@ async function deleteDish(id) {
   await deleteDishFromRepository(id);
   return { id };
 }
+//hàm đổ dữ liệu cũ vaog fomt edit
+function toDishFormValues(dish = {}) {
+  const name = dish.Name || {};
+  const category = dish.category || {};
+  const tags = dish.Tags || {};
+  const bestTime = dish.Best_time || {};
+  const bestSeason = dish.Best_season || {};
+  const description = dish.description || {};
+  const ingredients = dish.ingredients || {};
+  const instructions = dish.instructions || {};
+  const originStory = dish.origin_story || {};
+  const priceRange = dish.price_range || {};
 
+  return {
+    id: dish.id || '',
+    slug: dish.slug || '',
+    stt: Number(dish.STT || 0),
+    nameVi: String(name.vi || '').trim(),
+    nameEn: String(name.en || '').trim(),
+    provinceCode34: String(dish.provinceCode34 || '').trim(),
+    provinceName34: String(dish.provinceName34 || '').trim(),
+    legacyProvinceCode: String(dish.legacyProvinceCode || '').trim(),
+    provinceCode: String(dish.province_code || '').trim(),
+    regionCode:
+      typeof dish.region_code === 'object'
+        ? String(dish.region_code.vi || dish.region_code.en || '').trim()
+        : String(dish.region_code || '').trim(),
+    categoryVi: String(category.vi || '').trim(),
+    categoryEn: String(category.en || '').trim(),
+    tagsVi: String(tags.vi || '').trim(),
+    tagsEn: String(tags.en || '').trim(),
+    bestTimeVi: String(bestTime.vi || '').trim(),
+    bestTimeEn: String(bestTime.en || '').trim(),
+    bestSeasonVi: String(bestSeason.vi || '').trim(),
+    bestSeasonEn: String(bestSeason.en || '').trim(),
+    descriptionVi: String(description.vi || '').trim(),
+    descriptionEn: String(description.en || '').trim(),
+    ingredientsVi: String(ingredients.vi || '').trim(),
+    ingredientsEn: String(ingredients.en || '').trim(),
+    instructionsVi: String(instructions.vi || '').trim(),
+    instructionsEn: String(instructions.en || '').trim(),
+    originStoryVi: String(originStory.vi || '').trim(),
+    originStoryEn: String(originStory.en || '').trim(),
+    priceRangeVi: String(priceRange.vi || '').trim(),
+    priceRangeEn: String(priceRange.en || '').trim(),
+    imageUrl: String(dish.Img || '').trim(),
+    imageUrls: Array.isArray(dish.Images) ? dish.Images.join('\n') : '',
+    spicyLevel: Number(dish.spicy_level || 0),
+    satietyLevel: Number(dish.satiety_level || 0),
+  };
+}
+// hàm lấy dữ liệu cho trang edit 
+async function getDishEditData(id) {
+  if (!id) {
+    throw new AppError('Thieu ma mon', 400);
+  }
+
+  const dish = await getDishByIdFromRepository(id);
+  if (!dish) {
+    throw new AppError('Khong tim thay mon an', 404);
+  }
+
+  return toDishFormValues(dish);
+}
+// hàm update món ăn 
+async function updateDish(id, payload) {
+  if (!id) {
+    throw new AppError('Thieu ma mon', 400);
+  }
+
+  const existing = await getDishByIdFromRepository(id);
+  if (!existing) {
+    throw new AppError('Khong tim thay mon an', 404);
+  }
+
+  const data = validateDishCreatePayload(payload);
+
+  if (!data.slug) throw new AppError('Slug la truong bat buoc', 400);
+  if (!data.nameVi) throw new AppError('Ten mon tieng Viet la truong bat buoc', 400);
+  if (!data.nameEn) throw new AppError('Ten mon tieng Anh la truong bat buoc', 400);
+  if (!data.provinceCode34 || !data.provinceName34) {
+    throw new AppError('Vui long chon tinh/thanh hien tai', 400);
+  }
+
+  if (!/^[a-z0-9-]+$/.test(data.slug)) {
+    throw new AppError('Slug chi duoc gom chu thuong, so va dau gach ngang', 400);
+  }
+
+  if (data.spicyLevel < 0 || data.spicyLevel > 5) {
+    throw new AppError('Do cay phai nam trong khoang 0 den 5', 400);
+  }
+
+  if (data.satietyLevel < 0 || data.satietyLevel > 5) {
+    throw new AppError('Do no phai nam trong khoang 0 den 5', 400);
+  }
+
+  const document = buildDishDocument({
+    ...data,
+    id,
+  });
+
+  await updateDishInRepository(id, document);
+
+  return { id };
+}
 module.exports = {
   getDishListPage,
   getDishDetail,
   getDishCreateDefaults,
+  getDishEditData,
   exportDishesWorkbook,
   createDish,
+  updateDish,
   uploadDishImage,
   deleteDish,
   slugify,

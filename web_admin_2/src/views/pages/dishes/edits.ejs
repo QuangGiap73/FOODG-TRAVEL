@@ -1,0 +1,298 @@
+<link rel="stylesheet" href="/public/css/pages/dishes.css" />
+
+<%
+  const values = formValues || {};
+  const provinceItems = provinces || [];
+  const legacyProvinceItems = legacyProvinces || [];
+%>
+
+<section class="dish-create-page">
+  <div class="dish-create-head">
+    <div class="dish-create-head__title">
+      <a class="dish-create-back" href="/admin/dishes/<%= dishId %>">Quay lại chi tiết</a>
+      <div>
+        <h1>Chỉnh sửa món ăn</h1>
+        <p>Cập nhật dữ liệu món ăn theo schema Firestore hiện tại.</p>
+      </div>
+    </div>
+
+    <div class="dish-create-head__actions">
+      <a class="dishes-button" href="/admin/dishes/<%= dishId %>">Hủy</a>
+      <button class="dishes-button dishes-button--primary" type="submit" form="dish-edit-form">
+        Lưu thay đổi
+      </button>
+    </div>
+  </div>
+
+  <% if (successMessage) { %>
+    <div class="dish-create-notice dish-create-notice--success"><%= successMessage %></div>
+  <% } %>
+
+  <% if (errorMessage) { %>
+    <div class="dish-create-notice dish-create-notice--error"><%= errorMessage %></div>
+  <% } %>
+
+  <div class="dish-create-layout">
+    <form class="dish-create-form" id="dish-edit-form" method="post" action="/admin/dishes/<%= dishId %>/edit">
+      <section class="dish-create-card">
+        <div class="dish-create-card__header">
+          <div>
+            <h3>Thông tin cơ bản</h3>
+            <p>Cập nhật tên món, tỉnh thành, mô tả và các chỉ số.</p>
+          </div>
+        </div>
+
+        <div class="dish-create-grid dish-create-grid--basic">
+          <label>
+            <span>ID</span>
+            <input type="text" name="id" value="<%= values.id %>" readonly />
+            <small>ID được cố định sau khi tạo món.</small>
+          </label>
+
+          <label class="dish-create-field-group">
+            <span>Slug *</span>
+            <div class="dish-create-inline">
+              <input type="text" name="slug" id="dish-slug" value="<%= values.slug %>" required />
+              <button class="dishes-button dishes-button--soft" type="button" id="dish-generate-slug">Tự động tạo</button>
+            </div>
+          </label>
+
+          <label>
+            <span>STT</span>
+            <input type="number" name="stt" min="1" value="<%= values.stt %>" />
+          </label>
+
+          <label>
+            <span>Tên món (VI) *</span>
+            <input type="text" name="nameVi" id="dish-name-vi" value="<%= values.nameVi %>" required />
+          </label>
+
+          <label>
+            <span>Tên món (EN) *</span>
+            <input type="text" name="nameEn" value="<%= values.nameEn %>" required />
+          </label>
+
+          <label>
+            <span>Tỉnh / Thành hiện tại *</span>
+            <select name="provinceCode34" id="dish-province-code34" required>
+              <option value="">Chọn 1 tỉnh / thành</option>
+              <% provinceItems.forEach(function (province) { %>
+                <option
+                  value="<%= province.code %>"
+                  data-province-name="<%= province.name %>"
+                  data-region-code="<%= province.regionCode %>"
+                  data-primary-legacy-code="<%= province.primaryLegacyCode %>"
+                  <%= values.provinceCode34 === province.code ? 'selected' : '' %>>
+                  <%= province.name %>
+                </option>
+              <% }) %>
+            </select>
+          </label>
+
+          <label>
+            <span>Mã tỉnh/thành mới (34 tỉnh)</span>
+            <input type="text" value="<%= values.provinceCode34 %>" data-province-code-preview readonly />
+          </label>
+
+          <label>
+            <span>Tỉnh/thành cũ (63 tỉnh)</span>
+            <select name="legacyProvinceCode" id="dish-legacy-province">
+              <option value="">Chọn 1 tỉnh/thành cũ</option>
+              <% legacyProvinceItems.forEach(function (province) { %>
+                <option
+                  value="<%= province.name %>"
+                  <%= values.legacyProvinceCode === province.name ? 'selected' : '' %>>
+                  <%= province.name %>
+                </option>
+              <% }) %>
+            </select>
+          </label>
+
+          <label>
+            <span>Tỉnh lưu vào province_code</span>
+            <input type="text" name="provinceCode" id="dish-province-code" value="<%= values.provinceCode %>" readonly />
+          </label>
+
+          <label>
+            <span>Vùng lưu vào region_code</span>
+            <input type="text" name="regionCode" id="dish-region-code" value="<%= values.regionCode %>" readonly />
+          </label>
+
+          <input type="hidden" name="provinceName34" id="dish-province-name34" value="<%= values.provinceName34 %>" />
+        </div>
+      </section>
+
+      <!-- copy tiếp các section còn lại từ create.ejs:
+           - Nội dung song ngữ
+           - Phân loại, tag và chỉ số
+           - Hình ảnh
+      -->
+      <section class="dish-create-card" id="step-content">
+        <div class="dish-create-card__header">
+          <div>
+            <h3>Nội dung song ngữ</h3>
+            <p>Cập nhật mô tả, nguyên liệu, cách làm và câu chuyện nguồn gốc theo 2 ngôn ngữ.</p>
+          </div>
+        </div>
+
+        <div class="dish-create-grid dish-create-grid--content">
+          <label class="dish-create-field-wide">
+            <span>Mô tả (VI)</span>
+            <textarea name="descriptionVi" rows="4"><%= values.descriptionVi %></textarea>
+          </label>
+          <label class="dish-create-field-wide">
+            <span>Mô tả (EN)</span>
+            <textarea name="descriptionEn" rows="4"><%= values.descriptionEn %></textarea>
+          </label>
+
+          <label class="dish-create-field-wide">
+            <span>Nguyên liệu (VI)</span>
+            <textarea name="ingredientsVi" rows="5"><%= values.ingredientsVi %></textarea>
+          </label>
+          <label class="dish-create-field-wide">
+            <span>Nguyên liệu (EN)</span>
+            <textarea name="ingredientsEn" rows="5"><%= values.ingredientsEn %></textarea>
+          </label>
+
+          <label class="dish-create-field-wide">
+            <span>Hướng dẫn (VI)</span>
+            <textarea name="instructionsVi" rows="5"><%= values.instructionsVi %></textarea>
+          </label>
+          <label class="dish-create-field-wide">
+            <span>Hướng dẫn (EN)</span>
+            <textarea name="instructionsEn" rows="5"><%= values.instructionsEn %></textarea>
+          </label>
+
+          <label class="dish-create-field-wide">
+            <span>Câu chuyện nguồn gốc (VI)</span>
+            <textarea name="originStoryVi" rows="4"><%= values.originStoryVi %></textarea>
+          </label>
+          <label class="dish-create-field-wide">
+            <span>Câu chuyện nguồn gốc (EN)</span>
+            <textarea name="originStoryEn" rows="4"><%= values.originStoryEn %></textarea>
+          </label>
+        </div>
+      </section>
+
+      <section class="dish-create-card" id="step-meta">
+        <div class="dish-create-card__header">
+          <div>
+            <h3>Phân loại, tag và chỉ số</h3>
+            <p>Cập nhật danh mục, tags, thời điểm ăn, mùa phù hợp, độ cay, độ no và giá tham khảo.</p>
+          </div>
+        </div>
+
+        <div class="dish-create-grid">
+          <label>
+            <span>Danh mục (VI)</span>
+            <input type="text" name="categoryVi" value="<%= values.categoryVi %>" />
+          </label>
+          <label>
+            <span>Danh mục (EN)</span>
+            <input type="text" name="categoryEn" value="<%= values.categoryEn %>" />
+          </label>
+
+          <label>
+            <span>Tags (VI)</span>
+            <input type="text" name="tagsVi" value="<%= values.tagsVi %>" />
+          </label>
+          <label>
+            <span>Tags (EN)</span>
+            <input type="text" name="tagsEn" value="<%= values.tagsEn %>" />
+          </label>
+
+          <label class="dish-create-field-wide">
+            <span>Thời điểm ăn (VI)</span>
+            <textarea name="bestTimeVi" rows="3"><%= values.bestTimeVi %></textarea>
+          </label>
+          <label class="dish-create-field-wide">
+            <span>Thời điểm ăn (EN)</span>
+            <textarea name="bestTimeEn" rows="3"><%= values.bestTimeEn %></textarea>
+          </label>
+
+          <label class="dish-create-field-wide">
+            <span>Mùa ngon nhất (VI)</span>
+            <textarea name="bestSeasonVi" rows="3"><%= values.bestSeasonVi %></textarea>
+          </label>
+          <label class="dish-create-field-wide">
+            <span>Mùa ngon nhất (EN)</span>
+            <textarea name="bestSeasonEn" rows="3"><%= values.bestSeasonEn %></textarea>
+          </label>
+
+          <label>
+            <span>Độ cay</span>
+            <select name="spicyLevel">
+              <% for (var spicy = 0; spicy <= 5; spicy++) { %>
+                <option value="<%= spicy %>" <%= Number(values.spicyLevel) === spicy ? 'selected' : '' %>><%= spicy %></option>
+              <% } %>
+            </select>
+          </label>
+
+          <label>
+            <span>Độ no</span>
+            <select name="satietyLevel">
+              <% for (var satiety = 0; satiety <= 5; satiety++) { %>
+                <option value="<%= satiety %>" <%= Number(values.satietyLevel) === satiety ? 'selected' : '' %>><%= satiety %></option>
+              <% } %>
+            </select>
+          </label>
+
+          <label>
+            <span>Giá tham khảo (VI)</span>
+            <input type="text" name="priceRangeVi" value="<%= values.priceRangeVi %>" />
+          </label>
+
+          <label>
+            <span>Giá tham khảo (EN)</span>
+            <input type="text" name="priceRangeEn" value="<%= values.priceRangeEn %>" />
+          </label>
+        </div>
+      </section>
+
+      <section class="dish-create-card" id="step-images">
+        <div class="dish-create-card__header">
+          <div>
+            <h3>Hình ảnh</h3>
+            <p>Cập nhật URL ảnh đại diện, danh sách ảnh và cho phép chọn ảnh từ máy.</p>
+          </div>
+        </div>
+
+        <div class="dish-create-grid">
+          <label class="dish-create-field-wide">
+            <span>Ảnh đại diện</span>
+            <div class="dish-create-image-tools">
+              <input type="url" name="imageUrl" id="dish-image-url" value="<%= values.imageUrl %>" placeholder="https://..." />
+              <input type="file" id="dish-image-file" accept="image/png,image/jpeg,image/webp" hidden />
+              <button class="dishes-button dishes-button--soft" type="button" id="dish-upload-trigger">Chọn ảnh từ máy</button>
+            </div>
+            <small id="dish-upload-status">Bạn có thể dán URL hoặc tải ảnh lên Cloudinary.</small>
+          </label>
+
+          <label class="dish-create-field-wide">
+            <span>Danh sách URL ảnh</span>
+            <textarea name="imageUrls" rows="5" placeholder="Mỗi dòng 1 URL"><%= values.imageUrls %></textarea>
+          </label>
+        </div>
+      </section>
+    </form>
+
+    <aside class="dish-create-side">
+      <section class="dish-create-card dish-create-card--sticky">
+        <h3>Gợi ý</h3>
+        <ul class="dish-create-hints">
+          <li>ID không đổi sau khi tạo.</li>
+          <li>Slug nên giữ ổn định để không ảnh hưởng SEO.</li>
+          <li>Chọn tỉnh mới sẽ tự điền vùng miền và mã liên quan.</li>
+          <li>Ảnh đại diện có thể nhập URL hoặc tải từ máy.</li>
+        </ul>
+      </section>
+    </aside>
+  </div>
+</section>
+
+<script>
+  window.__DISH_CREATE__ = {
+    provinces: <%- JSON.stringify(provinceItems) %>,
+  };
+</script>
+<script src="/public/js/modules/dishes/edit.js"></script>

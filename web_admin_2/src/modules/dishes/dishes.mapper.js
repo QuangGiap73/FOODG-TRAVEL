@@ -61,11 +61,18 @@ function toDishDetailViewModel(dish) {
   const imageUrl = dish.Img || dish.img || dish.imageUrl || images[0] || '';
 
   const tagsVi = typeof tags === 'object' ? String(tags.vi || '').trim() : String(tags || '').trim();
+  const tagsEn = typeof tags === 'object' ? String(tags.en || '').trim() : '';
   const ingredientTokens = typeof ingredients === 'object'
     ? String(ingredients.vi || '').split(',').map((item) => item.trim()).filter(Boolean)
     : [];
+  const ingredientTokensEn = typeof ingredients === 'object'
+    ? String(ingredients.en || '').split(',').map((item) => item.trim()).filter(Boolean)
+    : [];
   const instructionSteps = typeof instructions === 'object'
     ? String(instructions.vi || '').split('.').map((item) => item.trim()).filter(Boolean)
+    : [];
+  const instructionStepsEn = typeof instructions === 'object'
+    ? String(instructions.en || '').split('.').map((item) => item.trim()).filter(Boolean)
     : [];
 
   return {
@@ -84,12 +91,15 @@ function toDishDetailViewModel(dish) {
     categoryVi: typeof category === 'object' ? String(category.vi || '').trim() : String(category || '').trim(),
     categoryEn: typeof category === 'object' ? String(category.en || '').trim() : '',
     tagsVi,
-    tagsEn: typeof tags === 'object' ? String(tags.en || '').trim() : '',
+    tagsEn,
     tagList: tagsVi.split(',').map((item) => item.trim()).filter(Boolean),
+    tagListEn: tagsEn.split(',').map((item) => item.trim()).filter(Boolean),
     ingredientList: ingredientTokens,
+    ingredientListEn: ingredientTokensEn,
     ingredientsVi: typeof ingredients === 'object' ? String(ingredients.vi || '').trim() : '',
     ingredientsEn: typeof ingredients === 'object' ? String(ingredients.en || '').trim() : '',
     instructionSteps: instructionSteps.length ? instructionSteps : [String(instructions.vi || '').trim()].filter(Boolean),
+    instructionStepsEn: instructionStepsEn.length ? instructionStepsEn : [String(instructions.en || '').trim()].filter(Boolean),
     instructionsVi: typeof instructions === 'object' ? String(instructions.vi || '').trim() : '',
     instructionsEn: typeof instructions === 'object' ? String(instructions.en || '').trim() : '',
     originStoryVi: typeof originStory === 'object' ? String(originStory.vi || '').trim() : '',

@@ -1,10 +1,17 @@
 <link rel="stylesheet" href="/public/css/pages/dishes.css" />
 
-<section class="dish-detail-page dish-detail-page--mockup">
-  <div class="dish-detail-breadcrumb">
-    <a href="/admin/dishes">Quản lý món ăn</a>
-    <span>/</span>
-    <strong>Chi tiết món ăn</strong>
+<section class="dish-detail-page dish-detail-page--mockup" data-dish-detail-page>
+  <div class="dish-detail-topbar">
+    <div class="dish-detail-breadcrumb">
+      <a href="/admin/dishes">Quản lý món ăn</a>
+      <span>/</span>
+      <strong>Chi tiết món ăn</strong>
+    </div>
+
+    <div class="dish-detail-language-switch" role="tablist" aria-label="Ngôn ngữ hiển thị">
+      <button type="button" class="is-active" data-lang-button="vi">VI</button>
+      <button type="button" data-lang-button="en">EN</button>
+    </div>
   </div>
 
   <div class="dish-detail-hero-row">
@@ -19,8 +26,8 @@
 
       <div class="dish-detail-hero-card__content">
         <div class="dish-detail-hero-card__title">
-          <h1 title="<%= dish.nameVi || '-' %>"><%= dish.nameVi || '-' %></h1>
-          <p title="<%= dish.nameEn || '-' %>"><%= dish.nameEn || '-' %></p>
+          <h1 data-lang-vi="<%= dish.nameVi || '-' %>" data-lang-en="<%= dish.nameEn || '-' %>" title="<%= dish.nameVi || '-' %>"><%= dish.nameVi || '-' %></h1>
+          <p data-lang-vi="<%= dish.nameEn || '-' %>" data-lang-en="<%= dish.nameEn || '-' %>" title="<%= dish.nameEn || '-' %>"><%= dish.nameEn || '-' %></p>
         </div>
 
         <div class="dish-detail-hero-card__badges">
@@ -42,13 +49,13 @@
             <span>Vùng miền</span>
           </div>
           <div class="dish-detail-mini-card dish-detail-mini-card--accent">
-            <strong title="<%= dish.categoryVi || '-' %>"><%= dish.categoryVi || '-' %></strong>
+            <strong data-lang-vi="<%= dish.categoryVi || '-' %>" data-lang-en="<%= dish.categoryEn || '-' %>" title="<%= dish.categoryVi || '-' %>"><%= dish.categoryVi || '-' %></strong>
             <span>Danh mục</span>
           </div>
         </div>
 
         <div class="dish-detail-expandable" data-expandable data-lines="3">
-          <p class="dish-detail-hero-card__summary"><%= dish.descriptionVi || 'Chưa có mô tả ngắn cho món ăn này.' %></p>
+          <p class="dish-detail-hero-card__summary" data-lang-vi="<%= dish.descriptionVi || 'Chưa có mô tả ngắn cho món ăn này.' %>" data-lang-en="<%= dish.descriptionEn || 'No short description available for this dish.' %>"><%= dish.descriptionVi || 'Chưa có mô tả ngắn cho món ăn này.' %></p>
           <button type="button" class="dish-detail-toggle" data-expand-toggle hidden>Xem thêm</button>
         </div>
       </div>
@@ -60,23 +67,23 @@
         <dl class="dish-detail-quick-list" data-facts-list>
           <div>
             <dt>Danh mục</dt>
-            <dd class="dish-detail-fact-value"><%= dish.categoryVi || '-' %></dd>
+            <dd class="dish-detail-fact-value" data-lang-vi="<%= dish.categoryVi || '-' %>" data-lang-en="<%= dish.categoryEn || '-' %>"><%= dish.categoryVi || '-' %></dd>
           </div>
           <div>
             <dt>Thời điểm ăn</dt>
-            <dd class="dish-detail-fact-value"><%= dish.bestTimeVi || '-' %></dd>
+            <dd class="dish-detail-fact-value" data-lang-vi="<%= dish.bestTimeVi || '-' %>" data-lang-en="<%= dish.bestTimeEn || '-' %>"><%= dish.bestTimeVi || '-' %></dd>
           </div>
           <div>
             <dt>Mùa phù hợp</dt>
-            <dd class="dish-detail-fact-value"><%= dish.bestSeasonVi || '-' %></dd>
+            <dd class="dish-detail-fact-value" data-lang-vi="<%= dish.bestSeasonVi || '-' %>" data-lang-en="<%= dish.bestSeasonEn || '-' %>"><%= dish.bestSeasonVi || '-' %></dd>
           </div>
           <div>
-            <dt>Giá (VI)</dt>
-            <dd class="dish-detail-fact-value"><%= dish.priceRangeVi || '-' %></dd>
+            <dt>Giá</dt>
+            <dd class="dish-detail-fact-value" data-lang-vi="<%= dish.priceRangeVi || '-' %>" data-lang-en="<%= dish.priceRangeEn || '-' %>"><%= dish.priceRangeVi || '-' %></dd>
           </div>
           <div>
-            <dt>Giá (EN)</dt>
-            <dd class="dish-detail-fact-value"><%= dish.priceRangeEn || '-' %></dd>
+            <dt>Tên món</dt>
+            <dd class="dish-detail-fact-value" data-lang-vi="<%= dish.nameVi || '-' %>" data-lang-en="<%= dish.nameEn || '-' %>"><%= dish.nameVi || '-' %></dd>
           </div>
           <div>
             <dt>Cập nhật</dt>
@@ -92,15 +99,15 @@
     <div class="dish-detail-stats-grid">
       <article class="dish-detail-summary-card">
         <span>Giá tham khảo</span>
-        <strong><%= dish.priceRangeVi || '-' %></strong>
+        <strong data-lang-vi="<%= dish.priceRangeVi || '-' %>" data-lang-en="<%= dish.priceRangeEn || '-' %>"><%= dish.priceRangeVi || '-' %></strong>
       </article>
       <article class="dish-detail-summary-card">
         <span>Thời điểm ăn ngon</span>
-        <strong><%= dish.bestTimeVi || '-' %></strong>
+        <strong data-lang-vi="<%= dish.bestTimeVi || '-' %>" data-lang-en="<%= dish.bestTimeEn || '-' %>"><%= dish.bestTimeVi || '-' %></strong>
       </article>
       <article class="dish-detail-summary-card">
         <span>Mùa phù hợp</span>
-        <strong><%= dish.bestSeasonVi || '-' %></strong>
+        <strong data-lang-vi="<%= dish.bestSeasonVi || '-' %>" data-lang-en="<%= dish.bestSeasonEn || '-' %>"><%= dish.bestSeasonVi || '-' %></strong>
       </article>
       <article class="dish-detail-summary-card">
         <span>Độ cay</span>
@@ -116,14 +123,14 @@
       </article>
     </div>
 
-    <aside class="dish-detail-side-card">
+    <aside class="dish-detail-stats-side">
       <section class="dish-detail-panel dish-detail-panel--compact">
         <h3>Trạng thái dữ liệu</h3>
         <ul class="dish-detail-status-list">
           <li class="<%= dish.nameEn && dish.descriptionEn ? 'is-ok' : 'is-warn' %>">Song ngữ đầy đủ</li>
           <li class="<%= dish.imageUrl ? 'is-ok' : 'is-warn' %>">Có ảnh đại diện</li>
-          <li class="<%= dish.tagList.length ? 'is-ok' : 'is-warn' %>">Có tags</li>
-          <li class="<%= dish.originStoryVi ? 'is-ok' : 'is-warn' %>">Có mô tả nguồn gốc</li>
+          <li class="<%= dish.tagList.length || dish.tagListEn.length ? 'is-ok' : 'is-warn' %>">Có tags</li>
+          <li class="<%= dish.originStoryVi || dish.originStoryEn ? 'is-ok' : 'is-warn' %>">Có mô tả nguồn gốc</li>
         </ul>
       </section>
     </aside>
@@ -162,12 +169,12 @@
           <div class="dish-detail-bilingual dish-detail-bilingual--compact">
             <div class="dish-detail-expandable" data-expandable data-lines="5">
               <span>VI</span>
-              <p><%= dish.descriptionVi || '-' %></p>
+              <p data-lang-vi="<%= dish.descriptionVi || '-' %>" data-lang-en="<%= dish.descriptionVi || '-' %>"><%= dish.descriptionVi || '-' %></p>
               <button type="button" class="dish-detail-toggle" data-expand-toggle hidden>Xem thêm</button>
             </div>
             <div class="dish-detail-expandable" data-expandable data-lines="5">
               <span>EN</span>
-              <p><%= dish.descriptionEn || '-' %></p>
+              <p data-lang-vi="<%= dish.descriptionEn || '-' %>" data-lang-en="<%= dish.descriptionEn || '-' %>"><%= dish.descriptionEn || '-' %></p>
               <button type="button" class="dish-detail-toggle" data-expand-toggle hidden>Xem thêm</button>
             </div>
           </div>
@@ -178,7 +185,7 @@
         <div class="dish-detail-card__header">
           <h3>Nguyên liệu</h3>
         </div>
-        <div class="dish-detail-tag-wrap">
+        <div class="dish-detail-tag-wrap dish-detail-tag-wrap--lang" data-lang-list-vi="<%- JSON.stringify(dish.ingredientList || []) %>" data-lang-list-en="<%- JSON.stringify(dish.ingredientListEn || []) %>" data-list-variant="tag">
           <% if (dish.ingredientList.length) { %>
             <% dish.ingredientList.forEach(function (item) { %>
               <span class="dish-detail-tag"><%= item %></span>
@@ -194,7 +201,7 @@
           <div class="dish-detail-card__header">
             <h3>Cách làm</h3>
           </div>
-          <div class="dish-detail-steps dish-detail-steps--compact">
+          <div class="dish-detail-steps dish-detail-steps--compact dish-detail-steps--lang" data-lang-list-vi="<%- JSON.stringify((dish.instructionSteps || []).slice(0, 6)) %>" data-lang-list-en="<%- JSON.stringify((dish.instructionStepsEn || []).slice(0, 6)) %>" data-list-variant="step">
             <% if (dish.instructionSteps.length) { %>
               <% dish.instructionSteps.slice(0, 6).forEach(function (step, index) { %>
                 <div class="dish-detail-step">
@@ -213,7 +220,7 @@
             <h3>Câu chuyện nguồn gốc</h3>
           </div>
           <div class="dish-detail-expandable" data-expandable data-lines="8">
-            <p><%= dish.originStoryVi || '-' %></p>
+            <p data-lang-vi="<%= dish.originStoryVi || '-' %>" data-lang-en="<%= dish.originStoryEn || '-' %>"><%= dish.originStoryVi || '-' %></p>
             <button type="button" class="dish-detail-toggle" data-expand-toggle hidden>Xem thêm</button>
           </div>
         </article>
@@ -231,17 +238,17 @@
               <div>Chưa có ảnh</div>
             <% } %>
           </div>
-          <strong title="<%= dish.nameVi || '-' %>"><%= dish.nameVi || '-' %></strong>
+          <strong data-lang-vi="<%= dish.nameVi || '-' %>" data-lang-en="<%= dish.nameEn || '-' %>" title="<%= dish.nameVi || '-' %>"><%= dish.nameVi || '-' %></strong>
           <div class="dish-detail-preview__chips">
             <span><%= dish.provinceName34 || '-' %></span>
             <span><%= dish.regionCode || '-' %></span>
           </div>
           <div class="dish-detail-expandable" data-expandable data-lines="4">
-            <p><%= dish.descriptionVi || '-' %></p>
+            <p data-lang-vi="<%= dish.descriptionVi || '-' %>" data-lang-en="<%= dish.descriptionEn || '-' %>"><%= dish.descriptionVi || '-' %></p>
             <button type="button" class="dish-detail-toggle" data-expand-toggle hidden>Xem thêm</button>
           </div>
-          <b><%= dish.priceRangeVi || '-' %></b>
-          <small title="<%= dish.categoryVi || '-' %>"><%= dish.categoryVi || '-' %></small>
+          <b data-lang-vi="<%= dish.priceRangeVi || '-' %>" data-lang-en="<%= dish.priceRangeEn || '-' %>"><%= dish.priceRangeVi || '-' %></b>
+          <small data-lang-vi="<%= dish.categoryVi || '-' %>" data-lang-en="<%= dish.categoryEn || '-' %>" title="<%= dish.categoryVi || '-' %>"><%= dish.categoryVi || '-' %></small>
         </div>
       </section>
     </aside>

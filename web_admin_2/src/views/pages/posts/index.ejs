@@ -1,10 +1,261 @@
+<link rel="stylesheet" href="/public/css/pages/posts.css" />
+
 <%- include('../../partials/page-header', {
-  eyebrow: 'Module scaffold',
-  title: 'Bai viet',
-  description: 'Posts se duoc tach feed moderation, media preview va soft delete thanh cac khoi ro rang.',
+  eyebrow: 'Module bài viết',
+  title: 'Quản lý bài viết',
+  description: 'Theo dõi bài viết cộng đồng, duyệt nhanh trạng thái và xử lý hàng loạt ngay tại danh sách.',
 }) %>
 
-<section class="empty-module">
-  <h3>Posts module scaffold</h3>
-  <p>Buoc sau se bo sung filter, bulk action va detail modal theo core components moi.</p>
+<section class="posts-page">
+  <div class="posts-toolbar">
+    <div class="posts-toolbar__intro">
+      <span class="posts-toolbar__eyebrow">Bộ lọc bài viết</span>
+      <h3>Danh sách bài đăng cộng đồng</h3>
+      <p>Quản lý bài viết theo tỉnh thành, loại nội dung, trạng thái duyệt và mức độ tương tác.</p>
+    </div>
+
+    <form class="posts-toolbar__filters" method="get" action="/admin/posts">
+      <input
+        type="search"
+        name="search"
+        class="posts-input"
+        placeholder="Tìm theo nội dung, tác giả, địa điểm..."
+        value="<%= pagination.search || '' %>"
+      />
+
+      <select name="provinceCode34" class="posts-input">
+        <option value="">Tất cả 34 tỉnh/thành</option>
+        <% (formData.provinces || []).forEach(function(province) { %>
+          <option
+            value="<%= province.code %>"
+            <%= pagination.provinceCode34 === province.code ? 'selected' : '' %>>
+            <%= province.name %>
+          </option>
+        <% }) %>
+      </select>
+
+      <select name="moderationStatus" class="posts-input">
+        <% (formData.moderationStatuses || []).forEach(function(item) { %>
+          <option
+            value="<%= item.value %>"
+            <%= pagination.moderationStatus === item.value ? 'selected' : '' %>>
+            <%= item.label %>
+          </option>
+        <% }) %>
+      </select>
+
+      <select name="postType" class="posts-input">
+        <% (formData.postTypes || []).forEach(function(item) { %>
+          <option
+            value="<%= item.value %>"
+            <%= pagination.postType === item.value ? 'selected' : '' %>>
+            <%= item.label %>
+          </option>
+        <% }) %>
+      </select>
+
+      <select name="mediaKind" class="posts-input">
+        <% (formData.mediaOptions || []).forEach(function(item) { %>
+          <option
+            value="<%= item.value %>"
+            <%= pagination.mediaKind === item.value ? 'selected' : '' %>>
+            <%= item.label %>
+          </option>
+        <% }) %>
+      </select>
+
+      <select name="sortBy" class="posts-input">
+        <option value="newest" <%= pagination.sortBy === 'newest' ? 'selected' : '' %>>Mới nhất</option>
+        <option value="oldest" <%= pagination.sortBy === 'oldest' ? 'selected' : '' %>>Cũ nhất</option>
+        <option value="most_liked" <%= pagination.sortBy === 'most_liked' ? 'selected' : '' %>>Nhiều like</option>
+        <option value="most_commented" <%= pagination.sortBy === 'most_commented' ? 'selected' : '' %>>Nhiều bình luận</option>
+      </select>
+
+      <button type="submit" class="posts-button posts-button--primary">Lọc dữ liệu</button>
+    </form>
+  </div>
+
+  <section class="posts-bulk-bar">
+    <div class="posts-bulk-bar__left">
+      <label class="posts-check-all">
+        <input type="checkbox" id="posts-check-all" />
+        <span>Chọn tất cả</span>
+      </label>
+
+      <span class="posts-bulk-bar__count">
+        Đã chọn <strong id="posts-selected-count">0</strong> bài viết
+      </span>
+    </div>
+
+    <div class="posts-bulk-bar__actions">
+      <button type="button" class="posts-button" data-posts-bulk-status="published" disabled>Xuất bản</button>
+      <button type="button" class="posts-button" data-posts-bulk-status="pending" disabled>Chờ duyệt</button>
+      <button type="button" class="posts-button" data-posts-bulk-status="hidden" disabled>Ẩn</button>
+      <button type="button" class="posts-button" data-posts-bulk-status="rejected" disabled>Từ chối</button>
+      <button type="button" class="posts-button posts-button--danger" data-posts-bulk-delete disabled>Xóa hàng loạt</button>
+    </div>
+  </section>
+
+  <div class="posts-table-shell" data-posts-table>
+    <table class="posts-table">
+      <thead>
+        <tr>
+          <th><input type="checkbox" id="posts-check-all-table" /></th>
+          <th>Người đăng</th>
+          <th>Nội dung bài viết</th>
+          <th>Ảnh đính kèm</th>
+          <th>Quán ăn liên quan</th>
+          <th>Trạng thái duyệt</th>
+          <th>Tương tác</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+
+      <tbody id="posts-table-body">
+        <% if (posts && posts.length) { %>
+          <% posts.forEach(function(post) { %>
+            <% 
+              const moderationStatus = post.moderationStatus || 'published';
+              const moderationLabelMap = {
+                pending: 'Chờ duyệt',
+                published: 'Đã xuất bản',
+                hidden: 'Đã ẩn',
+                rejected: 'Từ chối',
+              };
+              const moderationClassMap = {
+                pending: 'pending',
+                published: 'published',
+                hidden: 'hidden',
+                rejected: 'rejected',
+              };
+            %>
+            <tr data-post-id="<%= post.id %>" data-moderation-status="<%= moderationStatus %>">
+              <td>
+                <input type="checkbox" class="posts-row-check" value="<%= post.id %>" />
+              </td>
+
+              <td>
+                <div class="posts-author">
+                  <% if (post.authorPhoto) { %>
+                    <img class="posts-author__avatar" src="<%= post.authorPhoto %>" alt="" />
+                  <% } else { %>
+                    <div class="posts-author__avatar posts-author__avatar--empty">
+                      <%= (post.authorName || 'A').charAt(0).toUpperCase() %>
+                    </div>
+                  <% } %>
+
+                  <div>
+                    <strong><%= post.authorName || 'Ẩn danh' %></strong>
+                    <span><%= post.authorUsername || post.authorId || '-' %></span>
+                  </div>
+                </div>
+              </td>
+
+              <td>
+                <div class="posts-content-cell">
+                  <strong><%= post.title || post.excerpt || 'Bài viết không tiêu đề' %></strong>
+                  <span><%= post.excerpt || post.text || '' %></span>
+                </div>
+              </td>
+
+              <td>
+                <% if (post.coverImage) { %>
+                  <img class="posts-thumb" src="<%= post.coverImage %>" alt="" />
+                <% } else { %>
+                  <div class="posts-thumb posts-thumb--empty">No media</div>
+                <% } %>
+              </td>
+
+              <td>
+                <div class="posts-place">
+                  <strong><%= post.placeName || '-' %></strong>
+                  <span><%= post.provinceName34 || '' %></span>
+                </div>
+              </td>
+
+              <td>
+                <span class="posts-status posts-status--<%= moderationClassMap[moderationStatus] || 'published' %>" data-post-status-label>
+                  <%= moderationLabelMap[moderationStatus] || moderationStatus %>
+                </span>
+              </td>
+
+              <td>
+                <div class="posts-metrics posts-metrics--inline">
+                  <span>❤ <%= post.likeCount %></span>
+                  <span>💬 <%= post.commentCount %></span>
+                </div>
+              </td>
+
+              <td>
+                <div class="posts-actions">
+                  <button
+                    type="button"
+                    class="posts-button posts-button--ghost posts-button--small"
+                    data-action="toggle-visibility"
+                    data-id="<%= post.id %>"
+                    data-current-status="<%= moderationStatus %>">
+                    <%= moderationStatus === 'hidden' ? 'Hiện bài' : 'Ẩn bài' %>
+                  </button>
+
+                  <details class="posts-action-menu">
+                    <summary class="posts-action-menu__trigger" aria-label="Mở menu thao tác">
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                    </summary>
+
+                    <div class="posts-action-menu__dropdown">
+                      <a href="/admin/posts/<%= post.id %>" class="posts-action-item">Xem chi tiết</a>
+                      <a href="/admin/posts/<%= post.id %>/edit" class="posts-action-item">Chỉnh sửa</a>
+
+                      <button type="button" class="posts-action-item" data-action="moderate" data-id="<%= post.id %>" data-status="pending">
+                        Chuyển sang chờ duyệt
+                      </button>
+                      <button type="button" class="posts-action-item" data-action="moderate" data-id="<%= post.id %>" data-status="published">
+                        Duyệt và xuất bản
+                      </button>
+                      <button type="button" class="posts-action-item posts-action-item--warn" data-action="moderate" data-id="<%= post.id %>" data-status="hidden">
+                        Ẩn bài viết
+                      </button>
+                      <button type="button" class="posts-action-item posts-action-item--danger" data-action="moderate" data-id="<%= post.id %>" data-status="rejected">
+                        Từ chối bài viết
+                      </button>
+                      <button type="button" class="posts-action-item posts-action-item--danger" data-action="delete" data-id="<%= post.id %>">
+                        Xóa bài viết
+                      </button>
+                    </div>
+                  </details>
+                </div>
+              </td>
+            </tr>
+          <% }) %>
+        <% } else { %>
+          <tr>
+            <td colspan="8" class="posts-empty">Chưa có bài viết phù hợp bộ lọc.</td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="posts-footer">
+    <div class="posts-footer__info">
+      Hiển thị trang <%= pagination.page %>/<%= pagination.totalPages %>, tổng <%= pagination.total %> bài viết.
+    </div>
+
+    <nav>
+      <ul class="posts-pagination">
+        <% for (var page = 1; page <= pagination.totalPages; page++) { %>
+          <li class="<%= page === pagination.page ? 'is-active' : '' %>">
+            <a
+              href="?page=<%= page %>&pageSize=<%= pagination.pageSize %>&search=<%= pagination.search || '' %>&provinceCode34=<%= pagination.provinceCode34 || '' %>&moderationStatus=<%= pagination.moderationStatus || '' %>&postType=<%= pagination.postType || '' %>&mediaKind=<%= pagination.mediaKind || '' %>&sortBy=<%= pagination.sortBy || 'newest' %>">
+              <%= page %>
+            </a>
+          </li>
+        <% } %>
+      </ul>
+    </nav>
+  </div>
 </section>
+
+<script src="/public/js/modules/posts/index.js"></script>

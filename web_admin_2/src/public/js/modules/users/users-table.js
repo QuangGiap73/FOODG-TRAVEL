@@ -3,10 +3,13 @@
   const selectedCount = document.getElementById('users-selected-count');
   const bulkDeleteButton = document.querySelector('[data-users-bulk-delete]');
 
+  // Lấy toàn bộ checkbox của từng dòng người dùng trong bảng.
   function rowChecks() {
     return Array.from(document.querySelectorAll('.users-row-check'));
   }
 
+  // Cập nhật số lượng đang chọn, trạng thái nút xóa hàng loạt
+  // và trạng thái checkbox "chọn tất cả".
   function renderSelectedCount() {
     const checked = rowChecks().filter((item) => item.checked).length;
     if (selectedCount) selectedCount.textContent = String(checked);
@@ -24,6 +27,7 @@
       .filter(Boolean);
   }
 
+  // Gọi API xóa 1 hoặc nhiều người dùng.
   async function deleteUsers(ids) {
     const response = await fetch('/admin/users/api/list', {
       method: 'DELETE',
@@ -40,6 +44,7 @@
     return result;
   }
 
+  // Tick header -> tick toàn bộ dòng.
   checkAll?.addEventListener('change', () => {
     rowChecks().forEach((item) => {
       item.checked = checkAll.checked;
@@ -47,12 +52,14 @@
     renderSelectedCount();
   });
 
+  // Tick từng dòng -> cập nhật bộ đếm.
   document.addEventListener('change', (event) => {
     if (event.target.classList.contains('users-row-check')) {
       renderSelectedCount();
     }
   });
 
+  // Xóa từng người dùng ngay tại bảng.
   document.addEventListener('click', async (event) => {
     const deleteButton = event.target.closest('[data-action="delete"]');
     if (!deleteButton) return;
@@ -74,6 +81,7 @@
     }
   });
 
+  // Xóa hàng loạt theo các checkbox đã chọn.
   bulkDeleteButton?.addEventListener('click', async () => {
     const ids = selectedIds();
     if (!ids.length) {
@@ -90,6 +98,10 @@
       ids.forEach((id) => {
         document.querySelector(`tr[data-user-id="${CSS.escape(id)}"]`)?.remove();
       });
+      if (checkAll) {
+        checkAll.checked = false;
+        checkAll.indeterminate = false;
+      }
       renderSelectedCount();
     } catch (error) {
       window.alert(error.message || 'Không thể xóa người dùng');

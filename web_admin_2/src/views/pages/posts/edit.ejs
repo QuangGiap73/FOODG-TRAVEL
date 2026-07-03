@@ -1,0 +1,126 @@
+<link rel="stylesheet" href="/public/css/pages/posts.css" />
+
+<section class="post-edit-page">
+  <div class="post-detail-breadcrumb">
+    <a href="/admin/posts">Quản lý bài viết</a>
+    <span>/</span>
+    <a href="/admin/posts/<%= post.id %>">Chi tiết bài viết</a>
+    <span>/</span>
+    <span>Chỉnh sửa bài viết</span>
+  </div>
+
+  <div class="post-edit-head">
+    <div>
+      <h1>Chỉnh sửa bài viết</h1>
+      <p>Cập nhật nội dung, phân loại, hiển thị và dữ liệu media của bài viết.</p>
+    </div>
+    <div class="post-edit-head__actions">
+      <a href="/admin/posts/<%= post.id %>" class="posts-button">Hủy</a>
+      <button type="submit" class="posts-button posts-button--primary" form="post-edit-form">Lưu thay đổi</button>
+    </div>
+  </div>
+
+  <% if (errorMessage) { %>
+    <div class="post-edit-notice post-edit-notice--error"><%= errorMessage %></div>
+  <% } %>
+
+  <form id="post-edit-form" class="post-edit-layout" method="post" action="/admin/posts/<%= post.id %>/edit">
+    <section class="post-edit-card">
+      <div class="post-edit-grid">
+        <label class="post-edit-field post-edit-field--full">
+          <span>ID</span>
+          <input type="text" value="<%= post.id %>" readonly />
+        </label>
+
+        <label class="post-edit-field post-edit-field--full">
+          <span>Tiêu đề</span>
+          <input type="text" name="title" value="<%= post.title || '' %>" />
+        </label>
+
+        <label class="post-edit-field post-edit-field--full">
+          <span>Nội dung bài viết *</span>
+          <textarea name="text" rows="7"><%= post.text || '' %></textarea>
+        </label>
+
+        <label class="post-edit-field">
+          <span>Loại bài viết</span>
+          <select name="postType">
+            <option value="review" <%= post.postType === 'review' ? 'selected' : '' %>>Review</option>
+            <option value="checkin" <%= post.postType === 'checkin' ? 'selected' : '' %>>Check-in</option>
+            <option value="story" <%= post.postType === 'story' ? 'selected' : '' %>>Chia sẻ</option>
+            <option value="question" <%= post.postType === 'question' ? 'selected' : '' %>>Hỏi đáp</option>
+          </select>
+        </label>
+
+        <label class="post-edit-field">
+          <span>Hiển thị</span>
+          <select name="visibility">
+            <option value="public" <%= post.visibility === 'public' ? 'selected' : '' %>>Công khai</option>
+            <option value="private" <%= post.visibility === 'private' ? 'selected' : '' %>>Riêng tư</option>
+          </select>
+        </label>
+
+        <label class="post-edit-field">
+          <span>Kiểm duyệt</span>
+          <select name="moderationStatus">
+            <option value="published" <%= post.moderationStatus === 'published' ? 'selected' : '' %>>Đã xuất bản</option>
+            <option value="pending" <%= post.moderationStatus === 'pending' ? 'selected' : '' %>>Chờ duyệt</option>
+            <option value="hidden" <%= post.moderationStatus === 'hidden' ? 'selected' : '' %>>Đã ẩn</option>
+            <option value="flagged" <%= post.moderationStatus === 'flagged' ? 'selected' : '' %>>Bị gắn cờ</option>
+            <option value="rejected" <%= post.moderationStatus === 'rejected' ? 'selected' : '' %>>Bị từ chối</option>
+          </select>
+        </label>
+
+        <label class="post-edit-field">
+          <span>Tên quán ăn / địa điểm</span>
+          <input type="text" name="placeName" value="<%= post.placeName || '' %>" />
+        </label>
+
+        <label class="post-edit-field">
+          <span>Mã tỉnh 34</span>
+          <input type="text" name="provinceCode34" value="<%= post.provinceCode34 || '' %>" />
+        </label>
+
+        <label class="post-edit-field">
+          <span>Tên tỉnh / thành</span>
+          <input type="text" name="provinceName34" value="<%= post.provinceName34 || '' %>" />
+        </label>
+
+        <label class="post-edit-field">
+          <span>Mã vùng</span>
+          <input type="text" name="regionCode" value="<%= post.regionCode || '' %>" />
+        </label>
+
+        <label class="post-edit-field post-edit-field--full">
+          <span>Media JSON</span>
+          <textarea name="mediaJson" rows="10"><%= post.mediaJson || '[]' %></textarea>
+          <small>Mỗi media nên có dạng: { "url": "...", "type": "image" } hoặc { "url": "...", "type": "video" }</small>
+        </label>
+      </div>
+    </section>
+
+    <aside class="post-edit-side">
+      <section class="post-edit-card">
+        <h3>Xem nhanh</h3>
+        <div class="post-edit-preview">
+          <% if (post.coverImage) { %>
+            <img src="<%= post.coverImage %>" alt="" />
+          <% } else { %>
+            <div class="post-edit-preview__empty">Chưa có media</div>
+          <% } %>
+          <strong><%= post.authorName || 'Ẩn danh' %></strong>
+          <span><%= post.postType || 'story' %></span>
+        </div>
+      </section>
+
+      <section class="post-edit-card">
+        <h3>Lưu ý</h3>
+        <ul class="post-edit-hints">
+          <li>Không xóa `mediaJson` nếu bài viết đang dùng ảnh.</li>
+          <li>`type` trong media nên là `image` hoặc `video` để bộ lọc hoạt động đúng.</li>
+          <li>Khi lưu, hệ thống tự đánh dấu bài viết là đã chỉnh sửa.</li>
+        </ul>
+      </section>
+    </aside>
+  </form>
+</section>

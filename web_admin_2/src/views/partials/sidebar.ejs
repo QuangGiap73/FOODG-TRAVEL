@@ -1,3 +1,17 @@
+<%
+  function getSidebarIcon(icon) {
+    const icons = {
+      home: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>',
+      users: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9.5" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+      map: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l-6 3V6l6-3 6 3 6-3v15l-6 3-6-3z"/><path d="M9 3v15"/><path d="M15 6v15"/></svg>',
+      dish: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11h18"/><path d="M5 11a7 7 0 1 0 14 0"/><path d="M8 4v3"/><path d="M12 3v4"/><path d="M16 4v3"/></svg>',
+      post: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16l4-3h10a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>',
+    };
+
+    return icons[icon] || icons.home;
+  }
+%>
+
 <div class="sidebar-mobile-head">
   <div class="sidebar-mobile-head__label">Dieu huong</div>
   <button class="sidebar-close" type="button" aria-label="Dong menu" data-sidebar-close>×</button>
@@ -17,6 +31,7 @@
       ? currentPath === item.key
       : currentPath === item.key || currentPath.startsWith(item.key + '/'); %>
     <a class="sidebar-link <%= isActive ? 'is-active' : '' %>" href="<%= item.href %>">
+      <span class="sidebar-link__icon"><%- getSidebarIcon(item.icon) %></span>
       <span><%= item.label %></span>
     </a>
   <% }) %>

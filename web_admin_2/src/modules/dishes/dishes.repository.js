@@ -200,6 +200,18 @@ async function createDishInRepository(id, payload) {
 async function deleteDishFromRepository(id) {
   await getDb().collection(COLLECTIONS.DISHES).doc(id).delete();
 }
+// hàm cập nhật, chỉnh sửa món 
+async function updateDishInRepository(id, payload) {
+  await getDb()
+    .collection(COLLECTIONS.DISHES)
+    .doc(id)
+    .update({
+      ...payload,
+      updatedAt: getServerTimestamp(),
+    });
+
+  return { id };
+}
 
 module.exports = {
   countDishesFromRepository,
@@ -210,4 +222,5 @@ module.exports = {
   getNextDishSttFromRepository,
   createDishInRepository,
   deleteDishFromRepository,
+  updateDishInRepository,
 };

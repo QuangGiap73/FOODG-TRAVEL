@@ -75,7 +75,11 @@
         <tr>
           <td><input type="checkbox" class="dish-row-check" data-dish-id="${dish.id || ''}"></td>
           <td>${dish.stt || '-'}</td>
-          <td>${dish.imageUrl ? `<img class="dishes-thumb" src="${dish.imageUrl}" alt="">` : '<div class="dishes-thumb dishes-thumb--empty">N/A</div>'}</td>
+          <td>
+            <button type="button" class="dishes-thumb-button" data-action="view" data-id="${dish.id || ''}">
+              ${dish.imageUrl ? `<img class="dishes-thumb" src="${dish.imageUrl}" alt="">` : '<div class="dishes-thumb dishes-thumb--empty">N/A</div>'}
+            </button>
+          </td>
           <td>${dish.nameVi || '-'}</td>
           <td>${dish.nameEn || '-'}</td>
           <td>${dish.provinceName34 || '-'}</td>
@@ -214,7 +218,10 @@
       window.location.href = `/admin/dishes/${encodeURIComponent(id)}`;
       return;
     }
-    if (action === 'edit') alert(`Sửa món: ${id}`);
+    if (action === 'edit') {
+      window.location.href = `/admin/dishes/${encodeURIComponent(id)}/edit`;
+      return;
+    }
     if (action === 'delete') {
       if (window.confirm('Bạn có chắc muốn xóa món này?')) {
         fetch(`/admin/dishes/api/list/${encodeURIComponent(id)}`, { method: 'DELETE' }).then(() => fetchDishes(currentPage));
