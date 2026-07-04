@@ -139,10 +139,22 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
   }
 
   bool _matchProvince(CommunityPost p, ProvinceModel province) {
-    // Tam thoi match theo dia chi text (muon chinh xac can luu provinceId)
+    // Ưu tiên match bằng field chuẩn admin/app đã lưu chung.
+    final postProvinceCode = (p.provinceCode34 ?? '').toLowerCase();
+    final postProvinceName = (p.provinceName34 ?? '').toLowerCase();
+    final provinceCode = province.code.toLowerCase();
+    final provinceName = province.name.toLowerCase();
+
+    if (postProvinceCode.isNotEmpty && postProvinceCode == provinceCode) {
+      return true;
+    }
+    if (postProvinceName.isNotEmpty && postProvinceName == provinceName) {
+      return true;
+    }
+
+    // Fallback cho dữ liệu cũ chưa có provinceCode34/provinceName34.
     final address = p.place?.address.toLowerCase() ?? '';
-    final name = province.name.toLowerCase();
-    if (address.contains(name)) return true;
+    if (address.contains(provinceName)) return true;
     final slug = province.slug?.toLowerCase();
     if (slug != null && slug.isNotEmpty && address.contains(slug)) return true;
     return false;

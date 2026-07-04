@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
@@ -10,8 +10,10 @@ import 'package:food_travel/l10n/app_localizations.dart';
 import '../../cloudinary_config.dart';
 import '../../models/community/community_post.dart';
 import '../../models/places_model.dart';
+import '../../models/province_model.dart';
 import '../../services/cloudinary_service.dart';
 import '../../services/community/community_service.dart';
+import '../../services/food_service.dart';
 import '../../services/location_service.dart';
 import '../../services/map/serpapi_places_service.dart';
 
@@ -49,6 +51,10 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
   PlaceSnapshot? _place;
   String? _placeId;
   String? _placeSource;
+  // 3 field chuáº©n Ä‘á»ƒ Ä‘á»“ng bá»™ vá»›i admin khi lÆ°u bÃ i viáº¿t.
+  String? _provinceCode34;
+  String? _provinceName34;
+  String? _regionCode;
 
   static const int _maxPhotos = 4;
 
@@ -62,6 +68,9 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
       _place = widget.post!.place;
       _placeId = widget.post!.placeId;
       _placeSource = widget.post!.placeSource;
+      _provinceCode34 = widget.post!.provinceCode34;
+      _provinceName34 = widget.post!.provinceName34;
+      _regionCode = widget.post!.regionCode;
       _existingMedia.addAll(widget.post!.media);
     } else if (widget.initialText?.trim().isNotEmpty == true) {
       _textController.text = widget.initialText!.trim();
@@ -180,6 +189,11 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
       _place = result.place;
       _placeId = result.placeId;
       _placeSource = result.source;
+      // Khi chá»n Ä‘á»‹a Ä‘iá»ƒm, gÃ¡n luÃ´n tá»‰nh/vÃ¹ng chuáº©n Ä‘á»ƒ lÃºc submit
+      // bÃ i viáº¿t cÃ³ sáºµn provinceCode34/provinceName34/regionCode.
+      _provinceCode34 = result.provinceCode34;
+      _provinceName34 = result.provinceName34;
+      _regionCode = result.regionCode;
     });
   }
 
@@ -220,6 +234,12 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
           place: _place,
           placeId: _placeId,
           placeSource: _placeSource,
+          // 3 field này được picker tự gán từ địa chỉ/tên tỉnh khớp nhất.
+          provinceCode34: _provinceCode34,
+          provinceName34: _provinceName34,
+          regionCode: _regionCode,
+          // Khi sheet chá»n Ä‘á»‹a Ä‘iá»ƒm tráº£ vá» Ä‘Æ°á»£c tá»‰nh/vÃ¹ng chuáº©n,
+          // truyá»n thÃªm provinceCode34/provinceName34/regionCode vÃ o Ä‘Ã¢y.
           media: mergedMedia,
         );
 
@@ -251,6 +271,12 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
         place: _place,
         placeId: _placeId,
         placeSource: _placeSource,
+        // 3 field này được picker tự gán từ địa chỉ/tên tỉnh khớp nhất.
+        provinceCode34: _provinceCode34,
+        provinceName34: _provinceName34,
+        regionCode: _regionCode,
+        // Khi picker Ä‘á»‹a Ä‘iá»ƒm Ä‘Ã£ map chuáº©n theo 34 tá»‰nh,
+        // truyá»n thÃªm provinceCode34/provinceName34/regionCode táº¡i Ä‘Ã¢y.
       );
 
       if (!mounted) return;
@@ -319,7 +345,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
           ),
         ),
         title: Text(
-          isEdit ? t.postEditTitle : 'Tạo bài viết',
+          isEdit ? t.postEditTitle : 'Táº¡o bÃ i viáº¿t',
           style: TextStyle(
             fontWeight: FontWeight.w900,
             fontSize: 20,
@@ -354,7 +380,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
                       ),
                     )
                   : const Text(
-                      'Đăng',
+                      'ÄÄƒng',
                       style: TextStyle(fontWeight: FontWeight.w800),
                     ),
             ),
@@ -400,7 +426,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
               const SizedBox(height: 22),
               _SectionTitle(
                 icon: Icons.image_outlined,
-                title: 'Thêm hình ảnh',
+                title: 'ThÃªm hÃ¬nh áº£nh',
                 color: primaryText,
                 accent: accent,
               ),
@@ -417,7 +443,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
               const SizedBox(height: 22),
               _SectionTitle(
                 icon: Icons.place_rounded,
-                title: 'Gắn địa điểm',
+                title: 'Gáº¯n Ä‘á»‹a Ä‘iá»ƒm',
                 color: primaryText,
                 accent: accent,
               ),
@@ -430,6 +456,9 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
                   _place = null;
                   _placeId = null;
                   _placeSource = null;
+                  _provinceCode34 = null;
+                  _provinceName34 = null;
+                  _regionCode = null;
                 }),
               ),
             ],
@@ -443,12 +472,12 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
     if (place == null || _userLat == null || _userLng == null) return '';
     final d = _distanceKm(_userLat!, _userLng!, place.lat, place.lng);
     if (d < 0.1) {
-      return 'Gần bạn (${(d * 1000).round()}m)';
+      return 'Gáº§n báº¡n (${(d * 1000).round()}m)';
     }
     if (d < 1) {
-      return 'Gần bạn (${(d * 1000).round()}m)';
+      return 'Gáº§n báº¡n (${(d * 1000).round()}m)';
     }
-    return 'Gần bạn (${d.toStringAsFixed(1)}km)';
+    return 'Gáº§n báº¡n (${d.toStringAsFixed(1)}km)';
   }
 
   double _distanceKm(double lat1, double lng1, double lat2, double lng2) {
@@ -531,7 +560,7 @@ class _ModeSelector extends StatelessWidget {
           Expanded(
             child: _ComposerModeTab(
               icon: Icons.image_outlined,
-              label: 'Đăng ảnh',
+              label: 'ÄÄƒng áº£nh',
               selected: selectedMode == 0,
               accent: accent,
               onTap: () => onChanged(0),
@@ -760,7 +789,7 @@ class _ComposerInputCard extends StatelessWidget {
                               borderRadius: BorderRadius.circular(999),
                             ),
                             child: const Text(
-                              '🏅 Explorer Lv.5',
+                              'ðŸ… Explorer Lv.5',
                               style: TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.w800,
@@ -797,7 +826,7 @@ class _ComposerInputCard extends StatelessWidget {
                         height: 1.38,
                       ),
                       decoration: InputDecoration(
-                        hintText: 'Bạn vừa ăn món gì ngon?',
+                        hintText: 'Báº¡n vá»«a Äƒn mÃ³n gÃ¬ ngon?',
                         hintStyle: TextStyle(color: hintText),
                         border: InputBorder.none,
                         counterText: '',
@@ -996,7 +1025,7 @@ class _AddPhotoTile extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                'Thêm ảnh món ăn\nhoặc quán',
+                'ThÃªm áº£nh mÃ³n Äƒn\nhoáº·c quÃ¡n',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: isDark ? Colors.white70 : const Color(0xFF64748B),
@@ -1159,7 +1188,7 @@ class _PlaceSelector extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Chọn quán ăn hoặc địa điểm',
+                      'Chá»n quÃ¡n Äƒn hoáº·c Ä‘á»‹a Ä‘iá»ƒm',
                       style: TextStyle(
                         fontWeight: FontWeight.w900,
                         color: textColor,
@@ -1313,11 +1342,17 @@ class _PlacePickResult {
     required this.place,
     required this.placeId,
     required this.source,
+    this.provinceCode34,
+    this.provinceName34,
+    this.regionCode,
   });
 
   final PlaceSnapshot place;
   final String placeId;
   final String source; // serpapi
+  final String? provinceCode34;
+  final String? provinceName34;
+  final String? regionCode;
 }
 
 class _PlaceSearchSheet extends StatefulWidget {
@@ -1331,10 +1366,12 @@ class _PlaceSearchSheetState extends State<_PlaceSearchSheet> {
   final _textController = TextEditingController();
   final _serpService = SerpApiPlacesService();
   final _locationService = LocationService();
+  final _foodService = FoodService();
 
   Timer? _debounce;
   String _query = '';
   List<GoongNearbyPlace> _results = [];
+  List<ProvinceModel> _provinces = const [];
   bool _loading = false;
   double? _userLat;
   double? _userLng;
@@ -1344,6 +1381,7 @@ class _PlaceSearchSheetState extends State<_PlaceSearchSheet> {
   void initState() {
     super.initState();
     _resolveLocation();
+    _loadProvinces();
   }
 
   @override
@@ -1364,6 +1402,71 @@ class _PlaceSearchSheetState extends State<_PlaceSearchSheet> {
       _userLat = pos.latitude;
       _userLng = pos.longitude;
     }
+  }
+
+  Future<void> _loadProvinces() async {
+    try {
+      // Đọc 1 lần danh sách 34 tỉnh/thành để dùng cho việc map địa điểm -> tỉnh.
+      final provinces = await _foodService.watchProvinces().first;
+      if (!mounted) return;
+      setState(() {
+        _provinces = provinces;
+      });
+    } catch (_) {
+      // Không chặn flow chọn địa điểm nếu tải tỉnh thất bại.
+    }
+  }
+
+  ProvinceModel? _matchProvinceFromPlace(GoongNearbyPlace place) {
+    if (_provinces.isEmpty) return null;
+
+    // Ghép cả tên + địa chỉ để tăng khả năng match.
+    final haystack = _normalize('${place.name} ${place.address}');
+    if (haystack.isEmpty) return null;
+
+    ProvinceModel? bestMatch;
+    var bestScore = 0;
+
+    for (final province in _provinces) {
+      final score = _scoreProvinceMatch(province, haystack);
+      if (score > bestScore) {
+        bestScore = score;
+        bestMatch = province;
+      }
+    }
+
+    // Chỉ nhận match khi điểm đủ chắc chắn, tránh gán nhầm tỉnh.
+    return bestScore >= 60 ? bestMatch : null;
+  }
+
+  int _scoreProvinceMatch(ProvinceModel province, String haystack) {
+    final code = _normalize(province.code);
+    final name = _normalize(province.name);
+    final slug = _normalize(province.slug ?? '');
+
+    var score = 0;
+    if (name.isNotEmpty && haystack.contains(name)) score += 100;
+    if (slug.isNotEmpty && haystack.contains(slug)) score += 90;
+    if (code.isNotEmpty && haystack.contains(code)) score += 80;
+
+    return score;
+  }
+
+  String _normalize(String input) {
+    const from =
+        'àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ';
+    const to =
+        'aaaaaaaaaaaaaaaaaeeeeeeeeeeeiiiiiooooooooooooooooouuuuuuuuuuuyyyyyd';
+    final lower = input.toLowerCase();
+    final buffer = StringBuffer();
+    for (final char in lower.split('')) {
+      final index = from.indexOf(char);
+      buffer.write(index == -1 ? char : to[index]);
+    }
+    return buffer
+        .toString()
+        .replaceAll(RegExp(r'[^a-z0-9]+'), ' ')
+        .trim();
   }
 
   void _onQueryChanged(String value) {
@@ -1419,6 +1522,7 @@ class _PlaceSearchSheetState extends State<_PlaceSearchSheet> {
 
   void _selectPlace(GoongNearbyPlace place) {
     final placeId = _buildPlaceIdFromSerp(place);
+    final province = _matchProvinceFromPlace(place);
     final snap = PlaceSnapshot(
       name: place.name,
       address: place.address,
@@ -1428,7 +1532,14 @@ class _PlaceSearchSheetState extends State<_PlaceSearchSheet> {
     );
     Navigator.pop(
       context,
-      _PlacePickResult(place: snap, placeId: placeId, source: 'serpapi'),
+      _PlacePickResult(
+        place: snap,
+        placeId: placeId,
+        source: 'serpapi',
+        provinceCode34: province?.code,
+        provinceName34: province?.name,
+        regionCode: province?.regionCode,
+      ),
     );
   }
 

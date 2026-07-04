@@ -22,8 +22,8 @@ class CommunityService {
         .snapshots()
         .map((snap) {
           final list = snap.docs.map((d) => CommunityPost.fromDoc(d)).toList();
-          // Loc bai da bi xoa mem (status = deleted)
-          return list.where((p) => p.status != 'deleted').toList();
+          // Feed công khai chỉ hiện bài còn active và đã được admin xuất bản.
+          return list.where((p) => p.isPublished).toList();
         });
   }
 
@@ -65,6 +65,9 @@ class CommunityService {
     PlaceSnapshot? place,
     String? placeId,
     String? placeSource,
+    String? provinceCode34,
+    String? provinceName34,
+    String? regionCode,
   }) async {
     final user = _auth.currentUser;
     if (user == null) {
@@ -92,9 +95,16 @@ class CommunityService {
       'placeId': placeId,
       'placeSnapshot': place?.toMap(),
       'placeSource': placeSource,
+      // Lưu sẵn thông tin tỉnh/vùng để app filter đúng
+      // và admin không phải suy ra từ address text.
+      'provinceCode34': provinceCode34,
+      'provinceName34': provinceName34,
+      'regionCode': regionCode,
       'likeCount': 0,
       'commentCount': 0,
       'status': 'active', // Tao moi luon active
+      // Bài mới tạo sẽ chờ admin duyệt trước khi xuất hiện ở feed công khai.
+      'moderationStatus': 'pending',
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
     };
@@ -111,6 +121,9 @@ class CommunityService {
     String? placeId,
     String? placeSource,
     List<PostMedia>? media,
+    String? provinceCode34,
+    String? provinceName34,
+    String? regionCode,
   }) async {
     final trimmed = text.trim();
     final data = <String, dynamic>{
@@ -128,11 +141,18 @@ class CommunityService {
       data['placeId'] = FieldValue.delete();
       data['placeSnapshot'] = FieldValue.delete();
       data['placeSource'] = FieldValue.delete();
+      data['provinceCode34'] = FieldValue.delete();
+      data['provinceName34'] = FieldValue.delete();
+      data['regionCode'] = FieldValue.delete();
     } else {
       // Cap nhat dia diem moi
       data['placeId'] = placeId;
       data['placeSnapshot'] = place.toMap();
       data['placeSource'] = placeSource;
+      // Nếu màn chọn địa điểm đã biết tỉnh/vùng thì lưu luôn vào post.
+      data['provinceCode34'] = provinceCode34;
+      data['provinceName34'] = provinceName34;
+      data['regionCode'] = regionCode;
     }
 
     await _posts.doc(postId).set(data, SetOptions(merge: true));

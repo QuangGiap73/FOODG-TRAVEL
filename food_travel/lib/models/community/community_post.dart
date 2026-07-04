@@ -85,10 +85,15 @@ class CommunityPost {
     this.placeId,
     this.place,
     this.placeSource,
+    this.provinceCode34,
+    this.provinceName34,
+    this.regionCode,
     this.status = 'active', // Trang thai bai viet (default active)
+    this.moderationStatus = 'published', // pending | published | hidden | rejected
     required this.likeCount,
     required this.commentCount,
     required this.createdAt,
+    this.updatedAt,
   });
 
   final String id;
@@ -100,10 +105,20 @@ class CommunityPost {
   final String? placeId;
   final PlaceSnapshot? place;
   final String? placeSource; // serpapi
+  // 3 field này giúp app và admin lọc đúng theo bộ 34 tỉnh/thành mới.
+  final String? provinceCode34;
+  final String? provinceName34;
+  final String? regionCode;
   final String status; // active | deleted
+  final String moderationStatus; // pending | published | hidden | rejected
   final int likeCount;
   final int commentCount;
   final Timestamp? createdAt;
+  final Timestamp? updatedAt;
+
+  // Dùng để kiểm tra bài viết có được hiển thị ra feed công khai hay không.
+  bool get isPublished =>
+      status == 'active' && moderationStatus.toLowerCase() == 'published';
 
   factory CommunityPost.fromDoc(DocumentSnapshot doc) {
     final data = (doc.data() as Map<String, dynamic>? ?? {});
@@ -133,11 +148,17 @@ class CommunityPost {
       placeId: data['placeId']?.toString(),
       place: place,
       placeSource: data['placeSource']?.toString(),
+      provinceCode34: data['provinceCode34']?.toString(),
+      provinceName34: data['provinceName34']?.toString(),
+      regionCode: data['regionCode']?.toString(),
       status: (data['status'] ?? 'active').toString(),
+      moderationStatus: (data['moderationStatus'] ?? 'published').toString(),
       likeCount: _toInt(data['likeCount']),
       commentCount: _toInt(data['commentCount']),
       createdAt:
           data['createdAt'] is Timestamp ? data['createdAt'] as Timestamp : null,
+      updatedAt:
+          data['updatedAt'] is Timestamp ? data['updatedAt'] as Timestamp : null,
     );
   }
 

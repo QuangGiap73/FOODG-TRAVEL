@@ -29,11 +29,11 @@ class _CommunityMyPostsPageState extends State<CommunityMyPostsPage> {
   }
 
   Future<void> _openCreatePost() async {
-    // Mo trang tao bai viet moi
     final result = await Navigator.of(context).push<String>(
       MaterialPageRoute(builder: (_) => const CommunityCreatePostPage()),
     );
     if (!mounted) return;
+
     final t = AppLocalizations.of(context)!;
     if (result == CommunityCreatePostPage.resultCreated) {
       await showAppNoticeDialog(
@@ -65,11 +65,11 @@ class _CommunityMyPostsPageState extends State<CommunityMyPostsPage> {
   }
 
   Future<void> _openEdit(CommunityPost post) async {
-    // Mo trang sua bai viet
     final result = await Navigator.of(context).push<String>(
       MaterialPageRoute(builder: (_) => CommunityCreatePostPage(post: post)),
     );
     if (!mounted) return;
+
     final t = AppLocalizations.of(context)!;
     if (result == CommunityCreatePostPage.resultUpdated) {
       await showAppNoticeDialog(
@@ -110,8 +110,8 @@ class _CommunityMyPostsPageState extends State<CommunityMyPostsPage> {
       ),
       barrierDismissible: false,
     );
+
     if (ok == true) {
-      // Xoa mem (khong mat du lieu)
       await _service.softDeletePost(post.id);
       if (!mounted) return;
       await showAppNoticeDialog(
@@ -129,16 +129,46 @@ class _CommunityMyPostsPageState extends State<CommunityMyPostsPage> {
     }
   }
 
+  List<CommunityPost> _applyFilters(List<CommunityPost> posts) {
+    final filtered = posts.where((post) {
+      if (_searchQuery.isEmpty) return true;
+
+      final haystack = [
+        post.text,
+        post.place?.name ?? '',
+        post.place?.address ?? '',
+        post.provinceName34 ?? '',
+        post.provinceCode34 ?? '',
+        post.regionCode ?? '',
+      ].join(' ').toLowerCase();
+
+      return haystack.contains(_searchQuery);
+    }).toList();
+
+    return filtered.where((post) {
+      final status = post.moderationStatus.toLowerCase();
+      switch (_selectedFilter) {
+        case _PostFilter.all:
+          return true;
+        case _PostFilter.published:
+          return status == 'published';
+        case _PostFilter.pending:
+          return status == 'pending';
+        case _PostFilter.hidden:
+          return status == 'hidden' || status == 'rejected';
+      }
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final bg = isDark ? const Color(0xFF0F1115) : const Color(0xFFF8FAFC);
-    final textPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
     final textSecondary = isDark ? Colors.white70 : const Color(0xFF64748B);
-
     final user = FirebaseAuth.instance.currentUser;
+
     if (user == null) {
       return Scaffold(
         backgroundColor: bg,
@@ -167,11 +197,7 @@ class _CommunityMyPostsPageState extends State<CommunityMyPostsPage> {
           t.communityMyPostsTitle,
           style: const TextStyle(fontWeight: FontWeight.w700),
         ),
-        actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.search_rounded)),
-        ],
       ),
-
       body: StreamBuilder<List<CommunityPost>>(
         stream: _service.watchMyPosts(user.uid),
         builder: (context, snapshot) {
@@ -203,11 +229,7 @@ class _CommunityMyPostsPageState extends State<CommunityMyPostsPage> {
               ListView(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
                 children: [
-                  _PostOverviewCard(
-                    totalCount: summary.total,
-                    publishedCount: summary.published,
-                    approvedCount: summary.approved,
-                  ),
+                  _PostOverviewCard(summary: summary),
                   const SizedBox(height: 16),
                   _PostsSearchBar(
                     controller: _searchController,
@@ -218,7 +240,6 @@ class _CommunityMyPostsPageState extends State<CommunityMyPostsPage> {
                   const SizedBox(height: 14),
                   _PostFilterRow(
                     selectedFilter: _selectedFilter,
-                    counts: summary,
                     onSelected: (filter) {
                       setState(() => _selectedFilter = filter);
                     },
@@ -229,7 +250,7 @@ class _CommunityMyPostsPageState extends State<CommunityMyPostsPage> {
                       padding: const EdgeInsets.symmetric(vertical: 48),
                       child: Center(
                         child: Text(
-                          'KhÃ´ng cÃ³ bÃ i viáº¿t phÃ¹ há»£p',
+                          'Không có bài viết phù hợp',
                           style: TextStyle(color: textSecondary),
                         ),
                       ),
@@ -240,8 +261,6 @@ class _CommunityMyPostsPageState extends State<CommunityMyPostsPage> {
                         padding: const EdgeInsets.only(bottom: 14),
                         child: _MyPostCard(
                           post: post,
-                          textPrimary: textPrimary,
-                          textSecondary: textSecondary,
                           onTap: () => _openDetail(post),
                           onEdit: () => _openEdit(post),
                           onDelete: () => _deletePost(post),
@@ -266,35 +285,6 @@ class _CommunityMyPostsPageState extends State<CommunityMyPostsPage> {
         },
       ),
     );
-  }
-
-  List<CommunityPost> _applyFilters(List<CommunityPost> posts) {
-    final filtered =
-        posts.where((post) {
-          if (_searchQuery.isEmpty) return true;
-          final haystacks =
-              [
-                post.text,
-                post.place?.name ?? '',
-                post.place?.address ?? '',
-              ].join(' ').toLowerCase();
-          return haystacks.contains(_searchQuery);
-        }).toList();
-
-    return filtered.where((post) {
-      switch (_selectedFilter) {
-        case _PostFilter.all:
-          return true;
-        case _PostFilter.published:
-          return true;
-        case _PostFilter.draft:
-          return false;
-        case _PostFilter.pending:
-          return false;
-        case _PostFilter.hidden:
-          return false;
-      }
-    }).toList();
   }
 }
 
@@ -364,52 +354,88 @@ class _MyPostsEmptyState extends StatelessWidget {
   }
 }
 
-enum _PostFilter { all, published, draft, pending, hidden }
+enum _PostFilter { all, published, pending, hidden }
+
+class _ModerationBadgeData {
+  const _ModerationBadgeData({
+    required this.label,
+    required this.backgroundColor,
+    required this.textColor,
+  });
+
+  final String label;
+  final Color backgroundColor;
+  final Color textColor;
+}
+
+// Gom cấu hình badge vào 1 chỗ để card bài viết chỉ việc đọc ra và render.
+_ModerationBadgeData _badgeForStatus(String moderationStatus) {
+  switch (moderationStatus.toLowerCase()) {
+    case 'pending':
+      return const _ModerationBadgeData(
+        label: 'Chờ duyệt',
+        backgroundColor: Color(0xFFFFF4DE),
+        textColor: Color(0xFFD97706),
+      );
+    case 'hidden':
+      return const _ModerationBadgeData(
+        label: 'Đã ẩn',
+        backgroundColor: Color(0xFFEFF3F8),
+        textColor: Color(0xFF475569),
+      );
+    case 'rejected':
+      return const _ModerationBadgeData(
+        label: 'Từ chối',
+        backgroundColor: Color(0xFFFEECEC),
+        textColor: Color(0xFFDC2626),
+      );
+    case 'published':
+    default:
+      return const _ModerationBadgeData(
+        label: 'Đã xuất bản',
+        backgroundColor: Color(0xFFEAF8ED),
+        textColor: Color(0xFF16A34A),
+      );
+  }
+}
 
 class _PostSummary {
   const _PostSummary({
     required this.total,
     required this.published,
-    required this.approved,
+    required this.pending,
+    required this.hidden,
   });
 
   final int total;
   final int published;
-  final int approved;
+  final int pending;
+  final int hidden;
 
+  // Tính summary theo moderationStatus thay vì suy ra từ lượt like/comment.
   factory _PostSummary.fromPosts(List<CommunityPost> posts) {
     final total = posts.length;
-    final published = posts.length;
-    final approved = posts.where((post) => post.likeCount > 0).length;
-    return _PostSummary(total: total, published: published, approved: approved);
-  }
-
-  int countFor(_PostFilter filter) {
-    switch (filter) {
-      case _PostFilter.all:
-        return total;
-      case _PostFilter.published:
-        return published;
-      case _PostFilter.draft:
-        return 0;
-      case _PostFilter.pending:
-        return approved;
-      case _PostFilter.hidden:
-        return 0;
-    }
+    final published =
+        posts.where((post) => post.moderationStatus.toLowerCase() == 'published').length;
+    final pending =
+        posts.where((post) => post.moderationStatus.toLowerCase() == 'pending').length;
+    final hidden = posts.where((post) {
+      final status = post.moderationStatus.toLowerCase();
+      return status == 'hidden' || status == 'rejected';
+    }).length;
+    return _PostSummary(
+      total: total,
+      published: published,
+      pending: pending,
+      hidden: hidden,
+    );
   }
 }
 
 class _PostOverviewCard extends StatelessWidget {
-  const _PostOverviewCard({
-    required this.totalCount,
-    required this.publishedCount,
-    required this.approvedCount,
-  });
+  const _PostOverviewCard({required this.summary});
 
-  final int totalCount;
-  final int publishedCount;
-  final int approvedCount;
+  final _PostSummary summary;
 
   @override
   Widget build(BuildContext context) {
@@ -437,7 +463,7 @@ class _PostOverviewCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'TÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¢ng quan bÃƒÆ’Ã‚Â i viÃƒÂ¡Ã‚ÂºÃ‚Â¿t',
+                  'Tổng quan bài viết',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w800,
@@ -450,22 +476,22 @@ class _PostOverviewCard extends StatelessWidget {
                     Expanded(
                       child: _OverviewMetric(
                         icon: Icons.article_outlined,
-                        value: '$totalCount',
-                        label: 'TÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¢ng bÃƒÆ’Ã‚Â i viÃƒÂ¡Ã‚ÂºÃ‚Â¿t',
+                        value: '${summary.total}',
+                        label: 'Tổng bài viết',
                       ),
                     ),
                     Expanded(
                       child: _OverviewMetric(
                         icon: Icons.check_circle_outline_rounded,
-                        value: '$publishedCount',
-                        label: 'Ãƒâ€žÃ‚ÂÃƒÆ’Ã‚Â£ Ãƒâ€žÃ¢â‚¬ËœÃƒâ€žÃ†â€™ng',
+                        value: '${summary.published}',
+                        label: 'Đã xuất bản',
                       ),
                     ),
                     Expanded(
                       child: _OverviewMetric(
                         icon: Icons.timelapse_rounded,
-                        value: '$approvedCount',
-                        label: 'ChÃƒÂ¡Ã‚Â»Ã‚Â duyÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡t',
+                        value: '${summary.pending}',
+                        label: 'Chờ duyệt',
                       ),
                     ),
                   ],
@@ -513,7 +539,7 @@ class _OverviewMetric extends StatelessWidget {
             color: Color(0xFFFFF4DE),
             shape: BoxShape.circle,
           ),
-          child: Icon(icon, size: 18, color: Color(0xFFFF7A00)),
+          child: Icon(icon, size: 18, color: const Color(0xFFFF7A00)),
         ),
         const SizedBox(height: 8),
         Text(
@@ -555,8 +581,7 @@ class _PostsSearchBar extends StatelessWidget {
             controller: controller,
             onChanged: onChanged,
             decoration: InputDecoration(
-              hintText:
-                  'TÃƒÆ’Ã‚Â¬m bÃƒÆ’Ã‚Â i viÃƒÂ¡Ã‚ÂºÃ‚Â¿t cÃƒÂ¡Ã‚Â»Ã‚Â§a bÃƒÂ¡Ã‚ÂºÃ‚Â¡n...',
+              hintText: 'Tìm bài viết của bạn...',
               prefixIcon: const Icon(Icons.search_rounded),
               filled: true,
               fillColor: Colors.white,
@@ -595,22 +620,19 @@ class _PostsSearchBar extends StatelessWidget {
 class _PostFilterRow extends StatelessWidget {
   const _PostFilterRow({
     required this.selectedFilter,
-    required this.counts,
     required this.onSelected,
   });
 
   final _PostFilter selectedFilter;
-  final _PostSummary counts;
   final ValueChanged<_PostFilter> onSelected;
 
   @override
   Widget build(BuildContext context) {
     const filters = [
-      (_PostFilter.all, 'TÃƒÂ¡Ã‚ÂºÃ‚Â¥t cÃƒÂ¡Ã‚ÂºÃ‚Â£'),
-      (_PostFilter.published, 'Ãƒâ€žÃ‚ÂÃƒÆ’Ã‚Â£ Ãƒâ€žÃ¢â‚¬ËœÃƒâ€žÃ†â€™ng'),
-      (_PostFilter.draft, 'NhÃƒÆ’Ã‚Â¡p'),
-      (_PostFilter.pending, 'ChÃƒÂ¡Ã‚Â»Ã‚Â duyÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡t'),
-      (_PostFilter.hidden, 'BÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ ÃƒÂ¡Ã‚ÂºÃ‚Â©n'),
+      (_PostFilter.all, 'Tất cả'),
+      (_PostFilter.published, 'Đã xuất bản'),
+      (_PostFilter.pending, 'Chờ duyệt'),
+      (_PostFilter.hidden, 'Bị ẩn'),
     ];
 
     return SizedBox(
@@ -632,10 +654,9 @@ class _PostFilterRow extends StatelessWidget {
                 color: isSelected ? const Color(0xFFFF7A00) : Colors.white,
                 borderRadius: BorderRadius.circular(999),
                 border: Border.all(
-                  color:
-                      isSelected
-                          ? const Color(0xFFFF7A00)
-                          : const Color(0xFFF1E7D8),
+                  color: isSelected
+                      ? const Color(0xFFFF7A00)
+                      : const Color(0xFFF1E7D8),
                 ),
               ),
               child: Center(
@@ -659,16 +680,12 @@ class _PostFilterRow extends StatelessWidget {
 class _MyPostCard extends StatelessWidget {
   const _MyPostCard({
     required this.post,
-    required this.textPrimary,
-    required this.textSecondary,
     required this.onTap,
     required this.onEdit,
     required this.onDelete,
   });
 
   final CommunityPost post;
-  final Color textPrimary;
-  final Color textSecondary;
   final VoidCallback onTap;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
@@ -676,21 +693,18 @@ class _MyPostCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
+    final textSecondary = isDark ? Colors.white70 : const Color(0xFF64748B);
     final cardBg = isDark ? const Color(0xFF15181E) : Colors.white;
     final border = isDark ? const Color(0xFF232A33) : const Color(0xFFF6E9DA);
     final media = post.media;
     final place = post.place;
-    final title =
-        post.text.trim().isNotEmpty
-            ? post.text.trim()
-            : 'BÃƒÆ’Ã‚Â i viÃƒÂ¡Ã‚ÂºÃ‚Â¿t mÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºi';
-    final subtitle =
-        place != null
-            ? '${place.name}${place.address.trim().isNotEmpty ? ' Ãƒâ€šÃ‚Â· ${place.address}' : ''}'
-            : 'Chia sÃƒÂ¡Ã‚ÂºÃ‚Â» trÃƒÂ¡Ã‚ÂºÃ‚Â£i nghiÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡m ÃƒÂ¡Ã‚ÂºÃ‚Â©m thÃƒÂ¡Ã‚Â»Ã‚Â±c';
-    final statusLabel = 'Ãƒâ€žÃ‚ÂÃƒÆ’Ã‚Â£ Ãƒâ€žÃ¢â‚¬ËœÃƒâ€žÃ†â€™ng';
-    final imageUrl =
-        media.isNotEmpty ? media.first.url : (place?.photoUrl ?? '');
+    final statusBadge = _badgeForStatus(post.moderationStatus);
+    final title = post.text.trim().isNotEmpty ? post.text.trim() : 'Bài viết mới';
+    final subtitle = place != null
+        ? '${place.name}${place.address.trim().isNotEmpty ? ' • ${place.address}' : ''}'
+        : 'Chia sẻ trải nghiệm ẩm thực';
+    final imageUrl = media.isNotEmpty ? media.first.url : (place?.photoUrl ?? '');
 
     return Material(
       color: Colors.transparent,
@@ -722,16 +736,14 @@ class _MyPostCard extends StatelessWidget {
                     child: SizedBox(
                       width: 86,
                       height: 86,
-                      child:
-                          imageUrl.isNotEmpty
-                              ? Image.network(
-                                imageUrl,
-                                fit: BoxFit.cover,
-                                errorBuilder:
-                                    (_, __, ___) =>
-                                        _PostThumbFallback(isDark: isDark),
-                              )
-                              : _PostThumbFallback(isDark: isDark),
+                      child: imageUrl.isNotEmpty
+                          ? Image.network(
+                              imageUrl,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) =>
+                                  _PostThumbFallback(isDark: isDark),
+                            )
+                          : _PostThumbFallback(isDark: isDark),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -781,13 +793,13 @@ class _MyPostCard extends StatelessWidget {
                                 vertical: 3,
                               ),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFEAF8ED),
+                                color: statusBadge.backgroundColor,
                                 borderRadius: BorderRadius.circular(999),
                               ),
-                              child: const Text(
-                                'Ãƒâ€žÃ‚ÂÃƒÆ’Ã‚Â£ Ãƒâ€žÃ¢â‚¬ËœÃƒâ€žÃ†â€™ng',
+                              child: Text(
+                                statusBadge.label,
                                 style: TextStyle(
-                                  color: Color(0xFF16A34A),
+                                  color: statusBadge.textColor,
                                   fontSize: 11,
                                   fontWeight: FontWeight.w700,
                                 ),
@@ -842,9 +854,13 @@ class _MyPostCard extends StatelessWidget {
                   ),
                   const Spacer(),
                   Text(
-                    statusLabel,
-                    style: const TextStyle(
-                      color: Color(0xFFFF7A00),
+                    post.provinceName34?.trim().isNotEmpty == true
+                        ? post.provinceName34!
+                        : (post.regionCode?.trim().isNotEmpty == true
+                            ? post.regionCode!
+                            : statusBadge.label),
+                    style: TextStyle(
+                      color: statusBadge.textColor,
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
                     ),
