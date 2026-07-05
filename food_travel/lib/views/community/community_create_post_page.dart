@@ -51,7 +51,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
   PlaceSnapshot? _place;
   String? _placeId;
   String? _placeSource;
-  // 3 field chuáº©n Ä‘á»ƒ Ä‘á»“ng bá»™ vá»›i admin khi lÆ°u bÃ i viáº¿t.
+  // 3 field chuẩn để đồng bộ với admin khi lưu bài viết.
   String? _provinceCode34;
   String? _provinceName34;
   String? _regionCode;
@@ -189,8 +189,8 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
       _place = result.place;
       _placeId = result.placeId;
       _placeSource = result.source;
-      // Khi chá»n Ä‘á»‹a Ä‘iá»ƒm, gÃ¡n luÃ´n tá»‰nh/vÃ¹ng chuáº©n Ä‘á»ƒ lÃºc submit
-      // bÃ i viáº¿t cÃ³ sáºµn provinceCode34/provinceName34/regionCode.
+      // Khi chọn địa điểm, gán luôn tỉnh/vùng chuẩn để lúc submit
+      // bài viết có sẵn provinceCode34/provinceName34/regionCode.
       _provinceCode34 = result.provinceCode34;
       _provinceName34 = result.provinceName34;
       _regionCode = result.regionCode;
@@ -238,8 +238,8 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
           provinceCode34: _provinceCode34,
           provinceName34: _provinceName34,
           regionCode: _regionCode,
-          // Khi sheet chá»n Ä‘á»‹a Ä‘iá»ƒm tráº£ vá» Ä‘Æ°á»£c tá»‰nh/vÃ¹ng chuáº©n,
-          // truyá»n thÃªm provinceCode34/provinceName34/regionCode vÃ o Ä‘Ã¢y.
+          // Khi sheet chọn địa điểm trả về được tỉnh/vùng chuẩn,
+          // truyền thêm provinceCode34/provinceName34/regionCode vào đây.
           media: mergedMedia,
         );
 
@@ -275,8 +275,8 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
         provinceCode34: _provinceCode34,
         provinceName34: _provinceName34,
         regionCode: _regionCode,
-        // Khi picker Ä‘á»‹a Ä‘iá»ƒm Ä‘Ã£ map chuáº©n theo 34 tá»‰nh,
-        // truyá»n thÃªm provinceCode34/provinceName34/regionCode táº¡i Ä‘Ã¢y.
+        // Khi picker địa điểm đã map chuẩn theo 34 tỉnh,
+        // truyền thêm provinceCode34/provinceName34/regionCode tại đây.
       );
 
       if (!mounted) return;
@@ -345,7 +345,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
           ),
         ),
         title: Text(
-          isEdit ? t.postEditTitle : 'Táº¡o bÃ i viáº¿t',
+          isEdit ? t.postEditTitle : t.postCreateTitle,
           style: TextStyle(
             fontWeight: FontWeight.w900,
             fontSize: 20,
@@ -379,9 +379,9 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
                         color: Colors.white,
                       ),
                     )
-                  : const Text(
-                      'ÄÄƒng',
-                      style: TextStyle(fontWeight: FontWeight.w800),
+                  : Text(
+                      t.postPublish,
+                      style: const TextStyle(fontWeight: FontWeight.w800),
                     ),
             ),
           ),
@@ -426,7 +426,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
               const SizedBox(height: 22),
               _SectionTitle(
                 icon: Icons.image_outlined,
-                title: 'ThÃªm hÃ¬nh áº£nh',
+                title: 'Thêm hình ảnh',
                 color: primaryText,
                 accent: accent,
               ),
@@ -443,7 +443,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
               const SizedBox(height: 22),
               _SectionTitle(
                 icon: Icons.place_rounded,
-                title: 'Gáº¯n Ä‘á»‹a Ä‘iá»ƒm',
+                title: 'Gắn địa điểm',
                 color: primaryText,
                 accent: accent,
               ),
@@ -560,7 +560,7 @@ class _ModeSelector extends StatelessWidget {
           Expanded(
             child: _ComposerModeTab(
               icon: Icons.image_outlined,
-              label: 'ÄÄƒng áº£nh',
+              label: 'Đăng ảnh',
               selected: selectedMode == 0,
               accent: accent,
               onTap: () => onChanged(0),
@@ -826,7 +826,7 @@ class _ComposerInputCard extends StatelessWidget {
                         height: 1.38,
                       ),
                       decoration: InputDecoration(
-                        hintText: 'Báº¡n vá»«a Äƒn mÃ³n gÃ¬ ngon?',
+                        hintText: 'Bạn vừa ăn món gì ngon?',
                         hintStyle: TextStyle(color: hintText),
                         border: InputBorder.none,
                         counterText: '',
@@ -1025,7 +1025,7 @@ class _AddPhotoTile extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                'ThÃªm áº£nh mÃ³n Äƒn\nhoáº·c quÃ¡n',
+                'Thêm ảnh món ăn\nhoặc quán',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: isDark ? Colors.white70 : const Color(0xFF64748B),
@@ -1188,7 +1188,7 @@ class _PlaceSelector extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Chá»n quÃ¡n Äƒn hoáº·c Ä‘á»‹a Ä‘iá»ƒm',
+                      'Chọn quán ăn hoặc địa điểm',
                       style: TextStyle(
                         fontWeight: FontWeight.w900,
                         color: textColor,

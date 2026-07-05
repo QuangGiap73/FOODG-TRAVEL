@@ -14,6 +14,7 @@ const {
   updatePostInRepository,
   updatePostModerationStatusInRepository,
   updatePostsModerationStatusInRepository,
+  createPostModerationNotificationInRepository,
 } = require('./posts.repository');
 const {
   toPostViewModel,
@@ -259,6 +260,58 @@ async function deletePost(id) {
   return { id };
 }
 
+function buildModerationNotificationContent(status) {
+  // Gom message tại một chỗ để sau này sửa wording không phải dò nhiều file.
+  switch (String(status || '').toLowerCase()) {
+    case 'published':
+      return {
+        title: 'Bài viết đã được duyệt',
+        snippet: 'Bài viết của bạn đã được admin duyệt và hiển thị công khai.',
+      };
+    case 'hidden':
+      return {
+        title: 'Bài viết đã bị ẩn',
+        snippet: 'Bài viết của bạn tạm thời bị ẩn khỏi cộng đồng.',
+      };
+    case 'rejected':
+      return {
+        title: 'Bài viết bị từ chối',
+        snippet: 'Bài viết của bạn chưa được duyệt. Vui lòng kiểm tra lại nội dung.',
+      };
+    case 'pending':
+      return {
+        title: 'Bài viết đang chờ duyệt',
+        snippet: 'Bài viết của bạn đã được chuyển về trạng thái chờ duyệt.',
+      };
+    default:
+      return {
+        title: 'Trạng thái bài viết đã thay đổi',
+        snippet: `Bài viết của bạn vừa được cập nhật sang trạng thái: ${status}.`,
+      };
+  }
+}
+
+async function pushModerationNotificationIfNeeded(postDoc, moderationStatus) {
+  const current = toPostViewModel(postDoc);
+  const nextStatus = String(moderationStatus || '').toLowerCase();
+  const prevStatus = String(current.moderationStatus || '').toLowerCase();
+
+  // Không bắn thông báo nếu trạng thái không đổi.
+  if (!current.authorId || !nextStatus || nextStatus === prevStatus) {
+    return;
+  }
+
+  const content = buildModerationNotificationContent(nextStatus);
+
+  await createPostModerationNotificationInRepository({
+    uid: current.authorId,
+    postId: current.id,
+    moderationStatus: nextStatus,
+    title: content.title,
+    snippet: content.snippet,
+  });
+}
+
 async function deletePosts(ids = []) {
   // Chuẩn hóa ID trước để tránh xóa lặp cùng một bài.
   const normalizedIds = normalizePostIds(ids);
@@ -300,6 +353,7 @@ async function updatePostModerationStatus(id, moderationStatus) {
   }
 
   await updatePostModerationStatusInRepository(id, normalizedStatus);
+  await pushModerationNotificationIfNeeded(postDoc, normalizedStatus);
   return {
     id,
     moderationStatus: normalizedStatus,
@@ -326,6 +380,13 @@ async function updatePostsModerationStatus(ids = [], moderationStatus) {
 
   if (foundIds.length) {
     await updatePostsModerationStatusInRepository(foundIds, normalizedStatus);
+    // Gửi thông báo theo từng bài để app của đúng user nhận được cập nhật.
+    await Promise.all(
+      docs.map((doc) => {
+        if (!doc) return Promise.resolve();
+        return pushModerationNotificationIfNeeded(doc, normalizedStatus);
+      }),
+    );
   }
 
   return {

@@ -1,7 +1,8 @@
-﻿import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../models/community/community_post.dart';
+import '../notifications/notification_service.dart';
 
 class CommunityService {
   CommunityService({FirebaseFirestore? db, FirebaseAuth? auth})
@@ -10,6 +11,7 @@ class CommunityService {
 
   final FirebaseFirestore _db;
   final FirebaseAuth _auth;
+  final NotificationService _notificationService = NotificationService();
 
   CollectionReference<Map<String, dynamic>> get _posts =>
       _db.collection('posts');
@@ -110,6 +112,20 @@ class CommunityService {
     };
 
     final doc = await _posts.add(payload);
+
+    // Tạo thông báo nội bộ ngay sau khi user gửi bài.
+    // Mục tiêu: user mở màn Thông báo/My posts sẽ biết bài đang chờ duyệt.
+    await _notificationService.createSystemNotification(
+      uid: user.uid,
+      type: 'post_pending_review',
+      title: 'Bài viết đang chờ duyệt',
+      snippet: 'Bài viết đã được gửi và đang chờ duyệt.',
+      extraData: {
+        'postId': doc.id,
+        'moderationStatus': 'pending',
+      },
+    );
+
     return doc.id;
   }
 

@@ -323,7 +323,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get noticeSuccessTitle => 'Thanh cong';
 
   @override
-  String get noticePostCreated => 'Dang bai viet thanh cong.';
+  String get noticePostCreated => 'Bai viet da duoc gui va dang cho duyet.';
 
   @override
   String get noticePostUpdated => 'Chinh sua bai viet thanh cong.';
@@ -417,53 +417,53 @@ class AppLocalizationsVi extends AppLocalizations {
   String get communityMyPostsEmpty => 'Ban chua dang bai viet nao.';
 
   @override
-  String get communityPostEmptyContent => 'Noi dung bai viet dang trong.';
+  String get communityPostEmptyContent => 'Nội dung bài viết đang trống.';
 
   @override
-  String get postPickFromGallery => 'Chon tu thu vien';
+  String get postPickFromGallery => 'Chọn từ thư viện';
 
   @override
-  String get postPickFromCamera => 'Chup anh';
+  String get postPickFromCamera => 'Chụp ảnh';
 
   @override
-  String get postCreateTitle => 'Tao bai viet';
+  String get postCreateTitle => 'Tạo bài viết';
 
   @override
-  String get postEditTitle => 'Sua bai viet';
+  String get postEditTitle => 'Sửa bài viết';
 
   @override
-  String get postPublish => 'Dang';
+  String get postPublish => 'Đăng';
 
   @override
-  String get postTextHint => 'Chia se trai nghiem cua ban...';
+  String get postTextHint => 'Chia sẻ trải nghiệm của bạn...';
 
   @override
-  String get postUploading => 'Dang tai...';
+  String get postUploading => 'Đang tải...';
 
   @override
-  String get postAddPlace => 'Them dia diem';
+  String get postAddPlace => 'Thêm địa điểm';
 
   @override
-  String get postPlaceSearchHint => 'Tim dia diem...';
+  String get postPlaceSearchHint => 'Tìm địa điểm...';
 
   @override
-  String get postPlaceSearchPrompt => 'Nhap ten de tim kiem.';
+  String get postPlaceSearchPrompt => 'Nhập tên để tìm kiếm.';
 
   @override
-  String get postPlaceSearchEmpty => 'Khong tim thay dia diem.';
+  String get postPlaceSearchEmpty => 'Không tìm thấy địa điểm.';
 
   @override
-  String get postPlaceSearchError => 'Tim kiem that bai. Thu lai.';
+  String get postPlaceSearchError => 'Tìm kiếm thất bại. Thử lại.';
 
   @override
-  String get postPlaceFallbackTitle => 'Dia diem gan day';
+  String get postPlaceFallbackTitle => 'Địa điểm gần đây';
 
   @override
-  String get postPlaceFallbackAddress => 'Dia chi dang cap nhat';
+  String get postPlaceFallbackAddress => 'Địa chỉ đang cập nhật';
 
   @override
   String postSubmitFailed(Object error) {
-    return 'Dang bai that bai: $error';
+    return 'Đăng bài thất bại: $error';
   }
 
   @override

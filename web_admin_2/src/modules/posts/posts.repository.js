@@ -132,6 +132,36 @@ async function updatePostModerationStatusInRepository(id, moderationStatus) {
   );
 }
 
+// Tạo thông báo hệ thống cho chủ bài viết khi admin đổi trạng thái duyệt.
+// Dùng collection con: users/{uid}/notifications để app mobile đọc trực tiếp.
+async function createPostModerationNotificationInRepository({
+  uid,
+  postId,
+  moderationStatus,
+  title,
+  snippet,
+}) {
+  if (!uid) return;
+
+  const admin = getFirebaseAdmin();
+
+  await getDb()
+    .collection(COLLECTIONS.USERS)
+    .doc(uid)
+    .collection('notifications')
+    .add({
+      type: 'post_moderation_update',
+      postId: postId || '',
+      actorId: 'system',
+      actorName: title || 'Cập nhật bài viết',
+      actorPhoto: '',
+      snippet: snippet || '',
+      moderationStatus: moderationStatus || '',
+      read: false,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+}
+
 // Đổi nhanh trạng thái kiểm duyệt của nhiều bài viết đã tick checkbox.
 async function updatePostsModerationStatusInRepository(ids = [], moderationStatus) {
   const admin = getFirebaseAdmin();
@@ -159,4 +189,5 @@ module.exports = {
   updatePostInRepository,
   updatePostModerationStatusInRepository,
   updatePostsModerationStatusInRepository,
+  createPostModerationNotificationInRepository,
 };

@@ -66,11 +66,29 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
   }
 
   Future<void> _openCreatePost([String initialText = '']) async {
-    await Navigator.of(context).push(
+    final result = await Navigator.of(context).push<String>(
       MaterialPageRoute(
         builder: (_) => CommunityCreatePostPage(initialText: initialText),
       ),
     );
+
+    if (!mounted) return;
+    final t = AppLocalizations.of(context)!;
+
+    if (result == CommunityCreatePostPage.resultCreated) {
+      await showAppNoticeDialog(
+        context,
+        title: t.noticeSuccessTitle,
+        message: t.noticePostCreated,
+        confirmText: t.commonConfirm,
+        icon: const Icon(
+          Icons.check_circle_rounded,
+          color: Color(0xFFFF7A00),
+          size: 30,
+        ),
+        barrierDismissible: false,
+      );
+    }
   }
 
   Future<void> _pickProvince() async {

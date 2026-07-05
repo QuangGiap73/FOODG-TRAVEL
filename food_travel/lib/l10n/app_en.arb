@@ -97,7 +97,7 @@
   "commonClose": "Close",
   "commonUpdating": "Updating",
   "noticeSuccessTitle": "Success",
-  "noticePostCreated": "Post published successfully.",
+  "noticePostCreated": "Your post has been submitted and is pending review.",
   "noticePostUpdated": "Post updated successfully.",
   "noticePostDeleted": "Post deleted.",
   "commentTitle": "Comments",

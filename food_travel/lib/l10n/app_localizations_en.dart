@@ -325,7 +325,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noticeSuccessTitle => 'Success';
 
   @override
-  String get noticePostCreated => 'Post published successfully.';
+  String get noticePostCreated =>
+      'Your post has been submitted and is pending review.';
 
   @override
   String get noticePostUpdated => 'Post updated successfully.';

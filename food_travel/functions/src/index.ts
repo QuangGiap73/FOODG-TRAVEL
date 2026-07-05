@@ -1,6 +1,9 @@
 import * as admin from "firebase-admin";
 import {setGlobalOptions} from "firebase-functions";
-import {onDocumentCreated} from "firebase-functions/v2/firestore";
+import {
+  onDocumentCreated,
+  onDocumentUpdated,
+} from "firebase-functions/v2/firestore";
 import {onCall, HttpsError} from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 
@@ -150,6 +153,47 @@ async function sendPush(
     notification: {title, body},
     data,
   });
+}
+
+/**
+ * Chuẩn hóa trạng thái duyệt để tránh so sánh sai do null/undefined/chữ hoa.
+ */
+function normalizeModerationStatus(value: unknown): string {
+  return toStringSafe(value).toLowerCase();
+}
+
+/**
+ * Gom noi dung thong bao kiem duyet cho app/web.
+ */
+function getModerationMessage(
+  status: string,
+): {title: string; body: string} | null {
+  switch (status) {
+  case "published":
+    return {
+      title: "Bai viet da duoc duyet",
+      body: "Bai viet cua ban da duoc duyet va hien thi cong khai.",
+    };
+  case "hidden":
+    return {
+      title: "Bai viet da bi an",
+      body: "Bai viet cua ban tam thoi bi an khoi cong dong.",
+    };
+  case "rejected":
+    return {
+      title: "Bai viet bi tu choi",
+      body:
+        "Bai viet cua ban chua duoc duyet. " +
+        "Vui long kiem tra lai noi dung.",
+    };
+  case "pending":
+    return {
+      title: "Bai viet dang cho duyet",
+      body: "Bai viet cua ban dang cho quan tri vien xem xet.",
+    };
+  default:
+    return null;
+  }
 }
 
 // ============================================================
@@ -741,6 +785,63 @@ export const onPostCommentCreate = onDocumentCreated(
       postId,
       ownerId,
       actorId,
+    });
+  },
+);
+
+// ============================
+// POST MODERATION -> thong bao + push
+// ============================
+export const onPostModerationUpdated = onDocumentUpdated(
+  "posts/{postId}",
+  async (event) => {
+    const before = event.data?.before.data() || {};
+    const after = event.data?.after.data() || {};
+    const postId = event.params.postId as string;
+
+    // So sánh trạng thái cũ / mới.
+    // Chỉ xử lý khi moderationStatus thực sự thay đổi.
+    const beforeStatus = normalizeModerationStatus(before.moderationStatus);
+    const afterStatus = normalizeModerationStatus(after.moderationStatus);
+
+    if (!afterStatus || beforeStatus === afterStatus) {
+      return;
+    }
+
+    // Chỉ gửi cho chủ bài viết.
+    const ownerId = toStringSafe(after.authorId);
+    if (!ownerId) {
+      logger.warn(
+        "Skip moderation push: missing authorId",
+        {postId, afterStatus},
+      );
+      return;
+    }
+
+    const message = getModerationMessage(afterStatus);
+    if (!message) {
+      logger.info("Skip moderation push: unsupported status", {
+        postId,
+        beforeStatus,
+        afterStatus,
+      });
+      return;
+    }
+
+    // Chỉ gửi push tại Function.
+    // Notification trong Firestore da duoc web_admin_2 tao san
+    // khi admin duyet bai, nen khong ghi them o day
+    await sendPush(ownerId, message.title, message.body, {
+      type: "post_moderation_update",
+      postId,
+      moderationStatus: afterStatus,
+    });
+
+    logger.info("Post moderation notification sent", {
+      postId,
+      ownerId,
+      beforeStatus,
+      afterStatus,
     });
   },
 );

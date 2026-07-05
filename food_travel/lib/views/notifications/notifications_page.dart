@@ -722,6 +722,20 @@ _NotificationTone _toneFor(UserNotification item) {
         icon: Icons.chat_bubble_rounded,
         label: 'T\u01b0\u01a1ng t\u00e1c',
       );
+    case 'post_pending_review':
+      return const _NotificationTone(
+        color: Color(0xFFF59E0B),
+        softColor: Color(0xFFFEF3C7),
+        icon: Icons.schedule_rounded,
+        label: 'Kiểm duyệt',
+      );
+    case 'post_moderation_update':
+      return const _NotificationTone(
+        color: Color(0xFF16A34A),
+        softColor: Color(0xFFDCFCE7),
+        icon: Icons.verified_rounded,
+        label: 'Kiểm duyệt',
+      );
     case 'journey_checkin':
       return const _NotificationTone(
         color: Color(0xFF16A34A),
@@ -758,6 +772,12 @@ String _titleFor(UserNotification item) {
     case 'comment':
       final name = item.actorName.trim().isEmpty ? 'Ai \u0111\u00f3' : item.actorName;
       return '$name \u0111\u00e3 b\u00ecnh lu\u1eadn';
+    case 'post_pending_review':
+      return 'Bài viết đang chờ duyệt';
+    case 'post_moderation_update':
+      return item.actorName.trim().isEmpty
+          ? 'Trạng thái bài viết đã thay đổi'
+          : item.actorName;
     case 'journey_checkin':
       return 'Check-in th\u00e0nh c\u00f4ng';
     case 'journey_checkin_failed':

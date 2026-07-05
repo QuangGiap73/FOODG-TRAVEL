@@ -689,7 +689,7 @@ abstract class AppLocalizations {
   /// No description provided for @noticePostCreated.
   ///
   /// In en, this message translates to:
-  /// **'Post published successfully.'**
+  /// **'Your post has been submitted and is pending review.'**
   String get noticePostCreated;
 
   /// No description provided for @noticePostUpdated.
