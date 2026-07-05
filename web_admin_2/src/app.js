@@ -13,6 +13,7 @@ const usersRoutes = require('./modules/users/users.routes');
 const provincesRoutes = require('./modules/provinces/provinces.routes');
 const dishesRoutes = require('./modules/dishes/dishes.routes');
 const postsRoutes = require('./modules/posts/posts.routes');
+const systemPostsRoutes = require('./modules/system-posts/system-posts.routes');
 
 function createApp() {
   const app = express();
@@ -72,6 +73,7 @@ function createApp() {
   app.use('/admin/provinces', provincesRoutes);
   app.use('/admin/dishes', dishesRoutes);
   app.use('/admin/posts', postsRoutes);
+  app.use('/admin/system-posts', systemPostsRoutes);
 
   app.use(notFoundMiddleware);
   app.use(errorMiddleware);

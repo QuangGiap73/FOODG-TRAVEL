@@ -1,0 +1,56 @@
+﻿<section class="page-header">
+  <h2>Bài viết hệ thống</h2>
+  <p class="page-header__description">Quản lý bài viết chính thức do admin tạo để hiển thị trên app.</p>
+</section>
+
+<section class="panel-card">
+  <div class="section-toolbar">
+    <form method="get" class="toolbar-actions">
+      <input class="search-input" type="search" name="search" placeholder="Tìm theo tiêu đề hoặc slug" value="<%= pagination.search || '' %>" />
+      <select class="search-input" name="status">
+        <option value="">Tất cả trạng thái</option>
+        <option value="draft" <%= pagination.status === 'draft' ? 'selected' : '' %>>Nháp</option>
+        <option value="published" <%= pagination.status === 'published' ? 'selected' : '' %>>Đã xuất bản</option>
+        <option value="hidden" <%= pagination.status === 'hidden' ? 'selected' : '' %>>Đã ẩn</option>
+      </select>
+      <button class="secondary-button" type="submit">Lọc</button>
+    </form>
+    <a class="primary-button" href="/admin/system-posts/add">+ Tạo bài viết hệ thống</a>
+  </div>
+
+  <div class="table-shell">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Tiêu đề</th>
+          <th>Slug</th>
+          <th>Trạng thái</th>
+          <th>Khu vực</th>
+          <th>Cập nhật</th>
+          <th class="table-actions">Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (!posts.length) { %>
+          <tr><td colspan="6">Chưa có bài viết hệ thống nào.</td></tr>
+        <% } %>
+        <% posts.forEach(function(post) { %>
+          <tr>
+            <td>
+              <a href="/admin/system-posts/<%= post.id %>" class="system-post-link"><strong><%= post.titleVi || post.title || '-' %></strong></a>
+              <div><small><%= post.categoryVi || post.category || 'Chưa phân loại' %></small></div>
+            </td>
+            <td><%= post.slug || '-' %></td>
+            <td><span class="table-badge"><%= post.status %></span></td>
+            <td><%= post.provinceName34 || post.regionCode || '-' %></td>
+            <td><%= post.updatedAtDate ? post.updatedAtDate.toLocaleDateString('vi-VN') : '-' %></td>
+            <td class="table-actions">
+              <a class="icon-action" href="/admin/system-posts/<%= post.id %>">Xem</a>
+              <a class="icon-action" href="/admin/system-posts/<%= post.id %>/edit">Sửa</a>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>

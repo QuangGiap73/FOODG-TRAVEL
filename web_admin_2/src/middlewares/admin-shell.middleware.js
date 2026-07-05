@@ -14,6 +14,7 @@ function adminShell(req, res, next) {
     { label: 'Tinh thanh', href: '/admin/provinces', key: '/admin/provinces', icon: 'map' },
     { label: 'Mon an', href: '/admin/dishes', key: '/admin/dishes', icon: 'dish' },
     { label: 'Bai viet', href: '/admin/posts', key: '/admin/posts', icon: 'post' },
+    { label: 'Bai viet he thong', href: '/admin/system-posts', key: '/admin/system-posts', icon: 'post' },
   ];
 
   next();

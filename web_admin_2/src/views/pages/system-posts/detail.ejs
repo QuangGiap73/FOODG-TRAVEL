@@ -1,0 +1,238 @@
+﻿<%
+  const item = post || {};
+  const displayTitle = item.titleVi || item.title || '-';
+  const displaySummary = item.summaryVi || item.summaryEn || '';
+  const displayCategory = item.categoryVi || item.categoryEn || 'Chưa phân loại';
+  const displayRegion = item.regionCode || 'Chưa gán vùng miền';
+  const displayProvince = item.provinceName34 || 'Chưa gán tỉnh/thành';
+  const displayUpdated = item.updatedAtDate
+    ? item.updatedAtDate.toLocaleString('vi-VN')
+    : 'Chưa cập nhật';
+  const viParagraphs = String(item.contentVi || '')
+    .split(/\r?\n+/)
+    .map((text) => text.trim())
+    .filter(Boolean);
+  const enParagraphs = String(item.contentEn || '')
+    .split(/\r?\n+/)
+    .map((text) => text.trim())
+    .filter(Boolean);
+%>
+
+<section class="page-header">
+  <h2>Chi tiết bài viết hệ thống</h2>
+  <p class="page-header__description">Bố cục ưu tiên dễ đọc, cỡ chữ nhỏ gọn và tách rõ metadata, nội dung song ngữ, SEO.</p>
+</section>
+
+<section class="system-post-detail">
+  <article class="panel-card system-post-hero">
+    <div class="system-post-hero__media">
+      <% if (item.coverImage) { %>
+        <img src="<%= item.coverImage %>" alt="<%= displayTitle %>">
+      <% } else { %>
+        <div class="system-post-hero__placeholder">
+          <span>Chưa có ảnh cover</span>
+        </div>
+      <% } %>
+    </div>
+
+    <div class="system-post-hero__body">
+      <div class="system-post-hero__top">
+        <div>
+          <div class="system-post-detail__eyebrow">Bài viết chính thức</div>
+          <h3 class="system-post-hero__title"><%= displayTitle %></h3>
+          <% if (item.titleEn) { %>
+            <p class="system-post-hero__subtitle"><%= item.titleEn %></p>
+          <% } %>
+        </div>
+
+        <div class="system-post-hero__actions">
+          <button
+            class="secondary-button system-post-lang-toggle"
+            type="button"
+            id="system-post-language-toggle"
+            data-mode="both"
+          >
+            VI / EN
+          </button>
+          <a class="secondary-button" href="/admin/system-posts">Quay lại</a>
+          <a class="primary-button" href="/admin/system-posts/<%= item.id %>/edit">Chỉnh sửa</a>
+          <button
+            class="secondary-button system-post-delete-button"
+            type="button"
+            id="system-post-delete-button"
+            data-id="<%= item.id %>"
+          >
+            Xóa
+          </button>
+        </div>
+      </div>
+
+      <div class="system-post-status-row">
+        <span class="system-post-status system-post-status--<%= statusTone %>"><%= statusLabel %></span>
+        <% if (item.featured) { %><span class="system-post-chip">Nổi bật</span><% } %>
+        <% if (item.pinned) { %><span class="system-post-chip">Ghim</span><% } %>
+      </div>
+
+      <div class="system-post-meta-grid">
+        <div class="system-post-meta-card">
+          <span class="system-post-meta-card__label">Slug</span>
+          <strong class="system-post-meta-card__value"><%= item.slug || '-' %></strong>
+        </div>
+        <div class="system-post-meta-card">
+          <span class="system-post-meta-card__label">Danh mục</span>
+          <strong class="system-post-meta-card__value system-post-line-clamp-2"><%= displayCategory %></strong>
+        </div>
+        <div class="system-post-meta-card">
+          <span class="system-post-meta-card__label">Tỉnh / thành</span>
+          <strong class="system-post-meta-card__value"><%= displayProvince %></strong>
+        </div>
+        <div class="system-post-meta-card">
+          <span class="system-post-meta-card__label">Vùng miền</span>
+          <strong class="system-post-meta-card__value"><%= displayRegion %></strong>
+        </div>
+      </div>
+
+      <% if (displaySummary) { %>
+        <p class="system-post-hero__summary"><%= displaySummary %></p>
+      <% } %>
+    </div>
+  </article>
+
+  <div class="system-post-detail__grid">
+    <section class="panel-card system-post-section">
+      <div class="system-post-section__header">
+        <h3>Nội dung bài viết</h3>
+        <span>Song ngữ</span>
+      </div>
+
+      <div class="system-post-language-grid">
+        <article class="system-post-language-card" data-language="vi">
+          <div class="system-post-language-card__head">Tiếng Việt</div>
+          <% if (viParagraphs.length) { %>
+            <div class="system-post-prose">
+              <% viParagraphs.forEach(function(paragraph) { %>
+                <p><%= paragraph %></p>
+              <% }) %>
+            </div>
+          <% } else { %>
+            <p class="system-post-empty">Chưa có nội dung tiếng Việt.</p>
+          <% } %>
+        </article>
+
+        <article class="system-post-language-card" data-language="en">
+          <div class="system-post-language-card__head">English</div>
+          <% if (enParagraphs.length) { %>
+            <div class="system-post-prose">
+              <% enParagraphs.forEach(function(paragraph) { %>
+                <p><%= paragraph %></p>
+              <% }) %>
+            </div>
+          <% } else { %>
+            <p class="system-post-empty">Chưa có nội dung tiếng Anh.</p>
+          <% } %>
+        </article>
+      </div>
+    </section>
+
+    <aside class="system-post-sidebar">
+      <section class="panel-card system-post-section">
+        <div class="system-post-section__header">
+          <h3>Thông tin nhanh</h3>
+          <span>Metadata</span>
+        </div>
+
+        <dl class="system-post-facts">
+          <div><dt>ID</dt><dd><%= item.id || '-' %></dd></div>
+          <div><dt>Cập nhật</dt><dd><%= displayUpdated %></dd></div>
+          <div><dt>SEO title</dt><dd class="system-post-line-clamp-2"><%= item.seoTitle || 'Chưa có' %></dd></div>
+          <div><dt>SEO description</dt><dd class="system-post-line-clamp-3"><%= item.seoDescription || 'Chưa có' %></dd></div>
+        </dl>
+      </section>
+
+      <section class="panel-card system-post-section">
+        <div class="system-post-section__header">
+          <h3>Tags</h3>
+          <span><%= (tags || []).length %> mục</span>
+        </div>
+
+        <% if ((tags || []).length) { %>
+          <div class="system-post-tags">
+            <% tags.forEach(function(tag) { %>
+              <span class="system-post-tag"><%= tag %></span>
+            <% }) %>
+          </div>
+        <% } else { %>
+          <p class="system-post-empty">Chưa có tag.</p>
+        <% } %>
+      </section>
+    </aside>
+  </div>
+</section>
+
+<script>
+  (function () {
+    const deleteButton = document.getElementById('system-post-delete-button');
+    const languageToggle = document.getElementById('system-post-language-toggle');
+    const languageCards = Array.from(document.querySelectorAll('[data-language]'));
+
+    async function handleDelete() {
+      const id = deleteButton?.dataset.id;
+      if (!id) return;
+
+      const confirmed = window.confirm('Bạn có chắc muốn xóa bài viết hệ thống này không?');
+      if (!confirmed) return;
+
+      deleteButton.disabled = true;
+      deleteButton.textContent = 'Đang xóa...';
+
+      try {
+        const response = await fetch('/admin/system-posts/api/list/' + encodeURIComponent(id), {
+          method: 'DELETE',
+          headers: { Accept: 'application/json' },
+        });
+
+        const body = await response.json().catch(() => ({}));
+        if (!response.ok || body.success === false) {
+          throw new Error(body.message || 'Xóa bài viết thất bại');
+        }
+
+        window.location.href = '/admin/system-posts?deleted=1';
+      } catch (error) {
+        window.alert(error.message || 'Xóa bài viết thất bại');
+        deleteButton.disabled = false;
+        deleteButton.textContent = 'Xóa';
+      }
+    }
+
+    function applyLanguageMode(mode) {
+      languageCards.forEach((card) => {
+        const language = card.dataset.language;
+        const shouldShow = mode === 'both' || mode === language;
+        card.hidden = !shouldShow;
+      });
+
+      if (!languageToggle) return;
+
+      if (mode === 'both') {
+        languageToggle.textContent = 'VI / EN';
+      } else if (mode === 'vi') {
+        languageToggle.textContent = 'Chỉ VI';
+      } else {
+        languageToggle.textContent = 'Chỉ EN';
+      }
+
+      languageToggle.dataset.mode = mode;
+    }
+
+    function cycleLanguageMode() {
+      const currentMode = languageToggle?.dataset.mode || 'both';
+      const nextMode = currentMode === 'both' ? 'vi' : currentMode === 'vi' ? 'en' : 'both';
+      applyLanguageMode(nextMode);
+    }
+
+    deleteButton?.addEventListener('click', handleDelete);
+    languageToggle?.addEventListener('click', cycleLanguageMode);
+
+    applyLanguageMode('both');
+  })();
+</script>

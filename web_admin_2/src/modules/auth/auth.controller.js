@@ -10,4 +10,13 @@ function renderLoginPage(_req, res) {
   });
 }
 
-module.exports = { renderLoginPage };
+function logout(_req, res) {
+  res.clearCookie(env.sessionCookieName, {
+    path: '/',
+    sameSite: 'lax',
+  });
+
+  return res.redirect('/login');
+}
+
+module.exports = { renderLoginPage, logout };

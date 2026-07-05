@@ -1,0 +1,279 @@
+﻿<%
+  const values = formValues || {};
+  const provinces = formData.provinces || [];
+  const statuses = formData.statuses || [];
+%>
+
+<section class="page-header">
+  <h2><%= mode === 'edit' ? 'Chỉnh sửa bài viết hệ thống' : 'Tạo bài viết hệ thống' %></h2>
+  <p class="page-header__description">Hỗ trợ song ngữ, upload ảnh cover từ máy và gắn tỉnh/thành cho nội dung chính thống.</p>
+</section>
+
+<section class="panel-card">
+  <% if (successMessage) { %><p style="color:#1f7a1f;"><%= successMessage %></p><% } %>
+  <% if (errorMessage) { %><p class="form-error"><%= errorMessage %></p><% } %>
+
+  <form class="user-form-grid" id="system-post-form" method="post" action="<%= submitAction %>">
+    <label>
+      <span>ID</span>
+      <input type="text" name="id" value="<%= values.id || '' %>" <%= mode === 'edit' ? 'readonly' : '' %> />
+    </label>
+
+    <label>
+      <span>Slug *</span>
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="system-post-slug" name="slug" value="<%= values.slug || '' %>" required />
+        <button class="secondary-button" id="system-post-generate-slug" type="button">Tạo</button>
+      </div>
+    </label>
+
+    <label>
+      <span>Tiêu đề (VI) *</span>
+      <input type="text" id="system-post-title-vi" name="titleVi" value="<%= values.titleVi || '' %>" required />
+    </label>
+
+    <label>
+      <span>Tiêu đề (EN)</span>
+      <input type="text" name="titleEn" value="<%= values.titleEn || '' %>" />
+    </label>
+
+    <label>
+      <span>Danh mục (VI)</span>
+      <input type="text" name="categoryVi" value="<%= values.categoryVi || '' %>" />
+    </label>
+
+    <label>
+      <span>Danh mục (EN)</span>
+      <input type="text" name="categoryEn" value="<%= values.categoryEn || '' %>" />
+    </label>
+
+    <label>
+      <span>Trạng thái</span>
+      <select name="status">
+        <% statuses.forEach(function(item) { %>
+          <option value="<%= item.value %>" <%= values.status === item.value ? 'selected' : '' %>><%= item.label %></option>
+        <% }) %>
+      </select>
+    </label>
+
+    <label>
+      <span>Tỉnh / thành</span>
+      <select name="provinceCode34">
+        <option value="">Chọn tỉnh / thành</option>
+        <% provinces.forEach(function(item) { %>
+          <option
+            value="<%= item.code %>"
+            <%= values.provinceCode34 === item.code ? 'selected' : '' %>
+            data-name="<%= item.name %>"
+            data-region="<%= item.regionCode %>"
+          ><%= item.name %></option>
+        <% }) %>
+      </select>
+      <input type="hidden" name="provinceName34" value="<%= values.provinceName34 || '' %>" />
+      <input type="hidden" name="regionCode" value="<%= values.regionCode || '' %>" />
+    </label>
+
+    <label class="user-form-grid__full">
+      <span>Tóm tắt (VI)</span>
+      <textarea name="summaryVi" rows="3"><%= values.summaryVi || '' %></textarea>
+    </label>
+
+    <label class="user-form-grid__full">
+      <span>Tóm tắt (EN)</span>
+      <textarea name="summaryEn" rows="3"><%= values.summaryEn || '' %></textarea>
+    </label>
+
+    <label class="user-form-grid__full">
+      <span>Nội dung (VI) *</span>
+      <textarea name="contentVi" rows="9" required><%= values.contentVi || '' %></textarea>
+    </label>
+
+    <label class="user-form-grid__full">
+      <span>Nội dung (EN)</span>
+      <textarea name="contentEn" rows="9"><%= values.contentEn || '' %></textarea>
+    </label>
+
+    <label class="user-form-grid__full">
+      <span>Ảnh cover</span>
+      <div style="display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;">
+        <input type="url" id="system-post-cover-image" name="coverImage" value="<%= values.coverImage || '' %>" placeholder="https://..." />
+        <input type="file" id="system-post-cover-file" accept="image/png,image/jpeg,image/webp" hidden />
+        <button class="secondary-button" id="system-post-upload-trigger" type="button">Chọn ảnh</button>
+      </div>
+      <small id="system-post-upload-status">Bạn có thể dán URL hoặc tải ảnh từ máy. Sau khi chọn ảnh, hệ thống sẽ tự tải lên trước khi lưu.</small>
+      <div id="system-post-cover-preview" style="margin-top:10px;<%= values.coverImage ? '' : 'display:none;' %>">
+        <img
+          id="system-post-cover-preview-image"
+          src="<%= values.coverImage || '' %>"
+          alt="Preview cover"
+          style="width:220px;height:132px;object-fit:cover;border-radius:14px;border:1px solid #eadbc8;display:block;"
+        />
+      </div>
+    </label>
+
+    <label class="user-form-grid__full">
+      <span>Tags</span>
+      <input type="text" name="tags" value="<%= values.tags || '' %>" placeholder="banner, cẩm nang, nổi bật" />
+    </label>
+
+    <label>
+      <span>SEO title</span>
+      <input type="text" name="seoTitle" value="<%= values.seoTitle || '' %>" />
+    </label>
+
+    <label>
+      <span>SEO description</span>
+      <input type="text" name="seoDescription" value="<%= values.seoDescription || '' %>" />
+    </label>
+
+    <label>
+      <span><input type="checkbox" name="featured" value="true" <%= values.featured ? 'checked' : '' %> /> Nổi bật</span>
+    </label>
+
+    <label>
+      <span><input type="checkbox" name="pinned" value="true" <%= values.pinned ? 'checked' : '' %> /> Ghim</span>
+    </label>
+
+    <input type="hidden" name="title" value="<%= values.titleVi || '' %>" />
+    <input type="hidden" name="summary" value="<%= values.summaryVi || '' %>" />
+    <input type="hidden" name="content" value="<%= values.contentVi || '' %>" />
+    <input type="hidden" name="category" value="<%= values.categoryVi || '' %>" />
+
+    <div class="user-form-actions user-form-grid__full">
+      <a class="secondary-button" href="/admin/system-posts">Quay lại</a>
+      <button class="primary-button" id="system-post-submit-button" type="submit">Lưu bài viết hệ thống</button>
+    </div>
+  </form>
+</section>
+
+<script>
+  (function () {
+    const form = document.getElementById('system-post-form');
+    const provinceSelect = document.querySelector('select[name="provinceCode34"]');
+    const provinceNameInput = document.querySelector('input[name="provinceName34"]');
+    const regionCodeInput = document.querySelector('input[name="regionCode"]');
+    const titleViInput = document.getElementById('system-post-title-vi');
+    const slugInput = document.getElementById('system-post-slug');
+    const generateSlugButton = document.getElementById('system-post-generate-slug');
+    const coverImageInput = document.getElementById('system-post-cover-image');
+    const coverFileInput = document.getElementById('system-post-cover-file');
+    const uploadTrigger = document.getElementById('system-post-upload-trigger');
+    const uploadStatus = document.getElementById('system-post-upload-status');
+    const submitButton = document.getElementById('system-post-submit-button');
+    const previewWrap = document.getElementById('system-post-cover-preview');
+    const previewImage = document.getElementById('system-post-cover-preview-image');
+    let uploadPromise = null;
+    let isUploading = false;
+
+    if (!form) return;
+
+    function slugify(value) {
+      return String(value || '')
+        .trim()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/\u0111/g, 'd')
+        .replace(/\u0110/g, 'd')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    }
+
+    function syncProvinceMeta() {
+      const option = provinceSelect?.selectedOptions?.[0];
+      if (!option) return;
+      provinceNameInput.value = option.dataset.name || '';
+      regionCodeInput.value = option.dataset.region || '';
+    }
+
+    function syncSlug() {
+      if (!slugInput || slugInput.dataset.userTouched) return;
+      slugInput.value = slugify(titleViInput?.value || '');
+    }
+
+    function setUploadingState(nextUploading, message) {
+      isUploading = nextUploading;
+      if (submitButton) {
+        submitButton.disabled = nextUploading;
+        submitButton.textContent = nextUploading ? 'Đang tải ảnh...' : 'Lưu bài viết hệ thống';
+      }
+      if (uploadStatus && message) {
+        uploadStatus.textContent = message;
+      }
+    }
+
+    function syncPreview(url) {
+      const nextUrl = String(url || '').trim();
+      if (!previewWrap || !previewImage) return;
+      if (!nextUrl) {
+        previewWrap.style.display = 'none';
+        previewImage.src = '';
+        return;
+      }
+      previewWrap.style.display = 'block';
+      previewImage.src = nextUrl;
+    }
+
+    async function uploadCover(file) {
+      if (!file) return '';
+      const formData = new FormData();
+      formData.append('image', file);
+      setUploadingState(true, 'Đang tải ảnh lên...');
+      try {
+        const response = await fetch('/admin/system-posts/api/upload-image', {
+          method: 'POST',
+          body: formData,
+        });
+        const body = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(body.message || 'Tải ảnh thất bại');
+        const imageUrl = body.data?.url || '';
+        if (!imageUrl) throw new Error('Không nhận được URL ảnh');
+        coverImageInput.value = imageUrl;
+        syncPreview(imageUrl);
+        setUploadingState(false, 'Tải ảnh thành công. Ảnh đã sẵn sàng để lưu.');
+        return imageUrl;
+      } catch (error) {
+        setUploadingState(false, error.message || 'Tải ảnh thất bại');
+        throw error;
+      } finally {
+        if (coverFileInput) coverFileInput.value = '';
+      }
+    }
+
+    provinceSelect?.addEventListener('change', syncProvinceMeta);
+    titleViInput?.addEventListener('input', syncSlug);
+    slugInput?.addEventListener('input', () => {
+      slugInput.dataset.userTouched = '1';
+    });
+    generateSlugButton?.addEventListener('click', () => {
+      slugInput.dataset.userTouched = '';
+      syncSlug();
+    });
+    uploadTrigger?.addEventListener('click', () => coverFileInput?.click());
+    coverFileInput?.addEventListener('change', () => {
+      const file = coverFileInput.files?.[0];
+      if (!file) return;
+      uploadPromise = uploadCover(file)
+        .catch(() => null)
+        .finally(() => {
+          uploadPromise = null;
+        });
+    });
+    coverImageInput?.addEventListener('input', () => syncPreview(coverImageInput.value));
+
+    form.addEventListener('submit', async (event) => {
+      if (isUploading && uploadPromise) {
+        event.preventDefault();
+        try {
+          await uploadPromise;
+          form.requestSubmit();
+        } catch (_error) {
+        }
+      }
+    });
+
+    syncProvinceMeta();
+    syncSlug();
+    syncPreview(coverImageInput?.value || '');
+  })();
+</script>
