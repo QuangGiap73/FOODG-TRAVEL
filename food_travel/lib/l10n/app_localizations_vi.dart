@@ -404,17 +404,17 @@ class AppLocalizationsVi extends AppLocalizations {
   String get communityDeleteConfirm => 'Ban chac chan muon xoa bai viet nay?';
 
   @override
-  String get communityMyPostsTitle => 'Bai viet cua toi';
+  String get communityMyPostsTitle => 'Bài viết của tôi';
 
   @override
   String get communityMyPostsLoginRequired =>
-      'Vui long dang nhap de xem bai viet cua ban.';
+      'Vui lòng đăng nhập để xem bài viết của bạn.';
 
   @override
-  String get communityMyPostsLoadError => 'Khong the tai bai viet cua ban.';
+  String get communityMyPostsLoadError => 'Không thể tải bài viết của bạn.';
 
   @override
-  String get communityMyPostsEmpty => 'Ban chua dang bai viet nao.';
+  String get communityMyPostsEmpty => 'Bạn chưa đăng bài viết nào.';
 
   @override
   String get communityPostEmptyContent => 'Nội dung bài viết đang trống.';

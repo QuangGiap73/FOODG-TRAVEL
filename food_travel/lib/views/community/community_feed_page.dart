@@ -22,6 +22,7 @@ import 'post_comments_sheet.dart';
 import 'widgets/community_banner_header.dart';
 import 'widgets/community_quick_composer_card.dart';
 import '../favorites/place_detail_page.dart';
+import '../home/widgets/home_system_posts_section.dart';
 
 class CommunityFeedPage extends StatefulWidget {
   const CommunityFeedPage({super.key});
@@ -297,7 +298,11 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
           return _buildEmpty(t.communityLoadError);
         }
         final posts = snapshot.data ?? const <CommunityPost>[];
-        return _buildPostsList(posts, emptyText: t.communityEmptyNewest);
+        return _buildPostsList(
+          posts,
+          emptyText: t.communityEmptyNewest,
+          includeSystemPosts: true,
+        );
       },
     );
   }
@@ -426,18 +431,29 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
   Widget _buildPostsList(
     List<CommunityPost> posts, {
     required String emptyText,
+    bool includeSystemPosts = false,
   }) {
-    if (posts.isEmpty) {
+    if (posts.isEmpty && !includeSystemPosts) {
       return _buildEmpty(emptyText);
     }
 
-    return ListView.separated(
+    return ListView(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 120),
-      itemCount: posts.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 12),
-      itemBuilder: (context, index) {
-        return _PostCard(post: posts[index]);
-      },
+      children: [
+        if (includeSystemPosts) ...[
+          const HomeSystemPostsSection(),
+          const SizedBox(height: 12),
+        ],
+        if (posts.isEmpty)
+          _buildEmpty(emptyText)
+        else
+          ...List.generate(posts.length, (index) {
+            return Padding(
+              padding: EdgeInsets.only(bottom: index == posts.length - 1 ? 0 : 12),
+              child: _PostCard(post: posts[index]),
+            );
+          }),
+      ],
     );
   }
 

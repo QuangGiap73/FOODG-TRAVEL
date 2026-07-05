@@ -28,6 +28,7 @@ import 'search/search_result_page.dart';
 import 'widgets/home_bottom_nav.dart';
 import 'widgets/home_community_eating_section.dart';
 import 'widgets/home_journey_section.dart';
+import 'widgets/home_system_posts_section.dart';
 import 'widgets/nearby_places_section.dart';
 import 'widgets/today_eat_section.dart';
 
@@ -1351,6 +1352,8 @@ class _HomeFeedState extends State<_HomeFeed> {
                     },
                   ),
                 ),
+              const SizedBox(height: 20),
+              const HomeSystemPostsSection(),
               const SizedBox(height: 20),
               HomeCommunityEatingSection(
                 userLat: _nearbyHomeController.userLatLng?.latitude,
