@@ -1,4 +1,4 @@
-(function () {
+﻿(function () {
   const initial = window.__PROVINCES_INITIAL__ || { regions: [], provinces: [] };
 
   const regionForm = document.getElementById('region-form');
@@ -228,15 +228,23 @@
         <td>${province.regionsCode}</td>
         <td>${Number(province.dishesCount || 0).toLocaleString('vi-VN')}</td>
         <td>${Number(province.checkinsCount || 0).toLocaleString('vi-VN')}</td>
-        <td>${province.slug || '-'}</td>
         <td>${formatCoordinate(province.centerLat, province.centerLng)}</td>
         <td class="table-actions">
-          <button class="icon-action" type="button" data-province-view="${province.code}">Xem</button>
-          <button class="icon-action" type="button" data-province-edit="${province.code}">Sửa</button>
-          <button class="icon-action danger" type="button" data-province-delete="${province.code}">Xóa</button>
+          <details class="provinces-action-menu">
+            <summary class="provinces-action-menu__trigger" aria-label="Mở menu thao tác">
+              <span></span>
+              <span></span>
+              <span></span>
+            </summary>
+            <div class="provinces-action-menu__dropdown">
+              <button class="provinces-action-menu__item" type="button" data-province-view="${province.code}">Xem</button>
+              <button class="provinces-action-menu__item" type="button" data-province-edit="${province.code}">Sửa</button>
+              <button class="provinces-action-menu__item provinces-action-menu__item--danger" type="button" data-province-delete="${province.code}">Xóa</button>
+            </div>
+          </details>
         </td>
       </tr>
-    `).join('') || '<tr><td colspan="8">Không có tỉnh thành phù hợp.</td></tr>';
+    `).join('') || '<tr><td colspan="7">Không có tỉnh thành phù hợp.</td></tr>';
   }
 
   async function fetchJson(url, options = {}) {
@@ -550,3 +558,5 @@
   filterProvinces();
   renderImagePreview([], []);
 })();
+
+

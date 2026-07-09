@@ -36,9 +36,11 @@ class HomeCommunityEatingSection extends StatelessWidget {
         final featured = _pickFeaturedPost(posts);
         if (featured == null) return const SizedBox.shrink();
 
-        final imageUrl = featured.media.isNotEmpty
-            ? featured.media.first.url
+        final firstMedia = featured.media.isNotEmpty ? featured.media.first : null;
+        final imageUrl = firstMedia != null
+            ? firstMedia.previewUrl
             : (featured.place?.photoUrl ?? '');
+        final hasVideo = firstMedia?.isVideo == true;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -232,13 +234,35 @@ class HomeCommunityEatingSection extends StatelessWidget {
                           child: SizedBox(
                             width: 118,
                             height: 82,
-                            child: imageUrl.isNotEmpty
-                                ? Image.network(
-                                    imageUrl,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (_, __, ___) => _fallbackImage(),
-                                  )
-                                : _fallbackImage(),
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                imageUrl.isNotEmpty
+                                    ? Image.network(
+                                        imageUrl,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (_, __, ___) => _fallbackImage(),
+                                      )
+                                    : _fallbackImage(),
+                                if (hasVideo)
+                                  const Center(
+                                    child: DecoratedBox(
+                                      decoration: BoxDecoration(
+                                        color: Color(0x88000000),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Padding(
+                                        padding: EdgeInsets.all(8),
+                                        child: Icon(
+                                          Icons.play_arrow_rounded,
+                                          color: Colors.white,
+                                          size: 22,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
                           ),
                         ),
                       ],

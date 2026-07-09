@@ -57,6 +57,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
   String? _regionCode;
 
   static const int _maxPhotos = 4;
+  static const int _maxVideos = 1;
 
   @override
   void initState() {
@@ -104,7 +105,18 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
     return _existingMedia.length + _media.length;
   }
 
+  bool _hasAnyVideo() {
+    return _existingMedia.any((item) => item.isVideo) ||
+        _media.any((item) => item.type == 'video');
+  }
+
+  bool _hasAnyImage() {
+    return _existingMedia.any((item) => !item.isVideo) ||
+        _media.any((item) => item.type == 'image');
+  }
+
   Future<void> _pickFromGallery() async {
+    if (_hasAnyVideo()) return;
     if (_currentMediaCount() >= _maxPhotos) return;
     final remaining = _maxPhotos - _currentMediaCount();
 
@@ -117,12 +129,13 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
     final take = picks.take(remaining);
     setState(() {
       for (final p in take) {
-        _media.add(_LocalMedia(file: File(p.path)));
+        _media.add(_LocalMedia(file: File(p.path), type: 'image'));
       }
     });
   }
 
   Future<void> _pickFromCamera() async {
+    if (_hasAnyVideo()) return;
     if (_currentMediaCount() >= _maxPhotos) return;
 
     final pick = await _imagePicker.pickImage(
@@ -133,7 +146,31 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
     if (pick == null) return;
 
     setState(() {
-      _media.add(_LocalMedia(file: File(pick.path)));
+      _media.add(_LocalMedia(file: File(pick.path), type: 'image'));
+    });
+  }
+
+  Future<void> _pickVideoFromGallery() async {
+    if (_hasAnyImage() || _hasAnyVideo()) return;
+    final pick = await _imagePicker.pickVideo(
+      source: ImageSource.gallery,
+      maxDuration: const Duration(seconds: 90),
+    );
+    if (pick == null) return;
+    setState(() {
+      _media.add(_LocalMedia(file: File(pick.path), type: 'video'));
+    });
+  }
+
+  Future<void> _pickVideoFromCamera() async {
+    if (_hasAnyImage() || _hasAnyVideo()) return;
+    final pick = await _imagePicker.pickVideo(
+      source: ImageSource.camera,
+      maxDuration: const Duration(seconds: 90),
+    );
+    if (pick == null) return;
+    setState(() {
+      _media.add(_LocalMedia(file: File(pick.path), type: 'video'));
     });
   }
 
@@ -161,6 +198,22 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
                 onTap: () {
                   Navigator.pop(ctx);
                   _pickFromCamera();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.video_library_outlined),
+                title: const Text('Chọn video từ thư viện'),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  _pickVideoFromGallery();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.videocam_outlined),
+                title: const Text('Quay video'),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  _pickVideoFromCamera();
                 },
               ),
             ],
@@ -213,11 +266,39 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
           final cloud = CloudinaryService(
             cloudName: cloudinaryCloudName,
             uploadPreset: cloudinaryUploadPreset,
-            folder: cloudinaryFolder,
+            folder: cloudinaryCommunityImageFolder,
           );
           for (final item in _media) {
-            final url = await cloud.uploadImage(item.file);
-            newMedia.add(PostMedia(url: url, type: 'image'));
+            if (item.type == 'video') {
+              final uploaded = await CloudinaryService(
+                cloudName: cloudinaryCloudName,
+                uploadPreset: cloudinaryUploadPreset,
+                folder: cloudinaryCommunityVideoFolder,
+              ).uploadVideo(item.file);
+              newMedia.add(
+                PostMedia(
+                  url: uploaded.url,
+                  type: 'video',
+                  thumbnailUrl: uploaded.thumbnailUrl,
+                  publicId: uploaded.publicId,
+                  duration: uploaded.duration,
+                  width: uploaded.width,
+                  height: uploaded.height,
+                ),
+              );
+            } else {
+              final uploaded = await cloud.uploadMedia(item.file);
+              newMedia.add(
+                PostMedia(
+                  url: uploaded.url,
+                  type: 'image',
+                  thumbnailUrl: uploaded.thumbnailUrl,
+                  publicId: uploaded.publicId,
+                  width: uploaded.width,
+                  height: uploaded.height,
+                ),
+              );
+            }
           }
         }
 
@@ -255,12 +336,40 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
         final cloud = CloudinaryService(
           cloudName: cloudinaryCloudName,
           uploadPreset: cloudinaryUploadPreset,
-          folder: cloudinaryFolder,
+          folder: cloudinaryCommunityImageFolder,
         );
 
         for (final item in _media) {
-          final url = await cloud.uploadImage(item.file);
-          media.add(PostMedia(url: url, type: 'image'));
+          if (item.type == 'video') {
+            final uploaded = await CloudinaryService(
+              cloudName: cloudinaryCloudName,
+              uploadPreset: cloudinaryUploadPreset,
+              folder: cloudinaryCommunityVideoFolder,
+            ).uploadVideo(item.file);
+            media.add(
+              PostMedia(
+                url: uploaded.url,
+                type: 'video',
+                thumbnailUrl: uploaded.thumbnailUrl,
+                publicId: uploaded.publicId,
+                duration: uploaded.duration,
+                width: uploaded.width,
+                height: uploaded.height,
+              ),
+            );
+          } else {
+            final uploaded = await cloud.uploadMedia(item.file);
+            media.add(
+              PostMedia(
+                url: uploaded.url,
+                type: 'image',
+                thumbnailUrl: uploaded.thumbnailUrl,
+                publicId: uploaded.publicId,
+                width: uploaded.width,
+                height: uploaded.height,
+              ),
+            );
+          }
         }
       }
 
@@ -495,9 +604,10 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
 }
 
 class _LocalMedia {
-  const _LocalMedia({required this.file});
+  const _LocalMedia({required this.file, required this.type});
 
   final File file;
+  final String type;
 }
 
 class _RoundIconButton extends StatelessWidget {
@@ -916,7 +1026,8 @@ class _MediaGrid extends StatelessWidget {
     for (var i = 0; i < existing.length; i++) {
       final item = existing[i];
       thumbnails.add(_MediaThumb.network(
-        url: item.url,
+        url: item.previewUrl,
+        type: item.type,
         onRemove: () => onRemoveExisting(i),
       ));
     }
@@ -925,6 +1036,7 @@ class _MediaGrid extends StatelessWidget {
       final item = local[i];
       thumbnails.add(_MediaThumb.file(
         file: item.file,
+        type: item.type,
         onRemove: () => onRemoveLocal(i),
       ));
     }
@@ -1004,8 +1116,8 @@ class _AddPhotoTile extends StatelessWidget {
               Stack(
                 alignment: Alignment.center,
                 children: [
-                  Icon(
-                    Icons.cloud_upload_outlined,
+                Icon(
+                    Icons.perm_media_outlined,
                     size: 44,
                     color: isDark ? Colors.white54 : const Color(0xFFCBD5E1),
                   ),
@@ -1025,7 +1137,7 @@ class _AddPhotoTile extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                'Thêm ảnh món ăn\nhoặc quán',
+                'Thêm ảnh\nhoặc video',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: isDark ? Colors.white70 : const Color(0xFF64748B),
@@ -1055,37 +1167,47 @@ class _MediaThumb extends StatelessWidget {
   const _MediaThumb._({
     this.url,
     this.file,
+    required this.type,
     required this.onRemove,
   });
 
   factory _MediaThumb.network({
     required String url,
+    required String type,
     required VoidCallback onRemove,
   }) {
-    return _MediaThumb._(url: url, onRemove: onRemove);
+    return _MediaThumb._(url: url, type: type, onRemove: onRemove);
   }
 
   factory _MediaThumb.file({
     required File file,
+    required String type,
     required VoidCallback onRemove,
   }) {
-    return _MediaThumb._(file: file, onRemove: onRemove);
+    return _MediaThumb._(file: file, type: type, onRemove: onRemove);
   }
 
   final String? url;
   final File? file;
+  final String type;
   final VoidCallback onRemove;
 
   @override
   Widget build(BuildContext context) {
+    final isVideo = type == 'video';
     final image = file != null
-        ? Image.file(file!, fit: BoxFit.cover)
+        ? (isVideo
+            ? Container(
+                color: const Color(0xFFE2E8F0),
+                child: const Icon(Icons.videocam_rounded, size: 28),
+              )
+            : Image.file(file!, fit: BoxFit.cover))
         : Image.network(
             url!,
             fit: BoxFit.cover,
             errorBuilder: (_, __, ___) => Container(
               color: const Color(0xFFE2E8F0),
-              child: const Icon(Icons.image_outlined),
+              child: Icon(isVideo ? Icons.videocam_rounded : Icons.image_outlined),
             ),
           );
 
@@ -1098,6 +1220,21 @@ class _MediaThumb extends StatelessWidget {
             child: image,
           ),
         ),
+        if (isVideo)
+          const Positioned.fill(
+            child: Center(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: Color(0x88000000),
+                  shape: BoxShape.circle,
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Icon(Icons.play_arrow_rounded, color: Colors.white, size: 22),
+                ),
+              ),
+            ),
+          ),
         Positioned(
           top: -5,
           right: -5,

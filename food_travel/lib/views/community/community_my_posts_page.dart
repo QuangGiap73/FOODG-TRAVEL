@@ -704,7 +704,9 @@ class _MyPostCard extends StatelessWidget {
     final subtitle = place != null
         ? '${place.name}${place.address.trim().isNotEmpty ? ' • ${place.address}' : ''}'
         : 'Chia sẻ trải nghiệm ẩm thực';
-    final imageUrl = media.isNotEmpty ? media.first.url : (place?.photoUrl ?? '');
+    final firstMedia = media.isNotEmpty ? media.first : null;
+    final imageUrl = firstMedia != null ? firstMedia.previewUrl : (place?.photoUrl ?? '');
+    final hasVideo = firstMedia?.isVideo == true;
 
     return Material(
       color: Colors.transparent,
@@ -736,14 +738,36 @@ class _MyPostCard extends StatelessWidget {
                     child: SizedBox(
                       width: 86,
                       height: 86,
-                      child: imageUrl.isNotEmpty
-                          ? Image.network(
-                              imageUrl,
-                              fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) =>
-                                  _PostThumbFallback(isDark: isDark),
-                            )
-                          : _PostThumbFallback(isDark: isDark),
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          imageUrl.isNotEmpty
+                              ? Image.network(
+                                  imageUrl,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) =>
+                                      _PostThumbFallback(isDark: isDark),
+                                )
+                              : _PostThumbFallback(isDark: isDark),
+                          if (hasVideo)
+                            const Center(
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  color: Color(0x88000000),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.all(8),
+                                  child: Icon(
+                                    Icons.play_arrow_rounded,
+                                    color: Colors.white,
+                                    size: 22,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),

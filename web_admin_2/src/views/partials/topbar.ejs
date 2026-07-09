@@ -1,4 +1,4 @@
-<button class="menu-toggle" type="button" aria-label="Mo menu" data-sidebar-toggle>
+﻿<button class="menu-toggle" type="button" aria-label="Mở menu" data-sidebar-toggle>
   <span></span>
   <span></span>
   <span></span>
@@ -12,22 +12,33 @@
 </div>
 
 <div class="topbar-actions">
-  <button class="icon-button" type="button" aria-label="Thong bao">
+  <button class="icon-button topbar-notice-button" type="button" aria-label="Thông báo">
     <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true">
       <path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5"/>
       <path d="M10 21a2 2 0 0 0 4 0"/>
     </svg>
+    <span class="topbar-notice-dot"></span>
   </button>
-  <div class="profile-chip">
+
+  <div class="profile-chip profile-chip--large">
     <div class="profile-chip__avatar">A</div>
     <div>
       <strong><%= user.displayName %></strong>
       <small><%= user.role %></small>
     </div>
+    <svg class="profile-chip__caret" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M7 10l5 5 5-5"/>
+    </svg>
   </div>
+
   <form method="post" action="/logout" class="topbar-logout-form">
     <button class="secondary-button topbar-logout-button" type="submit">
-      Đăng xuất
+      <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+        <path d="M10 17l5-5-5-5"/>
+        <path d="M15 12H3"/>
+      </svg>
+      <span>Đăng xuất</span>
     </button>
   </form>
 </div>

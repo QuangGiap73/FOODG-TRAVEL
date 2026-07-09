@@ -149,12 +149,10 @@ class _EditPersonalPageState extends State<EditPersonalPage> {
     final gender = _selectedGender;
     final dateOfBirth = _dateOfBirth;
     final provinceName = _selectedProvince?.trim();
-    final preferences = UserPreferences(
+    final preferences = _preferences.copyWith(
       provinceCode: _buildProvinceCode(provinceName ?? ''),
       provinceName: provinceName,
-      spicyLevel: _preferences.spicyLevel,
       favoriteTags: _favoriteTags.toList(),
-      dislikedIngredients: _preferences.dislikedIngredients,
     );
 
     await UserService().updateUserProfile(

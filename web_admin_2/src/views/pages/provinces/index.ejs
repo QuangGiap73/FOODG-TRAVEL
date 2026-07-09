@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="/public/css/pages/provinces.css" />
+﻿<link rel="stylesheet" href="/public/css/pages/provinces.css" />
 
 <%- include('../../partials/page-header', {
   eyebrow: 'Dữ liệu nền',
@@ -13,7 +13,7 @@
         <h3>Miền</h3>
         <p class="provinces-muted">Chọn miền để lọc danh sách tỉnh thành.</p>
       </div>
-      <button class="secondary-button" type="button" id="region-open-create">Thêm miền</button>
+      <button class="secondary-button provinces-action-button" type="button" id="region-open-create">＋ Thêm miền</button>
     </div>
 
     <div class="provinces-region-list" id="region-list">
@@ -49,8 +49,8 @@
             <option value="<%= region.code %>"><%= region.name %></option>
           <% }) %>
         </select>
-        <button class="secondary-button" type="button" id="province-reset">Đặt lại</button>
-        <button class="primary-button" type="button" id="province-open-create">Thêm tỉnh thành</button>
+        <button class="secondary-button provinces-action-button" type="button" id="province-reset">Đặt lại</button>
+        <button class="primary-button provinces-action-button provinces-action-button--primary" type="button" id="province-open-create">＋ Thêm tỉnh thành</button>
       </div>
     </div>
 
@@ -68,9 +68,8 @@
             <th>Miền</th>
             <th>Số món</th>
             <th>Số check-in</th>
-            <th>Slug</th>
             <th>Tọa độ</th>
-            <th></th>
+            <th>Thao tác</th>
           </tr>
         </thead>
         <tbody id="provinces-table-body">
@@ -81,12 +80,20 @@
               <td><%= province.regionsCode %></td>
               <td><%= province.dishesCount || 0 %></td>
               <td><%= province.checkinsCount || 0 %></td>
-              <td><%= province.slug || '-' %></td>
               <td><%= province.centerLat || 0 %>, <%= province.centerLng || 0 %></td>
               <td class="table-actions">
-                <button class="icon-action" type="button" data-province-view="<%= province.code %>">Xem</button>
-                <button class="icon-action" type="button" data-province-edit="<%= province.code %>">Sửa</button>
-                <button class="icon-action danger" type="button" data-province-delete="<%= province.code %>">Xóa</button>
+                <details class="provinces-action-menu">
+                  <summary class="provinces-action-menu__trigger" aria-label="Mở menu thao tác">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </summary>
+                  <div class="provinces-action-menu__dropdown">
+                    <button class="provinces-action-menu__item" type="button" data-province-view="<%= province.code %>">Xem</button>
+                    <button class="provinces-action-menu__item" type="button" data-province-edit="<%= province.code %>">Sửa</button>
+                    <button class="provinces-action-menu__item provinces-action-menu__item--danger" type="button" data-province-delete="<%= province.code %>">Xóa</button>
+                  </div>
+                </details>
               </td>
             </tr>
           <% }) %>

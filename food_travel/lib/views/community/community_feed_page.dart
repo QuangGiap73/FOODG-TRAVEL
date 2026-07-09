@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:food_travel/l10n/app_localizations.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../controller/community/post_like_controller.dart';
 import '../../models/community/community_post.dart';
@@ -974,15 +975,44 @@ class _MediaHeroState extends State<_MediaHero> {
               itemCount: media.length,
               onPageChanged: (i) => setState(() => _index = i),
               itemBuilder: (context, i) {
-                return Image.network(
-                  media[i].url,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) {
-                    return Container(
-                      color: _imageFallbackBg(context),
-                      child: const Icon(Icons.image, size: 32),
-                    );
-                  },
+                final item = media[i];
+                return GestureDetector(
+                  onTap: item.isVideo ? () => _openVideo(item.url) : null,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Image.network(
+                        item.previewUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) {
+                          return Container(
+                            color: _imageFallbackBg(context),
+                            child: Icon(
+                              item.isVideo ? Icons.videocam_rounded : Icons.image,
+                              size: 32,
+                            ),
+                          );
+                        },
+                      ),
+                      if (item.isVideo)
+                        const Center(
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: Color(0x88000000),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Icon(
+                                Icons.play_arrow_rounded,
+                                color: Colors.white,
+                                size: 28,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 );
               },
             ),
@@ -1069,6 +1099,12 @@ class _MediaHeroState extends State<_MediaHero> {
         ],
       ),
     );
+  }
+
+  Future<void> _openVideo(String url) async {
+    final uri = Uri.tryParse(url);
+    if (uri == null) return;
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 }
 

@@ -4,19 +4,31 @@ class PostMedia {
   const PostMedia({
     required this.url,
     this.type = 'image',
+    this.thumbnailUrl = '',
+    this.publicId = '',
+    this.duration,
     this.width,
     this.height,
   });
 
   final String url;
   final String type;
+  final String thumbnailUrl;
+  final String publicId;
+  final double? duration;
   final int? width;
   final int? height;
+
+  bool get isVideo => type.toLowerCase() == 'video';
+  String get previewUrl => isVideo && thumbnailUrl.trim().isNotEmpty ? thumbnailUrl : url;
 
   Map<String, dynamic> toMap() {
     return {
       'url': url,
       'type': type,
+      'thumbnailUrl': thumbnailUrl,
+      'publicId': publicId,
+      'duration': duration,
       'w': width,
       'h': height,
     };
@@ -26,6 +38,9 @@ class PostMedia {
     return PostMedia(
       url: (map['url'] ?? '').toString(),
       type: (map['type'] ?? 'image').toString(),
+      thumbnailUrl: (map['thumbnailUrl'] ?? '').toString(),
+      publicId: (map['publicId'] ?? '').toString(),
+      duration: map['duration'] is num ? (map['duration'] as num).toDouble() : null,
       width: map['w'] is num ? (map['w'] as num).toInt() : null,
       height: map['h'] is num ? (map['h'] as num).toInt() : null,
     );

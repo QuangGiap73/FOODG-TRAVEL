@@ -1,9 +1,7 @@
-<section class="page-header">
-  <div>
-    <p class="eyebrow"><%= eyebrow || 'Module' %></p>
-    <h2><%= title %></h2>
-    <% if (description) { %>
+﻿<% if (description) { %>
+  <section class="page-header page-header--compact">
+    <div>
       <p class="page-header__description"><%= description %></p>
-    <% } %>
-  </div>
-</section>
+    </div>
+  </section>
+<% } %>

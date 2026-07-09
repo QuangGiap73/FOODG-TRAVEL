@@ -4,8 +4,7 @@
   const statuses = formData.statuses || [];
 %>
 
-<section class="page-header">
-  <h2><%= mode === 'edit' ? 'Chỉnh sửa bài viết hệ thống' : 'Tạo bài viết hệ thống' %></h2>
+<section class="page-header page-header--compact">
   <p class="page-header__description">Hỗ trợ song ngữ, upload ảnh cover từ máy và gắn tỉnh/thành cho nội dung chính thống.</p>
 </section>
 
@@ -277,3 +276,5 @@
     syncPreview(coverImageInput?.value || '');
   })();
 </script>
+
+
