@@ -259,16 +259,21 @@
             <span>Anh dai dien</span>
             <div class="dish-create-image-tools">
               <input type="url" name="imageUrl" id="dish-image-url" value="<%= values.imageUrl %>" placeholder="https://..." />
-              <input type="file" id="dish-image-file" accept="image/png,image/jpeg,image/webp" hidden />
-              <button class="dishes-button dishes-button--soft" type="button" id="dish-upload-trigger">Chon anh tu may</button>
+              <input type="file" id="dish-image-file" accept="image/png,image/jpeg,image/webp" hidden multiple />
+              <button class="dishes-button dishes-button--soft" type="button" id="dish-upload-trigger">Chon nhieu anh tu may</button>
             </div>
-            <small id="dish-upload-status">Ban co the dan URL hoac tai anh len Cloudinary.</small>
+            <small id="dish-upload-status">Ban co the dan URL hoac tai nhieu anh len Cloudinary.</small>
           </label>
 
           <label class="dish-create-field-wide">
             <span>Danh sach URL anh</span>
-            <textarea name="imageUrls" rows="5" placeholder="Moi dong 1 URL"><%= values.imageUrls %></textarea>
+            <textarea name="imageUrls" id="dish-image-urls" rows="5" placeholder="Moi dong 1 URL"><%= values.imageUrls %></textarea>
           </label>
+
+          <div class="dish-create-field-wide">
+            <span>Preview anh da chon</span>
+            <div class="dish-image-preview-grid" id="dish-image-preview-list"></div>
+          </div>
         </div>
       </section>
     </form>

@@ -18,7 +18,7 @@ const seedsByCode = new Map(
 
 // Lay duong dan file JSON (mac dinh: web_admin/thai_binh_vi_en.json)
 const dataPath =
-  process.argv[2] || path.join(__dirname, '..', 'thai_binh_vi_en.json');
+  process.argv[2] || path.join(__dirname, '..', 'vinh_phuc.json');
 if (!fs.existsSync(dataPath)) {
   console.error('Khong tim thay file:', dataPath);
   process.exit(1);

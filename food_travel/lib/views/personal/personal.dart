@@ -6,6 +6,7 @@ import '../../services/auth_service.dart';
 import '../../widgets/app_notice_dialog.dart';
 import 'edit_personal.dart';
 import '../journey/pages/food_journey_page.dart';
+import '../favorites/favorites_tabs_page.dart';
 import 'package:food_travel/l10n/app_localizations.dart';
 
 
@@ -165,6 +166,13 @@ class _PersonalScaffold extends StatelessWidget {
                       icon: Icons.home_rounded,
                       color: Color(0xFFFF8D6E),
                       label: t.personalHome,
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const FavoritesTabsPage(),
+                          ),
+                        );
+                      },
                     ),
                     SizedBox(width: 12),
                     _QuickAction(
@@ -282,40 +290,6 @@ class _HeaderSection extends StatelessWidget {
             bottom: -30,
             right: -10,
             child: _GlowCircle(size: 120, color: Colors.white24),
-          ),
-          Positioned(
-            top: 18,
-            right: 18,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: isDark
-                    ? colorScheme.surface.withOpacity(0.9)
-                    : Colors.white.withOpacity(0.9),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Row(
-                children: [
-                  Text(
-                    t.personalFreeWithdraw,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: colorScheme.onSurface,
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                  CircleAvatar(
-                    radius: 14,
-                    backgroundColor: const Color(0xFF6B6F80),
-                    child: Icon(
-                      Icons.shield_outlined,
-                      size: 16,
-                      color: Colors.white.withOpacity(0.95),
-                    ),
-                  ),
-                ],
-              ),
-            ),
           ),
           Align(
             alignment: Alignment.bottomCenter,

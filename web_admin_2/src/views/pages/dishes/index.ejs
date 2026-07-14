@@ -64,18 +64,18 @@
         </label>
 
         <button type="button" class="dishes-button dishes-button--danger" id="btn-delete-selected-dishes" disabled>
-          <span class="dishes-button__icon">🗑</span>
+          <span class="dishes-button__icon">&#128465;</span>
           Xóa đã chọn
         </button>
       </div>
 
       <div class="dishes-toolbar__cta">
         <button type="button" class="dishes-button dishes-button--soft" id="btn-export-excel">
-          <span class="dishes-button__icon">📊</span>
+          <span class="dishes-button__icon">&#128202;</span>
           Xuất Excel
         </button>
         <button type="button" class="dishes-button dishes-button--primary" id="btn-open-add-dish">
-          <span class="dishes-button__icon">✦</span>
+          <span class="dishes-button__icon">&#10035;</span>
           + Thêm món
         </button>
       </div>
@@ -125,9 +125,9 @@
               <td><%= dish.priceRangeVi || '-' %></td>
               <td>
                 <div class="dishes-actions">
-                  <button type="button" class="dishes-action" data-action="view" data-id="<%= dish.id %>">👁</button>
-                  <button type="button" class="dishes-action" data-action="edit" data-id="<%= dish.id %>">✎</button>
-                  <button type="button" class="dishes-action dishes-action--danger" data-action="delete" data-id="<%= dish.id %>">🗑</button>
+                  <button type="button" class="dishes-action" data-action="view" data-id="<%= dish.id %>">&#128065;</button>
+                  <button type="button" class="dishes-action" data-action="edit" data-id="<%= dish.id %>">&#9998;</button>
+                  <button type="button" class="dishes-action dishes-action--danger" data-action="delete" data-id="<%= dish.id %>">&#128465;</button>
                 </div>
               </td>
             </tr>

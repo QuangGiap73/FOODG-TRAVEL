@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_travel/widgets/network_image_fallback.dart';
 
 class PlaceHeroHeader extends StatelessWidget {
   const PlaceHeroHeader({
@@ -42,7 +43,11 @@ class PlaceHeroHeader extends StatelessWidget {
                   onTap: () => onTapImage(index),
                   child: url.isEmpty
                       ? Container(color: const Color(0xFF2A2E33))
-                      : Image.network(url, fit: BoxFit.cover),
+                      : Image.network(
+                          url,
+                          fit: BoxFit.cover,
+                          errorBuilder: networkImageErrorBuilder,
+                        ),
                 );
               },
             ),

@@ -50,7 +50,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get personalStore => 'Store';
 
   @override
-  String get personalHome => 'Home';
+  String get personalHome => 'Favorites';
 
   @override
   String get personalGuests => 'Guests';

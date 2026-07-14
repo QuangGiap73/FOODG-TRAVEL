@@ -13,7 +13,6 @@ class FoodService {
   final _db = FirebaseFirestore.instance;
   static const _canonicalProvinceCollection = 'provinces_v2';
   static const _legacyProvinceCollection = 'provinces';
-  static const _provinceDishQueryLimit = 120;
   static const _provinceDishDisplayLimit = 60;
 
   /// Lang nghe danh sach tinh (sap xep theo ten).
@@ -56,7 +55,6 @@ class FoodService {
 
     return _db
         .collection('dishes')
-        .limit(_provinceDishQueryLimit)
         .snapshots()
         .map((snapshot) {
           final all = snapshot.docs.map(DishModel.fromDoc).toList();
@@ -110,7 +108,6 @@ class FoodService {
 
     return _db
         .collection('dishes')
-        .limit(_provinceDishQueryLimit)
         .snapshots()
         .map((snap) {
           final all = snap.docs.map(DishModel.fromDoc).toList();

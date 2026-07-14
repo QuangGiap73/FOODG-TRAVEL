@@ -11,9 +11,11 @@
   const slugInput = document.getElementById('dish-slug');
   const generateSlugButton = document.getElementById('dish-generate-slug');
   const imageUrlInput = document.getElementById('dish-image-url');
+  const imageUrlsInput = document.getElementById('dish-image-urls');
   const imageFileInput = document.getElementById('dish-image-file');
   const uploadTrigger = document.getElementById('dish-upload-trigger');
   const uploadStatus = document.getElementById('dish-upload-status');
+  const previewList = document.getElementById('dish-image-preview-list');
 
   const previewName = document.getElementById('dish-preview-name');
   const previewNameEn = document.getElementById('dish-preview-name-en');
@@ -116,6 +118,45 @@
     }
   }
 
+  function buildImagePreviewEntries() {
+    const entries = [];
+    const primaryUrl = String(imageUrlInput?.value || '').trim();
+    if (primaryUrl) entries.push({ url: primaryUrl, label: 'Ảnh đại diện' });
+
+    const additionalUrls = String(imageUrlsInput?.value || '')
+      .split(/\r?\n/)
+      .map((value) => value.trim())
+      .filter(Boolean);
+
+    additionalUrls.forEach((url, index) => {
+      if (url !== primaryUrl) {
+        entries.push({ url, label: `Ảnh ${index + 2}` });
+      }
+    });
+
+    return entries;
+  }
+
+  function renderImagePreview() {
+    if (!previewList) return;
+
+    const entries = buildImagePreviewEntries();
+    if (!entries.length) {
+      previewList.innerHTML = '<div class="dish-create-notice">Chưa có ảnh nào được chọn.</div>';
+      return;
+    }
+
+    previewList.innerHTML = entries.map((entry) => `
+      <div class="dish-image-preview-card">
+        <img src="${entry.url}" alt="${entry.label}" />
+        <div class="dish-image-preview-card__meta">
+          <strong>${entry.label}</strong>
+          <small>${entry.url}</small>
+        </div>
+      </div>
+    `).join('');
+  }
+
   function updatePreview() {
     const provinceName = provinceNameInput?.value || 'Chua chon tinh/thanh';
     const imageUrl = String(imageUrlInput?.value || '').trim();
@@ -164,48 +205,67 @@
   function updateAll() {
     updatePreview();
     updateProgress();
+    renderImagePreview();
   }
 
-  async function uploadImageFile(file) {
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append('image', file);
+  async function uploadImageFiles(files) {
+    if (!files?.length) return;
 
     if (uploadStatus) {
       uploadStatus.textContent = 'Dang tai anh len...';
     }
 
-    try {
-      const response = await fetch('/admin/dishes/api/upload-image', {
-        method: 'POST',
-        body: formData,
-      });
+    const uploadedUrls = [];
 
-      const body = await response.json().catch(() => ({}));
-      if (!response.ok) {
-        throw new Error(body.message || body.error || 'Tai anh that bai');
-      }
+    for (const file of Array.from(files)) {
+      const formData = new FormData();
+      formData.append('image', file);
 
-      const imageUrl = body.data?.url || '';
-      if (!imageUrl) {
-        throw new Error('Khong nhan duoc URL anh tu server');
-      }
+      try {
+        const response = await fetch('/admin/dishes/api/upload-image', {
+          method: 'POST',
+          body: formData,
+        });
 
-      imageUrlInput.value = imageUrl;
-      if (uploadStatus) {
-        uploadStatus.textContent = 'Tai anh thanh cong. URL da duoc dien vao form.';
-      }
-      updateAll();
-    } catch (error) {
-      if (uploadStatus) {
-        uploadStatus.textContent = error.message || 'Tai anh that bai';
-      }
-    } finally {
-      if (imageFileInput) {
-        imageFileInput.value = '';
+        const body = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(body.message || body.error || 'Tai anh that bai');
+        }
+
+        const imageUrl = body.data?.url || '';
+        if (!imageUrl) {
+          throw new Error('Khong nhan duoc URL anh tu server');
+        }
+
+        uploadedUrls.push(imageUrl);
+      } catch (error) {
+        if (uploadStatus) {
+          uploadStatus.textContent = error.message || 'Tai anh that bai';
+        }
+        return;
       }
     }
+
+    const previousPrimary = String(imageUrlInput?.value || '').trim();
+    const previousAdditional = String(imageUrlsInput?.value || '')
+      .split(/\r?\n/)
+      .map((value) => value.trim())
+      .filter(Boolean);
+
+    const nextUrls = uploadedUrls.filter((url) => !previousAdditional.includes(url) && url !== previousPrimary);
+    if (!previousPrimary && nextUrls.length) {
+      imageUrlInput.value = nextUrls[0];
+    }
+
+    const mergedAdditional = [...previousAdditional, ...nextUrls];
+    if (imageUrlsInput) {
+      imageUrlsInput.value = mergedAdditional.join('\n');
+    }
+
+    if (uploadStatus) {
+      uploadStatus.textContent = `Tai thanh cong ${uploadedUrls.length} anh.`;
+    }
+    updateAll();
   }
 
   provinceSelect?.addEventListener('change', () => {
@@ -233,12 +293,12 @@
   });
 
   imageFileInput?.addEventListener('change', () => {
-    const file = imageFileInput.files?.[0];
-    uploadImageFile(file);
+    uploadImageFiles(imageFileInput.files);
   });
 
   form.addEventListener('input', updateAll);
-  imageUrlInput?.addEventListener('input', updatePreview);
+  imageUrlInput?.addEventListener('input', updateAll);
+  imageUrlsInput?.addEventListener('input', updateAll);
 
   document.querySelectorAll('.dish-create-steps a').forEach((link) => {
     link.addEventListener('click', (event) => {

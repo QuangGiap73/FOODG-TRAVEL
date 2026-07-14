@@ -10,9 +10,11 @@
     const slugInput = document.getElementById('dish-slug');
     const generateSlugButton = document.getElementById('dish-generate-slug');
     const imageUrlInput = document.getElementById('dish-image-url');
+    const imageUrlsInput = document.getElementById('dish-image-urls');
     const imageFileInput = document.getElementById('dish-image-file');
     const uploadTrigger = document.getElementById('dish-upload-trigger');
     const uploadStatus = document.getElementById('dish-upload-status');
+    const previewList = document.getElementById('dish-image-preview-list');
   
     const form = document.getElementById('dish-edit-form');
     if (!form) return;
@@ -80,44 +82,104 @@
       }
     }
   
+    function buildImagePreviewEntries() {
+      const entries = [];
+      const primaryUrl = String(imageUrlInput?.value || '').trim();
+      if (primaryUrl) entries.push({ url: primaryUrl, label: 'Ảnh đại diện' });
+
+      const additionalUrls = String(imageUrlsInput?.value || '')
+        .split(/\r?\n/)
+        .map((value) => value.trim())
+        .filter(Boolean);
+
+      additionalUrls.forEach((url, index) => {
+        if (url !== primaryUrl) {
+          entries.push({ url, label: `Ảnh ${index + 2}` });
+        }
+      });
+
+      return entries;
+    }
+
+    function renderImagePreview() {
+      if (!previewList) return;
+
+      const entries = buildImagePreviewEntries();
+      if (!entries.length) {
+        previewList.innerHTML = '<div class="dish-create-notice">Chưa có ảnh nào được chọn.</div>';
+        return;
+      }
+
+      previewList.innerHTML = entries.map((entry) => `
+        <div class="dish-image-preview-card">
+          <img src="${entry.url}" alt="${entry.label}" />
+          <div class="dish-image-preview-card__meta">
+            <strong>${entry.label}</strong>
+            <small>${entry.url}</small>
+          </div>
+        </div>
+      `).join('');
+    }
+
     function updateGeneratedFields() {
       const nameVi = String(nameViInput?.value || '').trim();
       if (slugInput && !slugInput.dataset.userTouched) {
         slugInput.value = slugify(nameVi);
       }
     }
-  
-    async function uploadImageFile(file) {
-      if (!file) return;
-  
-      const formData = new FormData();
-      formData.append('image', file);
-  
+
+    async function uploadImageFiles(files) {
+      if (!files?.length) return;
+
       if (uploadStatus) uploadStatus.textContent = 'Đang tải ảnh lên...';
-  
-      try {
-        const response = await fetch('/admin/dishes/api/upload-image', {
-          method: 'POST',
-          body: formData,
-        });
-  
-        const body = await response.json().catch(() => ({}));
-        if (!response.ok) {
-          throw new Error(body.message || body.error || 'Tải ảnh thất bại');
+
+      const uploadedUrls = [];
+
+      for (const file of Array.from(files)) {
+        const formData = new FormData();
+        formData.append('image', file);
+
+        try {
+          const response = await fetch('/admin/dishes/api/upload-image', {
+            method: 'POST',
+            body: formData,
+          });
+
+          const body = await response.json().catch(() => ({}));
+          if (!response.ok) {
+            throw new Error(body.message || body.error || 'Tải ảnh thất bại');
+          }
+
+          const imageUrl = body.data?.url || '';
+          if (!imageUrl) {
+            throw new Error('Không nhận được URL ảnh từ server');
+          }
+
+          uploadedUrls.push(imageUrl);
+        } catch (error) {
+          if (uploadStatus) uploadStatus.textContent = error.message || 'Tải ảnh thất bại';
+          return;
         }
-  
-        const imageUrl = body.data?.url || '';
-        if (!imageUrl) {
-          throw new Error('Không nhận được URL ảnh từ server');
-        }
-  
-        imageUrlInput.value = imageUrl;
-        if (uploadStatus) uploadStatus.textContent = 'Tải ảnh thành công.';
-      } catch (error) {
-        if (uploadStatus) uploadStatus.textContent = error.message || 'Tải ảnh thất bại';
-      } finally {
-        if (imageFileInput) imageFileInput.value = '';
       }
+
+      const previousPrimary = String(imageUrlInput?.value || '').trim();
+      const previousAdditional = String(imageUrlsInput?.value || '')
+        .split(/\r?\n/)
+        .map((value) => value.trim())
+        .filter(Boolean);
+
+      const nextUrls = uploadedUrls.filter((url) => !previousAdditional.includes(url) && url !== previousPrimary);
+      if (!previousPrimary && nextUrls.length) {
+        imageUrlInput.value = nextUrls[0];
+      }
+
+      const mergedAdditional = [...previousAdditional, ...nextUrls];
+      if (imageUrlsInput) {
+        imageUrlsInput.value = mergedAdditional.join('\n');
+      }
+
+      if (uploadStatus) uploadStatus.textContent = `Tải thành công ${uploadedUrls.length} ảnh.`;
+      renderImagePreview();
     }
   
     provinceSelect?.addEventListener('change', () => {
@@ -143,10 +205,13 @@
     uploadTrigger?.addEventListener('click', () => imageFileInput?.click());
   
     imageFileInput?.addEventListener('change', () => {
-      const file = imageFileInput.files?.[0];
-      uploadImageFile(file);
+      uploadImageFiles(imageFileInput.files);
     });
+
+    imageUrlInput?.addEventListener('input', renderImagePreview);
+    imageUrlsInput?.addEventListener('input', renderImagePreview);
   
     updateProvinceFields();
     updateLegacyProvinceFields();
+    renderImagePreview();
   })();

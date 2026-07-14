@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:food_travel/l10n/app_localizations.dart';
+import 'package:food_travel/widgets/network_image_fallback.dart';
 
 import '../../../models/dish_model.dart';
 import '../../../router/route_names.dart';
@@ -144,7 +145,11 @@ class _DishCard extends StatelessWidget {
                   fit: StackFit.expand,
                   children: [
                     if (imageUrl.isNotEmpty)
-                      Image.network(imageUrl, fit: BoxFit.cover)
+                      Image.network(
+                        imageUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: networkImageErrorBuilder,
+                      )
                     else
                       Container(
                         color: theme.colorScheme.surfaceVariant,

@@ -262,16 +262,21 @@
             <span>Ảnh đại diện</span>
             <div class="dish-create-image-tools">
               <input type="url" name="imageUrl" id="dish-image-url" value="<%= values.imageUrl %>" placeholder="https://..." />
-              <input type="file" id="dish-image-file" accept="image/png,image/jpeg,image/webp" hidden />
-              <button class="dishes-button dishes-button--soft" type="button" id="dish-upload-trigger">Chọn ảnh từ máy</button>
+              <input type="file" id="dish-image-file" accept="image/png,image/jpeg,image/webp" hidden multiple />
+              <button class="dishes-button dishes-button--soft" type="button" id="dish-upload-trigger">Chọn nhiều ảnh từ máy</button>
             </div>
-            <small id="dish-upload-status">Bạn có thể dán URL hoặc tải ảnh lên Cloudinary.</small>
+            <small id="dish-upload-status">Bạn có thể dán URL hoặc tải nhiều ảnh lên Cloudinary.</small>
           </label>
 
           <label class="dish-create-field-wide">
             <span>Danh sách URL ảnh</span>
-            <textarea name="imageUrls" rows="5" placeholder="Mỗi dòng 1 URL"><%= values.imageUrls %></textarea>
+            <textarea name="imageUrls" id="dish-image-urls" rows="5" placeholder="Mỗi dòng 1 URL"><%= values.imageUrls %></textarea>
           </label>
+
+          <div class="dish-create-field-wide">
+            <span>Preview ảnh đã chọn</span>
+            <div class="dish-image-preview-grid" id="dish-image-preview-list"></div>
+          </div>
         </div>
       </section>
     </form>

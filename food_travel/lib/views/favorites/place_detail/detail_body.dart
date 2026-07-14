@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:food_travel/l10n/app_localizations.dart';
+import 'package:food_travel/widgets/network_image_fallback.dart';
 
 import '../../../models/places_model.dart';
 import '../../../services/map/serpapi_places_service.dart';
@@ -89,7 +90,11 @@ class _PlaceDetailBodyState extends State<PlaceDetailBody> {
                     maxScale: 3.2,
                     child: url.isEmpty
                         ? Container(color: Colors.black)
-                        : Image.network(url, fit: BoxFit.contain),
+                        : Image.network(
+                            url,
+                            fit: BoxFit.contain,
+                            errorBuilder: networkImageErrorBuilder,
+                          ),
                   );
                 },
               ),

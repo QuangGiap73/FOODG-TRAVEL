@@ -12,7 +12,7 @@ function createUploadService() {
       return new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
           {
-            folder: options.folder || 'food-travel/users',
+            folder: options.folder || process.env.CLOUDINARY_FOLDER || 'food-travel/dishes',
             public_id: options.publicId,
             resource_type: 'image',
             overwrite: true,

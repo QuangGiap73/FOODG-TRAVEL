@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_travel/widgets/network_image_fallback.dart';
 
 class PhotoThumbList extends StatelessWidget {
   const PhotoThumbList({
@@ -39,7 +40,11 @@ class PhotoThumbList extends StatelessWidget {
                 child: AspectRatio(
                   aspectRatio: 1,
                   child: url.isNotEmpty
-                      ? Image.network(url, fit: BoxFit.cover)
+                      ? Image.network(
+                          url,
+                          fit: BoxFit.cover,
+                          errorBuilder: networkImageErrorBuilder,
+                        )
                       : Container(color: const Color(0xFF1F242C)),
                 ),
               ),

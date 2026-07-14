@@ -39,9 +39,34 @@
     return params.toString();
   }
 
+  function syncUrlState(page = currentPage) {
+    const query = buildQuery(page);
+    const url = `${window.location.pathname}?${query}`;
+    window.history.replaceState(null, '', url);
+  }
+
+  function restoreFiltersFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+
+    if (searchInput) searchInput.value = params.get('search') || '';
+    if (provinceFilter) provinceFilter.value = params.get('provinceCode34') || '';
+    if (spicyFilter) spicyFilter.value = params.get('spicyLevel') || '';
+    if (sortSelect) sortSelect.value = params.get('sortBy') || sortSelect.value;
+
+    const pageParam = Number(params.get('page'));
+    if (Number.isFinite(pageParam) && pageParam > 0) {
+      currentPage = pageParam;
+    }
+
+    const pageSizeParam = Number(params.get('pageSize'));
+    if (Number.isFinite(pageSizeParam) && pageSizeParam > 0) {
+      currentPageSize = pageSizeParam;
+    }
+  }
+
   function renderPageInfo(meta) {
     if (!pageInfo) return;
-    pageInfo.textContent = `Hiển thị trang ${meta.page}/${meta.totalPages}, tổng ${meta.total} món ăn.`;
+    pageInfo.textContent = `Hien thi trang ${meta.page}/${meta.totalPages}, tong ${meta.total} mon an.`;
   }
 
   function syncSelectAllState() {
@@ -65,7 +90,7 @@
 
   function renderTable(items) {
     if (!items.length) {
-      tableBody.innerHTML = '<tr><td colspan="11" class="dishes-empty">Chưa có dữ liệu</td></tr>';
+      tableBody.innerHTML = '<tr><td colspan="11" class="dishes-empty">Khong co du lieu</td></tr>';
       syncSelectAllState();
       return;
     }
@@ -84,14 +109,14 @@
           <td>${dish.nameEn || '-'}</td>
           <td>${dish.provinceName34 || '-'}</td>
           <td>${dish.categoryVi || '-'}</td>
-          <td><span class="dishes-metric">🌶 ${dish.spicyLevel || 0}</span></td>
-          <td><span class="dishes-metric">🍜 ${dish.satietyLevel || 0}</span></td>
+          <td><span class="dishes-metric">&#127798; ${dish.spicyLevel || 0}</span></td>
+          <td><span class="dishes-metric">&#127869; ${dish.satietyLevel || 0}</span></td>
           <td>${dish.priceRangeVi || '-'}</td>
           <td>
             <div class="dishes-actions">
-              <button type="button" class="dishes-action" data-action="view" data-id="${dish.id || ''}">👁</button>
-              <button type="button" class="dishes-action" data-action="edit" data-id="${dish.id || ''}">✎</button>
-              <button type="button" class="dishes-action dishes-action--danger" data-action="delete" data-id="${dish.id || ''}">🗑</button>
+              <button type="button" class="dishes-action" data-action="view" data-id="${dish.id || ''}">&#128065;</button>
+              <button type="button" class="dishes-action" data-action="edit" data-id="${dish.id || ''}">&#9998;</button>
+              <button type="button" class="dishes-action dishes-action--danger" data-action="delete" data-id="${dish.id || ''}">&#128465;</button>
             </div>
           </td>
         </tr>
@@ -110,25 +135,25 @@
 
     pageList.insertAdjacentHTML(
       'beforeend',
-      `<li class="${page <= 1 ? 'disabled' : ''}"><a href="#">‹</a></li>`,
+      `<li class="${page <= 1 ? 'disabled' : ''}"><a href="#" data-page="${page - 1}">Prev</a></li>`,
     );
 
     for (let index = 1; index <= totalPages; index += 1) {
       pageList.insertAdjacentHTML(
         'beforeend',
-        `<li class="${index === page ? 'is-active' : ''}"><a href="#">${index}</a></li>`,
+        `<li class="${index === page ? 'is-active' : ''}"><a href="#" data-page="${index}">${index}</a></li>`,
       );
     }
 
     pageList.insertAdjacentHTML(
       'beforeend',
-      `<li class="${page >= totalPages ? 'disabled' : ''}"><a href="#">›</a></li>`,
+      `<li class="${page >= totalPages ? 'disabled' : ''}"><a href="#" data-page="${page + 1}">Next</a></li>`,
     );
   }
 
   async function fetchDishes(page = 1) {
     if (!tableBody) return;
-    tableBody.innerHTML = '<tr><td colspan="11" class="dishes-empty">Đang tải...</td></tr>';
+    tableBody.innerHTML = '<tr><td colspan="11" class="dishes-empty">Dang tai...</td></tr>';
 
     try {
       const query = buildQuery(page);
@@ -136,7 +161,7 @@
       const body = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        throw new Error(body.message || body.error || 'Tải danh sách món thất bại');
+        throw new Error(body.message || body.error || 'Tai danh sach mon that bai');
       }
 
       const data = body.data || {};
@@ -146,12 +171,13 @@
       currentPage = Number(meta.page || page || 1);
       currentPageSize = Number(meta.pageSize || currentPageSize || 50);
 
+      syncUrlState(currentPage);
       renderTable(items);
       renderPagination(meta);
       renderPageInfo(meta);
     } catch (error) {
       console.error(error);
-      tableBody.innerHTML = `<tr><td colspan="11" class="dishes-empty">${error.message || 'Lỗi tải dữ liệu'}</td></tr>`;
+      tableBody.innerHTML = `<tr><td colspan="11" class="dishes-empty">${error.message || 'Loi tai du lieu'}</td></tr>`;
     }
   }
 
@@ -168,7 +194,7 @@
     );
 
     if (!ids.length) return;
-    if (!window.confirm(`Bạn có chắc muốn xóa ${ids.length} món đã chọn?`)) return;
+    if (!window.confirm(`Ban co chac muon xoa ${ids.length} mon da chon?`)) return;
 
     await Promise.all(
       ids.map((id) =>
@@ -184,14 +210,18 @@
     window.location.href = `/admin/dishes/api/export?${query}`;
   }
 
+  function handleFilterChange() {
+    fetchDishes(1);
+  }
+
   searchInput?.addEventListener('input', () => {
     clearTimeout(window.__dishSearchTimer);
     window.__dishSearchTimer = setTimeout(() => fetchDishes(1), 350);
   });
 
-  provinceFilter?.addEventListener('change', () => fetchDishes(1));
-  spicyFilter?.addEventListener('change', () => fetchDishes(1));
-  sortSelect?.addEventListener('change', () => fetchDishes(1));
+  provinceFilter?.addEventListener('change', handleFilterChange);
+  spicyFilter?.addEventListener('change', handleFilterChange);
+  sortSelect?.addEventListener('change', handleFilterChange);
   exportExcelBtn?.addEventListener('click', exportExcel);
   openAddDishBtn?.addEventListener('click', () => {
     window.location.href = '/admin/dishes/add';
@@ -218,36 +248,32 @@
       window.location.href = `/admin/dishes/${encodeURIComponent(id)}`;
       return;
     }
+
     if (action === 'edit') {
       window.location.href = `/admin/dishes/${encodeURIComponent(id)}/edit`;
       return;
     }
+
     if (action === 'delete') {
-      if (window.confirm('Bạn có chắc muốn xóa món này?')) {
+      if (window.confirm('Ban co chac muon xoa mon nay?')) {
         fetch(`/admin/dishes/api/list/${encodeURIComponent(id)}`, { method: 'DELETE' }).then(() => fetchDishes(currentPage));
       }
     }
   });
 
   pageList?.addEventListener('click', (event) => {
-    const link = event.target.closest('a');
+    const link = event.target.closest('a[data-page]');
     if (!link) return;
+
     event.preventDefault();
 
-    const text = String(link.textContent || '').trim();
-    if (text === '‹') {
-      fetchDishes(Math.max(1, currentPage - 1));
-      return;
-    }
+    const nextPage = Number(link.dataset.page);
+    if (!Number.isFinite(nextPage) || nextPage < 1) return;
+    if (nextPage === currentPage) return;
 
-    if (text === '›') {
-      fetchDishes(currentPage + 1);
-      return;
-    }
-
-    const page = Number(text);
-    if (Number.isFinite(page)) fetchDishes(page);
+    fetchDishes(nextPage);
   });
 
+  restoreFiltersFromUrl();
   fetchDishes(currentPage);
 })();

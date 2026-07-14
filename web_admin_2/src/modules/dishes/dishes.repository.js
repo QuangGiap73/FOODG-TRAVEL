@@ -1,10 +1,48 @@
 const { getFirebaseAdmin } = require('../../config/firebase-admin');
 const { COLLECTIONS } = require('../../core/constants/collections');
+const provinceMergeMap = require('../../../../food_travel/functions/src/migrations/province34/data/province_merge_map.official_2025.json');
 
 function getAdmin() {
   const admin = getFirebaseAdmin();
   if (!admin) throw new Error('Firebase Admin is not configured');
   return admin;
+}
+
+function normalizeProvinceKey(value) {
+  const raw = String(value || '').toLowerCase().trim();
+  const normalized = raw
+    .normalize('NFD')
+    .replace(/\u0300-\u036f/g, '')
+    .replace(/[-]/g, '');
+  const map = {
+    à: 'a', á: 'a', ạ: 'a', ả: 'a', ã: 'a',
+
+    â: 'a', ầ: 'a', ấ: 'a', ậ: 'a', ẩ: 'a', ẫ: 'a',
+    ă: 'a', ằ: 'a', ắ: 'a', ặ: 'a', ẳ: 'a', ẵ: 'a',
+    è: 'e', é: 'e', ẹ: 'e', ẻ: 'e', ẽ: 'e',
+    ê: 'e', ề: 'e', ế: 'e', ệ: 'e', ể: 'e', ễ: 'e',
+    ì: 'i', í: 'i', ị: 'i', ỉ: 'i', ĩ: 'i',
+    ò: 'o', ó: 'o', ọ: 'o', ỏ: 'o', õ: 'o',
+    ô: 'o', ồ: 'o', ố: 'o', ộ: 'o', ổ: 'o', ỗ: 'o',
+    ơ: 'o', ờ: 'o', ớ: 'o', ợ: 'o', ở: 'o', ỡ: 'o',
+    ù: 'u', ú: 'u', ụ: 'u', ủ: 'u', ũ: 'u',
+    ư: 'u', ừ: 'u', ứ: 'u', ự: 'u', ử: 'u', ữ: 'u',
+    ỳ: 'y', ý: 'y', ỵ: 'y', ỷ: 'y', ỹ: 'y',
+    đ: 'd',
+  };
+  let result = '';
+  for (const char of normalized) {
+    result += map[char] || char;
+  }
+  return result.replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+}
+
+function canonicalProvinceCode(value) {
+  const key = normalizeProvinceKey(value);
+  if (!key) return '';
+  if (provinceMergeMap[key]) return String(provinceMergeMap[key]).trim().toLowerCase();
+  const stripped = key.replace(/^(tp|thanh_pho|tinh)_/, '');
+  return String(provinceMergeMap[stripped] || key).trim().toLowerCase();
 }
 
 function getDb() {
@@ -58,7 +96,13 @@ async function listDishesFromRepository({
   const safeSearch = String(search || '').trim().toLowerCase();
 
   if (safeProvinceCode34) {
-    docs = docs.filter((dish) => String(dish.provinceCode34 || '').trim().toLowerCase() === safeProvinceCode34);
+    docs = docs.filter((dish) => {
+      const candidate = String(dish.provinceCode34 || dish.province_code || dish.legacyProvinceCode || dish.provinceName34 || '').trim().toLowerCase();
+      return (
+        candidate === safeProvinceCode34 ||
+        canonicalProvinceCode(candidate) === canonicalProvinceCode(safeProvinceCode34)
+      );
+    });
   }
 
   if (safeSearch) {
@@ -106,7 +150,13 @@ async function listAllDishesFromRepository(filters = {}) {
   const safeSearch = String(filters.search || '').trim().toLowerCase();
 
   if (safeProvinceCode34) {
-    docs = docs.filter((dish) => String(dish.provinceCode34 || '').trim().toLowerCase() === safeProvinceCode34);
+    docs = docs.filter((dish) => {
+      const candidate = String(dish.provinceCode34 || dish.province_code || dish.legacyProvinceCode || dish.provinceName34 || '').trim().toLowerCase();
+      return (
+        candidate === safeProvinceCode34 ||
+        canonicalProvinceCode(candidate) === canonicalProvinceCode(safeProvinceCode34)
+      );
+    });
   }
 
   if (safeSearch) {

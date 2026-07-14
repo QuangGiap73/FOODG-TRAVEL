@@ -12,62 +12,62 @@ class AppLocalizationsVi extends AppLocalizations {
   String get appTitle => 'FoodG Travel';
 
   @override
-  String get language => 'Ngon ngu';
+  String get language => 'Ngôn ngữ';
 
   @override
-  String get chooseLanguage => 'Chon ngon ngu';
+  String get chooseLanguage => 'Chọn ngôn ngữ';
 
   @override
-  String get languageAppSection => 'Ngon ngu ung dung';
+  String get languageAppSection => 'Ngôn ngữ ứng dụng';
 
   @override
-  String get languageDefault => 'Ngon ngu mac dinh';
+  String get languageDefault => 'Ngôn ngữ mặc định';
 
   @override
-  String get languageEnglishSubtitle => 'Tieng Anh';
+  String get languageEnglishSubtitle => 'Tiếng Anh';
 
   @override
   String get languageInfo =>
-      'Thay doi ngon ngu se ap dung cho toan bo ung dung FoodS.';
+      'Thay đổi ngôn ngữ sẽ áp dụng cho toàn bộ ứng dụng FoodS.';
 
   @override
-  String get languageSupportedNote => 'Chi ho tro Tieng Viet va Tieng Anh.';
+  String get languageSupportedNote => 'Chỉ hỗ trợ Tiếng Việt và Tiếng Anh.';
 
   @override
-  String get vietnamese => 'Tieng Viet';
+  String get vietnamese => 'Tiếng Việt';
 
   @override
-  String get english => 'Tieng Anh';
+  String get english => 'Tiếng Anh';
 
   @override
-  String get save => 'Luu';
+  String get save => 'Lưu';
 
   @override
-  String get personalMembership => 'Bai viet';
+  String get personalMembership => 'Bài viết';
 
   @override
-  String get personalStore => 'Cua hang';
+  String get personalStore => 'Cửa hàng';
 
   @override
-  String get personalHome => 'To am';
+  String get personalHome => 'Ưa thích';
 
   @override
-  String get personalGuests => 'Khach';
+  String get personalGuests => 'Khách';
 
   @override
-  String get personalStatus => 'Trang thai cua toi';
+  String get personalStatus => 'Trạng thái của tôi';
 
   @override
-  String get personalChangePassword => 'Thay doi mat khau';
+  String get personalChangePassword => 'Thay đổi mật khẩu';
 
   @override
-  String get personalLanguage => 'Da ngon ngu';
+  String get personalLanguage => 'Đa ngôn ngữ';
 
   @override
-  String get personalFreeWithdraw => 'Rut mien phi';
+  String get personalFreeWithdraw => 'Rút miễn phí';
 
   @override
-  String get signInToViewProfile => 'Vui long dang nhap de xem trang ca nhan.';
+  String get signInToViewProfile => 'Vui lòng đăng nhập để xem trang cá nhân.';
 
   @override
   String get personalSurvey => 'Phiếu khảo sát';
@@ -95,85 +95,85 @@ class AppLocalizationsVi extends AppLocalizations {
   String get surveySaveFailed => 'Lưu thất bại';
 
   @override
-  String get notificationsTitle => 'Thong bao';
+  String get notificationsTitle => 'Thông báo';
 
   @override
-  String get notificationsMarkAllRead => 'Doc het';
+  String get notificationsMarkAllRead => 'Đọc hết';
 
   @override
-  String get notificationsEmpty => 'Chua co thong bao nao.';
+  String get notificationsEmpty => 'Chưa có thông báo nào.';
 
   @override
-  String get notificationsLoadError => 'Khong the tai thong bao.';
+  String get notificationsLoadError => 'Không thể tải thông báo.';
 
   @override
   String get notificationsSignInRequired =>
-      'Vui long dang nhap de xem thong bao.';
+      'Vui lòng đăng nhập để xem thông báo.';
 
   @override
-  String get notificationsSummaryNone => 'Ban da xem het thong bao.';
+  String get notificationsSummaryNone => 'Bạn đã xem hết thông báo.';
 
   @override
   String notificationsSummaryUnread(Object count) {
-    return 'Ban co $count thong bao chua doc.';
+    return 'Bạn có $count thông báo chưa đọc.';
   }
 
   @override
-  String get notificationsTodayLabel => 'Hom nay';
+  String get notificationsTodayLabel => 'Hôm nay';
 
   @override
-  String get notificationTypeLike => 'Thich';
+  String get notificationTypeLike => 'Thích';
 
   @override
-  String get notificationTypeComment => 'Binh luan';
+  String get notificationTypeComment => 'Bình luận';
 
   @override
   String notificationLikeTitle(Object name) {
-    return '$name da thich bai viet cua ban';
+    return '$name đã thích bài viết của bạn';
   }
 
   @override
   String notificationCommentTitle(Object name) {
-    return '$name da binh luan bai viet cua ban';
+    return '$name đã bình luận bài viết của bạn';
   }
 
   @override
-  String get notificationMissingPost => 'Khong tim thay bai viet.';
+  String get notificationMissingPost => 'Không tìm thấy bài viết.';
 
   @override
-  String get postDetailTitle => 'Bai viet';
+  String get postDetailTitle => 'Bài viết';
 
   @override
-  String get postDetailLoadError => 'Khong the tai bai viet.';
+  String get postDetailLoadError => 'Không thể tải bài viết.';
 
   @override
-  String get postDetailNotFound => 'Bai viet khong con ton tai.';
+  String get postDetailNotFound => 'Bài viết không còn tồn tại.';
 
   @override
-  String get actionLike => 'Thich';
+  String get actionLike => 'Thích';
 
   @override
-  String get actionComment => 'Binh luan';
+  String get actionComment => 'Bình luận';
 
   @override
   String get commonUserFallback => 'FoodG User';
 
   @override
-  String get timeJustNow => 'vua xong';
+  String get timeJustNow => 'vừa xong';
 
   @override
   String timeMinutesAgo(Object count) {
-    return '$count phut truoc';
+    return '$count phút trước';
   }
 
   @override
   String timeHoursAgo(Object count) {
-    return '$count gio truoc';
+    return '$count giờ trước';
   }
 
   @override
   String timeDaysAgo(Object count) {
-    return '$count ngay truoc';
+    return '$count ngày trước';
   }
 
   @override
@@ -182,226 +182,226 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get homeProvinceUnknown => 'Ban o dau?';
+  String get homeProvinceUnknown => 'Bạn ở đâu?';
 
   @override
-  String get homeLocationLabel => 'Dang o';
+  String get homeLocationLabel => 'Đang ở';
 
   @override
-  String get homeLocationPrompt => 'Ban dang o dau?';
+  String get homeLocationPrompt => 'Bạn đang ở đâu?';
 
   @override
-  String get homeProvincePickerTitle => 'Chon tinh thanh';
+  String get homeProvincePickerTitle => 'Chọn tỉnh thành';
 
   @override
   String get homeProvincePickerSearchHint =>
-      'Tim tinh... (VD: Ha Noi, DN, ...)';
+      'Tìm tỉnh... (VD: Hà Nội, ĐN, ...)';
 
   @override
-  String get homeProvinceNotFound => 'Khong tim thay tinh phu hop.';
+  String get homeProvinceNotFound => 'Không tìm thấy tỉnh phù hợp.';
 
   @override
-  String get homeProvinceSelected => 'Dang chon';
+  String get homeProvinceSelected => 'Đang chọn';
 
   @override
   String homeMonthlyDestinationTitle(Object month) {
-    return 'Diem den thang $month';
+    return 'Điểm đến tháng $month';
   }
 
   @override
-  String get homeTodaySuggestionError => 'Khong the tai mon goi y hom nay.';
+  String get homeTodaySuggestionError => 'Không thể tải món gợi ý hôm nay.';
 
   @override
-  String get homeProvinceLoadError => 'Khong the tai danh sach tinh.';
+  String get homeProvinceLoadError => 'Không thể tải danh sách tỉnh.';
 
   @override
-  String get homeProvinceEmpty => 'Chua co tinh thanh.';
+  String get homeProvinceEmpty => 'Chưa có tỉnh thành.';
 
   @override
-  String get homeProvinceNoImage => 'Tinh nay chua co anh.';
+  String get homeProvinceNoImage => 'Tỉnh này chưa có ảnh.';
 
   @override
-  String get homeSearchHint => 'Tim mon an, nguyen lieu...';
+  String get homeSearchHint => 'Tìm món ăn, nguyên liệu...';
 
   @override
-  String get homeSelectProvinceToSeeDishes => 'Chon tinh de xem mon an.';
+  String get homeSelectProvinceToSeeDishes => 'Chọn tỉnh để xem món ăn.';
 
   @override
-  String get homeDishListLoadError => 'Khong the tai danh sach mon.';
+  String get homeDishListLoadError => 'Không thể tải danh sách món.';
 
   @override
-  String get homeDishNotFound => 'Khong tim thay mon an phu hop.';
+  String get homeDishNotFound => 'Không tìm thấy món ăn phù hợp.';
 
   @override
-  String get homeSpecialtiesTitle => 'Dac san phai thu';
+  String get homeSpecialtiesTitle => 'Đặc sản phải thử';
 
   @override
-  String get homeSpecialtiesCollapse => 'Thu gon';
+  String get homeSpecialtiesCollapse => 'Thu gọn';
 
   @override
-  String get homeSpecialtiesSeeAll => 'Xem tat ca';
+  String get homeSpecialtiesSeeAll => 'Xem tất cả';
 
   @override
-  String get homeNearbyQuery => 'quan an';
+  String get homeNearbyQuery => 'quán ăn';
 
   @override
-  String get homeNearbyTitle => 'Quan ngon gan ban';
+  String get homeNearbyTitle => 'Quán ngon gần bạn';
 
   @override
-  String get homeNearbyViewMap => 'Xem ban do >>';
+  String get homeNearbyViewMap => 'Xem bản đồ >>';
 
   @override
-  String get homeNearbyEnableLocation => 'Hay bat vi tri de xem quan gan ban.';
+  String get homeNearbyEnableLocation => 'Hãy bật vị trí để xem quán gần bạn.';
 
   @override
-  String get homeNearbyLoadError => 'Khong tai duoc du lieu.';
+  String get homeNearbyLoadError => 'Không tải được dữ liệu.';
 
   @override
-  String get homeNearbyEmpty => 'Chua tim thay quan phu hop.';
+  String get homeNearbyEmpty => 'Chưa tìm thấy quán phù hợp.';
 
   @override
-  String get homeOpenNow => 'Dang mo';
+  String get homeOpenNow => 'Đang mở';
 
   @override
-  String get homeClosed => 'Dang dong';
+  String get homeClosed => 'Đang đóng';
 
   @override
-  String get homeTodayEatTitle => 'Hom nay an gi?';
+  String get homeTodayEatTitle => 'Hôm nay ăn gì?';
 
   @override
-  String get homeTodayRefresh => 'Doi goi y';
+  String get homeTodayRefresh => 'Đổi gợi ý';
 
   @override
-  String get homeDishFallback => 'Mon';
+  String get homeDishFallback => 'Món';
 
   @override
-  String get navHome => 'Trang chu';
+  String get navHome => 'Trang chủ';
 
   @override
-  String get navExplore => 'Kham pha';
+  String get navExplore => 'Khám phá';
 
   @override
-  String get navMap => 'Ban do';
+  String get navMap => 'Bản đồ';
 
   @override
-  String get navSaved => 'Luu';
+  String get navSaved => 'Lưu';
 
   @override
-  String get navProfile => 'Toi';
+  String get navProfile => 'Tôi';
 
   @override
-  String get commonCancel => 'Huy';
+  String get commonCancel => 'Hủy';
 
   @override
-  String get commonConfirm => 'Xac nhan';
+  String get commonConfirm => 'Xác nhận';
 
   @override
-  String get commonDelete => 'Xoa';
+  String get commonDelete => 'Xóa';
 
   @override
-  String get commonEdit => 'Sua';
+  String get commonEdit => 'Sửa';
 
   @override
-  String get commonSeeMore => 'Xem them';
+  String get commonSeeMore => 'Xem thêm';
 
   @override
-  String get commonCollapse => 'Thu gon';
+  String get commonCollapse => 'Thu gọn';
 
   @override
-  String get commonSend => 'Gui';
+  String get commonSend => 'Gửi';
 
   @override
-  String get commonNo => 'Khong';
+  String get commonNo => 'Không';
 
   @override
-  String get commonClose => 'Dong';
+  String get commonClose => 'Đóng';
 
   @override
-  String get commonUpdating => 'Dang cap nhat';
+  String get commonUpdating => 'Đang cập nhật';
 
   @override
-  String get noticeSuccessTitle => 'Thanh cong';
+  String get noticeSuccessTitle => 'Thành công';
 
   @override
-  String get noticePostCreated => 'Bai viet da duoc gui va dang cho duyet.';
+  String get noticePostCreated => 'Bài viết đã được gửi và đang chờ duyệt.';
 
   @override
-  String get noticePostUpdated => 'Chinh sua bai viet thanh cong.';
+  String get noticePostUpdated => 'Chỉnh sửa bài viết thành công.';
 
   @override
-  String get noticePostDeleted => 'Da xoa bai viet.';
+  String get noticePostDeleted => 'Đã xóa bài viết.';
 
   @override
-  String get commentTitle => 'Binh luan';
+  String get commentTitle => 'Bình luận';
 
   @override
-  String get commentEmpty => 'Chua co binh luan nao.';
+  String get commentEmpty => 'Chưa có bình luận nào.';
 
   @override
-  String get commentLoginRequired => 'Vui long dang nhap de binh luan.';
+  String get commentLoginRequired => 'Vui lòng đăng nhập để bình luận.';
 
   @override
-  String get commentHint => 'Viet binh luan...';
+  String get commentHint => 'Viết bình luận...';
 
   @override
-  String get communityTitle => 'Cong dong';
+  String get communityTitle => 'Cộng đồng';
 
   @override
-  String get communityTabNewest => 'Moi nhat';
+  String get communityTabNewest => 'Mới nhất';
 
   @override
-  String get communityTabTrending => 'Noi bat';
+  String get communityTabTrending => 'Nổi bật';
 
   @override
-  String get communityTabNear => 'Gan ban';
+  String get communityTabNear => 'Gần bạn';
 
   @override
-  String get communityTabProvince => 'Theo tinh';
+  String get communityTabProvince => 'Theo tỉnh';
 
   @override
-  String get communityPostButton => 'Tao bai viet';
+  String get communityPostButton => 'Tạo bài viết';
 
   @override
-  String get communityLoadError => 'Khong the tai bai viet.';
+  String get communityLoadError => 'Không thể tải bài viết.';
 
   @override
-  String get communityEmptyNewest => 'Chua co bai viet nao.';
+  String get communityEmptyNewest => 'Chưa có bài viết nào.';
 
   @override
-  String get communityEmptyTrending => 'Chua co bai viet noi bat.';
+  String get communityEmptyTrending => 'Chưa có bài viết nổi bật.';
 
   @override
-  String get communityEnableGps => 'Hay bat GPS de xem bai viet gan ban.';
+  String get communityEnableGps => 'Hãy bật GPS để xem bài viết gần bạn.';
 
   @override
-  String get communityGpsLoading => 'Dang lay vi tri...';
+  String get communityGpsLoading => 'Đang lấy vị trí...';
 
   @override
-  String get communityEnableGpsButton => 'Bat GPS';
+  String get communityEnableGpsButton => 'Bật GPS';
 
   @override
-  String get communityEmptyNear => 'Chua tim thay bai viet gan ban.';
+  String get communityEmptyNear => 'Chưa tìm thấy bài viết gần bạn.';
 
   @override
-  String get communitySelectProvince => 'Chon tinh thanh';
+  String get communitySelectProvince => 'Chọn tỉnh thành';
 
   @override
-  String get communityChangeProvince => 'Doi';
+  String get communityChangeProvince => 'Đổi';
 
   @override
-  String get communitySelectProvinceHint => 'Tim tinh...';
+  String get communitySelectProvinceHint => 'Tìm tỉnh...';
 
   @override
-  String get communityEmptyProvince => 'Chua co bai viet cho tinh nay.';
+  String get communityEmptyProvince => 'Chưa có bài viết cho tỉnh này.';
 
   @override
-  String get communityProvinceListEmpty => 'Chua co danh sach tinh.';
+  String get communityProvinceListEmpty => 'Chưa có danh sách tỉnh.';
 
   @override
-  String get communityDeleteTitle => 'Xoa bai viet';
+  String get communityDeleteTitle => 'Xóa bài viết';
 
   @override
-  String get communityDeleteConfirm => 'Ban chac chan muon xoa bai viet nay?';
+  String get communityDeleteConfirm => 'Bạn chắc chắn muốn xóa bài viết này?';
 
   @override
   String get communityMyPostsTitle => 'Bài viết của tôi';
@@ -468,36 +468,36 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String reviewSectionTitle(Object count) {
-    return 'Danh gia ($count)';
+    return 'Đánh giá ($count)';
   }
 
   @override
-  String get reviewWriteTitle => 'Viet danh gia';
+  String get reviewWriteTitle => 'Viết đánh giá';
 
   @override
-  String get reviewEmpty => 'Chua co bai danh gia.';
+  String get reviewEmpty => 'Chưa có bài đánh giá.';
 
   @override
-  String get reviewDeleteTitle => 'Xoa danh gia';
+  String get reviewDeleteTitle => 'Xóa đánh giá';
 
   @override
-  String get reviewDeleteConfirm => 'Ban chac chan muon xoa danh gia nay?';
+  String get reviewDeleteConfirm => 'Bạn chắc chắn muốn xóa đánh giá này?';
 
   @override
-  String get reviewDinedHere => 'Da an o quan nay';
+  String get reviewDinedHere => 'Đã ăn ở quán này';
 
   @override
   String reviewDinedHereWithDate(Object date) {
-    return '$date - Da an o quan nay';
+    return '$date - Đã ăn ở quán này';
   }
 
   @override
   String reviewFromUserWithDate(Object date) {
-    return '$date - Danh gia tu nguoi dung';
+    return '$date - Đánh giá từ người dùng';
   }
 
   @override
-  String get favoritesLoginRequired => 'Vui long dang nhap de xem muc da luu.';
+  String get favoritesLoginRequired => 'Vui lòng đăng nhập để xem mục đã lưu.';
 
   @override
   String get favoritesTitle => 'Lưu yêu thích';
@@ -524,330 +524,330 @@ class AppLocalizationsVi extends AppLocalizations {
   String get favoritesStatTodaySuggestions => 'gợi ý hôm nay';
 
   @override
-  String get favoritesFilterCentral => 'Mien Trung';
+  String get favoritesFilterCentral => 'Miền Trung';
 
   @override
   String get favoritesFilterSpicy => 'Cay';
 
   @override
-  String get favoritesFilterBudget => 'Gia re';
+  String get favoritesFilterBudget => 'Giá rẻ';
 
   @override
-  String get favoritesFilterBreakfast => 'Bua sang';
+  String get favoritesFilterBreakfast => 'Bữa sáng';
 
   @override
-  String get favoritesLoadError => 'Khong the tai danh sach yeu thich.';
+  String get favoritesLoadError => 'Không thể tải danh sách yêu thích.';
 
   @override
-  String get favoritePlacesLoadError => 'Khong the tai danh sach quan da luu.';
+  String get favoritePlacesLoadError => 'Không thể tải danh sách quán đã lưu.';
 
   @override
-  String get favoritePlacesEmpty => 'Chua co quan da luu.';
+  String get favoritePlacesEmpty => 'Chưa có quán đã lưu.';
 
   @override
-  String get favoritePlaceCategoryFallback => 'Am thuc dia phuong';
+  String get favoritePlaceCategoryFallback => 'Ẩm thực địa phương';
 
   @override
-  String get favoritePlaceNoRating => 'Chua co danh gia';
+  String get favoritePlaceNoRating => 'Chưa có đánh giá';
 
   @override
-  String get favoritePlaceAddressFallback => 'Dia chi dang cap nhat';
+  String get favoritePlaceAddressFallback => 'Địa chỉ đang cập nhật';
 
   @override
-  String get favoriteDishesLoadError => 'Khong the tai danh sach mon da luu.';
+  String get favoriteDishesLoadError => 'Không thể tải danh sách món đã lưu.';
 
   @override
-  String get favoriteDishesEmpty => 'Chua co mon da luu.';
+  String get favoriteDishesEmpty => 'Chưa có món đã lưu.';
 
   @override
-  String get favoriteSpicyNone => 'Khong cay';
+  String get favoriteSpicyNone => 'Không cay';
 
   @override
   String favoriteSpicyLevel(Object count) {
-    return 'Do cay $count';
+    return 'Độ cay $count';
   }
 
   @override
-  String get favoriteProvinceUpdating => 'Dang cap nhat tinh...';
+  String get favoriteProvinceUpdating => 'Đang cập nhật tỉnh...';
 
   @override
-  String get regionNorth => 'Mien Bac';
+  String get regionNorth => 'Miền Bắc';
 
   @override
-  String get regionCentral => 'Mien Trung';
+  String get regionCentral => 'Miền Trung';
 
   @override
-  String get regionSouth => 'Mien Nam';
+  String get regionSouth => 'Miền Nam';
 
   @override
-  String get placeNameFallback => 'Quan';
+  String get placeNameFallback => 'Quán';
 
   @override
-  String get placeAddressUpdating => 'Dia chi dang cap nhat';
+  String get placeAddressUpdating => 'Địa chỉ đang cập nhật';
 
   @override
-  String get placeNoPhone => 'Chua co so dien thoai';
+  String get placeNoPhone => 'Chưa có số điện thoại';
 
   @override
-  String get placeCallNow => 'Goi ngay';
+  String get placeCallNow => 'Gọi ngay';
 
   @override
-  String get placeCallAction => 'Goi';
+  String get placeCallAction => 'Gọi';
 
   @override
-  String get placeReserve => 'Dat ban';
+  String get placeReserve => 'Đặt bàn';
 
   @override
-  String get placeInvite => 'Moi ban';
+  String get placeInvite => 'Mời bạn';
 
   @override
-  String get placeSchedule => 'Len lich';
+  String get placeSchedule => 'Lên lịch';
 
   @override
-  String get placePricePerPerson => '/nguoi';
+  String get placePricePerPerson => '/người';
 
   @override
-  String get placeDistanceUpdating => 'Khoang cach dang cap nhat';
+  String get placeDistanceUpdating => 'Khoảng cách đang cập nhật';
 
   @override
   String placeDistanceAway(Object distance) {
-    return 'Cach day $distance';
+    return 'Cách đây $distance';
   }
 
   @override
-  String get placeOpenHoursUpdating => 'Dang cap nhat gio mo cua';
+  String get placeOpenHoursUpdating => 'Đang cập nhật giờ mở cửa';
 
   @override
   String placeClosesAt(Object time) {
-    return 'Dong luc $time';
+    return 'Đóng lúc $time';
   }
 
   @override
-  String get placeCategoryFallback => 'Am thuc dia phuong';
+  String get placeCategoryFallback => 'Ẩm thực địa phương';
 
   @override
-  String get placeNoRating => 'Chua co danh gia';
+  String get placeNoRating => 'Chưa có đánh giá';
 
   @override
-  String get placeMenuMustTry => 'Mon nen thu';
+  String get placeMenuMustTry => 'Món nên thử';
 
   @override
-  String get placeMenuFull => 'Menu day du';
+  String get placeMenuFull => 'Menu đầy đủ';
 
   @override
-  String get placeMenuUpdating => 'Dang cap nhat mon nen thu.';
+  String get placeMenuUpdating => 'Đang cập nhật món nên thử.';
 
   @override
-  String get placeInfoTitle => 'Thong tin quan';
+  String get placeInfoTitle => 'Thông tin quán';
 
   @override
-  String get placeOpenHoursLabel => 'Gio mo cua';
+  String get placeOpenHoursLabel => 'Giờ mở cửa';
 
   @override
-  String get amenityAirConditioner => 'May lanh';
+  String get amenityAirConditioner => 'Máy lạnh';
 
   @override
-  String get amenityBankTransfer => 'Chuyen khoan';
+  String get amenityBankTransfer => 'Chuyển khoản';
 
   @override
-  String get amenityFreeParking => 'Do xe mien phi';
+  String get amenityFreeParking => 'Đỗ xe miễn phí';
 
   @override
-  String get mapSearchHint => 'Tim dia diem...';
+  String get mapSearchHint => 'Tìm địa điểm...';
 
   @override
-  String get mapCategoryRestaurants => 'Quan an';
+  String get mapCategoryRestaurants => 'Quán ăn';
 
   @override
-  String get mapCategoryCafe => 'Cafe';
+  String get mapCategoryCafe => 'Cà phê';
 
   @override
-  String get mapCategorySnack => 'An vat';
+  String get mapCategorySnack => 'Ăn vặt';
 
   @override
-  String get mapCategoryFastFood => 'Do an nhanh';
+  String get mapCategoryFastFood => 'Đồ ăn nhanh';
 
   @override
-  String get mapCategorySeafood => 'Hai san';
+  String get mapCategorySeafood => 'Hải sản';
 
   @override
-  String get mapStyleNormal => 'Thuong';
+  String get mapStyleNormal => 'Thường';
 
   @override
-  String get mapStyleHighlight => 'Noi bat';
+  String get mapStyleHighlight => 'Nổi bật';
 
   @override
-  String get mapStyleSatellite => 'Ve tinh';
+  String get mapStyleSatellite => 'Vệ tinh';
 
   @override
-  String get mapEnableLocation => 'Vui long bat vi tri.';
+  String get mapEnableLocation => 'Vui lòng bật vị trí.';
 
   @override
-  String get mapLocationUnavailable => 'Chua co vi tri.';
+  String get mapLocationUnavailable => 'Chưa có vị trí.';
 
   @override
-  String get mapPlaceNotFound => 'Khong tim thay dia diem.';
+  String get mapPlaceNotFound => 'Không tìm thấy địa điểm.';
 
   @override
-  String get mapEnableGpsToSearch => 'Hay bat GPS de tim quan.';
+  String get mapEnableGpsToSearch => 'Hãy bật GPS để tìm quán.';
 
   @override
-  String get mapPermissionDenied => 'Chua co quyen vi tri.';
+  String get mapPermissionDenied => 'Chưa có quyền vị trí.';
 
   @override
-  String get mapGpsInvalid => 'Vi tri GPS khong hop le.';
+  String get mapGpsInvalid => 'Vị trí GPS không hợp lệ.';
 
   @override
-  String get mapNearbyNotFound => 'Khong tim thay quan gan day.';
+  String get mapNearbyNotFound => 'Không tìm thấy quán gần đây.';
 
   @override
-  String get mapLocationTimeout => 'Qua thoi gian lay vi tri.';
+  String get mapLocationTimeout => 'Quá thời gian lấy vị trí.';
 
   @override
   String mapSearchError(Object error) {
-    return 'Loi tim kiem: $error';
+    return 'Lỗi tìm kiếm: $error';
   }
 
   @override
-  String get mapDirectionsError => 'Khong lay duoc chi duong.';
+  String get mapDirectionsError => 'Không lấy được chỉ đường.';
 
   @override
-  String get mapOpenNow => 'Dang mo';
+  String get mapOpenNow => 'Đang mở';
 
   @override
-  String get mapClosed => 'Dang dong';
+  String get mapClosed => 'Đang đóng';
 
   @override
-  String get mapDirections => 'Chi duong';
+  String get mapDirections => 'Chỉ đường';
 
   @override
   String mapNearbyPlacesTitle(Object count) {
-    return 'Quan gan day ($count)';
+    return 'Quán gần đây ($count)';
   }
 
   @override
   String mapEtaMinutes(Object minutes) {
-    return '~$minutes phut';
+    return '~$minutes phút';
   }
 
   @override
-  String get mapSortDistance => 'Khoang cach';
+  String get mapSortDistance => 'Khoảng cách';
 
   @override
-  String get mapOpenMap => 'Mo ban do';
+  String get mapOpenMap => 'Mở bản đồ';
 
   @override
-  String get mapNoCoordinates => 'Khong co toa do';
+  String get mapNoCoordinates => 'Không có tọa độ';
 
   @override
-  String get mapPlaceFallbackName => 'Quan gan day';
+  String get mapPlaceFallbackName => 'Quán gần đây';
 
   @override
   String get genderMale => 'Nam';
 
   @override
-  String get genderFemale => 'Nu';
+  String get genderFemale => 'Nữ';
 
   @override
-  String get genderOther => 'Khac';
+  String get genderOther => 'Khác';
 
   @override
-  String get genderUnknown => 'Khong xac dinh';
+  String get genderUnknown => 'Không xác định';
 
   @override
-  String get profileEditTitle => 'Chinh sua thong tin';
+  String get profileEditTitle => 'Chỉnh sửa thông tin';
 
   @override
-  String get profileNameLabel => 'Ho ten';
+  String get profileNameLabel => 'Họ tên';
 
   @override
-  String get profileNameRequired => 'Vui long nhap ten';
+  String get profileNameRequired => 'Vui lòng nhập tên';
 
   @override
-  String get profileGenderLabel => 'Gioi tinh';
+  String get profileGenderLabel => 'Giới tính';
 
   @override
-  String get profileGenderHint => 'Chon gioi tinh';
+  String get profileGenderHint => 'Chọn giới tính';
 
   @override
-  String get profileDobLabel => 'Ngay sinh';
+  String get profileDobLabel => 'Ngày sinh';
 
   @override
-  String get profilePhoneLabel => 'So dien thoai';
+  String get profilePhoneLabel => 'Số điện thoại';
 
   @override
   String get profileEmailLabel => 'Email';
 
   @override
-  String get profileAvatarTitle => 'Hinh dai dien';
+  String get profileAvatarTitle => 'Hình đại diện';
 
   @override
-  String get profileAvatarUploadFailed => 'Tai anh that bai';
+  String get profileAvatarUploadFailed => 'Tải ảnh thất bại';
 
   @override
-  String get personalLocation => 'Vi tri';
+  String get personalLocation => 'Vị trí';
 
   @override
-  String get logoutTitle => 'Dang xuat';
+  String get logoutTitle => 'Đăng xuất';
 
   @override
-  String get logoutConfirm => 'Ban co chac muon dang xuat khong?';
+  String get logoutConfirm => 'Bạn có chắc muốn đăng xuất không?';
 
   @override
-  String get logoutAction => 'Dang xuat';
+  String get logoutAction => 'Đăng xuất';
 
   @override
-  String get themeSettingsTitle => 'Giao dien';
+  String get themeSettingsTitle => 'Giao diện';
 
   @override
-  String get themeLight => 'Sang';
+  String get themeLight => 'Sáng';
 
   @override
-  String get themeLightDesc => 'Giao dien nen sang, de nhin ban ngay';
+  String get themeLightDesc => 'Giao diện nền sáng, dễ nhìn ban ngày';
 
   @override
-  String get themeDark => 'Toi';
+  String get themeDark => 'Tối';
 
   @override
-  String get themeDarkDesc => 'Giao dien nen toi, diu mat ban dem';
+  String get themeDarkDesc => 'Giao diện nền tối, dịu mắt ban đêm';
 
   @override
-  String get themeSystem => 'Tu dong';
+  String get themeSystem => 'Tự động';
 
   @override
-  String get themeSystemDesc => 'Tu doi theo cai dat thiet bi';
+  String get themeSystemDesc => 'Tự đổi theo cài đặt thiết bị';
 
   @override
-  String get themeAppearanceSection => 'Giao dien';
+  String get themeAppearanceSection => 'Giao diện';
 
   @override
-  String get themeDisplayMode => 'Che do hien thi';
+  String get themeDisplayMode => 'Chế độ hiển thị';
 
   @override
-  String get themePreviewTitle => 'Xem truoc giao dien';
+  String get themePreviewTitle => 'Xem trước giao diện';
 
   @override
   String get themePreviewNote =>
-      'Khi bat theo he thong, ung dung se tu doi mau theo cai dat thiet bi.';
+      'Khi bật theo hệ thống, ứng dụng sẽ tự đổi màu theo cài đặt thiết bị.';
 
   @override
-  String get locationSettingsTitle => 'Vi tri';
+  String get locationSettingsTitle => 'Vị trí';
 
   @override
   String get locationSettingsDescription =>
-      'Bat/tat vi tri de hien thi tren ban do.';
+      'Bật/tắt vị trí để hiển thị trên bản đồ.';
 
   @override
-  String get locationEnable => 'Bat vi tri';
+  String get locationEnable => 'Bật vị trí';
 
   @override
-  String get locationOpenSettings => 'Mo cai dat GPS';
+  String get locationOpenSettings => 'Mở cài đặt GPS';
 
   @override
-  String get locationOpenAppSettings => 'Mo cai dat ung dung';
+  String get locationOpenAppSettings => 'Mở cài đặt ứng dụng';
 
   @override
-  String get locationError => 'Loi vi tri.';
+  String get locationError => 'Lỗi vị trí.';
 
   @override
   String get changePasswordTitle => 'Đổi mật khẩu';
@@ -984,181 +984,181 @@ class AppLocalizationsVi extends AppLocalizations {
   String get changePasswordUpdate => 'Cập nhật mật khẩu';
 
   @override
-  String get authLoginTitle => 'Chao mung tro lai!';
+  String get authLoginTitle => 'Chào mừng trở lại!';
 
   @override
-  String get authLoginSubtitle => 'Dang nhap tai khoan mon an';
+  String get authLoginSubtitle => 'Đăng nhập tài khoản món ăn';
 
   @override
   String get authEmailLabel => 'Email';
 
   @override
-  String get authEmailRequired => 'Vui long nhap email';
+  String get authEmailRequired => 'Vui lòng nhập email';
 
   @override
-  String get authEmailInvalid => 'Email khong hop le';
+  String get authEmailInvalid => 'Email không hợp lệ';
 
   @override
-  String get authPasswordLabel => 'Mat khau';
+  String get authPasswordLabel => 'Mật khẩu';
 
   @override
-  String get authPasswordRequired => 'Vui long nhap mat khau';
+  String get authPasswordRequired => 'Vui lòng nhập mật khẩu';
 
   @override
-  String get authLoginAction => 'Dang nhap';
+  String get authLoginAction => 'Đăng nhập';
 
   @override
-  String get authOr => 'hoac';
+  String get authOr => 'hoặc';
 
   @override
-  String get authContinueGoogle => 'Tiep tuc voi Google';
+  String get authContinueGoogle => 'Tiếp tục với Google';
 
   @override
-  String get authContinueApple => 'Tiep tuc voi Apple';
+  String get authContinueApple => 'Tiếp tục với Apple';
 
   @override
-  String get authForgotPassword => 'Quen mat khau?';
+  String get authForgotPassword => 'Quên mật khẩu?';
 
   @override
-  String get authNoAccount => 'Chua co tai khoan? ';
+  String get authNoAccount => 'Chưa có tài khoản? ';
 
   @override
-  String get authRegisterAction => 'Dang ky';
+  String get authRegisterAction => 'Đăng ký';
 
   @override
-  String get authLoginFailed => 'Dang nhap that bai';
+  String get authLoginFailed => 'Đăng nhập thất bại';
 
   @override
-  String get authLoginUserNotFound => 'Tai khoan khong ton tai';
+  String get authLoginUserNotFound => 'Tài khoản không tồn tại';
 
   @override
-  String get authLoginWrongPassword => 'Mat khau khong dung';
+  String get authLoginWrongPassword => 'Mật khẩu không đúng';
 
   @override
-  String get authGoogleFailed => 'Dang nhap Google that bai';
+  String get authGoogleFailed => 'Đăng nhập Google thất bại';
 
   @override
   String get authGoogleAccountExists =>
-      'Tai khoan da ton tai voi cach dang nhap khac';
+      'Tài khoản đã tồn tại với cách đăng nhập khác';
 
   @override
-  String get authGoogleInvalidCredential => 'Thong tin Google khong hop le';
+  String get authGoogleInvalidCredential => 'Thông tin Google không hợp lệ';
 
   @override
   String authError(Object error) {
-    return 'Loi: $error';
+    return 'Lỗi: $error';
   }
 
   @override
-  String get authRegisterTitle => 'Tao tai khoan';
+  String get authRegisterTitle => 'Tạo tài khoản';
 
   @override
   String get authRegisterSubtitle =>
-      'Tham gia va kham pha quan ngon quanh ban.';
+      'Tham gia và khám phá quán ngon quanh bạn.';
 
   @override
-  String get authFullNameLabel => 'Ho ten';
+  String get authFullNameLabel => 'Họ tên';
 
   @override
-  String get authFullNameRequired => 'Vui long nhap ho ten';
+  String get authFullNameRequired => 'Vui lòng nhập họ tên';
 
   @override
-  String get authPhoneOptionalLabel => 'So dien thoai (tuy chon)';
+  String get authPhoneOptionalLabel => 'Số điện thoại (tùy chọn)';
 
   @override
-  String get authConfirmPasswordLabel => 'Nhap lai mat khau';
+  String get authConfirmPasswordLabel => 'Nhập lại mật khẩu';
 
   @override
-  String get authConfirmPasswordRequired => 'Vui long nhap lai mat khau';
+  String get authConfirmPasswordRequired => 'Vui lòng nhập lại mật khẩu';
 
   @override
-  String get authPasswordTooShort => 'Mat khau toi thieu 6 ky tu';
+  String get authPasswordTooShort => 'Mật khẩu tối thiểu 6 ký tự';
 
   @override
-  String get authPasswordMismatch => 'Mat khau khong trung khop';
+  String get authPasswordMismatch => 'Mật khẩu không trùng khớp';
 
   @override
-  String get authPasswordTooWeak => 'Mat khau qua yeu (toi thieu 6 ky tu)';
+  String get authPasswordTooWeak => 'Mật khẩu quá yếu (tối thiểu 6 ký tự)';
 
   @override
-  String get authRegisterSuccess => 'Dang ky thanh cong';
+  String get authRegisterSuccess => 'Đăng ký thành công';
 
   @override
-  String get authAgreePrefix => 'Toi dong y voi ';
+  String get authAgreePrefix => 'Tôi đồng ý với ';
 
   @override
-  String get authTerms => 'Dieu khoan';
+  String get authTerms => 'Điều khoản';
 
   @override
-  String get authAnd => ' va ';
+  String get authAnd => ' và ';
 
   @override
-  String get authPrivacy => 'Chinh sach bao mat';
+  String get authPrivacy => 'Chính sách bảo mật';
 
   @override
   String get authDot => '.';
 
   @override
-  String get authRegisterFailed => 'Dang ky that bai';
+  String get authRegisterFailed => 'Đăng ký thất bại';
 
   @override
-  String get authRegisterEmailInUse => 'Email da duoc su dung';
+  String get authRegisterEmailInUse => 'Email đã được sử dụng';
 
   @override
-  String get authRegisterUserMissing => 'Khong lay duoc tai khoan vua tao';
+  String get authRegisterUserMissing => 'Không lấy được tài khoản vừa tạo';
 
   @override
-  String get provinceLoadError => 'Khong the tai tinh thanh.';
+  String get provinceLoadError => 'Không thể tải tỉnh thành.';
 
   @override
-  String get provinceNotFound => 'Khong tim thay tinh.';
+  String get provinceNotFound => 'Không tìm thấy tỉnh.';
 
   @override
-  String get provinceIntroTitle => 'Gioi thieu';
+  String get provinceIntroTitle => 'Giới thiệu';
 
   @override
-  String get provinceNoDescription => 'Chua co mo ta.';
+  String get provinceNoDescription => 'Chưa có mô tả.';
 
   @override
-  String get provinceSpecialtiesTitle => 'Dac san tieu bieu';
+  String get provinceSpecialtiesTitle => 'Đặc sản tiêu biểu';
 
   @override
-  String get provinceDishesLoadError => 'Khong the tai mon an.';
+  String get provinceDishesLoadError => 'Không thể tải món ăn.';
 
   @override
-  String get provinceNoDishes => 'Chua co mon an cho tinh nay.';
+  String get provinceNoDishes => 'Chưa có món ăn cho tỉnh này.';
 
   @override
-  String get dishNotFound => 'Khong tim thay mon an.';
+  String get dishNotFound => 'Không tìm thấy món ăn.';
 
   @override
-  String get dishLoginToSave => 'Vui long dang nhap de luu.';
+  String get dishLoginToSave => 'Vui lòng đăng nhập để lưu.';
 
   @override
-  String get dishShareTodo => 'Chia se sap co.';
+  String get dishShareTodo => 'Chia sẻ sắp có.';
 
   @override
-  String get routeMissingProvinceId => 'Thieu id tinh';
+  String get routeMissingProvinceId => 'Thiếu id tỉnh';
 
   @override
-  String get routeMissingDishId => 'Thieu id mon an';
+  String get routeMissingDishId => 'Thiếu id món ăn';
 
   @override
-  String get routeNotFound => 'Khong tim thay duong dan';
+  String get routeNotFound => 'Không tìm thấy đường dẫn';
 
   @override
-  String get commonBack => 'Quay lai';
+  String get commonBack => 'Quay lại';
 
   @override
-  String get reviewAlreadyTitle => 'Ban da danh gia';
+  String get reviewAlreadyTitle => 'Bạn đã đánh giá';
 
   @override
   String get reviewAlreadyMessage =>
-      'Ban da danh gia dia diem nay. Sua danh gia?';
+      'Bạn đã đánh giá địa điểm này. Sửa đánh giá?';
 
   @override
-  String get reviewEditConfirm => 'Sua danh gia';
+  String get reviewEditConfirm => 'Sửa đánh giá';
 
   @override
-  String get reviewHint => 'Chia se cam nhan cua ban...';
+  String get reviewHint => 'Chia sẻ cảm nhận của bạn...';
 }

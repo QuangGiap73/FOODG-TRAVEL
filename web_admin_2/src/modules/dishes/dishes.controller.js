@@ -10,7 +10,6 @@ const {
   uploadDishImage,
   deleteDish,
 } = require('./dishes.service');
-const { listProvinces } = require('../provinces/provinces.service');
 const {
   CANONICAL_PROVINCES_34,
   LEGACY_PROVINCES_63,
@@ -69,7 +68,7 @@ async function renderCreatePage(res, options = {}) {
 }
 
 async function getDishesPage(req, res) {
-  const provinces = await listProvinces();
+  const provinces = CANONICAL_PROVINCES_34;
   const pageData = await getDishListPage({
     page: req.query.page,
     pageSize: req.query.pageSize,

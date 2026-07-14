@@ -88,7 +88,11 @@ class JourneyProvinceDetailPage extends StatelessWidget {
                                           ),
                                   ),
                                   const SizedBox(height: 12),
-                                  _FeaturedDishCards(dishes: featuredDishes),
+                                  _FeaturedDishCards(
+                                    userId: userId,
+                                    currentProvinceCode: provinceCode,
+                                    dishes: featuredDishes,
+                                  ),
                                   const SizedBox(height: 20),
                                   _SectionTitle(
                                     title: 'Quán đã ăn',
@@ -694,8 +698,14 @@ class _CountBadge extends StatelessWidget {
 }
 
 class _FeaturedDishCards extends StatelessWidget {
-  const _FeaturedDishCards({required this.dishes});
+  const _FeaturedDishCards({
+    required this.userId,
+    required this.currentProvinceCode,
+    required this.dishes,
+  });
 
+  final String userId;
+  final String currentProvinceCode;
   final List<DishModel> dishes;
 
   @override
@@ -721,14 +731,19 @@ class _FeaturedDishCards extends StatelessWidget {
     }
 
     return SizedBox(
-      height: 182,
+      height: 172,
       child: ListView.separated(
+        padding: EdgeInsets.zero,
         scrollDirection: Axis.horizontal,
         itemCount: dishes.length,
         separatorBuilder: (_, __) => const SizedBox(width: 12),
         itemBuilder: (context, index) {
           final dish = dishes[index];
-          return _FeaturedDishCard(dish: dish);
+          return _FeaturedDishCard(
+            userId: userId,
+            currentProvinceCode: currentProvinceCode,
+            dish: dish,
+          );
         },
       ),
     );
@@ -736,8 +751,14 @@ class _FeaturedDishCards extends StatelessWidget {
 }
 
 class _FeaturedDishCard extends StatelessWidget {
-  const _FeaturedDishCard({required this.dish});
+  const _FeaturedDishCard({
+    required this.userId,
+    required this.currentProvinceCode,
+    required this.dish,
+  });
 
+  final String userId;
+  final String currentProvinceCode;
   final DishModel dish;
 
   @override
@@ -745,9 +766,15 @@ class _FeaturedDishCard extends StatelessWidget {
     final dishName = dish.getName('vi').trim().isNotEmpty
         ? dish.getName('vi').trim()
         : dish.name;
+    final legacyName = dish.effectiveLegacyProvinceName;
+    final legacyCode = dish.legacyProvinceCode.trim();
+    final hasLegacyTarget =
+        legacyName.isNotEmpty &&
+        legacyCode.isNotEmpty &&
+        legacyCode.toLowerCase() != currentProvinceCode.trim().toLowerCase();
 
     return SizedBox(
-      width: 148,
+      width: 156,
       child: Material(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
@@ -775,55 +802,104 @@ class _FeaturedDishCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ClipRRect(
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(20),
-                  ),
-                  child: _DishImage(imageUrl: dish.imageUrl),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          dishName,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w800,
-                            color: Color(0xFF212632),
-                            height: 1.2,
-                          ),
-                        ),
-                        const Spacer(),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 5,
-                          ),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFFF0DF),
-                            borderRadius: BorderRadius.circular(999),
-                          ),
-                          child: const Text(
-                            'Xem chi tiết',
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w800,
-                              color: Color(0xFFFF7A00),
+                Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(20),
+                      ),
+                      child: _DishImage(imageUrl: dish.imageUrl),
+                    ),
+                    if (hasLegacyTarget)
+                      Positioned(
+                        top: 8,
+                        left: 8,
+                        child: InkWell(
+                          onTap: () => _openLegacyProvince(context),
+                          borderRadius: BorderRadius.circular(999),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 5,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFFF0DF),
+                              borderRadius: BorderRadius.circular(999),
+                              border: Border.all(
+                                color: const Color(0xFFFFD3A8),
+                              ),
+                            ),
+                            child: Text(
+                              dish.legacyOriginBadge,
+                              style: const TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w800,
+                                color: Color(0xFFFF7A00),
+                              ),
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        dishName,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w800,
+                          color: Color(0xFF212632),
+                          height: 1.2,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 5,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFFF0DF),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: const Text(
+                          'Xem chi tiết',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w800,
+                            color: Color(0xFFFF7A00),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  void _openLegacyProvince(BuildContext context) {
+    final legacyCode = dish.legacyProvinceCode.trim();
+    final legacyName = dish.effectiveLegacyProvinceName;
+    if (legacyCode.isEmpty || legacyName.isEmpty) return;
+
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => JourneyProvinceDetailPage(
+          userId: userId,
+          provinceCode: legacyCode,
+          provinceName: legacyName,
         ),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:food_travel/l10n/app_localizations.dart';
+import 'package:food_travel/widgets/network_image_fallback.dart';
 
 import '../../models/dish_model.dart';
 import '../../services/favorite_service.dart';
@@ -98,7 +99,11 @@ class _FavoriteDishCard extends StatelessWidget {
                 children: [
                   Positioned.fill(
                     child: imageUrl.isNotEmpty
-                        ? Image.network(imageUrl, fit: BoxFit.cover)
+                        ? Image.network(
+                            imageUrl,
+                            fit: BoxFit.cover,
+                            errorBuilder: networkImageErrorBuilder,
+                          )
                         : Container(
                             color: theme.colorScheme.surfaceVariant,
                             child: const Icon(Icons.image, size: 32),

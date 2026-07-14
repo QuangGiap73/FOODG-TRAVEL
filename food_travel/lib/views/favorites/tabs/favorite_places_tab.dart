@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_travel/l10n/app_localizations.dart';
+import 'package:food_travel/widgets/network_image_fallback.dart';
 
 import '../../../models/places_model.dart';
 import '../../../services/restaurants/favorite_place_service.dart';
@@ -135,6 +136,7 @@ class _RestaurantCard extends StatelessWidget {
                           width: 92,
                           height: 92,
                           fit: BoxFit.cover,
+                          errorBuilder: networkImageErrorBuilder,
                         )
                       : Container(
                           width: 92,

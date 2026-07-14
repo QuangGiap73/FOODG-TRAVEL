@@ -1,6 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:food_travel/l10n/app_localizations.dart';
+import 'package:food_travel/widgets/network_image_fallback.dart';
 
 import '../../../models/places_model.dart';
 import 'place_detail_typography.dart';
@@ -160,7 +161,11 @@ class MenuCard extends StatelessWidget {
             child: AspectRatio(
               aspectRatio: 4 / 3,
               child: item.photoUrl.isNotEmpty
-                  ? Image.network(item.photoUrl, fit: BoxFit.cover)
+                  ? Image.network(
+                      item.photoUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: networkImageErrorBuilder,
+                    )
                   : Container(color: const Color(0xFF1F242C)),
             ),
           ),
