@@ -167,6 +167,13 @@ class UserPreferences {
           .where((e) => e.isNotEmpty)
           .toList();
     }
+    if (value is String) {
+      return value
+          .split(RegExp(r'[\n,]+'))
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .toList();
+    }
     return [];
   }
 }

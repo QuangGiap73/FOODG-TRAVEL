@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:food_travel/l10n/app_localizations.dart';
 
@@ -9,12 +7,10 @@ class TodayEatSection extends StatefulWidget {
   const TodayEatSection({
     super.key,
     required this.dishes,
-    required this.provinceSeed,
     this.onTapDish,
   });
 
   final List<DishModel> dishes;
-  final String provinceSeed;
   final ValueChanged<DishModel>? onTapDish;
 
   @override
@@ -30,7 +26,6 @@ class _TodayEatSectionState extends State<TodayEatSection> {
     final t = AppLocalizations.of(context)!;
     final picks = _pickThreeDishes(
       dishes: widget.dishes,
-      provinceSeed: widget.provinceSeed,
       refreshVersion: _refreshVersion,
     );
 
@@ -269,28 +264,17 @@ String _twoWordLabel(String name, AppLocalizations t) {
 
 List<DishModel> _pickThreeDishes({
   required List<DishModel> dishes,
-  required String provinceSeed,
   required int refreshVersion,
 }) {
   if (dishes.isEmpty) return const [];
   if (dishes.length <= 3) return List<DishModel>.from(dishes);
 
-  final now = DateTime.now();
-  // Seed theo ngay + tinh + so lan doi goi y
-  final daySeed = now.year * 1000 + _dayOfYear(now);
-  final seed = '$provinceSeed-$daySeed-$refreshVersion'.hashCode;
-  final random = Random(seed);
-
-  final pool = List<DishModel>.from(dishes);
+  // Danh sach dau vao da duoc recommendation service xep hang.
+  // Moi lan doi goi y se lay nhom 3 mon tiep theo, khong random lai top score.
+  final start = (refreshVersion * 3) % dishes.length;
   final picks = <DishModel>[];
-  while (picks.length < 3 && pool.isNotEmpty) {
-    final index = random.nextInt(pool.length);
-    picks.add(pool.removeAt(index));
+  for (var i = 0; i < 3; i++) {
+    picks.add(dishes[(start + i) % dishes.length]);
   }
   return picks;
-}
-
-int _dayOfYear(DateTime date) {
-  final first = DateTime(date.year, 1, 1);
-  return date.difference(first).inDays + 1;
 }

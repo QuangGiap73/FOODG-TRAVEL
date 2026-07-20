@@ -106,16 +106,22 @@ class FoodService {
 
     final keySet = keys.map(_normalize).where((e) => e.isNotEmpty).toSet();
 
+    final queryKeys = keys.take(10).toList();
+
     return _db
         .collection('dishes')
+        .where('provinceCode34', whereIn: queryKeys)
+        .limit(_provinceDishDisplayLimit * 2)
         .snapshots()
         .map((snap) {
-          final all = snap.docs.map(DishModel.fromDoc).toList();
           final filtered =
-              all.where((dish) {
-                  final candidates = _provinceCandidates(dish);
-                  return candidates.any(keySet.contains);
-                }).toList()
+              snap.docs
+                  .map(DishModel.fromDoc)
+                  .where((dish) {
+                    final candidates = _provinceCandidates(dish);
+                    return candidates.any(keySet.contains);
+                  })
+                  .toList()
                 ..sort(
                   (a, b) => _provinceKeysMatchScore(
                     b,

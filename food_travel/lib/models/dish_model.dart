@@ -37,6 +37,10 @@ class DishModel {
   final String provinceName34;
   final String legacyProvinceCode;
   final String legacyProvinceName;
+  final List<String> dishTypeCodes;
+  final List<String> mealTimeTags;
+  final List<String> ingredientsListNormalized;
+  final List<String> suitableForSeason;
 
   const DishModel({
     required this.id,
@@ -74,6 +78,10 @@ class DishModel {
     this.provinceName34 = '',
     this.legacyProvinceCode = '',
     this.legacyProvinceName = '',
+    this.dishTypeCodes = const [],
+    this.mealTimeTags = const [],
+    this.ingredientsListNormalized = const [],
+    this.suitableForSeason = const [],
   });
 
   factory DishModel.fromDoc(DocumentSnapshot doc) {
@@ -153,6 +161,19 @@ class DishModel {
       provinceName34: provinceName34,
       legacyProvinceCode: legacyProvinceCode,
       legacyProvinceName: legacyProvinceName,
+      dishTypeCodes: _toStringList(
+        data['dishTypeCodes'] ?? data['dish_type_codes'],
+      ),
+      mealTimeTags: _toStringList(
+        data['mealTimeTags'] ?? data['meal_time_tags'],
+      ),
+      ingredientsListNormalized: _toStringList(
+        data['ingredientsListNormalized'] ??
+            data['ingredients_list_normalized'],
+      ),
+      suitableForSeason: _toStringList(
+        data['suitableForSeason'] ?? data['suitable_for_season'],
+      ),
     );
   }
 

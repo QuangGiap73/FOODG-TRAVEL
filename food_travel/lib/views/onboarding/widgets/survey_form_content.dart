@@ -118,8 +118,33 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
   String _label(_Choice item) => _isVi ? item.vi : item.en;
 
   Future<void> _handleSubmit() async {
+    _commitPendingTags(_favoriteInput, widget.controller.favoritesController);
+    _commitPendingTags(_dislikeInput, widget.controller.dislikesController);
+    _commitPendingTags(_allergyInput, widget.controller.allergiesController);
     if (!_formKey.currentState!.validate()) return;
     await widget.onSubmit();
+  }
+
+  void _commitPendingTags(
+    TextEditingController input,
+    TextEditingController source,
+  ) {
+    final pending = input.text
+        .split(RegExp(r'[\n,]+'))
+        .map((value) => value.trim())
+        .where((value) => value.isNotEmpty);
+    if (pending.isEmpty) return;
+
+    final items = source.text
+        .split(RegExp(r'[\n,]+'))
+        .map((value) => value.trim())
+        .where((value) => value.isNotEmpty)
+        .toList();
+    for (final item in pending) {
+      if (!items.contains(item)) items.add(item);
+    }
+    source.text = items.join(', ');
+    input.clear();
   }
 
   @override
@@ -1053,7 +1078,7 @@ class _TagEditor extends StatefulWidget {
 
 class _TagEditorState extends State<_TagEditor> {
   List<String> get _items => widget.sourceController.text
-      .split(',')
+      .split(RegExp(r'[\n,]+'))
       .map((e) => e.trim())
       .where((e) => e.isNotEmpty)
       .toList();
