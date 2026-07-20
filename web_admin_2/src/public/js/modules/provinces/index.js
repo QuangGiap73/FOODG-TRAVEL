@@ -28,6 +28,7 @@
   const provinceError = document.getElementById('province-error');
   const provinceSubmitButton = document.getElementById('province-submit-button');
   const provincesTableBody = document.getElementById('provinces-table-body');
+  const provinceCheckAll = document.getElementById('province-check-all');
   const provinceSearch = document.getElementById('province-search');
   const provinceReset = document.getElementById('province-reset');
   const provinceOpenCreate = document.getElementById('province-open-create');
@@ -75,6 +76,18 @@
 
   function setError(node, message) {
     if (node) node.textContent = message || '';
+  }
+
+  function provinceRowChecks() {
+    return Array.from(document.querySelectorAll('.province-row-check'));
+  }
+
+  function syncProvinceCheckState() {
+    if (!provinceCheckAll) return;
+    const checks = provinceRowChecks();
+    const checkedCount = checks.filter((item) => item.checked).length;
+    provinceCheckAll.checked = checks.length > 0 && checkedCount === checks.length;
+    provinceCheckAll.indeterminate = checkedCount > 0 && checkedCount < checks.length;
   }
 
   function resetError(node) {
@@ -167,6 +180,8 @@
   }
 
   function renderRegions() {
+    if (!regionList || !regionFilter || !provinceRegion) return;
+
     regionList.innerHTML = regionsCache.map((region) => `
       <button class="provinces-region-item ${currentRegionFilter === region.code ? 'is-active' : ''}" type="button" data-region-code="${region.code}">
         <span class="provinces-region-item__main">
@@ -207,6 +222,8 @@
   }
 
   function filterProvinces() {
+    if (!provincesTableBody || !provinceSearch || !provinceCount || !provinceTableTitle || !regionFilter) return;
+
     const searchValue = String(provinceSearch.value || '').trim().toLowerCase();
     const regionValue = currentRegionFilter || regionFilter.value || '';
 
@@ -221,9 +238,16 @@
       : 'Tất cả tỉnh thành';
     provinceCount.textContent = `${filtered.length} tỉnh`;
 
-    provincesTableBody.innerHTML = filtered.map((province) => `
+    provincesTableBody.innerHTML = filtered.map((province) => {
+      const cover = province.imageUrl || (Array.isArray(province.imageUrls) ? province.imageUrls[0] : '');
+      const thumbMarkup = cover
+        ? `<img src="${cover}" alt="${province.name || ''}">`
+        : `<span>${String(province.name || 'P').charAt(0)}</span>`;
+
+      return `
       <tr>
-        <td>${province.code}</td>
+        <td><input type="checkbox" class="province-row-check" value="${province.code}" /></td>
+        <td><div class="province-thumb">${thumbMarkup}</div></td>
         <td>${province.name}</td>
         <td>${province.regionsCode}</td>
         <td>${Number(province.dishesCount || 0).toLocaleString('vi-VN')}</td>
@@ -243,8 +267,10 @@
             </div>
           </details>
         </td>
-      </tr>
-    `).join('') || '<tr><td colspan="7">Không có tỉnh thành phù hợp.</td></tr>';
+      </tr>`;
+    }).join('') || '<tr><td colspan="8">Không có tỉnh thành phù hợp.</td></tr>';
+
+    syncProvinceCheckState();
   }
 
   async function fetchJson(url, options = {}) {
@@ -501,6 +527,19 @@
   });
 
   provinceSearch?.addEventListener('input', filterProvinces);
+  provinceCheckAll?.addEventListener('change', () => {
+    provinceRowChecks().forEach((item) => {
+      item.checked = provinceCheckAll.checked;
+    });
+    syncProvinceCheckState();
+  });
+
+  document.addEventListener('change', (event) => {
+    if (event.target.classList.contains('province-row-check')) {
+      syncProvinceCheckState();
+    }
+  });
+
   regionFilter?.addEventListener('change', () => {
     currentRegionFilter = regionFilter.value || '';
     renderRegions();

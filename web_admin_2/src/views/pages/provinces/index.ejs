@@ -1,44 +1,62 @@
-﻿<link rel="stylesheet" href="/public/css/pages/provinces.css" />
+<link rel="stylesheet" href="/public/css/pages/provinces.css" />
 
-<%- include('../../partials/page-header', {
-  eyebrow: 'Dữ liệu nền',
-  title: 'Quản lý tỉnh thành',
-  description: 'Quản lý miền và tỉnh thành để đồng bộ cho các module địa điểm, món ăn và hành trình.',
-}) %>
+<%
+  const totalProvinces = initialProvinces.length;
+  const totalRegions = initialRegions.length;
+  const totalDishes = initialProvinces.reduce((sum, province) => sum + Number(province.dishesCount || 0), 0);
+  const totalCheckins = initialProvinces.reduce((sum, province) => sum + Number(province.checkinsCount || 0), 0);
+%>
 
-<section class="provinces-page">
-  <article class="panel-card provinces-page__sidebar">
-    <div class="panel-card__header">
-      <div>
-        <h3>Miền</h3>
-        <p class="provinces-muted">Chọn miền để lọc danh sách tỉnh thành.</p>
+<section class="provinces-page provinces-page--provinces">
+  <article class="panel-card provinces-page__content provinces-page__content--full">
+    <div class="provinces-hero">
+      <div class="provinces-hero__text">
+        <p class="provinces-hero__eyebrow">DỮ LIỆU NỀN</p>
+        <h2>Tỉnh thành &amp; vùng miền</h2>
+        <p>Quản lý miền và tỉnh thành để đồng bộ cho các module địa điểm, món ăn và hành trình.</p>
+        <div class="provinces-hero__breadcrumb">Dashboard &nbsp;&gt;&nbsp; <strong>Tỉnh thành</strong></div>
       </div>
-      <button class="secondary-button provinces-action-button" type="button" id="region-open-create">＋ Thêm miền</button>
+      <div class="provinces-hero__quick">
+        <a class="secondary-button provinces-action-button" href="/admin/provinces/regions">Quản lý vùng miền</a>
+      </div>
     </div>
 
-    <div class="provinces-region-list" id="region-list">
-      <% initialRegions.forEach(function(region) { %>
-        <button class="provinces-region-item" type="button" data-region-code="<%= region.code %>">
-          <span class="provinces-region-item__main">
-            <strong><%= region.name %></strong>
-            <small><%= region.code %></small>
-          </span>
-          <span class="provinces-region-item__meta">
-            <em><%= region.macro_region || '-' %></em>
-            <span class="icon-action danger" data-region-delete="<%= region.code %>">Xóa</span>
-          </span>
-        </button>
-      <% }) %>
-    </div>
-  </article>
-
-  <article class="panel-card provinces-page__content">
-    <div class="panel-card__header provinces-page__header">
-      <div>
-        <h3>Danh sách tỉnh thành</h3>
-        <p class="provinces-muted">Tìm kiếm, lọc theo miền, xem nhanh và chỉnh sửa bằng form nổi.</p>
+    <div class="provinces-stats">
+      <div class="provinces-stat-card">
+        <div class="provinces-stat-card__icon orange">🏙</div>
+        <div>
+          <p>Tỉnh thành</p>
+          <strong><%= totalProvinces.toLocaleString('vi-VN') %></strong>
+          <small><%= totalProvinces === 34 ? '100% đầy đủ dữ liệu' : 'Đang đồng bộ dữ liệu' %></small>
+        </div>
       </div>
+      <div class="provinces-stat-card">
+        <div class="provinces-stat-card__icon green">🗺</div>
+        <div>
+          <p>Vùng miền</p>
+          <strong><%= totalRegions.toLocaleString('vi-VN') %></strong>
+          <small>Tổng vùng dữ liệu</small>
+        </div>
+      </div>
+      <div class="provinces-stat-card">
+        <div class="provinces-stat-card__icon yellow">🍲</div>
+        <div>
+          <p>Món đặc sản</p>
+          <strong><%= totalDishes.toLocaleString('vi-VN') %></strong>
+          <small>Thuộc theo miền</small>
+        </div>
+      </div>
+      <div class="provinces-stat-card">
+        <div class="provinces-stat-card__icon purple">📍</div>
+        <div>
+          <p>Lượt check-in</p>
+          <strong><%= totalCheckins.toLocaleString('vi-VN') %></strong>
+          <small>Theo vùng miền</small>
+        </div>
+      </div>
+    </div>
 
+    <div class="provinces-toolbar-bar">
       <div class="provinces-toolbar">
         <label class="provinces-search">
           <input id="province-search" type="search" placeholder="Tìm theo tên tỉnh..." />
@@ -55,15 +73,16 @@
     </div>
 
     <div class="provinces-table-meta">
-      <strong id="province-table-title">Tất cả tỉnh thành</strong>
-      <span id="province-count"><%= initialProvinces.length %> tỉnh</span>
+      <strong id="province-table-title">Tất cả 34 tỉnh thành</strong>
+      <span id="province-count"><%= totalProvinces %> tỉnh</span>
     </div>
 
     <div class="table-shell">
       <table class="data-table">
         <thead>
           <tr>
-            <th>Mã</th>
+            <th><input type="checkbox" id="province-check-all" /></th>
+            <th>Ảnh</th>
             <th>Tên tỉnh</th>
             <th>Miền</th>
             <th>Số món</th>
@@ -75,7 +94,16 @@
         <tbody id="provinces-table-body">
           <% initialProvinces.forEach(function(province) { %>
             <tr>
-              <td><%= province.code %></td>
+              <td><input type="checkbox" class="province-row-check" value="<%= province.code %>" /></td>
+              <td>
+                <div class="province-thumb">
+                  <% if (province.imageUrl) { %>
+                    <img src="<%= province.imageUrl %>" alt="<%= province.name %>" />
+                  <% } else { %>
+                    <span><%= province.name ? province.name.charAt(0) : 'P' %></span>
+                  <% } %>
+                </div>
+              </td>
               <td><%= province.name %></td>
               <td><%= province.regionsCode %></td>
               <td><%= province.dishesCount || 0 %></td>
@@ -105,45 +133,7 @@
 
 <div class="province-modal-backdrop" id="province-modal-backdrop"></div>
 
-<section class="province-modal" id="region-modal" aria-hidden="true">
-  <div class="province-modal__header">
-    <div>
-      <h4 id="region-modal-title">Thêm miền</h4>
-      <p class="provinces-muted">Nhập thông tin miền trực tiếp tại đây.</p>
-    </div>
-    <button class="icon-action" type="button" id="region-modal-close">Đóng</button>
-  </div>
-
-  <form id="region-form" class="user-form-grid provinces-form provinces-form--compact">
-    <label>
-      <span>Mã miền</span>
-      <input id="region-code" type="text" placeholder="dong_bac_bo" />
-    </label>
-    <label>
-      <span>Tên miền</span>
-      <input id="region-name" type="text" placeholder="Đông Bắc Bộ" />
-    </label>
-    <label>
-      <span>Vùng</span>
-      <select id="region-macro">
-        <option value="bac">Bắc</option>
-        <option value="trung">Trung</option>
-        <option value="nam">Nam</option>
-      </select>
-    </label>
-    <label>
-      <span>Thứ tự</span>
-      <input id="region-number" type="number" placeholder="1" />
-    </label>
-    <p class="form-error user-form-grid__full" id="region-error"></p>
-    <div class="user-form-actions user-form-grid__full">
-      <button type="button" class="secondary-button" id="region-modal-cancel">Hủy</button>
-      <button type="submit" class="primary-button">Lưu miền</button>
-    </div>
-  </form>
-</section>
-
-<section class="province-modal province-modal--wide" id="province-modal" aria-hidden="true">
+<section class="province-modal" id="province-modal" aria-hidden="true">
   <div class="province-modal__header">
     <div>
       <h4 id="province-modal-title">Thêm tỉnh thành</h4>

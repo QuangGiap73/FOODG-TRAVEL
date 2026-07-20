@@ -102,6 +102,10 @@ function buildDishDocument(payload) {
     Images: imageList,
     spicy_level: payload.spicyLevel,
     satiety_level: payload.satietyLevel,
+    dishTypeCodes: payload.dishTypeCodes,
+    mealTimeTags: payload.mealTimeTags,
+    ingredientsListNormalized: payload.ingredientsListNormalized,
+    suitableForSeason: payload.suitableForSeason,
     nameSort: slugify(payload.nameVi || payload.nameEn),
     searchKeywords: buildSearchKeywords([
       payload.id,
@@ -112,6 +116,10 @@ function buildDishDocument(payload) {
       payload.provinceCode34,
       payload.tagsVi,
       payload.tagsEn,
+      ...payload.dishTypeCodes,
+      ...payload.mealTimeTags,
+      ...payload.ingredientsListNormalized,
+      ...payload.suitableForSeason,
     ]),
   };
 }
@@ -342,6 +350,14 @@ function toDishFormValues(dish = {}) {
     imageUrls: Array.isArray(dish.Images) ? dish.Images.join('\n') : '',
     spicyLevel: Number(dish.spicy_level || 0),
     satietyLevel: Number(dish.satiety_level || 0),
+    dishTypeCodes: Array.isArray(dish.dishTypeCodes) ? dish.dishTypeCodes.join('\n') : '',
+    mealTimeTags: Array.isArray(dish.mealTimeTags) ? dish.mealTimeTags.join('\n') : '',
+    ingredientsListNormalized: Array.isArray(dish.ingredientsListNormalized)
+      ? dish.ingredientsListNormalized.join('\n')
+      : '',
+    suitableForSeason: Array.isArray(dish.suitableForSeason)
+      ? dish.suitableForSeason.join('\n')
+      : '',
   };
 }
 // hàm lấy dữ liệu cho trang edit 

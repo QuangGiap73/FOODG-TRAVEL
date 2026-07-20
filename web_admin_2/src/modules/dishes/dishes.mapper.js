@@ -59,6 +59,14 @@ function toDishDetailViewModel(dish) {
   const priceRange = dish.price_range || {};
   const images = Array.isArray(dish.Images) ? dish.Images.filter(Boolean) : [];
   const imageUrl = dish.Img || dish.img || dish.imageUrl || images[0] || '';
+  const dishTypeCodes = Array.isArray(dish.dishTypeCodes) ? dish.dishTypeCodes.filter(Boolean) : [];
+  const mealTimeTags = Array.isArray(dish.mealTimeTags) ? dish.mealTimeTags.filter(Boolean) : [];
+  const ingredientsListNormalized = Array.isArray(dish.ingredientsListNormalized)
+    ? dish.ingredientsListNormalized.filter(Boolean)
+    : [];
+  const suitableForSeason = Array.isArray(dish.suitableForSeason)
+    ? dish.suitableForSeason.filter(Boolean)
+    : [];
 
   const tagsVi = typeof tags === 'object' ? String(tags.vi || '').trim() : String(tags || '').trim();
   const tagsEn = typeof tags === 'object' ? String(tags.en || '').trim() : '';
@@ -114,6 +122,10 @@ function toDishDetailViewModel(dish) {
     images,
     spicyLevel: Number(dish.spicy_level || 0),
     satietyLevel: Number(dish.satiety_level || 0),
+    dishTypeCodes,
+    mealTimeTags,
+    ingredientsListNormalized,
+    suitableForSeason,
     updatedAtLabel: formatTimestamp(dish.updatedAt || dish.updated_at),
     createdAtLabel: formatTimestamp(dish.createdAt || dish.created_at),
   };

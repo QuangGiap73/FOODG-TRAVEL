@@ -49,6 +49,10 @@ function buildCreateFormValues(values = {}, defaults = {}) {
     imageUrls: values.imageUrls || '',
     spicyLevel: values.spicyLevel ?? defaults.spicyLevel ?? 0,
     satietyLevel: values.satietyLevel ?? defaults.satietyLevel ?? 0,
+    dishTypeCodes: values.dishTypeCodes || '',
+    mealTimeTags: values.mealTimeTags || '',
+    ingredientsListNormalized: values.ingredientsListNormalized || '',
+    suitableForSeason: values.suitableForSeason || '',
   };
 }
 

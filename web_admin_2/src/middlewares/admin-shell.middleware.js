@@ -10,11 +10,11 @@ function adminShell(req, res, next) {
   };
   res.locals.navItems = [
     { label: 'Dashboard', href: '/admin', key: '/admin', icon: 'home' },
-    { label: 'Nguoi dung', href: '/admin/users', key: '/admin/users', icon: 'users' },
-    { label: 'Tinh thanh', href: '/admin/provinces', key: '/admin/provinces', icon: 'map' },
-    { label: 'Mon an', href: '/admin/dishes', key: '/admin/dishes', icon: 'dish' },
-    { label: 'Bai viet', href: '/admin/posts', key: '/admin/posts', icon: 'post' },
-    { label: 'Bai viet he thong', href: '/admin/system-posts', key: '/admin/system-posts', icon: 'post' },
+    { label: 'Người dùng', href: '/admin/users', key: '/admin/users', icon: 'users' },
+    { label: 'Tỉnh thành', href: '/admin/provinces', key: '/admin/provinces', icon: 'map' },
+    { label: 'Món ăn', href: '/admin/dishes', key: '/admin/dishes', icon: 'dish' },
+    { label: 'Bài viết', href: '/admin/posts', key: '/admin/posts', icon: 'post' },
+    { label: 'Bài viết hệ thống', href: '/admin/system-posts', key: '/admin/system-posts', icon: 'post' },
   ];
 
   next();

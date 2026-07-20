@@ -214,6 +214,37 @@
   background: #fff;
 }
 
+.dish-create-choice-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.dish-create-choice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid #e7edf3;
+  border-radius: 14px;
+  background: #fffaf5;
+}
+
+.dish-create-choice input {
+  margin-top: 3px;
+}
+
+.dish-create-choice span {
+  color: #1f2937;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.dish-create-choice small {
+  color: #8a5a24;
+}
+
 .dishes-table-shell {
   overflow-x: hidden;
   border: 1px solid #e7edf3;

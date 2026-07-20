@@ -3,6 +3,7 @@ const multer = require('multer');
 const { requireAdmin } = require('../../middlewares/auth.middleware');
 const {
   getProvincesPage,
+  getRegionsPage,
   getRegionsApi,
   getProvincesApi,
   createRegionApi,
@@ -20,6 +21,7 @@ const upload = multer({
 });
 
 router.get('/', requireAdmin, getProvincesPage);
+router.get('/regions', requireAdmin, getRegionsPage);
 
 router.get('/api/regions', requireAdmin, getRegionsApi);
 router.post('/api/regions', requireAdmin, createRegionApi);

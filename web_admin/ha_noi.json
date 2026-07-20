@@ -1,0 +1,2323 @@
+[
+  {
+    "STT": 1200,
+    "id": "pho_ha_noi",
+    "slug": "pho-ha-noi",
+    "Name": {
+      "vi": "Phở Hà Nội",
+      "en": "Hanoi Beef Pho"
+    },
+    "description": {
+      "vi": "Phở Hà Nội là biểu tượng ẩm thực Thủ đô với nước dùng trong, ngọt thanh từ xương bò, thơm quế hồi và gừng nướng. Bát phở thường có bánh phở mềm dai, thịt bò tái hoặc chín, hành lá, rau mùi và ăn kèm quẩy, chanh, ớt tùy khẩu vị.",
+      "en": "Hanoi beef pho is an icon of the capital, known for a clear beef-bone broth scented with star anise, cinnamon, and charred ginger. A classic bowl has silky rice noodles, rare or cooked beef, scallions, cilantro, and optional fried dough, lime, and chili."
+    },
+    "category": {
+      "vi": "Món nước – phở",
+      "en": "Noodle soup (pho)"
+    },
+    "ingredients": {
+      "vi": "Bánh phở, xương bò, thịt bò, hành tây, gừng, quế, hồi, thảo quả, hành lá, rau mùi, nước mắm, muối, đường phèn; chanh, ớt, quẩy.",
+      "en": "Pho rice noodles, beef bones, beef slices, onion, ginger, cinnamon, star anise, black cardamom, scallions, cilantro, fish sauce, salt, rock sugar; lime, chili, fried dough."
+    },
+    "instructions": {
+      "vi": "Xương bò chần sạch rồi hầm nhiều giờ với hành, gừng nướng và gia vị rang thơm. Chần bánh phở, xếp thịt bò, hành rau vào tô rồi chan nước dùng thật nóng.",
+      "en": "Blanch beef bones, then simmer with charred onion, ginger, and toasted spices for hours. Blanch noodles, add beef and herbs, then ladle over piping-hot broth."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Bữa sáng, trưa, tối hoặc ăn khuya.",
+      "en": "Breakfast, lunch, dinner, or late-night meal."
+    },
+    "Best_season": {
+      "vi": "Quanh năm, đặc biệt hợp ngày se lạnh.",
+      "en": "Year-round, especially in cool weather."
+    },
+    "origin_story": {
+      "vi": "Phở gắn với đời sống Hà Nội từ lâu và là một trong những hình ảnh tiêu biểu của ẩm thực Việt Nam. Phở Hà Nội chú trọng sự thanh, tinh tế và cân bằng trong nước dùng.",
+      "en": "Pho has long been tied to Hanoi daily life and is one of Vietnam’s most recognizable culinary symbols. Hanoi pho emphasizes clarity, refinement, and balance in the broth."
+    },
+    "price_range": {
+      "vi": "Khoảng 40.000 – 80.000đ/tô.",
+      "en": "About 40,000–80,000 VND per bowl."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "phở Hà Nội,phở bò,ẩm thực thủ đô,món nước,Hà Nội",
+      "en": "Hanoi pho,beef pho,capital cuisine,noodle soup,Hanoi"
+    },
+    "spicy_level": 1,
+    "satiety_level": 4,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1201,
+    "id": "pho_ga_ha_noi",
+    "slug": "pho-ga-ha-noi",
+    "Name": {
+      "vi": "Phở gà Hà Nội",
+      "en": "Hanoi Chicken Pho"
+    },
+    "description": {
+      "vi": "Phở gà Hà Nội nhẹ hơn phở bò, nổi bật bởi nước dùng gà trong, thơm gừng, hành nướng và vị ngọt tự nhiên từ gà ta. Món thường thêm lá chanh thái chỉ, hành lá, rau mùi và có thể ăn cùng quẩy.",
+      "en": "Hanoi chicken pho is lighter than beef pho, with clear chicken broth scented by ginger and charred onion. It is commonly topped with shredded lime leaf, scallions, cilantro, and sometimes fried dough."
+    },
+    "category": {
+      "vi": "Món nước – phở",
+      "en": "Noodle soup (pho)"
+    },
+    "ingredients": {
+      "vi": "Bánh phở, gà ta, xương gà, hành tây, gừng, hành khô, lá chanh, hành lá, rau mùi, nước mắm, muối, tiêu.",
+      "en": "Pho noodles, free-range chicken, chicken bones, onion, ginger, shallots, lime leaves, scallions, cilantro, fish sauce, salt, pepper."
+    },
+    "instructions": {
+      "vi": "Luộc gà chín vừa, để nguội rồi xé hoặc thái. Nước luộc gà hầm thêm xương, hành, gừng; khi ăn chần phở, xếp gà, lá chanh và chan nước dùng.",
+      "en": "Poach chicken until just cooked, then shred or slice. Enrich the broth with bones and aromatics; serve noodles with chicken, lime leaves, and hot broth."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Bữa sáng, trưa hoặc tối.",
+      "en": "Breakfast, lunch, or dinner."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Phở gà là một nhánh quen thuộc của văn hóa phở Hà Nội. Hương lá chanh và thịt gà ta tạo nên dấu ấn rất Bắc Bộ.",
+      "en": "Chicken pho is a familiar part of Hanoi pho culture. Lime leaf fragrance and free-range chicken give it a distinct northern character."
+    },
+    "price_range": {
+      "vi": "Khoảng 40.000 – 75.000đ/tô.",
+      "en": "About 40,000–75,000 VND per bowl."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "phở gà Hà Nội,phở gà,lá chanh,món sáng",
+      "en": "Hanoi chicken pho,chicken pho,lime leaf,breakfast"
+    },
+    "spicy_level": 1,
+    "satiety_level": 4,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1202,
+    "id": "bun_cha_ha_noi",
+    "slug": "bun-cha-ha-noi",
+    "Name": {
+      "vi": "Bún chả Hà Nội",
+      "en": "Hanoi Grilled Pork with Vermicelli"
+    },
+    "description": {
+      "vi": "Bún chả Hà Nội gồm chả miếng và chả băm nướng than, ăn với bún trắng, rau sống và nước mắm chua ngọt có đu đủ xanh, cà rốt. Mùi thịt nướng quyện khói than là điểm đặc trưng của món.",
+      "en": "Hanoi bún chả combines charcoal-grilled pork patties and sliced pork with rice vermicelli, herbs, and sweet-sour fish sauce with green papaya and carrot. Its smoky grilled aroma is the dish’s signature."
+    },
+    "category": {
+      "vi": "Món bún – món nướng",
+      "en": "Vermicelli with grilled meat"
+    },
+    "ingredients": {
+      "vi": "Bún tươi, thịt ba chỉ hoặc nạc vai heo, hành khô, tỏi, nước mắm, đường, tiêu, đu đủ xanh, cà rốt, giấm hoặc chanh, rau sống, ớt.",
+      "en": "Fresh rice vermicelli, pork belly or shoulder, shallots, garlic, fish sauce, sugar, pepper, green papaya, carrot, vinegar or lime, herbs, chili."
+    },
+    "instructions": {
+      "vi": "Thịt heo thái miếng và băm làm chả, ướp nước mắm, đường, hành tỏi rồi nướng than. Pha nước mắm chua ngọt, thêm đu đủ/cà rốt và ăn cùng bún, rau.",
+      "en": "Slice and mince pork, marinate with fish sauce, sugar, shallots, and garlic, then charcoal-grill. Serve with vermicelli, herbs, and sweet-sour dipping sauce with papaya/carrot."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Bữa trưa là phổ biến nhất, cũng hợp bữa tối.",
+      "en": "Most popular at lunch, also good for dinner."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Bún chả được xem là món sinh ra từ nhịp sống phố phường Hà Nội, nơi các hàng nướng than phục vụ bữa trưa nhanh mà đậm đà. Món nổi tiếng nhờ sự cân bằng giữa thịt nướng, nước chấm và rau bún.",
+      "en": "Bún chả is rooted in Hanoi street life, where charcoal-grill stalls serve quick yet flavorful lunches. It is loved for the balance of grilled pork, dipping sauce, noodles, and herbs."
+    },
+    "price_range": {
+      "vi": "Khoảng 40.000 – 80.000đ/suất.",
+      "en": "About 40,000–80,000 VND per serving."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bún chả Hà Nội,chả nướng,món phố cổ,ẩm thực đường phố",
+      "en": "Hanoi bun cha,grilled pork,Old Quarter food,street food"
+    },
+    "spicy_level": 2,
+    "satiety_level": 4,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1203,
+    "id": "cha_ca_la_vong",
+    "slug": "cha-ca-la-vong",
+    "Name": {
+      "vi": "Chả cá Lã Vọng",
+      "en": "La Vong Turmeric Fish with Dill"
+    },
+    "description": {
+      "vi": "Chả cá Lã Vọng là món cá tẩm nghệ, riềng, mẻ hoặc gia vị chua nhẹ, nướng sơ rồi đảo nóng cùng thì là, hành lá trên chảo. Món ăn kèm bún, lạc rang, rau thơm và mắm tôm pha chanh ớt.",
+      "en": "La Vong turmeric fish is marinated with turmeric, galangal, and a mild souring agent, lightly grilled, then sizzled with dill and scallions. It is served with vermicelli, peanuts, herbs, and whipped shrimp paste sauce."
+    },
+    "category": {
+      "vi": "Món cá – món chính",
+      "en": "Fish dish (main course)"
+    },
+    "ingredients": {
+      "vi": "Cá lăng hoặc cá quả/cá nheo, nghệ, riềng, mẻ, thì là, hành lá, bún, lạc rang, mắm tôm, chanh, ớt, dầu ăn.",
+      "en": "Hemibagrus catfish or firm fish, turmeric, galangal, fermented rice, dill, scallions, vermicelli, roasted peanuts, shrimp paste, lime, chili, oil."
+    },
+    "instructions": {
+      "vi": "Cá lọc xương, cắt miếng, ướp nghệ, riềng, mẻ và gia vị rồi nướng sơ. Khi ăn, làm nóng cá trên chảo với thì là, hành lá; dùng với bún, lạc và mắm tôm.",
+      "en": "Debone fish, marinate with turmeric, galangal, fermented rice, and seasonings, then lightly grill. Finish in a hot pan with dill and scallions; serve with noodles, peanuts, and shrimp paste."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Bữa trưa hoặc tối, phù hợp ăn theo nhóm.",
+      "en": "Lunch or dinner, best shared."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Chả cá Lã Vọng gắn với phố Chả Cá và văn hóa thưởng thức tinh tế của Hà Nội xưa. Dùng nhiều thì là và mắm tôm tạo nên hương vị khác biệt.",
+      "en": "This dish is tied to Chả Cá Street and old Hanoi dining culture. Generous dill and shrimp paste make its flavor distinctive."
+    },
+    "price_range": {
+      "vi": "Khoảng 150.000 – 250.000đ/phần/người tại quán chuyên.",
+      "en": "About 150,000–250,000 VND per person at specialty restaurants."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "chả cá Lã Vọng,chả cá Hà Nội,cá nghệ thì là,mắm tôm",
+      "en": "La Vong fish,Hanoi turmeric fish,dill fish,shrimp paste"
+    },
+    "spicy_level": 2,
+    "satiety_level": 4,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1204,
+    "id": "bun_thang_ha_noi",
+    "slug": "bun-thang-ha-noi",
+    "Name": {
+      "vi": "Bún thang Hà Nội",
+      "en": "Hanoi Bun Thang Noodle Soup"
+    },
+    "description": {
+      "vi": "Bún thang là món bún cầu kỳ của Hà Nội với nước dùng trong, phía trên xếp thịt gà xé, giò lụa, trứng tráng thái chỉ, nấm hương, ruốc tôm và rau răm. Một chút mắm tôm hoặc tinh dầu cà cuống giúp món có hương vị cổ truyền.",
+      "en": "Bún thang is an elaborate Hanoi noodle soup with clear broth topped with shredded chicken, pork roll, thin omelet strips, shiitake, shrimp floss, and Vietnamese coriander. Shrimp paste or cà cuống essence adds old-Hanoi aroma."
+    },
+    "category": {
+      "vi": "Món nước – bún",
+      "en": "Noodle soup (bún)"
+    },
+    "ingredients": {
+      "vi": "Bún sợi nhỏ, gà, xương gà hoặc xương heo, trứng, giò lụa, nấm hương, tôm khô/ruốc tôm, rau răm, hành lá, mắm tôm.",
+      "en": "Fine rice vermicelli, chicken, chicken or pork bones, eggs, pork roll, shiitake, dried shrimp/shrimp floss, Vietnamese coriander, scallions, shrimp paste."
+    },
+    "instructions": {
+      "vi": "Hầm nước dùng từ xương và gà cho thật trong. Trứng tráng mỏng, giò và gà thái chỉ; xếp các nguyên liệu lên bún, chan nước dùng nóng và thêm chút mắm tôm nếu thích.",
+      "en": "Simmer bones and chicken into a clear broth. Slice omelet, pork roll, and chicken into fine strips; arrange over noodles, add hot broth, and optional shrimp paste."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Bữa sáng, trưa hoặc dịp sau Tết.",
+      "en": "Breakfast, lunch, or after-Tet meals."
+    },
+    "Best_season": {
+      "vi": "Quanh năm, đặc biệt hợp ngày se lạnh.",
+      "en": "Year-round, especially in cool weather."
+    },
+    "origin_story": {
+      "vi": "Bún thang thường được xem là món thể hiện sự tinh tế của người Hà Nội vì nhiều nguyên liệu phải thái nhỏ, xếp đẹp và nêm nhẹ. Món cũng gắn với thói quen tận dụng thực phẩm sau cỗ Tết.",
+      "en": "Bún thang is seen as a symbol of Hanoi refinement because its ingredients are finely cut, beautifully arranged, and gently seasoned. It is also linked to transforming post-Tet leftovers into an elegant bowl."
+    },
+    "price_range": {
+      "vi": "Khoảng 45.000 – 90.000đ/tô.",
+      "en": "About 45,000–90,000 VND per bowl."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bún thang Hà Nội,bún thang,món Hà Nội cổ,mắm tôm,cà cuống",
+      "en": "Hanoi bun thang,old Hanoi noodle soup,shrimp paste,ca cuong essence"
+    },
+    "spicy_level": 1,
+    "satiety_level": 4,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1205,
+    "id": "bun_oc_ha_noi",
+    "slug": "bun-oc-ha-noi",
+    "Name": {
+      "vi": "Bún ốc Hà Nội",
+      "en": "Hanoi Snail Noodle Soup"
+    },
+    "description": {
+      "vi": "Bún ốc Hà Nội có nước dùng chua thanh từ giấm bỗng hoặc cà chua, ăn cùng ốc giòn, bún, hành lá, tía tô và rau sống. Món có thể dùng nóng hoặc nguội, nổi bật bởi vị chua dịu và mùi thơm dân dã.",
+      "en": "Hanoi snail noodle soup has a gently sour broth from fermented rice vinegar or tomatoes, served with crunchy snails, vermicelli, scallions, perilla, and herbs. It can be eaten hot or cool and has a rustic aroma."
+    },
+    "category": {
+      "vi": "Món nước – bún ốc",
+      "en": "Snail noodle soup"
+    },
+    "ingredients": {
+      "vi": "Ốc nhồi hoặc ốc mít, bún, cà chua, giấm bỗng hoặc me, hành lá, tía tô, rau sống, nước mắm, ớt chưng, hành khô.",
+      "en": "Freshwater snails, rice vermicelli, tomatoes, fermented rice vinegar or tamarind, scallions, perilla, herbs, fish sauce, chili oil, fried shallots."
+    },
+    "instructions": {
+      "vi": "Ốc ngâm sạch, luộc chín, khêu lấy thịt. Nước luộc ốc lọc trong, nấu với cà chua và giấm bỗng; cho bún, ốc vào tô, chan nước dùng và thêm tía tô, ớt.",
+      "en": "Purge and boil snails, then remove the meat. Strain snail broth, cook with tomatoes and fermented rice vinegar; serve with noodles, snails, perilla, and chili oil."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Bữa sáng, trưa hoặc ăn xế.",
+      "en": "Breakfast, lunch, or afternoon snack."
+    },
+    "Best_season": {
+      "vi": "Quanh năm, hợp nhất ngày mát hoặc se lạnh.",
+      "en": "Year-round, best in mild or cool weather."
+    },
+    "origin_story": {
+      "vi": "Bún ốc là món dân dã quen thuộc với các gánh hàng Hà Nội xưa. Giấm bỗng, ốc giòn và rau thơm Bắc Bộ tạo nên hương vị riêng.",
+      "en": "Bún ốc is a humble dish associated with old Hanoi street vendors. Fermented rice vinegar, crunchy snails, and northern herbs create its distinctive flavor."
+    },
+    "price_range": {
+      "vi": "Khoảng 35.000 – 70.000đ/tô.",
+      "en": "About 35,000–70,000 VND per bowl."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bún ốc Hà Nội,ốc luộc,giấm bỗng,món nước Hà Nội",
+      "en": "Hanoi snail noodle soup,snails,fermented rice vinegar,Hanoi noodles"
+    },
+    "spicy_level": 2,
+    "satiety_level": 3,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1206,
+    "id": "bun_rieu_cua_ha_noi",
+    "slug": "bun-rieu-cua-ha-noi",
+    "Name": {
+      "vi": "Bún riêu cua Hà Nội",
+      "en": "Hanoi Crab Noodle Soup"
+    },
+    "description": {
+      "vi": "Bún riêu cua Hà Nội có nước dùng cà chua chua nhẹ, riêu cua đồng béo thơm, thường ăn kèm đậu phụ rán, hành lá, rau sống và mắm tôm. Vị Hà Nội thường thanh, không quá ngọt và nhấn vào mùi cua đồng.",
+      "en": "Hanoi crab noodle soup features a mildly tangy tomato broth with fragrant field crab curds, fried tofu, scallions, herbs, and shrimp paste. The Hanoi style is light and highlights crab aroma."
+    },
+    "category": {
+      "vi": "Món nước – bún riêu",
+      "en": "Crab noodle soup"
+    },
+    "ingredients": {
+      "vi": "Cua đồng, bún, cà chua, đậu phụ, hành lá, hành khô, mắm tôm, nước mắm, giấm bỗng hoặc me, rau sống, ớt.",
+      "en": "Field crabs, rice vermicelli, tomatoes, tofu, scallions, shallots, shrimp paste, fish sauce, fermented rice vinegar or tamarind, herbs, chili."
+    },
+    "instructions": {
+      "vi": "Cua đồng giã/xay, lọc lấy nước rồi đun cho riêu nổi. Phi cà chua với hành, cho vào nồi nước cua, thêm đậu rán và nêm chua mặn; chan lên bún.",
+      "en": "Pound or blend field crabs, strain and cook until curds rise. Sauté tomatoes with shallots, add to broth with fried tofu, season tangy-savory, and serve over noodles."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Bữa sáng, trưa hoặc ăn nhẹ.",
+      "en": "Breakfast, lunch, or light meal."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Bún riêu là món Bắc Bộ lâu đời, tại Hà Nội trở thành món phố quen thuộc. Riêu cua đồng và giấm bỗng là hai yếu tố tạo nên hương vị Hà thành.",
+      "en": "Bún riêu is a long-standing northern dish and a familiar Hanoi street food. Field crab curds and fermented rice vinegar define its Hanoi character."
+    },
+    "price_range": {
+      "vi": "Khoảng 35.000 – 70.000đ/tô.",
+      "en": "About 35,000–70,000 VND per bowl."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bún riêu Hà Nội,bún riêu cua,cua đồng,đậu phụ,mắm tôm",
+      "en": "Hanoi bun rieu,crab noodle soup,field crab,tofu,shrimp paste"
+    },
+    "spicy_level": 2,
+    "satiety_level": 3,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1207,
+    "id": "banh_cuon_thanh_tri",
+    "slug": "banh-cuon-thanh-tri",
+    "Name": {
+      "vi": "Bánh cuốn Thanh Trì",
+      "en": "Thanh Tri Steamed Rice Rolls"
+    },
+    "description": {
+      "vi": "Bánh cuốn Thanh Trì nổi tiếng bởi lớp bánh mỏng tang, mềm mượt, thơm mùi gạo, thường không nhân hoặc nhân rất nhẹ. Bánh ăn với chả quế, hành phi, rau thơm và nước mắm pha thanh.",
+      "en": "Thanh Tri steamed rice rolls are famous for ultra-thin, silky rice sheets with a delicate rice aroma, often plain or lightly filled. They are served with cinnamon pork roll, fried shallots, herbs, and light fish sauce."
+    },
+    "category": {
+      "vi": "Bánh hấp – món sáng",
+      "en": "Steamed rice rolls (breakfast)"
+    },
+    "ingredients": {
+      "vi": "Bột gạo tẻ, nước, chút muối, dầu ăn, hành phi, chả quế hoặc giò lụa, rau thơm; nước mắm, đường, giấm/chanh.",
+      "en": "Rice flour, water, salt, oil, fried shallots, cinnamon pork roll or pork roll, herbs; fish sauce, sugar, vinegar/lime."
+    },
+    "instructions": {
+      "vi": "Bột gạo được ngâm, xay và pha loãng. Tráng lớp bột thật mỏng trên nồi hơi, lấy bánh ra, xếp lớp, rắc hành phi và ăn cùng chả, nước mắm.",
+      "en": "Soak and grind rice into a thin batter. Steam very thin sheets over cloth, lift out, fold, top with fried shallots, and serve with pork roll and dipping sauce."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Bữa sáng hoặc ăn nhẹ.",
+      "en": "Breakfast or light snack."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Thanh Trì từ lâu được xem là cái nôi của bánh cuốn Hà Nội. Món bánh thể hiện kỹ thuật tráng bánh thật mỏng nhưng vẫn mềm, thơm và không rách.",
+      "en": "Thanh Tri has long been considered the cradle of Hanoi rice rolls. The dish showcases the skill of making sheets extremely thin yet soft, fragrant, and intact."
+    },
+    "price_range": {
+      "vi": "Khoảng 25.000 – 50.000đ/phần.",
+      "en": "About 25,000–50,000 VND per serving."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh cuốn Thanh Trì,bánh cuốn Hà Nội,chả quế,món sáng",
+      "en": "Thanh Tri rice rolls,Hanoi rice rolls,cinnamon pork roll,breakfast"
+    },
+    "spicy_level": 0,
+    "satiety_level": 3,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1208,
+    "id": "banh_tom_ho_tay",
+    "slug": "banh-tom-ho-tay",
+    "Name": {
+      "vi": "Bánh tôm Hồ Tây",
+      "en": "West Lake Shrimp Cake"
+    },
+    "description": {
+      "vi": "Bánh tôm Hồ Tây là món bánh chiên giòn với tôm nguyên con đặt trên lớp bột và khoai lang thái sợi, ăn kèm rau sống, đu đủ xanh và nước mắm chua ngọt. Món gắn với không gian Hồ Tây.",
+      "en": "West Lake shrimp cake is a crispy fried cake topped with whole shrimp and shredded sweet potato, served with herbs, green papaya, and sweet-sour fish sauce. It is strongly associated with the West Lake area."
+    },
+    "category": {
+      "vi": "Bánh chiên – món ăn chơi",
+      "en": "Fried cake / snack"
+    },
+    "ingredients": {
+      "vi": "Tôm tươi, khoai lang, bột mì hoặc bột gạo, bột năng, trứng, nước, muối, dầu ăn; rau sống, đu đủ xanh, cà rốt, nước mắm chua ngọt.",
+      "en": "Fresh shrimp, sweet potato, wheat or rice flour, tapioca starch, egg, water, salt, oil; herbs, green papaya, carrot, sweet-sour fish sauce."
+    },
+    "instructions": {
+      "vi": "Khoai lang bào sợi, trộn với bột pha loãng. Múc bột khoai vào vá, đặt tôm lên trên rồi chiên ngập dầu đến vàng giòn; dùng nóng với rau và nước chấm.",
+      "en": "Shred sweet potato and mix with loose batter. Spoon into a ladle, place shrimp on top, deep-fry until crisp, and serve hot with herbs and dipping sauce."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Ăn xế, bữa chiều hoặc món khai vị.",
+      "en": "Afternoon snack or appetizer."
+    },
+    "Best_season": {
+      "vi": "Quanh năm, hợp nhất khi ăn nóng.",
+      "en": "Year-round, best served hot."
+    },
+    "origin_story": {
+      "vi": "Bánh tôm gắn với khu vực Hồ Tây và là món du khách thường tìm khi dạo quanh hồ. Sự kết hợp tôm, khoai và nước chấm kiểu Hà Nội tạo nên món ăn vừa dân dã vừa có tính biểu tượng.",
+      "en": "Shrimp cake is tied to West Lake and has long been a favorite for visitors. Shrimp, sweet potato, and Hanoi-style dipping sauce make it both rustic and iconic."
+    },
+    "price_range": {
+      "vi": "Khoảng 40.000 – 90.000đ/phần.",
+      "en": "About 40,000–90,000 VND per serving."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh tôm Hồ Tây,bánh tôm Hà Nội,món chiên,Hồ Tây",
+      "en": "West Lake shrimp cake,Hanoi shrimp cake,fried snack,West Lake"
+    },
+    "spicy_level": 1,
+    "satiety_level": 3,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1209,
+    "id": "pho_cuon_ngu_xa",
+    "slug": "pho-cuon-ngu-xa",
+    "Name": {
+      "vi": "Phở cuốn Ngũ Xã",
+      "en": "Ngu Xa Fresh Pho Rolls"
+    },
+    "description": {
+      "vi": "Phở cuốn Ngũ Xã làm từ bánh phở bản rộng cuốn thịt bò xào, xà lách và rau thơm, chấm nước mắm chua ngọt. Món mát, ít nước dùng, phù hợp bữa nhẹ hoặc tụ họp bạn bè.",
+      "en": "Ngu Xa fresh pho rolls use wide pho sheets wrapped around stir-fried beef, lettuce, and herbs, dipped in sweet-sour fish sauce. Refreshing and broth-free, it suits light meals or casual gatherings."
+    },
+    "category": {
+      "vi": "Món cuốn – phở",
+      "en": "Fresh rolls (pho)"
+    },
+    "ingredients": {
+      "vi": "Bánh phở bản rộng, thịt bò, xà lách, rau mùi, húng, tỏi, dầu ăn, nước mắm, đường, chanh/giấm, ớt.",
+      "en": "Wide pho sheets, beef, lettuce, cilantro, mint/basil, garlic, oil, fish sauce, sugar, lime/vinegar, chili."
+    },
+    "instructions": {
+      "vi": "Thịt bò thái mỏng, ướp nhẹ rồi xào nhanh với tỏi. Trải bánh phở, xếp rau và thịt bò, cuộn chặt; pha nước mắm chua ngọt để chấm.",
+      "en": "Thinly slice and quickly stir-fry beef with garlic. Lay out pho sheets, add herbs and beef, roll tightly, and dip in sweet-sour fish sauce."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Bữa trưa nhẹ, tối hoặc ăn chơi.",
+      "en": "Light lunch, dinner, or snack."
+    },
+    "Best_season": {
+      "vi": "Quanh năm, đặc biệt hợp ngày nóng.",
+      "en": "Year-round, especially in hot weather."
+    },
+    "origin_story": {
+      "vi": "Phở cuốn được biết đến nhiều ở khu Ngũ Xã – Trúc Bạch, nơi bánh phở được biến tấu thành món cuốn tiện ăn. Đây là ví dụ tiêu biểu cho sự sáng tạo từ nguyên liệu quen thuộc.",
+      "en": "Pho rolls are associated with the Ngu Xa–Truc Bach area, where pho sheets were transformed into convenient fresh rolls. They show Hanoi creativity with familiar ingredients."
+    },
+    "price_range": {
+      "vi": "Khoảng 50.000 – 90.000đ/đĩa.",
+      "en": "About 50,000–90,000 VND per plate."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "phở cuốn Ngũ Xã,phở cuốn Hà Nội,món cuốn,bò xào",
+      "en": "Ngu Xa pho rolls,Hanoi fresh pho rolls,beef rolls"
+    },
+    "spicy_level": 1,
+    "satiety_level": 3,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1210,
+    "id": "bun_dau_mam_tom_ha_noi",
+    "slug": "bun-dau-mam-tom-ha-noi",
+    "Name": {
+      "vi": "Bún đậu mắm tôm Hà Nội",
+      "en": "Hanoi Vermicelli with Fried Tofu and Shrimp Paste"
+    },
+    "description": {
+      "vi": "Bún đậu mắm tôm là món dân dã gồm bún lá, đậu phụ rán giòn, chả cốm, thịt luộc, dồi hoặc nem, ăn cùng mắm tôm đánh bông với chanh/quất, đường, ớt. Món có mùi vị mạnh và rất đặc trưng.",
+      "en": "This rustic Hanoi dish includes pressed vermicelli, crispy tofu, green rice pork patties, boiled pork, sausage or rolls, served with whipped shrimp paste mixed with kumquat/lime, sugar, and chili. It has a bold, distinctive aroma."
+    },
+    "category": {
+      "vi": "Món bún – mẹt ăn chung",
+      "en": "Vermicelli platter"
+    },
+    "ingredients": {
+      "vi": "Bún lá, đậu phụ, chả cốm, thịt ba chỉ luộc, dồi hoặc nem rán, rau kinh giới, tía tô, dưa leo, mắm tôm, quất/chanh, đường, ớt.",
+      "en": "Pressed vermicelli, tofu, green rice pork patties, boiled pork belly, sausage or fried rolls, Vietnamese balm, perilla, cucumber, shrimp paste, kumquat/lime, sugar, chili."
+    },
+    "instructions": {
+      "vi": "Đậu rán vàng giòn, thịt luộc thái mỏng, chả cốm chiên nóng. Bày lên mẹt với bún và rau; mắm tôm đánh với quất, đường, dầu nóng và ớt để chấm.",
+      "en": "Fry tofu until crisp, slice boiled pork, and pan-fry green rice patties. Arrange with noodles and herbs; whip shrimp paste with kumquat, sugar, hot oil, and chili for dipping."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Bữa trưa, chiều hoặc tối.",
+      "en": "Lunch, afternoon, or dinner."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Bún đậu mắm tôm phát triển mạnh trong các quán vỉa hè và ngõ nhỏ Hà Nội. Hình thức bày mẹt, ăn chung nhiều thành phần khiến món rất hợp nhóm bạn và dân văn phòng.",
+      "en": "Bún đậu mắm tôm grew popular in Hanoi’s sidewalk and alley eateries. Its shared tray format makes it ideal for friends and office workers."
+    },
+    "price_range": {
+      "vi": "Khoảng 40.000 – 100.000đ/suất tùy topping.",
+      "en": "About 40,000–100,000 VND per serving depending on toppings."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bún đậu mắm tôm,Hà Nội,mắm tôm,chả cốm,mẹt bún",
+      "en": "bun dau mam tom,Hanoi,shrimp paste,green rice patty,vermicelli platter"
+    },
+    "spicy_level": 2,
+    "satiety_level": 4,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1211,
+    "id": "xoi_xeo_ha_noi",
+    "slug": "xoi-xeo-ha-noi",
+    "Name": {
+      "vi": "Xôi xéo Hà Nội",
+      "en": "Hanoi Sticky Rice with Mung Bean and Fried Shallots"
+    },
+    "description": {
+      "vi": "Xôi xéo Hà Nội là món sáng quen thuộc với xôi nếp vàng từ nghệ, phủ đậu xanh nghiền mịn, hành phi giòn và mỡ hành hoặc mỡ gà. Món đơn giản nhưng thơm béo và chắc bụng.",
+      "en": "Hanoi xôi xéo is a familiar breakfast of turmeric-yellow sticky rice topped with smooth mung bean paste, crispy fried shallots, and scallion oil or chicken fat. Simple yet fragrant and filling."
+    },
+    "category": {
+      "vi": "Món xôi – bữa sáng",
+      "en": "Sticky rice breakfast"
+    },
+    "ingredients": {
+      "vi": "Gạo nếp, nghệ hoặc bột nghệ, đậu xanh cà vỏ, hành khô, dầu/mỡ gà, muối; tùy chọn ruốc, chả, trứng.",
+      "en": "Glutinous rice, turmeric, peeled mung beans, shallots, oil/chicken fat, salt; optional pork floss, pork roll, egg."
+    },
+    "instructions": {
+      "vi": "Gạo nếp ngâm với nghệ rồi đồ chín. Đậu xanh hấp mềm, giã nhuyễn thành khối, thái lên xôi; rưới mỡ hành/mỡ gà và thêm hành phi.",
+      "en": "Soak sticky rice with turmeric and steam. Steam mung beans, mash into a block, shave over the rice, then add scallion oil/chicken fat and fried shallots."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Bữa sáng hoặc ăn nhẹ.",
+      "en": "Breakfast or snack."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Xôi xéo là món bình dân nhưng rất đặc trưng của Hà Nội, thường được bán gói mang đi. Vị đậu xanh bùi, hành phi thơm và nếp dẻo tạo nên món sáng giản dị khó quên.",
+      "en": "Xôi xéo is humble yet distinctive in Hanoi, often sold as takeaway. Nutty mung bean, fragrant fried shallots, and chewy sticky rice make a memorable simple breakfast."
+    },
+    "price_range": {
+      "vi": "Khoảng 15.000 – 35.000đ/gói.",
+      "en": "About 15,000–35,000 VND per portion."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "xôi xéo Hà Nội,xôi sáng,đậu xanh,hành phi,món bình dân",
+      "en": "Hanoi xoi xeo,sticky rice breakfast,mung bean,fried shallots,local food"
+    },
+    "spicy_level": 0,
+    "satiety_level": 4,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1212,
+    "id": "chao_suon_ha_noi",
+    "slug": "chao-suon-ha-noi",
+    "Name": {
+      "vi": "Cháo sườn Hà Nội",
+      "en": "Hanoi Pork Rib Porridge"
+    },
+    "description": {
+      "vi": "Cháo sườn Hà Nội có kết cấu mịn như bột, nấu từ gạo xay và nước hầm sườn, ăn kèm ruốc, quẩy cắt nhỏ và tiêu. Bát cháo nóng, mềm, dễ ăn, rất hợp mùa lạnh.",
+      "en": "Hanoi pork rib porridge has a smooth texture made from ground rice and pork rib broth, served with pork floss, chopped fried dough, and pepper. Hot, soft, and comforting, it suits cold weather."
+    },
+    "category": {
+      "vi": "Cháo – món sáng/ăn nhẹ",
+      "en": "Porridge (breakfast/snack)"
+    },
+    "ingredients": {
+      "vi": "Gạo tẻ, sườn non hoặc xương heo, ruốc heo, quẩy, hành lá, tiêu, nước mắm, muối.",
+      "en": "Plain rice, pork ribs or bones, pork floss, fried dough sticks, scallions, pepper, fish sauce, salt."
+    },
+    "instructions": {
+      "vi": "Gạo ngâm rồi xay mịn. Sườn hầm lấy nước, sau đó cho bột gạo vào khuấy đến khi cháo sánh; múc ra bát, thêm ruốc, quẩy, tiêu.",
+      "en": "Soak and grind rice finely. Simmer ribs for broth, whisk in ground rice until smooth, then serve with pork floss, fried dough, and pepper."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Bữa sáng, ăn xế hoặc tối muộn.",
+      "en": "Breakfast, afternoon snack, or late supper."
+    },
+    "Best_season": {
+      "vi": "Quanh năm, đặc biệt hợp mùa lạnh.",
+      "en": "Year-round, especially in cold weather."
+    },
+    "origin_story": {
+      "vi": "Cháo sườn là món ăn vặt quen thuộc ở trường học, chợ và phố nhỏ Hà Nội. Kết cấu mịn khác với cháo hạt thông thường, tạo cảm giác ấm bụng và dễ ăn.",
+      "en": "Pork rib porridge is familiar around Hanoi schools, markets, and small streets. Its smooth texture differs from grainy porridge and feels warm and easy to eat."
+    },
+    "price_range": {
+      "vi": "Khoảng 20.000 – 45.000đ/bát.",
+      "en": "About 20,000–45,000 VND per bowl."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "cháo sườn Hà Nội,cháo mịn,quẩy,ruốc,món sáng",
+      "en": "Hanoi pork rib porridge,smooth porridge,fried dough,pork floss,breakfast"
+    },
+    "spicy_level": 0,
+    "satiety_level": 3,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1213,
+    "id": "mien_luon_ha_noi",
+    "slug": "mien-luon-ha-noi",
+    "Name": {
+      "vi": "Miến lươn Hà Nội",
+      "en": "Hanoi Eel Glass Noodle Soup"
+    },
+    "description": {
+      "vi": "Miến lươn Hà Nội có kiểu nước và kiểu trộn, dùng lươn chiên giòn hoặc lươn mềm, thêm rau răm, hành phi, giá và nước dùng ngọt. Món có vị thơm béo, sợi miến dai và hương lươn đặc trưng.",
+      "en": "Hanoi eel glass noodles are served in soup or dry-mixed form, using crispy or soft eel with Vietnamese coriander, fried shallots, sprouts, and savory broth. It is aromatic, lightly rich, and chewy."
+    },
+    "category": {
+      "vi": "Miến – món nước/khô",
+      "en": "Glass noodles (soup or dry)"
+    },
+    "ingredients": {
+      "vi": "Lươn, miến dong, xương heo hoặc xương lươn, rau răm, giá, hành phi, hành lá, bột nghệ, nước mắm, tiêu.",
+      "en": "Eel, glass noodles, pork or eel bones, Vietnamese coriander, bean sprouts, fried shallots, scallions, turmeric, fish sauce, pepper."
+    },
+    "instructions": {
+      "vi": "Lươn làm sạch, lọc thịt, ướp nghệ nhẹ rồi chiên giòn hoặc xào mềm. Miến chần vừa dai, cho vào bát với lươn, rau răm, giá, hành phi; chan nước dùng hoặc trộn sốt.",
+      "en": "Clean and fillet eel, lightly season with turmeric, then fry crisp or sauté. Blanch glass noodles, add eel, herbs, sprouts, and fried shallots; serve with broth or dry sauce."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Bữa sáng, trưa hoặc tối.",
+      "en": "Breakfast, lunch, or dinner."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Miến lươn là món quen trong ẩm thực phố Hà Nội, đặc biệt ở các hàng nhỏ chuyên lươn. Cách làm lươn giòn tạo độ tương phản với sợi miến mềm dai.",
+      "en": "Eel glass noodles are familiar in Hanoi street cuisine, especially at eel eateries. Crispy eel contrasts nicely with soft, chewy noodles."
+    },
+    "price_range": {
+      "vi": "Khoảng 40.000 – 80.000đ/bát.",
+      "en": "About 40,000–80,000 VND per bowl."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "miến lươn Hà Nội,miến lươn,lươn giòn,rau răm",
+      "en": "Hanoi eel glass noodles,eel noodles,crispy eel,Vietnamese coriander"
+    },
+    "spicy_level": 1,
+    "satiety_level": 4,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1214,
+    "id": "nem_chua_ran_ha_noi",
+    "slug": "nem-chua-ran-ha-noi",
+    "Name": {
+      "vi": "Nem chua rán Hà Nội",
+      "en": "Hanoi Fried Fermented Pork Rolls"
+    },
+    "description": {
+      "vi": "Nem chua rán là món ăn vặt nổi tiếng của giới trẻ Hà Nội, làm từ nem chua chiên đến khi vỏ giòn, bên trong dai béo. Món thường ăn với tương ớt, dưa chuột và trà đá.",
+      "en": "Fried fermented pork rolls are a popular Hanoi youth snack, fried until crisp outside and chewy-rich inside. They are typically eaten with chili sauce, cucumber, and iced tea."
+    },
+    "category": {
+      "vi": "Ăn vặt – món chiên",
+      "en": "Fried snack"
+    },
+    "ingredients": {
+      "vi": "Nem chua, bột chiên xù hoặc bột áo tùy cách làm, dầu ăn, tương ớt, dưa chuột.",
+      "en": "Fermented pork rolls, optional breadcrumbs or coating batter, oil, chili sauce, cucumber."
+    },
+    "instructions": {
+      "vi": "Nem để lạnh cho chắc, có thể lăn bột rồi chiên ngập dầu đến khi vàng. Vớt ráo, dùng nóng với tương ớt và dưa chuột.",
+      "en": "Chill rolls until firm, optionally coat, and deep-fry until golden. Drain and eat hot with chili sauce and cucumber."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Ăn xế, buổi tối, tụ họp bạn bè.",
+      "en": "Afternoon or evening snack with friends."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Nem chua rán nổi lên trong văn hóa quà vặt Hà Nội, đặc biệt quanh các phố ăn vặt và khu trường học. Vị chua nhẹ, béo và giòn khiến món dễ chia sẻ.",
+      "en": "Fried nem chua became part of Hanoi snack culture, especially near snack streets and schools. Its mild tang, richness, and crispness make it easy to share."
+    },
+    "price_range": {
+      "vi": "Khoảng 40.000 – 80.000đ/đĩa.",
+      "en": "About 40,000–80,000 VND per plate."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "nem chua rán Hà Nội,ăn vặt Hà Nội,món chiên,tương ớt",
+      "en": "Hanoi fried nem chua,Hanoi snack,fried food,chili sauce"
+    },
+    "spicy_level": 2,
+    "satiety_level": 2,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1215,
+    "id": "banh_goi_ha_noi",
+    "slug": "banh-goi-ha-noi",
+    "Name": {
+      "vi": "Bánh gối Hà Nội",
+      "en": "Hanoi Pillow Cake"
+    },
+    "description": {
+      "vi": "Bánh gối Hà Nội có hình bán nguyệt, vỏ bột chiên giòn, nhân thịt băm, miến, mộc nhĩ, trứng cút và gia vị. Bánh ăn cùng rau sống, dưa góp và nước mắm chua ngọt.",
+      "en": "Hanoi pillow cake is a crescent fried pastry with a crispy shell and a filling of minced pork, glass noodles, wood ear mushrooms, quail eggs, and seasonings. It is served with herbs, pickles, and sweet-sour fish sauce."
+    },
+    "category": {
+      "vi": "Bánh chiên – ăn vặt",
+      "en": "Fried pastry snack"
+    },
+    "ingredients": {
+      "vi": "Bột mì, thịt heo băm, miến, mộc nhĩ, nấm hương, trứng cút, hành khô, tiêu, dầu ăn, dưa góp, rau sống, nước mắm chua ngọt.",
+      "en": "Wheat flour, minced pork, glass noodles, wood ear, shiitake, quail eggs, shallots, pepper, oil, pickles, herbs, sweet-sour fish sauce."
+    },
+    "instructions": {
+      "vi": "Nhào bột làm vỏ, cán mỏng. Nhân thịt băm xào với miến, mộc nhĩ và trứng cút; gói hình bán nguyệt rồi chiên vàng giòn.",
+      "en": "Knead dough and roll thin. Fill with minced pork, glass noodles, mushrooms, and quail eggs; fold into crescents and fry until golden crisp."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Ăn xế hoặc bữa nhẹ buổi chiều.",
+      "en": "Afternoon snack or light meal."
+    },
+    "Best_season": {
+      "vi": "Quanh năm, ngon nhất khi trời mát/lạnh.",
+      "en": "Year-round, best in cool weather."
+    },
+    "origin_story": {
+      "vi": "Bánh gối là món quà chiều quen thuộc tại Hà Nội, thường xuất hiện cùng nem chua rán, bánh rán mặn trong các quán ăn vặt. Tên gọi bắt nguồn từ hình dáng giống chiếc gối nhỏ.",
+      "en": "Pillow cake is a familiar Hanoi afternoon snack, often sold with fried nem chua and savory rice balls. Its name comes from its pillow-like shape."
+    },
+    "price_range": {
+      "vi": "Khoảng 10.000 – 20.000đ/cái hoặc 40.000 – 70.000đ/đĩa.",
+      "en": "About 10,000–20,000 VND each or 40,000–70,000 VND per plate."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh gối Hà Nội,bánh chiên,ăn vặt,nước mắm chua ngọt",
+      "en": "Hanoi pillow cake,fried pastry,snack,sweet-sour fish sauce"
+    },
+    "spicy_level": 1,
+    "satiety_level": 3,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1216,
+    "id": "banh_duc_nong_ha_noi",
+    "slug": "banh-duc-nong-ha-noi",
+    "Name": {
+      "vi": "Bánh đúc nóng Hà Nội",
+      "en": "Hanoi Hot Rice Pudding Cake"
+    },
+    "description": {
+      "vi": "Bánh đúc nóng Hà Nội mềm mịn, ăn cùng thịt băm xào mộc nhĩ, hành phi, rau mùi và nước mắm chan nóng. Món có vị béo nhẹ của bột gạo, thơm hành, hợp làm quà chiều mùa lạnh.",
+      "en": "Hanoi hot bánh đúc is a smooth rice batter pudding served with minced pork, wood ear mushrooms, fried shallots, cilantro, and warm fish sauce. Lightly creamy and fragrant, it is ideal for cold-weather snacking."
+    },
+    "category": {
+      "vi": "Bánh mặn – ăn vặt",
+      "en": "Savory rice cake snack"
+    },
+    "ingredients": {
+      "vi": "Bột gạo, bột năng hoặc nước vôi trong tùy cách làm, thịt heo băm, mộc nhĩ, hành khô, rau mùi, nước mắm, đường, giấm/chanh.",
+      "en": "Rice flour, tapioca starch or alkaline water, minced pork, wood ear mushrooms, shallots, cilantro, fish sauce, sugar, vinegar/lime."
+    },
+    "instructions": {
+      "vi": "Bột gạo khuấy trên lửa nhỏ đến khi sánh mịn. Thịt băm xào với mộc nhĩ; múc bánh ra bát, thêm nhân, hành phi, rau mùi và nước mắm nóng.",
+      "en": "Cook rice batter over low heat until thick and smooth. Stir-fry pork with wood ear; serve in a bowl with topping, fried shallots, cilantro, and warm fish sauce."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Ăn xế, chiều tối hoặc bữa nhẹ.",
+      "en": "Afternoon, early evening, or light meal."
+    },
+    "Best_season": {
+      "vi": "Quanh năm, đặc biệt hợp mùa đông.",
+      "en": "Year-round, especially winter."
+    },
+    "origin_story": {
+      "vi": "Bánh đúc nóng gắn với các ngõ nhỏ Hà Nội, nơi người bán múc từng bát nóng hổi. Món cho thấy cách biến nguyên liệu gạo đơn giản thành thức quà mềm, ấm và dễ ăn.",
+      "en": "Hot bánh đúc is tied to Hanoi alleys, where vendors serve steaming bowls. It shows how simple rice batter becomes a warm, soft, comforting snack."
+    },
+    "price_range": {
+      "vi": "Khoảng 20.000 – 40.000đ/bát.",
+      "en": "About 20,000–40,000 VND per bowl."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh đúc nóng Hà Nội,bánh đúc,món nóng,ăn vặt mùa đông",
+      "en": "Hanoi hot banh duc,rice pudding cake,warm snack,winter food"
+    },
+    "spicy_level": 1,
+    "satiety_level": 2,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1217,
+    "id": "nom_bo_kho_ho_hoan_kiem",
+    "slug": "nom-bo-kho-ho-hoan-kiem",
+    "Name": {
+      "vi": "Nộm bò khô Hồ Hoàn Kiếm",
+      "en": "Hoan Kiem Dried Beef Green Papaya Salad"
+    },
+    "description": {
+      "vi": "Nộm bò khô là món ăn vặt nổi tiếng quanh Hồ Hoàn Kiếm, gồm đu đủ xanh bào sợi, bò khô, gân bò hoặc gan sấy, lạc rang, rau thơm và nước trộn chua ngọt. Món giòn, cay nhẹ, chua ngọt dễ ăn.",
+      "en": "Dried beef green papaya salad is a famous snack around Hoan Kiem Lake, made with shredded green papaya, dried beef, tendon or dried liver, peanuts, herbs, and sweet-sour dressing. Crunchy, mildly spicy, and easy to enjoy."
+    },
+    "category": {
+      "vi": "Gỏi/nộm – ăn vặt",
+      "en": "Salad snack"
+    },
+    "ingredients": {
+      "vi": "Đu đủ xanh, cà rốt, bò khô, gân bò hoặc gan sấy, lạc rang, rau kinh giới, rau mùi, nước mắm, đường, giấm/chanh, ớt.",
+      "en": "Green papaya, carrot, dried beef, beef tendon or dried liver, roasted peanuts, Vietnamese balm, cilantro, fish sauce, sugar, vinegar/lime, chili."
+    },
+    "instructions": {
+      "vi": "Đu đủ và cà rốt bào sợi, ngâm nước lạnh cho giòn. Xếp với bò khô, gân/gan, rau thơm, rưới nước trộn chua ngọt và rắc lạc.",
+      "en": "Shred green papaya and carrot, soak for crunch. Arrange with dried beef, tendon/liver, and herbs, then drizzle sweet-sour dressing and top with peanuts."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Ăn xế hoặc buổi tối khi dạo phố.",
+      "en": "Afternoon snack or evening street food."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Món nộm bò khô gắn với thói quen đi bộ, ngồi quán vỉa hè quanh Hồ Gươm. Hương vị chua ngọt và độ giòn của đu đủ giúp món nhẹ bụng nhưng vẫn đậm đà.",
+      "en": "This salad is associated with walking and sidewalk snacking around Hoan Kiem Lake. Sweet-sour flavor and crunchy papaya make it light yet savory."
+    },
+    "price_range": {
+      "vi": "Khoảng 35.000 – 70.000đ/đĩa.",
+      "en": "About 35,000–70,000 VND per plate."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "nộm bò khô Hồ Gươm,nộm Hà Nội,bò khô,đu đủ xanh",
+      "en": "Hoan Kiem dried beef salad,Hanoi salad,dried beef,green papaya"
+    },
+    "spicy_level": 2,
+    "satiety_level": 2,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1218,
+    "id": "ca_phe_trung_ha_noi",
+    "slug": "ca-phe-trung-ha-noi",
+    "Name": {
+      "vi": "Cà phê trứng Hà Nội",
+      "en": "Hanoi Egg Coffee"
+    },
+    "description": {
+      "vi": "Cà phê trứng Hà Nội là đồ uống nổi tiếng với lớp kem trứng đánh bông béo mịn phủ trên cà phê đen đậm. Vị đắng của cà phê hòa với vị ngọt béo của trứng tạo nên thức uống đặc trưng.",
+      "en": "Hanoi egg coffee is a famous drink with creamy whipped egg foam layered over strong black coffee. Coffee bitterness blends with sweet egg cream to create a signature drink."
+    },
+    "category": {
+      "vi": "Đồ uống – cà phê",
+      "en": "Coffee drink"
+    },
+    "ingredients": {
+      "vi": "Cà phê robusta pha phin, lòng đỏ trứng gà, sữa đặc, đường, có thể thêm cacao hoặc quế.",
+      "en": "Vietnamese robusta filter coffee, egg yolk, condensed milk, sugar, optional cocoa or cinnamon."
+    },
+    "instructions": {
+      "vi": "Lòng đỏ trứng đánh bông với sữa đặc và đường. Rót cà phê phin nóng vào tách, phủ kem trứng lên trên; có thể đặt tách trong bát nước nóng để giữ nhiệt.",
+      "en": "Whip egg yolk with condensed milk and sugar. Pour hot filter coffee into a cup, top with egg cream, and optionally keep the cup in hot water."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Buổi sáng, chiều hoặc sau bữa ăn.",
+      "en": "Morning, afternoon, or after meals."
+    },
+    "Best_season": {
+      "vi": "Quanh năm, hợp nhất khi uống nóng.",
+      "en": "Year-round, best served warm."
+    },
+    "origin_story": {
+      "vi": "Cà phê trứng ra đời từ sự sáng tạo trong bối cảnh thiếu sữa tươi, dùng trứng để tạo độ béo cho cà phê. Theo thời gian, món trở thành trải nghiệm đồ uống nổi bật của Hà Nội.",
+      "en": "Egg coffee emerged from creativity when fresh milk was scarce, using egg to add richness. It became one of Hanoi’s most distinctive drink experiences."
+    },
+    "price_range": {
+      "vi": "Khoảng 30.000 – 60.000đ/cốc.",
+      "en": "About 30,000–60,000 VND per cup."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "cà phê trứng Hà Nội,cafe trứng,đồ uống Hà Nội,cà phê phin",
+      "en": "Hanoi egg coffee,egg coffee,Hanoi drink,Vietnamese filter coffee"
+    },
+    "spicy_level": 0,
+    "satiety_level": 2,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1219,
+    "id": "kem_trang_tien",
+    "slug": "kem-trang-tien",
+    "Name": {
+      "vi": "Kem Tràng Tiền",
+      "en": "Trang Tien Ice Cream"
+    },
+    "description": {
+      "vi": "Kem Tràng Tiền là món kem gắn với ký ức nhiều thế hệ người Hà Nội, nổi tiếng với các vị truyền thống như cốm, đậu xanh, cacao, sữa dừa. Món thường được ăn khi đi dạo quanh Hồ Gươm hoặc phố Tràng Tiền.",
+      "en": "Trang Tien ice cream is tied to generations of Hanoians, known for traditional flavors such as green rice, mung bean, cocoa, and coconut milk. It is often enjoyed near Hoan Kiem Lake or Trang Tien Street."
+    },
+    "category": {
+      "vi": "Tráng miệng – kem",
+      "en": "Dessert / ice cream"
+    },
+    "ingredients": {
+      "vi": "Sữa, đường, kem hoặc sữa dừa, hương liệu tùy vị như cốm, đậu xanh, cacao, dừa.",
+      "en": "Milk, sugar, cream or coconut milk, flavorings such as green rice, mung bean, cocoa, coconut."
+    },
+    "instructions": {
+      "vi": "Kem được sản xuất thành que, ốc quế hoặc hộp với các vị truyền thống. Khi dùng, ăn trực tiếp lúc còn lạnh để giữ độ mịn và hương vị.",
+      "en": "The ice cream is made as bars, cones, or tubs in traditional flavors. Eat while frozen to preserve texture and flavor."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Ăn vặt, tráng miệng, khi dạo phố.",
+      "en": "Snack, dessert, or while walking around town."
+    },
+    "Best_season": {
+      "vi": "Quanh năm, đặc biệt được chuộng mùa hè.",
+      "en": "Year-round, especially summer."
+    },
+    "origin_story": {
+      "vi": "Kem Tràng Tiền gắn với không gian trung tâm Hà Nội và văn hóa đi bộ quanh Hồ Gươm. Hương vị cốm và đậu xanh khiến món trở thành một phần ký ức đô thị.",
+      "en": "Trang Tien ice cream is tied to central Hanoi and walks around Hoan Kiem Lake. Green rice and mung bean flavors make it part of urban memory."
+    },
+    "price_range": {
+      "vi": "Khoảng 10.000 – 50.000đ/sản phẩm tùy loại.",
+      "en": "About 10,000–50,000 VND depending on type."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "kem Tràng Tiền,Hà Nội,kem cốm,kem đậu xanh,món tráng miệng",
+      "en": "Trang Tien ice cream,Hanoi,green rice ice cream,mung bean ice cream,dessert"
+    },
+    "spicy_level": 0,
+    "satiety_level": 2,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1220,
+    "id": "com_lang_vong",
+    "slug": "com-lang-vong",
+    "Name": {
+      "vi": "Cốm làng Vòng",
+      "en": "Vong Village Green Rice"
+    },
+    "description": {
+      "vi": "Cốm làng Vòng là thức quà mùa thu nổi tiếng của Hà Nội, làm từ lúa nếp non rang, giã và sàng nhiều lần để tạo hạt cốm dẻo thơm màu xanh. Cốm thường ăn với chuối chín hoặc dùng làm bánh, chè, xôi.",
+      "en": "Vong Village green rice is a famous Hanoi autumn specialty made from young sticky rice roasted, pounded, and sifted into fragrant chewy green flakes. It is eaten with ripe banana or used in cakes, sweet soups, and sticky rice."
+    },
+    "category": {
+      "vi": "Đặc sản mùa vụ – quà Hà Nội",
+      "en": "Seasonal specialty / Hanoi gift"
+    },
+    "ingredients": {
+      "vi": "Lúa nếp non, lá sen hoặc lá ráy để gói; có thể dùng thêm chuối chín khi ăn.",
+      "en": "Young glutinous rice, lotus leaves or wrapping leaves; ripe banana if served fresh."
+    },
+    "instructions": {
+      "vi": "Lúa nếp non được tuốt hạt, rang trên lửa vừa, giã nhẹ nhiều lượt để tách vỏ và làm dẹo hạt. Cốm được sàng sạch, gói trong lá sen để giữ hương.",
+      "en": "Young sticky rice grains are stripped, roasted, and pounded in stages to remove husks and soften the flakes. The green rice is sifted and wrapped in lotus leaves."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Ăn vặt, làm quà, dùng trong món tráng miệng.",
+      "en": "Snack, gift, or dessert ingredient."
+    },
+    "Best_season": {
+      "vi": "Ngon nhất mùa thu, khoảng tháng 8–10.",
+      "en": "Best in autumn, around August–October."
+    },
+    "origin_story": {
+      "vi": "Làng Vòng nổi tiếng lâu đời với nghề làm cốm. Cốm là biểu tượng mùa thu Thủ đô, gắn với lá sen, hương lúa non và phong vị thanh nhã.",
+      "en": "Vong Village has long been renowned for green rice. Cốm is an emblem of Hanoi autumn, associated with lotus leaves, young rice fragrance, and refined taste."
+    },
+    "price_range": {
+      "vi": "Khoảng 250.000 – 500.000đ/kg tùy mùa và chất lượng.",
+      "en": "About 250,000–500,000 VND per kg depending on season and quality."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "cốm làng Vòng,cốm Hà Nội,đặc sản mùa thu,lúa nếp non",
+      "en": "Vong Village green rice,Hanoi green rice,autumn specialty,young sticky rice"
+    },
+    "spicy_level": 0,
+    "satiety_level": 2,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1221,
+    "id": "banh_com_hang_than",
+    "slug": "banh-com-hang-than",
+    "Name": {
+      "vi": "Bánh cốm Hàng Than",
+      "en": "Hang Than Green Rice Cake"
+    },
+    "description": {
+      "vi": "Bánh cốm Hàng Than là bánh ngọt truyền thống của Hà Nội, vỏ làm từ cốm dẻo xanh, nhân đậu xanh sên ngọt thơm. Bánh thường xuất hiện trong lễ cưới hỏi, làm quà biếu và quà du lịch.",
+      "en": "Hang Than green rice cake is a traditional Hanoi sweet with a chewy green rice shell and fragrant mung bean filling. It is common in wedding ceremonies, gifts, and travel souvenirs."
+    },
+    "category": {
+      "vi": "Bánh ngọt – quà biếu",
+      "en": "Sweet cake / gift"
+    },
+    "ingredients": {
+      "vi": "Cốm, đậu xanh, đường, dừa nạo hoặc mứt bí tùy công thức, dầu ăn, hương bưởi hoặc vani nhẹ.",
+      "en": "Green rice flakes, mung beans, sugar, grated coconut or candied winter melon, oil, pomelo blossom essence or vanilla."
+    },
+    "instructions": {
+      "vi": "Đậu xanh hấp chín, xay nhuyễn rồi sên với đường. Cốm nấu nhẹ với nước đường đến khi dẻo, bọc nhân đậu xanh, ép vuông và đóng gói.",
+      "en": "Steam and mash mung beans, cook with sugar into a filling. Cook green rice flakes with syrup until chewy, wrap around filling, shape into squares, and package."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Ăn tráng miệng, dùng trong cưới hỏi, làm quà.",
+      "en": "Dessert, wedding ceremony item, or gift."
+    },
+    "Best_season": {
+      "vi": "Quanh năm, đặc biệt mùa cưới và mùa thu.",
+      "en": "Year-round, especially wedding seasons and autumn."
+    },
+    "origin_story": {
+      "vi": "Phố Hàng Than nổi tiếng với nhiều cơ sở bánh cốm lâu đời. Bánh cốm gắn với nghi lễ cưới hỏi miền Bắc và văn hóa quà biếu Hà Nội.",
+      "en": "Hang Than Street is known for long-established green rice cake shops. The cake is linked to northern weddings and Hanoi gift culture."
+    },
+    "price_range": {
+      "vi": "Khoảng 7.000 – 15.000đ/cái hoặc 70.000 – 150.000đ/hộp.",
+      "en": "About 7,000–15,000 VND each or 70,000–150,000 VND per box."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh cốm Hàng Than,bánh cốm Hà Nội,cốm,quà cưới",
+      "en": "Hang Than green rice cake,Hanoi green rice cake,com,wedding gift"
+    },
+    "spicy_level": 0,
+    "satiety_level": 2,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1222,
+    "id": "o_mai_hang_duong",
+    "slug": "o-mai-hang-duong",
+    "Name": {
+      "vi": "Ô mai Hàng Đường",
+      "en": "Hang Duong Salted Preserved Fruits"
+    },
+    "description": {
+      "vi": "Ô mai Hàng Đường là đặc sản làm quà nổi tiếng của Hà Nội, gồm mơ, mận, sấu, quất, chanh đào được sên/ngâm với đường, muối, gừng, cam thảo. Vị chua, mặn, ngọt, cay nhẹ rất hợp uống trà.",
+      "en": "Hang Duong preserved fruits are a famous Hanoi gift made from apricot, plum, dracontomelon, kumquat, or lemon cooked/cured with sugar, salt, ginger, and licorice. Sweet, salty, sour, and mildly spicy, they pair well with tea."
+    },
+    "category": {
+      "vi": "Đặc sản khô – quà biếu",
+      "en": "Preserved fruit / gift"
+    },
+    "ingredients": {
+      "vi": "Mơ, mận, sấu, quất hoặc các loại quả khác, đường, muối, gừng, cam thảo, ớt tùy vị.",
+      "en": "Apricot, plum, dracontomelon, kumquat or other fruits, sugar, salt, ginger, licorice, chili depending on flavor."
+    },
+    "instructions": {
+      "vi": "Trái cây sơ chế, ngâm hoặc sên với đường và muối, sau đó thêm gừng, cam thảo, ớt tùy loại. Thành phẩm hong khô hoặc để dẻo, bảo quản kín.",
+      "en": "Fruits are cleaned and cured or cooked with sugar and salt, then flavored with ginger, licorice, or chili. The final product is dried or left chewy and sealed."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Ăn vặt, uống trà, làm quà.",
+      "en": "Snack, tea pairing, or gift."
+    },
+    "Best_season": {
+      "vi": "Quanh năm, một số vị ngon nhất theo mùa trái cây.",
+      "en": "Year-round, some flavors best in their fruit season."
+    },
+    "origin_story": {
+      "vi": "Phố Hàng Đường từ lâu là địa chỉ nổi tiếng về ô mai ở Hà Nội. Ô mai thể hiện văn hóa quà nhỏ tinh tế của người Hà Nội.",
+      "en": "Hang Duong Street has long been famous for preserved fruits. Ô mai reflects Hanoi’s refined small-gift culture."
+    },
+    "price_range": {
+      "vi": "Khoảng 100.000 – 300.000đ/kg tùy loại.",
+      "en": "About 100,000–300,000 VND per kg depending on type."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "ô mai Hàng Đường,ô mai Hà Nội,mơ sấu mận,quà Hà Nội",
+      "en": "Hang Duong preserved fruit,Hanoi o mai,apricot dracontomelon plum,Hanoi gift"
+    },
+    "spicy_level": 1,
+    "satiety_level": 1,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1223,
+    "id": "sau_ngam_duong_ha_noi",
+    "slug": "sau-ngam-duong-ha-noi",
+    "Name": {
+      "vi": "Sấu ngâm đường Hà Nội",
+      "en": "Hanoi Dracontomelon in Sugar Syrup"
+    },
+    "description": {
+      "vi": "Sấu ngâm đường là thức uống/quà mùa hè đặc trưng của Hà Nội. Quả sấu xanh được gọt vỏ, khía hoặc đập nhẹ, ngâm với đường và gừng để tạo siro chua ngọt pha nước đá.",
+      "en": "Dracontomelon in sugar syrup is a signature Hanoi summer drink and gift. Green sấu fruits are peeled, scored or lightly crushed, and soaked with sugar and ginger to make sweet-tart syrup for iced drinks."
+    },
+    "category": {
+      "vi": "Đồ uống – đặc sản ngâm",
+      "en": "Drink / preserved specialty"
+    },
+    "ingredients": {
+      "vi": "Quả sấu xanh, đường, gừng, muối, nước sạch.",
+      "en": "Green dracontomelon fruits, sugar, ginger, salt, clean water."
+    },
+    "instructions": {
+      "vi": "Sấu gọt vỏ, ngâm nước muối, khía quả rồi chần nhanh. Xếp sấu với đường và gừng vào lọ sạch; khi uống pha siro với nước lạnh và đá.",
+      "en": "Peel sấu, soak in salted water, score, and blanch briefly. Layer with sugar and ginger in a clean jar; mix syrup with cold water and ice to drink."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Giải khát ban ngày, đặc biệt mùa hè.",
+      "en": "Daytime refreshment, especially summer."
+    },
+    "Best_season": {
+      "vi": "Mùa sấu khoảng tháng 5–8; dùng quanh năm nếu đã ngâm.",
+      "en": "Sấu season is around May–August; preserved syrup can be used year-round."
+    },
+    "origin_story": {
+      "vi": "Cây sấu gắn với nhiều tuyến phố Hà Nội, nhất là vào mùa hè. Sấu ngâm đường trở thành hương vị mùa nóng rất riêng của Thủ đô.",
+      "en": "Sấu trees are part of many Hanoi streets, especially in summer. Sấu syrup became a distinctive hot-season flavor of the capital."
+    },
+    "price_range": {
+      "vi": "Khoảng 40.000 – 80.000đ/cốc; sấu ngâm khoảng 80.000 – 180.000đ/kg/lọ.",
+      "en": "About 40,000–80,000 VND per drink; preserved sấu about 80,000–180,000 VND per kg/jar."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "sấu ngâm Hà Nội,nước sấu,đặc sản mùa hè,quả sấu",
+      "en": "Hanoi dracontomelon drink,sau syrup,summer specialty,sau fruit"
+    },
+    "spicy_level": 0,
+    "satiety_level": 1,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1224,
+    "id": "tra_sen_tay_ho",
+    "slug": "tra-sen-tay-ho",
+    "Name": {
+      "vi": "Trà sen Tây Hồ",
+      "en": "West Lake Lotus Tea"
+    },
+    "description": {
+      "vi": "Trà sen Tây Hồ là đặc sản thanh tao của Hà Nội, được ướp hương sen Hồ Tây với trà xanh theo phương pháp thủ công. Chén trà có hương sen dịu, vị chát nhẹ, hậu ngọt, thường dùng để tiếp khách hoặc làm quà.",
+      "en": "West Lake lotus tea is a refined Hanoi specialty made by scenting green tea with West Lake lotus using traditional methods. It has gentle lotus aroma, light astringency, and sweet aftertaste, often used for hospitality or gifts."
+    },
+    "category": {
+      "vi": "Đồ uống – trà đặc sản",
+      "en": "Specialty tea"
+    },
+    "ingredients": {
+      "vi": "Trà xanh ngon, gạo sen hoặc hoa sen Bách Diệp Tây Hồ, giấy/lọ kín để ướp và bảo quản.",
+      "en": "Quality green tea, lotus stamens or West Lake lotus flowers, wrapping paper or airtight jars."
+    },
+    "instructions": {
+      "vi": "Trà được ướp nhiều lượt với gạo sen hoặc đặt trong bông sen qua đêm để thấm hương. Khi pha, dùng nước nóng vừa phải, tráng nhanh rồi hãm ngắn.",
+      "en": "Tea is scented repeatedly with lotus stamens or placed inside lotus blossoms overnight. Brew with moderately hot water, rinse briefly, then steep shortly."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Uống sáng, chiều, tiếp khách hoặc làm quà.",
+      "en": "Morning or afternoon tea, hospitality, or gift."
+    },
+    "Best_season": {
+      "vi": "Ướp ngon nhất mùa sen, thường khoảng tháng 5–7; dùng quanh năm nếu bảo quản tốt.",
+      "en": "Best scented during lotus season, often May–July; can be enjoyed year-round if stored well."
+    },
+    "origin_story": {
+      "vi": "Nghệ thuật ướp trà sen Tây Hồ gắn với văn hóa thưởng trà thanh lịch của người Hà Nội. Vì cần nhiều hoa sen và thao tác tỉ mỉ, trà sen thường được xem là món quà quý.",
+      "en": "West Lake lotus tea scenting is tied to Hanoi’s elegant tea culture. Because it requires many lotus flowers and meticulous work, it is considered a precious gift."
+    },
+    "price_range": {
+      "vi": "Khoảng 800.000 – 3.000.000đ/kg hoặc cao hơn tùy loại.",
+      "en": "About 800,000–3,000,000 VND per kg or higher depending on grade."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "trà sen Tây Hồ,trà sen Hà Nội,sen Hồ Tây,quà biếu",
+      "en": "West Lake lotus tea,Hanoi lotus tea,West Lake lotus,gift tea"
+    },
+    "spicy_level": 0,
+    "satiety_level": 1,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1225,
+    "id": "banh_cha_ha_noi",
+    "slug": "banh-cha-ha-noi",
+    "Name": {
+      "vi": "Bánh chả Hà Nội",
+      "en": "Hanoi Bánh Chả Pastry"
+    },
+    "description": {
+      "vi": "Bánh chả Hà Nội là bánh nướng nhỏ, vỏ bột mì giòn, nhân mỡ đường, lá chanh, lạp xưởng hoặc mứt bí tùy công thức. Bánh thơm béo, ngọt vừa, thường dùng với trà nóng.",
+      "en": "Hanoi bánh chả is a small baked pastry with a crisp wheat shell and a filling of sugared pork fat, lime leaf, Chinese sausage, or candied winter melon. It is fragrant, lightly rich, and often served with tea."
+    },
+    "category": {
+      "vi": "Bánh nướng – quà trà",
+      "en": "Baked pastry / tea snack"
+    },
+    "ingredients": {
+      "vi": "Bột mì, mỡ phần, đường, lá chanh, lạp xưởng hoặc mứt bí, trứng, dầu ăn, vừng tùy công thức.",
+      "en": "Wheat flour, pork fat, sugar, lime leaves, Chinese sausage or candied winter melon, egg, oil, sesame."
+    },
+    "instructions": {
+      "vi": "Nhào bột làm vỏ, chuẩn bị nhân mỡ đường trộn lá chanh và nguyên liệu phụ. Cán vỏ, cho nhân vào, tạo hình, quét trứng rồi nướng vàng.",
+      "en": "Make dough for the shell and a filling of sugared fat with lime leaves and other ingredients. Fill, shape, brush with egg, and bake until golden."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Ăn vặt, uống trà, làm quà.",
+      "en": "Snack, tea pairing, or gift."
+    },
+    "Best_season": {
+      "vi": "Quanh năm, phổ biến dịp lễ Tết.",
+      "en": "Year-round, popular during holidays."
+    },
+    "origin_story": {
+      "vi": "Bánh chả là thức bánh truyền thống của Hà Nội, thường xuất hiện trong hộp bánh kẹo gia đình. Hương lá chanh và lớp vỏ nướng giòn tạo nét riêng.",
+      "en": "Bánh chả is a traditional Hanoi pastry often found in family sweets boxes. Lime-leaf aroma and a crisp shell distinguish it."
+    },
+    "price_range": {
+      "vi": "Khoảng 80.000 – 180.000đ/kg hoặc tùy hộp.",
+      "en": "About 80,000–180,000 VND per kg or by box size."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh chả Hà Nội,bánh nướng,trà nóng,quà Hà Nội",
+      "en": "Hanoi banh cha,baked pastry,hot tea,Hanoi gift"
+    },
+    "spicy_level": 0,
+    "satiety_level": 2,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1226,
+    "id": "banh_trung_thu_bao_phuong",
+    "slug": "banh-trung-thu-bao-phuong",
+    "Name": {
+      "vi": "Bánh trung thu Bảo Phương",
+      "en": "Bao Phuong Mooncakes"
+    },
+    "description": {
+      "vi": "Bánh trung thu Bảo Phương là dòng bánh nướng, bánh dẻo truyền thống nổi tiếng ở Hà Nội, thường có nhân thập cẩm, đậu xanh, hạt sen, lạp xưởng, mứt bí. Bánh mang phong vị cổ truyền và thường mua làm quà dịp Trung thu.",
+      "en": "Bao Phuong mooncakes are famous traditional Hanoi baked and snow-skin mooncakes, often filled with mixed nuts, mung bean, lotus seed, Chinese sausage, and candied winter melon. They are popular Mid-Autumn gifts."
+    },
+    "category": {
+      "vi": "Bánh lễ Tết – quà biếu",
+      "en": "Festival cake / gift"
+    },
+    "ingredients": {
+      "vi": "Bột mì hoặc bột nếp rang, đường, dầu ăn, trứng, đậu xanh, hạt sen, lạp xưởng, mứt bí, hạt dưa, vừng, lá chanh tùy loại.",
+      "en": "Wheat flour or roasted glutinous rice flour, sugar, oil, eggs, mung bean, lotus seeds, Chinese sausage, candied winter melon, melon seeds, sesame, lime leaves."
+    },
+    "instructions": {
+      "vi": "Bánh nướng bọc nhân bằng vỏ bột mì, ép khuôn, nướng nhiều lần và quét trứng. Bánh dẻo dùng bột nếp rang trộn nước đường, bọc nhân rồi ép khuôn.",
+      "en": "Baked mooncakes use wheat dough around filling, are molded and baked in stages with egg wash. Snow-skin cakes use roasted glutinous flour with syrup, wrapped around filling and molded."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Dịp Trung thu, làm quà biếu, uống trà.",
+      "en": "Mid-Autumn Festival, gifting, tea pairing."
+    },
+    "Best_season": {
+      "vi": "Mùa Trung thu, khoảng tháng 8 âm lịch.",
+      "en": "Mid-Autumn season, around the eighth lunar month."
+    },
+    "origin_story": {
+      "vi": "Bánh trung thu truyền thống là một phần ký ức Hà Nội mỗi dịp rằm tháng Tám. Các hiệu bánh lâu năm giữ phong vị cổ với nhân đậm và vỏ thơm.",
+      "en": "Traditional mooncakes are part of Hanoi’s Mid-Autumn memories. Long-standing bakeries preserve old-style rich fillings and fragrant crusts."
+    },
+    "price_range": {
+      "vi": "Khoảng 50.000 – 150.000đ/cái tùy kích cỡ và nhân.",
+      "en": "About 50,000–150,000 VND each depending on size and filling."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh trung thu Bảo Phương,bánh trung thu Hà Nội,bánh nướng,bánh dẻo",
+      "en": "Bao Phuong mooncakes,Hanoi mooncakes,baked mooncake,snow-skin mooncake"
+    },
+    "spicy_level": 0,
+    "satiety_level": 3,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1227,
+    "id": "cha_ruoi_ha_noi",
+    "slug": "cha-ruoi-ha-noi",
+    "Name": {
+      "vi": "Chả rươi Hà Nội",
+      "en": "Hanoi Ragworm Omelet Patties"
+    },
+    "description": {
+      "vi": "Chả rươi là món mùa vụ đặc biệt của Hà Nội, làm từ rươi trộn trứng, thịt băm, vỏ quýt, thì là, hành lá rồi rán vàng. Món béo ngậy, thơm vỏ quýt, thường ăn với bún, rau sống và nước mắm.",
+      "en": "Hanoi ragworm patties are a seasonal dish made by mixing ragworms with eggs, minced pork, tangerine peel, dill, and scallions, then pan-frying until golden. Rich and citrus-fragrant, they are served with noodles, herbs, and fish sauce."
+    },
+    "category": {
+      "vi": "Món rán – đặc sản mùa vụ",
+      "en": "Fried seasonal specialty"
+    },
+    "ingredients": {
+      "vi": "Rươi tươi, trứng gà, thịt heo băm, vỏ quýt, thì là, hành lá, lá lốt tùy chọn, nước mắm, tiêu, dầu ăn.",
+      "en": "Fresh ragworms, eggs, minced pork, tangerine peel, dill, scallions, optional betel leaves, fish sauce, pepper, oil."
+    },
+    "instructions": {
+      "vi": "Rươi làm sạch nhẹ bằng nước ấm, trộn với trứng, thịt băm, vỏ quýt và rau gia vị. Rán từng miếng trên lửa vừa đến khi vàng hai mặt.",
+      "en": "Gently clean ragworms with warm water, then mix with eggs, minced pork, tangerine peel, and herbs. Fry patties over medium heat until golden on both sides."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Bữa trưa, tối hoặc món nhậu mùa rươi.",
+      "en": "Lunch, dinner, or seasonal drinking snack."
+    },
+    "Best_season": {
+      "vi": "Mùa rươi, thường cuối thu đến đầu đông.",
+      "en": "Ragworm season, usually late autumn to early winter."
+    },
+    "origin_story": {
+      "vi": "Rươi là nguyên liệu mùa vụ quý ở miền Bắc, khi vào Hà Nội được chế biến thành chả rươi cầu kỳ. Vỏ quýt giúp giảm tanh và tạo hương thơm rất riêng.",
+      "en": "Ragworms are a prized northern seasonal ingredient, turned in Hanoi into elaborate patties. Tangerine peel reduces fishiness and adds a distinctive aroma."
+    },
+    "price_range": {
+      "vi": "Khoảng 120.000 – 250.000đ/phần tùy mùa.",
+      "en": "About 120,000–250,000 VND per serving depending on season."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "chả rươi Hà Nội,rươi,vỏ quýt,món mùa thu",
+      "en": "Hanoi ragworm patties,ragworm,tangerine peel,autumn specialty"
+    },
+    "spicy_level": 1,
+    "satiety_level": 4,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1228,
+    "id": "oc_luoc_ha_noi",
+    "slug": "oc-luoc-ha-noi",
+    "Name": {
+      "vi": "Ốc luộc Hà Nội",
+      "en": "Hanoi Boiled Snails"
+    },
+    "description": {
+      "vi": "Ốc luộc Hà Nội là món ăn chơi quen thuộc, ốc luộc với sả, lá chanh hoặc gừng, ăn cùng nước mắm gừng sả ớt chua ngọt. Món giản dị nhưng rất được ưa chuộng trong những chiều lạnh.",
+      "en": "Hanoi boiled snails are a familiar snack cooked with lemongrass, lime leaves, or ginger and served with sweet-sour ginger-lemongrass chili fish sauce. Simple yet beloved, especially on chilly afternoons."
+    },
+    "category": {
+      "vi": "Món ốc – ăn vặt",
+      "en": "Snail snack"
+    },
+    "ingredients": {
+      "vi": "Ốc mít hoặc ốc nhồi, sả, lá chanh, gừng, muối; nước mắm, đường, chanh/quất, gừng, sả, ớt.",
+      "en": "Freshwater snails, lemongrass, lime leaves, ginger, salt; fish sauce, sugar, lime/kumquat, ginger, lemongrass, chili."
+    },
+    "instructions": {
+      "vi": "Ốc ngâm nước vo gạo hoặc nước ớt cho nhả bùn, rửa sạch. Luộc với sả, lá chanh, gừng; pha nước chấm chua cay thơm gừng sả.",
+      "en": "Soak snails to purge mud, then rinse well. Boil with lemongrass, lime leaves, and ginger; serve with a sour-spicy ginger-lemongrass dip."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Ăn xế hoặc tối.",
+      "en": "Afternoon or evening snack."
+    },
+    "Best_season": {
+      "vi": "Quanh năm, hợp nhất mùa lạnh.",
+      "en": "Year-round, best in cold weather."
+    },
+    "origin_story": {
+      "vi": "Ốc luộc là một phần văn hóa quán nhỏ Hà Nội, nơi người ăn nhẩn nha khêu ốc và trò chuyện. Bát nước chấm thơm gừng sả là linh hồn của món.",
+      "en": "Boiled snails are part of Hanoi’s small-eatery culture, where diners leisurely pick snails and chat. The ginger-lemongrass dip is the soul of the dish."
+    },
+    "price_range": {
+      "vi": "Khoảng 50.000 – 100.000đ/bát/đĩa.",
+      "en": "About 50,000–100,000 VND per bowl/plate."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "ốc luộc Hà Nội,ốc nóng,nước chấm gừng sả,ăn vặt",
+      "en": "Hanoi boiled snails,hot snails,ginger lemongrass dip,snack"
+    },
+    "spicy_level": 2,
+    "satiety_level": 2,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1229,
+    "id": "gio_cha_uoc_le",
+    "slug": "gio-cha-uoc-le",
+    "Name": {
+      "vi": "Giò chả Ước Lễ",
+      "en": "Uoc Le Vietnamese Pork Roll"
+    },
+    "description": {
+      "vi": "Giò chả Ước Lễ là đặc sản làng nghề Thanh Oai, Hà Nội, nổi tiếng với giò lụa, chả quế dai giòn, thơm mùi thịt tươi và lá chuối. Món thường dùng trong mâm cỗ, bánh cuốn, xôi hoặc làm quà.",
+      "en": "Uoc Le pork roll is a craft-village specialty from Thanh Oai, Hanoi, known for springy giò lụa and cinnamon pork roll made from fresh pork and banana leaves. It is used in feast trays, rice rolls, sticky rice, or gifts."
+    },
+    "category": {
+      "vi": "Giò chả – đặc sản làng nghề",
+      "en": "Vietnamese pork roll / craft-village specialty"
+    },
+    "ingredients": {
+      "vi": "Thịt heo tươi, nước mắm ngon, tiêu, bột quế hoặc gia vị chả quế, lá chuối, dây buộc.",
+      "en": "Fresh pork, quality fish sauce, pepper, cinnamon powder or seasonings, banana leaves, tying string."
+    },
+    "instructions": {
+      "vi": "Thịt heo lọc gân, xay hoặc giã nhuyễn với nước mắm và gia vị đến khi dẻo. Gói chặt trong lá chuối rồi luộc; chả quế có thể hấp hoặc nướng/chiên.",
+      "en": "Trim pork, grind or pound with fish sauce and seasonings until elastic. Wrap tightly in banana leaves and boil; cinnamon pork roll may be steamed, baked, or fried."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Dùng trong bữa chính, mâm cỗ, ăn kèm xôi/bánh cuốn.",
+      "en": "Main meals, feast trays, with sticky rice or rice rolls."
+    },
+    "Best_season": {
+      "vi": "Quanh năm, đặc biệt dịp lễ Tết.",
+      "en": "Year-round, especially holidays."
+    },
+    "origin_story": {
+      "vi": "Làng Ước Lễ nổi tiếng với nghề làm giò chả truyền thống. Bí quyết chọn thịt, quết thịt và gói lá chuối tạo nên độ giòn dai tự nhiên.",
+      "en": "Uoc Le village is famous for traditional pork rolls. Selecting meat, pounding it, and wrapping with banana leaves create a natural springy texture."
+    },
+    "price_range": {
+      "vi": "Khoảng 180.000 – 350.000đ/kg tùy loại.",
+      "en": "About 180,000–350,000 VND per kg depending on type."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "giò chả Ước Lễ,Thanh Oai,Hà Nội,giò lụa,chả quế",
+      "en": "Uoc Le pork roll,Thanh Oai,Hanoi,gio lua,cinnamon pork roll"
+    },
+    "spicy_level": 0,
+    "satiety_level": 3,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1230,
+    "id": "gio_chem",
+    "slug": "gio-chem",
+    "Name": {
+      "vi": "Giò Chèm",
+      "en": "Chem Village Pork Roll"
+    },
+    "description": {
+      "vi": "Giò Chèm là đặc sản làng Chèm, Hà Nội, nổi bật bởi cây giò được gói kỹ bằng lá chuối, thịt quết mịn và mùi thơm đặc trưng khi luộc. Món thường dùng trong mâm cỗ, ăn với bánh dày, xôi hoặc cơm.",
+      "en": "Chem Village pork roll is a Hanoi specialty known for carefully banana-leaf-wrapped rolls, finely pounded pork, and a distinctive aroma after boiling. It is served in feast trays with sticky rice cakes, sticky rice, or rice."
+    },
+    "category": {
+      "vi": "Giò chả – đặc sản làng nghề",
+      "en": "Vietnamese pork roll / craft-village specialty"
+    },
+    "ingredients": {
+      "vi": "Thịt heo nạc tươi, nước mắm, tiêu, lá chuối, dây lạt; tùy loại có thêm mỡ hoặc gia vị.",
+      "en": "Fresh lean pork, fish sauce, pepper, banana leaves, tying strips; optional fat or seasonings."
+    },
+    "instructions": {
+      "vi": "Thịt làm lạnh, xay/quết mịn với nước mắm và tiêu. Gói nhiều lớp lá chuối cho chắc, buộc chặt rồi luộc chín; để nguội và thái lát.",
+      "en": "Chill pork, grind or pound with fish sauce and pepper. Wrap tightly in multiple banana-leaf layers, boil until cooked, cool, and slice."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Mâm cỗ, bữa chính, dịp lễ Tết.",
+      "en": "Feast trays, main meals, holidays."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Làng Chèm có nghề làm giò chả lâu đời, được người Hà Nội biết đến nhờ hương vị chắc, thơm và kỹ thuật gói luộc truyền thống.",
+      "en": "Chem Village has a long pork-roll tradition, recognized by Hanoians for firm texture, aroma, and traditional wrapping-boiling techniques."
+    },
+    "price_range": {
+      "vi": "Khoảng 180.000 – 320.000đ/kg.",
+      "en": "About 180,000–320,000 VND per kg."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "giò Chèm,làng Chèm,giò chả Hà Nội,mâm cỗ",
+      "en": "Chem pork roll,Chem village,Hanoi pork roll,feast dish"
+    },
+    "spicy_level": 0,
+    "satiety_level": 3,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1231,
+    "id": "banh_te_phu_nhi",
+    "slug": "banh-te-phu-nhi",
+    "Name": {
+      "vi": "Bánh tẻ Phú Nhi",
+      "en": "Phu Nhi Rice Cake"
+    },
+    "description": {
+      "vi": "Bánh tẻ Phú Nhi là đặc sản xứ Đoài thuộc Sơn Tây, Hà Nội, làm từ bột gạo tẻ khuấy dẻo, nhân thịt băm, mộc nhĩ, hành khô, gói lá rồi hấp. Bánh mềm, thơm, ăn nóng với nước mắm hoặc tương ớt.",
+      "en": "Phu Nhi rice cake is a Xứ Đoài specialty from Son Tay, Hanoi, made with cooked rice-flour dough filled with minced pork, wood ear mushrooms, and shallots, wrapped in leaves and steamed. Soft and fragrant, it is eaten warm."
+    },
+    "category": {
+      "vi": "Bánh hấp – đặc sản làng nghề",
+      "en": "Steamed rice cake / craft-village specialty"
+    },
+    "ingredients": {
+      "vi": "Gạo tẻ, thịt heo băm, mộc nhĩ, hành khô, tiêu, nước mắm, lá dong hoặc lá chuối, dầu ăn.",
+      "en": "Plain rice, minced pork, wood ear mushrooms, shallots, pepper, fish sauce, dong or banana leaves, oil."
+    },
+    "instructions": {
+      "vi": "Gạo ngâm, xay thành bột rồi khuấy đến khi sánh dẻo. Nhân thịt xào với mộc nhĩ, hành; cho bột và nhân vào lá, gói thon dài rồi hấp chín.",
+      "en": "Soak and grind rice into batter, stir until thick and elastic. Stir-fry pork filling, wrap with dough in leaves, shape into slim cakes, and steam."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Bữa sáng, ăn xế hoặc làm quà.",
+      "en": "Breakfast, snack, or gift."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Phú Nhi là làng nghề bánh tẻ lâu đời của vùng Sơn Tây. Từ món ăn dân dã, bánh tẻ Phú Nhi trở thành đặc sản xứ Đoài nhờ kỹ thuật khuấy bột và gói bánh khéo.",
+      "en": "Phu Nhi is a long-standing rice-cake village in Son Tay. From humble food, the cake became a Xứ Đoài specialty through skilled batter cooking and wrapping."
+    },
+    "price_range": {
+      "vi": "Khoảng 8.000 – 15.000đ/cái.",
+      "en": "About 8,000–15,000 VND each."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh tẻ Phú Nhi,Sơn Tây,Hà Nội,bánh gạo,xứ Đoài",
+      "en": "Phu Nhi rice cake,Son Tay,Hanoi,rice cake,Xu Doai"
+    },
+    "spicy_level": 0,
+    "satiety_level": 3,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1232,
+    "id": "banh_day_quan_ganh",
+    "slug": "banh-day-quan-ganh",
+    "Name": {
+      "vi": "Bánh dày Quán Gánh",
+      "en": "Quan Ganh Sticky Rice Cake"
+    },
+    "description": {
+      "vi": "Bánh dày Quán Gánh là đặc sản Thường Tín, Hà Nội, làm từ nếp giã nhuyễn thành vỏ bánh trắng dẻo, có loại nhân đậu xanh ngọt, nhân mặn hoặc bánh chay ăn kèm giò chả. Bánh mềm thơm, thường dùng trong cưới hỏi và cúng lễ.",
+      "en": "Quan Ganh sticky rice cake is a Thuong Tin, Hanoi specialty made from pounded glutinous rice into a soft white cake, with sweet mung bean filling, savory filling, or plain cakes served with pork roll. It is used in weddings and offerings."
+    },
+    "category": {
+      "vi": "Bánh nếp – đặc sản làng nghề",
+      "en": "Sticky rice cake / craft-village specialty"
+    },
+    "ingredients": {
+      "vi": "Gạo nếp cái hoa vàng, đậu xanh, đường, muối, dầu ăn; tùy loại có giò chả hoặc nhân mặn.",
+      "en": "Yellow-flower sticky rice, mung beans, sugar, salt, oil; pork roll or savory filling depending on type."
+    },
+    "instructions": {
+      "vi": "Gạo nếp ngâm rồi đồ xôi, giã nhuyễn khi còn nóng. Đậu xanh hấp chín sên đường làm nhân; nặn vỏ nếp bọc nhân hoặc làm bánh chay.",
+      "en": "Soak sticky rice, steam, and pound while hot. Steam mung beans and cook with sugar for filling; shape rice around filling or make plain cakes."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Ăn sáng, ăn nhẹ, lễ cưới hỏi, cúng lễ.",
+      "en": "Breakfast, snack, weddings, ceremonial offerings."
+    },
+    "Best_season": {
+      "vi": "Quanh năm, phổ biến dịp lễ Tết và mùa cưới.",
+      "en": "Year-round, especially holidays and wedding seasons."
+    },
+    "origin_story": {
+      "vi": "Quán Gánh thuộc Thường Tín nổi tiếng với nghề làm bánh dày ven quốc lộ. Món bánh mang ý nghĩa truyền thống về sự đầy đặn, dẻo bền.",
+      "en": "Quan Ganh in Thuong Tin is famous for sticky rice cakes sold along the old national road. The cake symbolizes fullness and lasting bonds."
+    },
+    "price_range": {
+      "vi": "Khoảng 5.000 – 12.000đ/cái hoặc 50.000 – 120.000đ/hộp.",
+      "en": "About 5,000–12,000 VND each or 50,000–120,000 VND per box."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh dày Quán Gánh,Thường Tín,Hà Nội,bánh nếp,giò chả",
+      "en": "Quan Ganh sticky rice cake,Thuong Tin,Hanoi,sticky rice cake,pork roll"
+    },
+    "spicy_level": 0,
+    "satiety_level": 3,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1233,
+    "id": "che_lam_thach_xa",
+    "slug": "che-lam-thach-xa",
+    "Name": {
+      "vi": "Chè lam Thạch Xá",
+      "en": "Thach Xa Che Lam Ginger Sticky Rice Bar"
+    },
+    "description": {
+      "vi": "Chè lam Thạch Xá là thức quà truyền thống của Thạch Thất, Hà Nội, làm từ bột nếp rang, mật mía, mạch nha, gừng và lạc. Miếng chè lam dẻo thơm, cay nhẹ vị gừng, rất hợp uống cùng trà nóng.",
+      "en": "Thach Xa chè lam is a traditional sweet from Thach That, Hanoi, made with roasted glutinous rice flour, cane molasses, malt syrup, ginger, and peanuts. Chewy, fragrant, and mildly spicy, it pairs well with hot tea."
+    },
+    "category": {
+      "vi": "Bánh ngọt – quà trà",
+      "en": "Sweet bar / tea snack"
+    },
+    "ingredients": {
+      "vi": "Bột nếp rang, mật mía, mạch nha, đường, gừng, lạc rang, vừng, bột áo.",
+      "en": "Roasted glutinous rice flour, cane molasses, malt syrup, sugar, ginger, roasted peanuts, sesame, dusting flour."
+    },
+    "instructions": {
+      "vi": "Mật mía và mạch nha đun với gừng đến độ kéo sợi, trộn bột nếp rang và lạc. Cán hỗn hợp, phủ bột áo, cắt miếng và để nguội.",
+      "en": "Cook molasses and malt syrup with ginger until stretchy, mix in roasted rice flour and peanuts, roll out, dust, cut, and cool."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Ăn vặt, uống trà, làm quà.",
+      "en": "Snack, tea pairing, or gift."
+    },
+    "Best_season": {
+      "vi": "Quanh năm, đặc biệt dịp Tết và mùa lạnh.",
+      "en": "Year-round, especially Tet and cold weather."
+    },
+    "origin_story": {
+      "vi": "Thạch Xá là làng nổi tiếng với chè lam xứ Đoài. Món bánh giữ hương vị quê mộc mạc với nếp, mật, gừng và lạc.",
+      "en": "Thach Xa is famous for Xứ Đoài chè lam. The sweet preserves rustic flavors of sticky rice, molasses, ginger, and peanuts."
+    },
+    "price_range": {
+      "vi": "Khoảng 60.000 – 150.000đ/hộp tùy trọng lượng.",
+      "en": "About 60,000–150,000 VND per box depending on weight."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "chè lam Thạch Xá,Thạch Thất,Hà Nội,mật mía,gừng",
+      "en": "Thach Xa che lam,Thach That,Hanoi,cane molasses,ginger"
+    },
+    "spicy_level": 0,
+    "satiety_level": 2,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1234,
+    "id": "banh_chung_tranh_khuc",
+    "slug": "banh-chung-tranh-khuc",
+    "Name": {
+      "vi": "Bánh chưng Tranh Khúc",
+      "en": "Tranh Khuc Square Sticky Rice Cake"
+    },
+    "description": {
+      "vi": "Bánh chưng Tranh Khúc là đặc sản làng nghề Thanh Trì, Hà Nội, nổi tiếng với bánh gói chắc tay, nhân đậu xanh thịt lợn, gạo nếp dẻo và lá dong xanh. Ngoài bánh truyền thống còn có bánh nếp cẩm, ngũ sắc.",
+      "en": "Tranh Khuc square sticky rice cake is a craft-village specialty from Thanh Tri, Hanoi, known for tight wrapping, mung bean and pork filling, chewy sticky rice, and green dong leaves. It also has black sticky rice and multicolor versions."
+    },
+    "category": {
+      "vi": "Bánh Tết – đặc sản làng nghề",
+      "en": "Tet cake / craft-village specialty"
+    },
+    "ingredients": {
+      "vi": "Gạo nếp, đậu xanh, thịt ba chỉ, lá dong, lạt buộc, muối, tiêu.",
+      "en": "Glutinous rice, mung beans, pork belly, dong leaves, tying strips, salt, pepper."
+    },
+    "instructions": {
+      "vi": "Gạo nếp, đậu xanh ngâm; thịt ướp muối tiêu. Xếp lá, cho gạo, đậu, thịt, gói vuông chặt rồi luộc nhiều giờ đến khi chín dẻo.",
+      "en": "Soak rice and beans; season pork. Layer leaves with rice, beans, and pork, wrap tightly into squares, then boil for hours until tender."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Dịp Tết, cúng lễ, làm quà.",
+      "en": "Tet, ceremonial offerings, or gifts."
+    },
+    "Best_season": {
+      "vi": "Quanh năm, cao điểm trước Tết Nguyên đán.",
+      "en": "Year-round, peak before Lunar New Year."
+    },
+    "origin_story": {
+      "vi": "Làng Tranh Khúc nổi tiếng với nghề gói bánh chưng phục vụ Hà Nội và nhiều tỉnh thành, đặc biệt vào dịp Tết. Kỹ thuật gói nhanh, vuông đẹp và luộc đều tạo nên thương hiệu làng nghề.",
+      "en": "Tranh Khuc village is famous for supplying bánh chưng to Hanoi and many provinces, especially before Tet. Quick neat wrapping and even boiling define the village brand."
+    },
+    "price_range": {
+      "vi": "Khoảng 50.000 – 150.000đ/cái tùy kích cỡ và loại.",
+      "en": "About 50,000–150,000 VND each depending on size and type."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh chưng Tranh Khúc,Thanh Trì,Hà Nội,bánh Tết,làng nghề",
+      "en": "Tranh Khuc banh chung,Thanh Tri,Hanoi,Tet cake,craft village"
+    },
+    "spicy_level": 0,
+    "satiety_level": 4,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1235,
+    "id": "xoi_che_phu_thuong",
+    "slug": "xoi-che-phu-thuong",
+    "Name": {
+      "vi": "Xôi chè Phú Thượng",
+      "en": "Phu Thuong Sticky Rice and Sweet Soup"
+    },
+    "description": {
+      "vi": "Xôi chè Phú Thượng là đặc sản làng nghề nấu xôi ở Tây Hồ, Hà Nội, gồm xôi dẻo thơm ăn cùng chè kho hoặc chè đậu ngọt bùi. Món thường xuất hiện trong lễ hội, cúng lễ, cưới hỏi và mâm cỗ.",
+      "en": "Phu Thuong sticky rice and sweet soup is a specialty from Tay Ho, Hanoi, combining fragrant sticky rice with mung bean paste or sweet bean desserts. It appears in festivals, offerings, weddings, and feast trays."
+    },
+    "category": {
+      "vi": "Xôi chè – món lễ/cỗ",
+      "en": "Sticky rice and sweet soup / ceremonial dish"
+    },
+    "ingredients": {
+      "vi": "Gạo nếp, đậu xanh hoặc đậu đỗ tùy loại chè, đường, vừng, dừa tùy chọn, lá nếp hoặc nước cốt dừa tùy cách làm.",
+      "en": "Glutinous rice, mung beans or other beans, sugar, sesame, optional coconut, pandan or coconut milk."
+    },
+    "instructions": {
+      "vi": "Gạo nếp ngâm và đồ thành xôi dẻo. Đậu xanh hấp mềm, sên với đường thành chè kho hoặc nấu chè; bày xôi và chè cùng nhau.",
+      "en": "Soak and steam sticky rice. Steam mung beans and cook with sugar into paste or sweet soup; serve sticky rice with the sweet component."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Lễ cúng, cưới hỏi, bữa sáng hoặc làm quà.",
+      "en": "Offerings, weddings, breakfast, or gifts."
+    },
+    "Best_season": {
+      "vi": "Quanh năm, đặc biệt dịp lễ Tết.",
+      "en": "Year-round, especially holidays."
+    },
+    "origin_story": {
+      "vi": "Phú Thượng là làng nghề xôi nổi tiếng của Hà Nội, từng cung cấp xôi cho nhiều chợ và sự kiện trong thành phố. Xôi chè thể hiện vai trò của xôi trong văn hóa lễ nghi Bắc Bộ.",
+      "en": "Phu Thuong is a renowned sticky-rice village in Hanoi. Xôi chè reflects sticky rice’s role in northern ceremonial food culture."
+    },
+    "price_range": {
+      "vi": "Khoảng 20.000 – 60.000đ/phần; mâm cỗ tính theo đặt hàng.",
+      "en": "About 20,000–60,000 VND per serving; ceremonial trays priced by order."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "xôi chè Phú Thượng,xôi Phú Thượng,Tây Hồ,Hà Nội,món lễ",
+      "en": "Phu Thuong sticky rice,Tay Ho,Hanoi,ceremonial food,sweet soup"
+    },
+    "spicy_level": 0,
+    "satiety_level": 3,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1236,
+    "id": "mien_lang_so",
+    "slug": "mien-lang-so",
+    "Name": {
+      "vi": "Miến làng So",
+      "en": "Lang So Arrowroot Glass Noodles"
+    },
+    "description": {
+      "vi": "Miến làng So là đặc sản truyền thống của Quốc Oai, Hà Nội, thường làm từ tinh bột dong riềng, sợi miến trong, dai và thơm. Miến dùng để nấu miến gà, miến măng, miến xào hoặc làm quà khô.",
+      "en": "Lang So glass noodles are a traditional specialty from Quoc Oai, Hanoi, commonly made from arrowroot starch. The noodles are clear, chewy, and fragrant, used in soups, stir-fries, or as dried gifts."
+    },
+    "category": {
+      "vi": "Đặc sản khô – nguyên liệu",
+      "en": "Dried specialty / ingredient"
+    },
+    "ingredients": {
+      "vi": "Tinh bột dong riềng, nước sạch; khi chế biến dùng thêm gà, măng, mộc nhĩ, nấm, rau thơm tùy món.",
+      "en": "Arrowroot starch, clean water; when cooking, chicken, bamboo shoots, mushrooms, herbs depending on dish."
+    },
+    "instructions": {
+      "vi": "Tinh bột hòa nước, tráng thành bánh mỏng, hấp chín, phơi se rồi cắt sợi và phơi/sấy khô. Khi dùng, ngâm hoặc chần mềm rồi nấu canh/xào.",
+      "en": "Mix starch with water, steam into sheets, partially dry, cut into strands, then dry fully. To cook, soak or blanch and use in soup or stir-fry."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Dùng trong bữa chính, làm quà khô.",
+      "en": "Main meals or dried gift."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Làng So có nghề làm miến truyền thống, góp phần vào nhóm làng nghề ẩm thực ngoại thành Hà Nội. Sợi miến dai và trong được dùng rộng rãi trong mâm cỗ Bắc Bộ.",
+      "en": "Lang So has a traditional glass-noodle craft, contributing to Hanoi’s suburban food-village heritage. Its chewy clear noodles are widely used in northern feast trays."
+    },
+    "price_range": {
+      "vi": "Khoảng 80.000 – 150.000đ/kg.",
+      "en": "About 80,000–150,000 VND per kg."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "miến làng So,Quốc Oai,Hà Nội,miến dong,đặc sản khô",
+      "en": "Lang So glass noodles,Quoc Oai,Hanoi,arrowroot noodles,dried specialty"
+    },
+    "spicy_level": 0,
+    "satiety_level": 3,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1237,
+    "id": "ga_mia_duong_lam",
+    "slug": "ga-mia-duong-lam",
+    "Name": {
+      "vi": "Gà Mía Đường Lâm",
+      "en": "Duong Lam Mia Chicken"
+    },
+    "description": {
+      "vi": "Gà Mía Đường Lâm là giống gà đặc sản vùng Sơn Tây, Hà Nội, thịt chắc, da vàng, vị ngọt tự nhiên. Gà thường được luộc, hấp lá chanh, nướng hoặc làm mâm cỗ trong dịp lễ hội làng cổ Đường Lâm.",
+      "en": "Duong Lam Mia chicken is a specialty breed from Son Tay, Hanoi, known for firm meat, yellow skin, and natural sweetness. It is boiled, steamed with lime leaves, grilled, or served in feast trays during Duong Lam festivals."
+    },
+    "category": {
+      "vi": "Món gà – đặc sản địa phương",
+      "en": "Chicken specialty"
+    },
+    "ingredients": {
+      "vi": "Gà Mía, lá chanh, gừng, hành, muối, tiêu, nước mắm; tùy món có thêm mật ong, sả, tỏi để nướng.",
+      "en": "Mia chicken, lime leaves, ginger, onion, salt, pepper, fish sauce; optional honey, lemongrass, garlic for grilling."
+    },
+    "instructions": {
+      "vi": "Gà làm sạch, luộc hoặc hấp với gừng, hành, muối đến chín tới. Thái miếng, rắc lá chanh, chấm muối tiêu chanh; nếu nướng thì ướp sả tỏi, mật ong.",
+      "en": "Clean chicken and boil or steam with ginger, onion, and salt until just cooked. Chop, sprinkle lime leaves, dip in lime pepper salt; for grilling, marinate with lemongrass, garlic, and honey."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Bữa chính, mâm cỗ, lễ hội.",
+      "en": "Main meals, feast trays, festivals."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Gà Mía gắn với làng cổ Đường Lâm và văn hóa cỗ truyền thống xứ Đoài. Chất thịt chắc, thơm khiến giống gà này được xem là sản vật địa phương quý.",
+      "en": "Mia chicken is tied to Duong Lam ancient village and Xứ Đoài feast culture. Its firm flavorful meat makes it a valued local product."
+    },
+    "price_range": {
+      "vi": "Khoảng 250.000 – 450.000đ/con tùy trọng lượng.",
+      "en": "About 250,000–450,000 VND per chicken depending on weight."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "gà Mía Đường Lâm,Sơn Tây,Hà Nội,gà đặc sản,xứ Đoài",
+      "en": "Duong Lam Mia chicken,Son Tay,Hanoi,specialty chicken,Xu Doai"
+    },
+    "spicy_level": 0,
+    "satiety_level": 5,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  {
+    "STT": 1238,
+    "id": "ca_dam_tuong_tam_hiep",
+    "slug": "ca-dam-tuong-tam-hiep",
+    "Name": {
+      "vi": "Cà dầm tương Tam Hiệp",
+      "en": "Tam Hiep Pickled Eggplant in Soybean Sauce"
+    },
+    "description": {
+      "vi": "Cà dầm tương Tam Hiệp là món dân dã của vùng Phúc Thọ, Hà Nội, dùng cà pháo hoặc cà bát dầm với tương, tỏi, ớt và gia vị. Món mặn ngọt, giòn, thơm mùi tương, thường ăn kèm cơm trắng, rau luộc.",
+      "en": "Tam Hiep pickled eggplant in soybean sauce is a rustic specialty from Phuc Tho, Hanoi, made with eggplants cured in fermented soybean sauce with garlic, chili, and seasonings. Crunchy, savory-sweet, and aromatic, it is served with rice and boiled vegetables."
+    },
+    "category": {
+      "vi": "Đồ muối – món ăn kèm",
+      "en": "Pickle / side dish"
+    },
+    "ingredients": {
+      "vi": "Cà pháo hoặc cà bát, tương truyền thống, tỏi, ớt, muối, đường, riềng hoặc gừng tùy cách làm.",
+      "en": "Small or round eggplants, traditional soybean sauce, garlic, chili, salt, sugar, galangal or ginger."
+    },
+    "instructions": {
+      "vi": "Cà rửa sạch, cắt hoặc để nguyên, ngâm muối cho bớt chát. Dầm với tương, tỏi, ớt và gia vị, để thấm vài ngày rồi dùng làm món ăn kèm.",
+      "en": "Wash eggplants, cut or leave whole, salt briefly to reduce astringency. Mix with soybean sauce, garlic, chili, and seasonings; let absorb for several days."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Ăn kèm bữa cơm gia đình.",
+      "en": "Side dish for family meals."
+    },
+    "Best_season": {
+      "vi": "Quanh năm, ngon khi có cà đúng vụ.",
+      "en": "Year-round, best when eggplants are in season."
+    },
+    "origin_story": {
+      "vi": "Cà dầm tương là món quê Bắc Bộ, tại Tam Hiệp trở thành sản phẩm được nhắc đến trong không gian ẩm thực làng nghề Hà Nội. Món thể hiện thói quen dùng tương và đồ muối trong bữa cơm truyền thống.",
+      "en": "Pickled eggplant in soybean sauce is a northern countryside dish, recognized in Tam Hiep as part of Hanoi village food heritage. It reflects the use of fermented sauce and pickles in traditional meals."
+    },
+    "price_range": {
+      "vi": "Khoảng 40.000 – 100.000đ/hũ tùy dung tích.",
+      "en": "About 40,000–100,000 VND per jar depending on size."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "cà dầm tương Tam Hiệp,Phúc Thọ,Hà Nội,cà muối,tương",
+      "en": "Tam Hiep pickled eggplant,Phuc Tho,Hanoi,soybean sauce,pickle"
+    },
+    "spicy_level": 1,
+    "satiety_level": 1,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  },
+  
+  {
+    "STT": 1244,
+    "id": "banh_khuc_ha_noi",
+    "slug": "banh-khuc-ha-noi",
+    "Name": {
+      "vi": "Bánh khúc Hà Nội",
+      "en": "Hanoi Khuc Sticky Rice Dumpling"
+    },
+    "description": {
+      "vi": "Bánh khúc Hà Nội là món xôi nếp bọc viên bột lá khúc nhân đậu xanh, thịt mỡ và tiêu. Khi hấp, mùi lá khúc thơm đặc trưng hòa với nếp dẻo, nhân bùi béo, thường ăn sáng hoặc ăn khuya.",
+      "en": "Hanoi bánh khúc is a sticky rice dumpling with green khuc-leaf dough filled with mung bean, fatty pork, and pepper. Steamed with sticky rice, it has herbal aroma, chewy rice, and rich filling, often eaten for breakfast or late-night snack."
+    },
+    "category": {
+      "vi": "Bánh nếp – món sáng",
+      "en": "Sticky rice dumpling"
+    },
+    "ingredients": {
+      "vi": "Gạo nếp, lá khúc hoặc rau khúc, bột nếp, đậu xanh, thịt ba chỉ, tiêu, hành khô, muối.",
+      "en": "Glutinous rice, khuc leaves, glutinous rice flour, mung beans, pork belly, pepper, shallots, salt."
+    },
+    "instructions": {
+      "vi": "Lá khúc xay lấy màu và hương, trộn với bột nếp làm vỏ. Đậu xanh hấp chín, trộn thịt ba chỉ xào tiêu làm nhân; bọc nhân, phủ gạo nếp và hấp chín.",
+      "en": "Blend khuc leaves for color and aroma, mix with glutinous flour. Fill with mung bean and peppery pork, coat with sticky rice, and steam."
+    },
+    "region_code": "Đồng bằng sông Hồng",
+    "province_code": "Hà Nội",
+    "Best_time": {
+      "vi": "Bữa sáng, ăn khuya hoặc ăn nhẹ.",
+      "en": "Breakfast, late-night snack, or light meal."
+    },
+    "Best_season": {
+      "vi": "Quanh năm, ngon nhất khi có lá khúc tươi mùa xuân.",
+      "en": "Year-round, best with fresh khuc leaves in spring."
+    },
+    "origin_story": {
+      "vi": "Bánh khúc gắn với tiếng rao đêm và sáng sớm ở Hà Nội. Món kết hợp rau dại mùa xuân, nếp và nhân đậu thịt trong văn hóa quà sáng Bắc Bộ.",
+      "en": "Bánh khúc is tied to late-night and early-morning street calls in Hanoi. It combines spring wild greens, sticky rice, and mung bean-pork filling in northern breakfast culture."
+    },
+    "price_range": {
+      "vi": "Khoảng 15.000 – 30.000đ/cái.",
+      "en": "About 15,000–30,000 VND each."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh khúc Hà Nội,xôi khúc,lá khúc,đậu xanh,thịt ba chỉ",
+      "en": "Hanoi banh khuc,khuc sticky rice,khuc leaves,mung bean,pork belly"
+    },
+    "spicy_level": 0,
+    "satiety_level": 4,
+    "region_name": {
+      "vi": "Đồng bằng sông Hồng",
+      "en": "Red River Delta"
+    },
+    "province_name": {
+      "vi": "Hà Nội",
+      "en": "Hanoi"
+    }
+  }
+]

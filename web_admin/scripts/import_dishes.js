@@ -12,13 +12,20 @@ const { db } = require('../firebase/config');
 const provinceMergeMap = require('../../food_travel/functions/src/migrations/province34/data/province_merge_map.official_2025.json');
 const canonicalSeeds = require('../../food_travel/functions/src/migrations/province34/data/canonical_provinces_34.official_2025.json');
 
+// Alias cho dữ liệu legacy 63 tỉnh.
+// "Thừa Thiên Huế" vẫn có thể xuất hiện ở province_code.vi,
+// nhưng 34 tỉnh chuẩn của hệ thống dùng code "hue".
+const legacyProvinceAliases = {
+  thua_thien_hue: 'hue',
+};
+
 const seedsByCode = new Map(
   canonicalSeeds.map((item) => [item.code, item]),
 );
 
 // Lay duong dan file JSON (mac dinh: web_admin/thai_binh_vi_en.json)
 const dataPath =
-  process.argv[2] || path.join(__dirname, '..', 'vinh_phuc.json');
+  process.argv[2] || path.join(__dirname, '..', 'ha_noi.json');
 if (!fs.existsSync(dataPath)) {
   console.error('Khong tim thay file:', dataPath);
   process.exit(1);
@@ -84,6 +91,7 @@ function detectCanonicalProvinceCode(item) {
   for (const candidate of candidates) {
     const key = normalizeKey(candidate);
     if (!key) continue;
+    if (legacyProvinceAliases[key]) return legacyProvinceAliases[key];
     const mapped = provinceMergeMap[key];
     if (mapped) return mapped;
   }

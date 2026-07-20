@@ -15,28 +15,31 @@ class SurveyController extends ChangeNotifier {
   final provinceController = TextEditingController();
   final favoritesController = TextEditingController();
   final dislikesController = TextEditingController();
+  final allergiesController = TextEditingController();
 
   int _spicyLevel = 0;
-  int _satietyPreference = 1;
+  int _satietyPreference = 3;
   int _budgetMin = 30000;
   int _budgetMax = 60000;
   int _discoveryLevel = 3;
+  bool _followSeasonalSuggestions = true;
   bool _isLoading = false;
 
   final Set<String> preferredDishTypes = <String>{};
   final Set<String> flavorPreferences = <String>{};
   final Set<String> preferredMealTimes = <String>{};
   final Set<String> preferredRegions = <String>{};
-  final Set<String> allergies = <String>{};
   final Set<String> dietPreferences = <String>{};
   final Set<String> diningContexts = <String>{};
   final Set<String> recommendationGoals = <String>{};
+  final Set<String> preferredSeasons = <String>{};
 
   int get spicyLevel => _spicyLevel;
   int get satietyPreference => _satietyPreference;
   int get budgetMin => _budgetMin;
   int get budgetMax => _budgetMax;
   int get discoveryLevel => _discoveryLevel;
+  bool get followSeasonalSuggestions => _followSeasonalSuggestions;
   bool get isLoading => _isLoading;
 
   void setSpicyLevel(double value) {
@@ -45,7 +48,7 @@ class SurveyController extends ChangeNotifier {
   }
 
   void setSatietyPreference(int value) {
-    _satietyPreference = value;
+    _satietyPreference = _normalizeSatietyPreference(value);
     notifyListeners();
   }
 
@@ -57,6 +60,11 @@ class SurveyController extends ChangeNotifier {
 
   void setDiscoveryLevel(double value) {
     _discoveryLevel = value.round();
+    notifyListeners();
+  }
+
+  void setFollowSeasonalSuggestions(bool value) {
+    _followSeasonalSuggestions = value;
     notifyListeners();
   }
 
@@ -73,11 +81,13 @@ class SurveyController extends ChangeNotifier {
     provinceController.text = preferences.provinceName ?? '';
     favoritesController.text = preferences.favoriteTags.join(', ');
     dislikesController.text = preferences.dislikedIngredients.join(', ');
+    allergiesController.text = preferences.allergies.join(', ');
     _spicyLevel = preferences.spicyLevel;
-    _satietyPreference = preferences.satietyPreference;
+    _satietyPreference = _normalizeSatietyPreference(preferences.satietyPreference);
     _budgetMin = preferences.budgetMin == 0 ? 30000 : preferences.budgetMin;
     _budgetMax = preferences.budgetMax == 0 ? 60000 : preferences.budgetMax;
     _discoveryLevel = preferences.discoveryLevel;
+    _followSeasonalSuggestions = preferences.followSeasonalSuggestions;
 
     preferredDishTypes
       ..clear()
@@ -91,9 +101,6 @@ class SurveyController extends ChangeNotifier {
     preferredRegions
       ..clear()
       ..addAll(preferences.preferredRegions);
-    allergies
-      ..clear()
-      ..addAll(preferences.allergies);
     dietPreferences
       ..clear()
       ..addAll(preferences.dietPreferences);
@@ -103,15 +110,24 @@ class SurveyController extends ChangeNotifier {
     recommendationGoals
       ..clear()
       ..addAll(preferences.recommendationGoals);
+    preferredSeasons
+      ..clear()
+      ..addAll(preferences.preferredSeasons);
     notifyListeners();
   }
 
   List<String> _splitList(String raw) {
     return raw
-        .split(',')
+        .split(RegExp(r'[\n,]+'))
         .map((e) => e.trim())
         .where((e) => e.isNotEmpty)
         .toList();
+  }
+
+  int _normalizeSatietyPreference(int value) {
+    if (value <= 0) return 0;
+    if (value <= 3) return 3;
+    return 5;
   }
 
   String? _buildProvinceCode(String raw) {
@@ -151,13 +167,15 @@ class SurveyController extends ChangeNotifier {
         satietyPreference: _satietyPreference,
         preferredMealTimes: preferredMealTimes.toList(),
         preferredRegions: preferredRegions.toList(),
-        allergies: allergies.toList(),
+        allergies: _splitList(allergiesController.text),
         dietPreferences: dietPreferences.toList(),
         budgetMin: _budgetMin,
         budgetMax: _budgetMax,
         discoveryLevel: _discoveryLevel,
         diningContexts: diningContexts.toList(),
         recommendationGoals: recommendationGoals.toList(),
+        followSeasonalSuggestions: _followSeasonalSuggestions,
+        preferredSeasons: preferredSeasons.toList(),
         surveyVersion: 2,
       );
       await _userService.saveOnboarding(
@@ -176,6 +194,7 @@ class SurveyController extends ChangeNotifier {
     provinceController.dispose();
     favoritesController.dispose();
     dislikesController.dispose();
+    allergiesController.dispose();
     super.dispose();
   }
 }

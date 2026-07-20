@@ -27,6 +27,36 @@
       .filter(Boolean);
   }
 
+  // Mở/đóng menu 3 chấm của từng dòng người dùng.
+  document.addEventListener('click', (event) => {
+    const trigger = event.target.closest('[data-users-actions-trigger]');
+    const openMenu = document.querySelector('.users-actions.is-open');
+
+    if (trigger) {
+      const actions = trigger.closest('.users-actions');
+      if (!actions) return;
+
+      const shouldOpen = !actions.classList.contains('is-open');
+      if (openMenu && openMenu !== actions) {
+        openMenu.classList.remove('is-open');
+        const oldTrigger = openMenu.querySelector('[data-users-actions-trigger]');
+        if (oldTrigger) oldTrigger.setAttribute('aria-expanded', 'false');
+      }
+
+      actions.classList.toggle('is-open', shouldOpen);
+      trigger.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+
+    if (openMenu && !event.target.closest('.users-actions')) {
+      openMenu.classList.remove('is-open');
+      const oldTrigger = openMenu.querySelector('[data-users-actions-trigger]');
+      if (oldTrigger) oldTrigger.setAttribute('aria-expanded', 'false');
+    }
+  });
+
   // Gọi API xóa 1 hoặc nhiều người dùng.
   async function deleteUsers(ids) {
     const response = await fetch('/admin/users/api/list', {

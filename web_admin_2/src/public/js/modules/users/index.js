@@ -1,6 +1,7 @@
 (function () {
   const pageData = window.__USERS_PAGE__ || {};
   const addButton = document.getElementById('users-add-btn');
+  const toggleLayoutButton = document.getElementById('users-toggle-filter-layout');
   const modal = document.getElementById('users-create-modal');
   const createForm = document.getElementById('users-create-form');
   const message = document.getElementById('users-create-message');
@@ -10,6 +11,8 @@
   const previewEmail = document.getElementById('users-create-email');
   const previewRole = document.getElementById('users-create-role');
   const previewAvatar = document.getElementById('users-create-avatar');
+  const usersPage = document.querySelector('.users-page');
+  const collapseStorageKey = 'users-page-collapsed';
 
   window.UsersPage = {
     data: pageData,
@@ -41,6 +44,19 @@
     }
   }
 
+  function syncLayoutButton() {
+    if (!toggleLayoutButton) return;
+    const collapsed = usersPage?.classList.contains('is-collapsed');
+    toggleLayoutButton.textContent = collapsed ? 'Mở rộng' : 'Thu gọn';
+  }
+
+  function setCollapsedLayout(collapsed) {
+    if (!usersPage) return;
+    usersPage.classList.toggle('is-collapsed', collapsed);
+    window.localStorage.setItem(collapseStorageKey, collapsed ? '1' : '0');
+    syncLayoutButton();
+  }
+
   function openModal() {
     modal?.classList.add('is-open');
     modal?.setAttribute('aria-hidden', 'false');
@@ -61,6 +77,10 @@
   createForm?.addEventListener('input', syncPreview);
 
   addButton?.addEventListener('click', openModal);
+  toggleLayoutButton?.addEventListener('click', () => {
+    const collapsed = !usersPage?.classList.contains('is-collapsed');
+    setCollapsedLayout(collapsed);
+  });
   closeButtons.forEach((button) => button.addEventListener('click', closeModal));
 
   document.addEventListener('keydown', (event) => {
@@ -122,5 +142,6 @@
     }
   });
 
+  setCollapsedLayout(window.localStorage.getItem(collapseStorageKey) === '1');
   syncPreview();
 })();

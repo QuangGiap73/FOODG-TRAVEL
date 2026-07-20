@@ -82,6 +82,18 @@
             <dd class="dish-detail-fact-value" data-lang-vi="<%= dish.priceRangeVi || '-' %>" data-lang-en="<%= dish.priceRangeEn || '-' %>"><%= dish.priceRangeVi || '-' %></dd>
           </div>
           <div>
+            <dt>dishTypeCodes</dt>
+            <dd><%= dish.dishTypeCodes.length ? dish.dishTypeCodes.join(', ') : '-' %></dd>
+          </div>
+          <div>
+            <dt>mealTimeTags</dt>
+            <dd><%= dish.mealTimeTags.length ? dish.mealTimeTags.join(', ') : '-' %></dd>
+          </div>
+          <div>
+            <dt>ingredientsListNormalized</dt>
+            <dd><%= dish.ingredientsListNormalized.length ? dish.ingredientsListNormalized.join(', ') : '-' %></dd>
+          </div>
+          <div>
             <dt>Tên món</dt>
             <dd class="dish-detail-fact-value" data-lang-vi="<%= dish.nameVi || '-' %>" data-lang-en="<%= dish.nameEn || '-' %>"><%= dish.nameVi || '-' %></dd>
           </div>
@@ -194,6 +206,18 @@
             <span>-</span>
           <% } %>
         </div>
+      </article>
+
+      <article class="dish-detail-card dish-detail-card--compact">
+        <div class="dish-detail-card__header">
+          <h3>Metadata goi y</h3>
+        </div>
+        <dl class="dish-detail-basic dish-detail-basic--compact">
+          <div><dt>dishTypeCodes</dt><dd><%= dish.dishTypeCodes.length ? dish.dishTypeCodes.join(', ') : '-' %></dd></div>
+          <div><dt>mealTimeTags</dt><dd><%= dish.mealTimeTags.length ? dish.mealTimeTags.join(', ') : '-' %></dd></div>
+          <div><dt>suitableForSeason</dt><dd><%= dish.suitableForSeason.length ? dish.suitableForSeason.join(', ') : '-' %></dd></div>
+          <div><dt>ingredientsListNormalized</dt><dd><%= dish.ingredientsListNormalized.length ? dish.ingredientsListNormalized.join(', ') : '-' %></dd></div>
+        </dl>
       </article>
 
       <div class="dish-detail-two-col">

@@ -4,6 +4,12 @@
   const values = formValues || {};
   const provinceItems = provinces || [];
   const legacyProvinceItems = legacyProvinces || [];
+  const dishTypeOptions = [['mon_nuoc', 'Món nước'], ['mon_kho', 'Món khô'], ['an_vat', 'Ăn vặt'], ['mon_chinh', 'Món chính'], ['trang_mieng', 'Tráng miệng'], ['mon_banh', 'Món bánh']];
+  const mealTimeOptions = [['breakfast', 'Bữa sáng'], ['lunch', 'Bữa trưa'], ['dinner', 'Bữa tối'], ['snack', 'Ăn vặt'], ['late_night', 'Ăn khuya']];
+  const seasonOptions = [['spring', 'Mùa xuân'], ['summer', 'Mùa hè'], ['autumn', 'Mùa thu'], ['winter', 'Mùa đông'], ['all_season', 'Quanh năm']];
+  const selectedDishTypes = String(values.dishTypeCodes || '').split(/[\r\n,]+/).map((item) => item.trim()).filter(Boolean);
+  const selectedMealTimes = String(values.mealTimeTags || '').split(/[\r\n,]+/).map((item) => item.trim()).filter(Boolean);
+  const selectedSeasons = String(values.suitableForSeason || '').split(/[\r\n,]+/).map((item) => item.trim()).filter(Boolean);
 %>
 
 <section class="dish-create-page">
@@ -243,6 +249,44 @@
             <span>Gia tham khao (EN)</span>
             <input type="text" name="priceRangeEn" value="<%= values.priceRangeEn %>" />
           </label>
+          <div class="dish-create-field-wide">
+            <span>Kiểu món ăn</span>
+            <div class="dish-create-choice-group">
+              <% dishTypeOptions.forEach(function (item) { %>
+                <label class="dish-create-choice">
+                  <input type="checkbox" name="dishTypeCodes" value="<%= item[0] %>" <%= selectedDishTypes.includes(item[0]) ? 'checked' : '' %> />
+                  <span><%= item[1] %> <small>(<%= item[0] %>)</small></span>
+                </label>
+              <% }) %>
+            </div>
+          </div>
+          <div class="dish-create-field-wide">
+            <span>Thời điểm ăn phù hợp</span>
+            <div class="dish-create-choice-group">
+              <% mealTimeOptions.forEach(function (item) { %>
+                <label class="dish-create-choice">
+                  <input type="checkbox" name="mealTimeTags" value="<%= item[0] %>" <%= selectedMealTimes.includes(item[0]) ? 'checked' : '' %> />
+                  <span><%= item[1] %> <small>(<%= item[0] %>)</small></span>
+                </label>
+              <% }) %>
+            </div>
+          </div>
+          <label class="dish-create-field-wide">
+            <span>Nguyên liệu chuẩn hóa</span>
+            <textarea name="ingredientsListNormalized" rows="5" placeholder="bun&#10;bo&#10;hanh"><%= values.ingredientsListNormalized %></textarea>
+            <small>Danh sách nguyên liệu chuẩn hóa để app đối chiếu với nguyên liệu dị ứng hoặc không thích của người dùng.</small>
+          </label>
+          <div class="dish-create-field-wide">
+            <span>Mùa phù hợp</span>
+            <div class="dish-create-choice-group">
+              <% seasonOptions.forEach(function (item) { %>
+                <label class="dish-create-choice">
+                  <input type="checkbox" name="suitableForSeason" value="<%= item[0] %>" <%= selectedSeasons.includes(item[0]) ? 'checked' : '' %> />
+                  <span><%= item[1] %> <small>(<%= item[0] %>)</small></span>
+                </label>
+              <% }) %>
+            </div>
+          </div>
         </div>
       </section>
 

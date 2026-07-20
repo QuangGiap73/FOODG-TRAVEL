@@ -2,6 +2,12 @@ const { getFirebaseAdmin } = require('../../config/firebase-admin');
 const { COLLECTIONS } = require('../../core/constants/collections');
 const provinceMergeMap = require('../../../../food_travel/functions/src/migrations/province34/data/province_merge_map.official_2025.json');
 
+// Một số tỉnh có dữ liệu legacy 63 tỉnh nhưng 34 tỉnh đã đổi tên/code.
+// Giữ nguyên dữ liệu gốc trong province_code, nhưng khi map/lọc thì quy về code 34.
+const LEGACY_TO_34_PROVINCE_ALIASES = {
+  thua_thien_hue: 'hue',
+};
+
 function getAdmin() {
   const admin = getFirebaseAdmin();
   if (!admin) throw new Error('Firebase Admin is not configured');
@@ -40,8 +46,14 @@ function normalizeProvinceKey(value) {
 function canonicalProvinceCode(value) {
   const key = normalizeProvinceKey(value);
   if (!key) return '';
+  if (LEGACY_TO_34_PROVINCE_ALIASES[key]) {
+    return LEGACY_TO_34_PROVINCE_ALIASES[key];
+  }
   if (provinceMergeMap[key]) return String(provinceMergeMap[key]).trim().toLowerCase();
   const stripped = key.replace(/^(tp|thanh_pho|tinh)_/, '');
+  if (LEGACY_TO_34_PROVINCE_ALIASES[stripped]) {
+    return LEGACY_TO_34_PROVINCE_ALIASES[stripped];
+  }
   return String(provinceMergeMap[stripped] || key).trim().toLowerCase();
 }
 

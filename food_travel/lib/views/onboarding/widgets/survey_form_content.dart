@@ -28,6 +28,7 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _favoriteInput = TextEditingController();
   final TextEditingController _dislikeInput = TextEditingController();
+  final TextEditingController _allergyInput = TextEditingController();
 
   static const List<_Choice> _dishTypes = [
     _Choice('mon_nuoc', 'Món nước', 'Soup & noodles'),
@@ -55,6 +56,14 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
     _Choice('dinner', 'Bữa tối', 'Dinner'),
     _Choice('snack', 'Ăn vặt', 'Snack'),
     _Choice('late_night', 'Ăn khuya', 'Late night'),
+  ];
+
+  static const List<_Choice> _seasons = [
+    _Choice('spring', 'Mùa xuân', 'Spring'),
+    _Choice('summer', 'Mùa hè', 'Summer'),
+    _Choice('autumn', 'Mùa thu', 'Autumn'),
+    _Choice('winter', 'Mùa đông', 'Winter'),
+    _Choice('all_season', 'Quanh năm', 'All season'),
   ];
 
   static const List<_Choice> _regions = [
@@ -100,6 +109,7 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
   void dispose() {
     _favoriteInput.dispose();
     _dislikeInput.dispose();
+    _allergyInput.dispose();
     super.dispose();
   }
 
@@ -283,11 +293,11 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
                       label: Text(_isVi ? 'Ăn nhẹ' : 'Light'),
                     ),
                     ButtonSegment(
-                      value: 1,
+                      value: 3,
                       label: Text(_isVi ? 'Vừa đủ' : 'Balanced'),
                     ),
                     ButtonSegment(
-                      value: 2,
+                      value: 5,
                       label: Text(_isVi ? 'No bụng' : 'Filling'),
                     ),
                   ],
@@ -346,22 +356,21 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _ChoiceSection(
+                _TagEditor(
                   icon: Icons.health_and_safety_rounded,
                   title: _isVi ? 'Dị ứng và kiêng kỵ' : 'Allergies and restrictions',
                   subtitle: _isVi
                       ? 'Những thông tin này rất quan trọng để loại trừ món không phù hợp.'
                       : 'This is critical for filtering out unsuitable dishes.',
-                  choices: _allergies,
-                  selected: widget.controller.allergies,
-                  onToggle: (value) => widget.controller.toggleSetValue(
-                    widget.controller.allergies,
-                    value,
-                  ),
-                  labelBuilder: _label,
+                  inputController: _allergyInput,
+                  sourceController: widget.controller.allergiesController,
                   accent: accent,
                   textColor: text,
                   subColor: sub,
+                  chipBg: isDark
+                      ? const Color(0xFF332126)
+                      : const Color(0xFFFEE2E2),
+                  border: border,
                 ),
                 const SizedBox(height: 16),
                 _TagEditor(
@@ -479,6 +488,33 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
                   activeColor: accent,
                   onChanged: widget.controller.setDiscoveryLevel,
                 ),
+                const SizedBox(height: 18),
+                SwitchListTile.adaptive(
+                  contentPadding: EdgeInsets.zero,
+                  value: widget.controller.followSeasonalSuggestions,
+                  activeColor: accent,
+                  onChanged: widget.controller.setFollowSeasonalSuggestions,
+                  title: Text(
+                    _isVi
+                        ? 'Ưu tiên gợi ý món theo mùa hiện tại'
+                        : 'Prioritize dishes suitable for the current season',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      color: text,
+                    ),
+                  ),
+                  subtitle: Text(
+                    _isVi
+                        ? 'Bật tùy chọn này nếu bạn muốn ứng dụng ưu tiên món hợp thời tiết và mùa vụ.'
+                        : 'Turn this on if you want the app to prioritize seasonally suitable dishes.',
+                    style: TextStyle(
+                      fontSize: 13,
+                      height: 1.4,
+                      color: sub,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -489,6 +525,24 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                _ChoiceSection(
+                  icon: Icons.eco_rounded,
+                  title: _isVi ? 'Mùa món ăn phù hợp' : 'Preferred seasons',
+                  subtitle: _isVi
+                      ? 'Chọn mùa để đối chiếu với suitableForSeason của món ăn.'
+                      : 'Choose seasons to match dish suitableForSeason metadata.',
+                  choices: _seasons,
+                  selected: widget.controller.preferredSeasons,
+                  onToggle: (value) => widget.controller.toggleSetValue(
+                    widget.controller.preferredSeasons,
+                    value,
+                  ),
+                  labelBuilder: _label,
+                  accent: accent,
+                  textColor: text,
+                  subColor: sub,
+                ),
+                const SizedBox(height: 16),
                 _ChoiceSection(
                   icon: Icons.groups_rounded,
                   title: _isVi ? 'Bạn thường đi ăn với ai?' : 'Dining context',

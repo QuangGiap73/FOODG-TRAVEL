@@ -179,7 +179,7 @@ abstract class AppLocalizations {
   /// No description provided for @personalHome.
   ///
   /// In en, this message translates to:
-  /// **'Home'**
+  /// **'Favorites'**
   String get personalHome;
 
   /// No description provided for @personalGuests.

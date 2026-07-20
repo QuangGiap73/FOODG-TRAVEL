@@ -17,6 +17,8 @@ class UserPreferences {
   final int discoveryLevel;
   final List<String> diningContexts;
   final List<String> recommendationGoals;
+  final bool followSeasonalSuggestions;
+  final List<String> preferredSeasons;
   final int surveyVersion;
 
   const UserPreferences({
@@ -28,7 +30,7 @@ class UserPreferences {
     this.dislikedIngredients = const [],
     this.preferredDishTypes = const [],
     this.flavorPreferences = const [],
-    this.satietyPreference = 1,
+    this.satietyPreference = 3,
     this.preferredMealTimes = const [],
     this.preferredRegions = const [],
     this.allergies = const [],
@@ -38,6 +40,8 @@ class UserPreferences {
     this.discoveryLevel = 3,
     this.diningContexts = const [],
     this.recommendationGoals = const [],
+    this.followSeasonalSuggestions = true,
+    this.preferredSeasons = const [],
     this.surveyVersion = 2,
   });
 
@@ -65,6 +69,8 @@ class UserPreferences {
       'discoveryLevel': discoveryLevel,
       'diningContexts': diningContexts,
       'recommendationGoals': recommendationGoals,
+      'followSeasonalSuggestions': followSeasonalSuggestions,
+      'preferredSeasons': preferredSeasons,
       'surveyVersion': surveyVersion,
     };
   }
@@ -88,7 +94,7 @@ class UserPreferences {
       dislikedIngredients: _toStringList(map['dislikedIngredients']),
       preferredDishTypes: _toStringList(map['preferredDishTypes']),
       flavorPreferences: _toStringList(map['flavorPreferences']),
-      satietyPreference: (map['satietyPreference'] as num?)?.toInt() ?? 1,
+      satietyPreference: (map['satietyPreference'] as num?)?.toInt() ?? 3,
       preferredMealTimes: _toStringList(map['preferredMealTimes']),
       preferredRegions: _toStringList(map['preferredRegions']),
       allergies: _toStringList(map['allergies']),
@@ -98,6 +104,8 @@ class UserPreferences {
       discoveryLevel: (map['discoveryLevel'] as num?)?.toInt() ?? 3,
       diningContexts: _toStringList(map['diningContexts']),
       recommendationGoals: _toStringList(map['recommendationGoals']),
+      followSeasonalSuggestions: map['followSeasonalSuggestions'] != false,
+      preferredSeasons: _toStringList(map['preferredSeasons']),
       surveyVersion: (map['surveyVersion'] as num?)?.toInt() ?? 1,
     );
   }
@@ -121,6 +129,8 @@ class UserPreferences {
     int? discoveryLevel,
     List<String>? diningContexts,
     List<String>? recommendationGoals,
+    bool? followSeasonalSuggestions,
+    List<String>? preferredSeasons,
     int? surveyVersion,
   }) {
     return UserPreferences(
@@ -142,6 +152,9 @@ class UserPreferences {
       discoveryLevel: discoveryLevel ?? this.discoveryLevel,
       diningContexts: diningContexts ?? this.diningContexts,
       recommendationGoals: recommendationGoals ?? this.recommendationGoals,
+      followSeasonalSuggestions:
+          followSeasonalSuggestions ?? this.followSeasonalSuggestions,
+      preferredSeasons: preferredSeasons ?? this.preferredSeasons,
       surveyVersion: surveyVersion ?? this.surveyVersion,
     );
   }

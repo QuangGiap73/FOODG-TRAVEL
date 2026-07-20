@@ -49,7 +49,12 @@ async function verifyRequestToken(req, res) {
   }
 
   try {
-    const decoded = await admin.auth().verifyIdToken(token);
+    let decoded = null;
+    try {
+      decoded = await admin.auth().verifySessionCookie(token, true);
+    } catch (_sessionError) {
+      decoded = await admin.auth().verifyIdToken(token);
+    }
     req.user = decoded;
     res.locals.user = {
       displayName: decoded.name || decoded.email || decoded.uid,

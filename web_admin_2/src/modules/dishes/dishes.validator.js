@@ -19,8 +19,14 @@ function cleanNumber(value, fallback = 0) {
 }
 
 function cleanMultilineList(value = '') {
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => String(item || '').trim())
+      .filter(Boolean);
+  }
+
   return String(value || '')
-    .split(/\r?\n/)
+    .split(/[\r\n,]+/)
     .map((item) => item.trim())
     .filter(Boolean);
 }
@@ -59,6 +65,10 @@ function validateDishCreatePayload(payload = {}) {
     imageUrls: cleanMultilineList(payload.imageUrls),
     spicyLevel: cleanNumber(payload.spicyLevel, 0),
     satietyLevel: cleanNumber(payload.satietyLevel, 0),
+    dishTypeCodes: cleanMultilineList(payload.dishTypeCodes),
+    mealTimeTags: cleanMultilineList(payload.mealTimeTags),
+    ingredientsListNormalized: cleanMultilineList(payload.ingredientsListNormalized),
+    suitableForSeason: cleanMultilineList(payload.suitableForSeason),
   };
 }
 

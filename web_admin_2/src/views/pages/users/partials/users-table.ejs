@@ -81,10 +81,28 @@
           </td>
 
           <td>
-            <div class="users-actions">
-              <a href="/admin/users/<%= user.id %>" aria-label="Xem">Xem</a>
-              <a href="/admin/users/<%= user.id %>/edit" aria-label="Sửa">Sửa</a>
-              <button type="button" class="users-action-danger" data-action="delete" data-id="<%= user.id %>" aria-label="Xóa">Xóa</button>
+            <div class="users-actions users-actions--menu">
+              <button
+                type="button"
+                class="users-actions__trigger"
+                data-users-actions-trigger
+                aria-label="Mở thao tác"
+                aria-expanded="false"
+              >
+                <span aria-hidden="true">⋮</span>
+              </button>
+
+              <div class="users-actions__menu" data-users-actions-menu>
+                <a href="/admin/users/<%= user.id %>" aria-label="Xem chi tiết">
+                  Xem
+                </a>
+                <a href="/admin/users/<%= user.id %>/edit" aria-label="Sửa người dùng">
+                  Sửa
+                </a>
+                <button type="button" class="users-action-danger" data-action="delete" data-id="<%= user.id %>" aria-label="Xóa người dùng">
+                  Xóa
+                </button>
+              </div>
             </div>
           </td>
         </tr>

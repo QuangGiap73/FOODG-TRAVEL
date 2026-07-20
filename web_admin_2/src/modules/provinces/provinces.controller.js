@@ -24,6 +24,15 @@ async function getProvincesPage(_req, res) {
   });
 }
 
+async function getRegionsPage(_req, res) {
+  const regions = await listRegions();
+
+  res.render('pages/provinces/regions', {
+    pageTitle: 'Vùng miền',
+    initialRegions: regions,
+  });
+}
+
 const getRegionsApi = asyncHandler(async (_req, res) => {
   return ok(res, await listRegions());
 });
@@ -58,6 +67,7 @@ const uploadProvinceImageApi = asyncHandler(async (req, res) => {
 
 module.exports = {
   getProvincesPage: asyncHandler(getProvincesPage),
+  getRegionsPage: asyncHandler(getRegionsPage),
   getRegionsApi,
   getProvincesApi,
   createRegionApi,

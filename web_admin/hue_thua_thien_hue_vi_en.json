@@ -1,0 +1,1290 @@
+[
+  {
+    "STT": 497,
+    "id": "com_hen_hue",
+    "slug": "com-hen-hue",
+    "Name": {
+      "vi": "Cơm hến Huế",
+      "en": "Hue Clam Rice (Cơm hến)"
+    },
+    "description": {
+      "vi": "Cơm hến là một trong những món ăn biểu tượng của ẩm thực Huế, đặc biệt gắn với vùng Cồn Hến. Đĩa cơm nguội trắng được trộn cùng hến xào, tóp mỡ, đậu phộng rang, mắm ruốc, rau sống và nước hến nóng, tạo nên sự kết hợp hài hòa giữa vị ngọt, mặn, cay và hương thơm đặc trưng. Dù chỉ là món ăn bình dân nhưng cơm hến lại khiến nhiều du khách nhớ mãi mỗi khi nhắc đến Huế.",
+      "en": "One of Hue’s signature dishes, closely associated with Con Hen (Clam Islet). Cold white rice is mixed with stir-fried clams, pork cracklings, roasted peanuts, Hue shrimp paste (mắm ruốc), fresh herbs, and hot clam broth—creating a balanced blend of sweet, salty, spicy, and deeply aromatic flavors. Though humble, it’s unforgettable for many visitors."
+    },
+    "category": {
+      "vi": "Cơm trộn – món chính, ăn sáng / trưa",
+      "en": "Mixed rice – main dish (breakfast/lunch)"
+    },
+    "ingredients": {
+      "vi": "Cơm nguội hạt rời, hến sông tươi, nước hến, mắm ruốc Huế, tóp mỡ, đậu phộng rang, mè rang, rau sống (rau thơm, bắp chuối, giá…), hành phi, ớt bột, tiêu, dầu ăn, gia vị.",
+      "en": "Loose-grain cold rice, fresh river clams, clam broth, Hue shrimp paste (mắm ruốc), pork cracklings, roasted peanuts, toasted sesame, mixed herbs (aromatic herbs, banana blossom, bean sprouts…), fried shallots, chili powder, pepper, cooking oil, seasonings."
+    },
+    "instructions": {
+      "vi": "Hến được ngâm, rửa sạch nhiều lần rồi luộc chín, lọc lấy nước hến trong và tách thịt hến. Thịt hến xào với hành phi, mắm ruốc và gia vị cho thơm. Cơm nguội được chọn loại hạt rời, để trong tô, thêm rau sống thái nhỏ, tóp mỡ, đậu phộng, mè rang, hành phi, hến xào và chan một ít nước hến nóng. Khi ăn, trộn đều cơm với mắm ruốc, ớt và nước hến để cảm nhận trọn vẹn vị đậm đà.",
+      "en": "Soak and rinse clams thoroughly, then boil. Strain to keep the clear broth and pick out the clam meat. Stir-fry the clams with fried shallots, shrimp paste, and seasonings until fragrant. Put cold rice in a bowl, add shredded herbs, cracklings, peanuts, sesame, fried shallots, and the stir-fried clams; ladle in a little hot clam broth. Mix well with shrimp paste, chili, and broth to taste."
+    },
+    "region_code": {
+      "vi": "Bắc Trung Bộ",
+      "en": "North Central Coast"
+    },
+    "province_code": {
+      "vi": "Thừa Thiên Huế",
+      "en": "Thua Thien Hue (Hue)"
+    },
+    "Best_time": {
+      "vi": "Được người địa phương ưa chuộng nhất vào bữa sáng, nhưng có thể ăn cả trưa và tối.",
+      "en": "Most popular for breakfast among locals, but enjoyed at lunch or dinner as well."
+    },
+    "Best_season": {
+      "vi": "Quanh năm, đặc biệt ngon vào những ngày se lạnh, mưa Huế.",
+      "en": "Year-round; especially comforting on cool, drizzly Hue days."
+    },
+    "origin_story": {
+      "vi": "Cơm hến xuất phát từ vùng Cồn Hến – một cồn cát nằm giữa sông Hương, nơi người dân sinh sống bằng nghề cào hến. Ban đầu đây chỉ là món cơm nguội trộn với hến và rau sống để tận dụng nguyên liệu sẵn có, dần dần được biến tấu thêm tóp mỡ, mắm ruốc và nhiều gia vị khác. Theo thời gian, cơm hến từ món ăn của người lao động nghèo trở thành đặc sản nổi tiếng, hiện diện ở khắp các ngõ hẻm, quán ăn bình dân và cả trong những danh sách món ngon Huế phải thử.",
+      "en": "Originating from Con Hen—an islet in the Perfume River where residents traditionally harvested clams—this dish began as a practical way to use cold rice with clams and herbs. Over time, cracklings, shrimp paste, and more seasonings were added. It evolved from a working-class meal into a famous specialty found in alleys, street stalls, and “must-try Hue foods” lists."
+    },
+    "price_range": {
+      "vi": "Khoảng 15.000 – 35.000đ/tô tùy quán.",
+      "en": "About 15,000–35,000 VND per bowl, depending on the shop."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "Cồn Hến,đặc sản Huế,món cơm trộn,ẩm thực miền Trung",
+      "en": "Con Hen,Hue specialty,mixed rice,Central Vietnam cuisine"
+    },
+    "spicy_level": 4,
+    "satiety_level": 5
+  },
+  {
+    "STT": 498,
+    "id": "banh_ep_hue",
+    "slug": "banh-ep-hue",
+    "Name": {
+      "vi": "Bánh ép Huế",
+      "en": "Hue Pressed Tapioca Cake (Bánh ép)"
+    },
+    "description": {
+      "vi": "Bánh ép Huế là món ăn vặt nổi tiếng của giới trẻ, đặc biệt ở các vùng Thuận An, Thuỷ An và khu vực ngoại thành. Vỏ bánh mỏng, làm từ bột lọc, bên trong là nhân trứng, pate, thịt băm, chả hoặc ruốc, được ép nóng giữa hai khuôn gang. Bánh vừa dai nhẹ vừa giòn rìa, thơm mùi bột, mỡ hành và nước chấm chua ngọt cay cay.",
+      "en": "A beloved Hue street snack, especially popular around Thuan An, Thuy An, and suburban areas. A thin tapioca wrapper is filled with egg, pâté, minced pork, Vietnamese ham, or floss, then pressed between hot cast-iron molds. Chewy yet crisp at the edges, it’s fragrant with scallion oil and a tangy-spicy dipping sauce."
+    },
+    "category": {
+      "vi": "Bánh nóng – món ăn vặt đường phố",
+      "en": "Hot cakes – street snack"
+    },
+    "ingredients": {
+      "vi": "Bột lọc (bột năng), trứng gà hoặc trứng cút, thịt heo băm, pate, chả lụa, ruốc, hành lá, dầu ăn, nước mắm, đường, tỏi, ớt, dưa leo, đồ chua ăn kèm.",
+      "en": "Tapioca starch (bột năng), chicken/quail eggs, minced pork, pâté, Vietnamese ham (chả lụa), pork floss, scallions, cooking oil; dipping sauce: fish sauce, sugar, garlic, chili; served with cucumber and pickles."
+    },
+    "instructions": {
+      "vi": "Bột lọc được pha với nước và gia vị, nhồi đến khi dẻo rồi chia thành từng viên nhỏ. Khi làm, người bán đặt viên bột lên khuôn gang nóng, ép dẹt cho mỏng, sau đó đập trứng, cho thêm thịt băm, pate, chả hoặc ruốc, hành lá lên trên, tiếp tục ép đến khi bánh chín, rìa vàng nhẹ và tỏa mùi thơm. Bánh ăn nóng, cuốn với rau sống, chấm nước mắm tỏi ớt chua ngọt.",
+      "en": "Mix tapioca starch with water and a pinch of seasoning; knead until pliable, then portion into small balls. Place a ball on a heated iron press, flatten thin, crack in an egg, add minced pork/pâté/ham/floss and scallions, then press until cooked and lightly golden at the edges. Serve hot with herbs and dip in sweet-sour garlic-chili fish sauce."
+    },
+    "region_code": {
+      "vi": "Bắc Trung Bộ",
+      "en": "North Central Coast"
+    },
+    "province_code": {
+      "vi": "Thừa Thiên Huế",
+      "en": "Thua Thien Hue (Hue)"
+    },
+    "Best_time": {
+      "vi": "Ngon nhất vào buổi chiều và tối, như món ăn vặt tụ tập bạn bè.",
+      "en": "Best in the late afternoon and evening—perfect for hanging out with friends."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Bánh ép được cho là xuất hiện từ các vùng ven biển Huế, nơi người dân tận dụng bột, trứng, thịt để làm món ăn nhanh cho học sinh và người lao động. Cách làm đơn giản, dụng cụ chỉ cần khuôn ép, bếp than hoặc bếp gas nhỏ nên món này nhanh chóng lan rộng khắp các cổng trường, hẻm nhỏ ở Huế. Hiện nay, bánh ép đã trở thành một trong những món ăn vặt đặc trưng của xứ Huế, được nhiều du khách tìm ăn khi ghé thăm.",
+      "en": "Thought to have started in Hue’s coastal outskirts as a quick, affordable snack for students and workers. With only a press mold and a small stove needed, it spread quickly to school gates and small alleys. Today it’s a defining Hue street food many travelers seek out."
+    },
+    "price_range": {
+      "vi": "Khoảng 5.000 – 15.000đ/cái, 20.000 – 35.000đ/phần nhiều cái.",
+      "en": "About 5,000–15,000 VND each; 20,000–35,000 VND for a plate."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh ép Huế,ăn vặt Huế,bánh bột lọc ép,đặc sản đường phố",
+      "en": "Hue pressed cake,Hue snacks,pressed tapioca cake,Hue street specialty"
+    },
+    "spicy_level": 3,
+    "satiety_level": 3
+  },
+  {
+    "STT": 499,
+    "id": "bun_hen_hue",
+    "slug": "bun-hen-hue",
+    "Name": {
+      "vi": "Bún hến Huế",
+      "en": "Hue Clam Vermicelli (Bún hến)"
+    },
+    "description": {
+      "vi": "Bún hến là biến tấu từ cơm hến, chỉ khác ở việc dùng bún thay cho cơm. Tô bún hến nhỏ nhưng đầy đủ hến xào, rau sống, tóp mỡ, đậu phộng, mè rang, mắm ruốc và nước hến nóng, mang lại cảm giác thanh nhẹ hơn mà vẫn giữ trọn hương vị đặc trưng của xứ Huế.",
+      "en": "A lighter variation of cơm hến, swapping rice for vermicelli. The bowl still features stir-fried clams, herbs, cracklings, peanuts, toasted sesame, Hue shrimp paste, and hot clam broth—refreshing yet unmistakably Hue."
+    },
+    "category": {
+      "vi": "Bún trộn – món ăn sáng / ăn nhẹ",
+      "en": "Mixed vermicelli – breakfast/light meal"
+    },
+    "ingredients": {
+      "vi": "Bún tươi sợi nhỏ, hến sông, nước hến, mắm ruốc, tóp mỡ, đậu phộng rang, mè rang, rau sống, hành phi, ớt, tiêu, gia vị.",
+      "en": "Thin rice vermicelli, river clams, clam broth, shrimp paste, pork cracklings, roasted peanuts, toasted sesame, mixed herbs, fried shallots, chili, pepper, seasonings."
+    },
+    "instructions": {
+      "vi": "Hến được sơ chế, luộc chín, lọc lấy nước và tách thịt. Thịt hến xào với hành phi, mắm ruốc cho dậy mùi. Bún cho vào tô, thêm rau sống, hến xào, tóp mỡ, đậu phộng, mè rang và hành phi. Khi ăn chan nước hến nóng, thêm mắm ruốc, ớt rồi trộn đều, có thể ăn kèm bánh tráng nướng.",
+      "en": "Prepare clams by boiling, straining the broth, and picking the meat. Stir-fry clam meat with fried shallots and shrimp paste until aromatic. Place vermicelli in a bowl, add herbs, clams, cracklings, peanuts, sesame, and fried shallots. Pour in hot clam broth, add shrimp paste and chili, then toss. Often served with grilled rice paper."
+    },
+    "region_code": {
+      "vi": "Bắc Trung Bộ",
+      "en": "North Central Coast"
+    },
+    "province_code": {
+      "vi": "Thừa Thiên Huế",
+      "en": "Thua Thien Hue (Hue)"
+    },
+    "Best_time": {
+      "vi": "Phù hợp ăn sáng hoặc trưa nhẹ.",
+      "en": "Great for breakfast or a light lunch."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Bún hến ra đời từ nhu cầu đổi vị cho cơm hến, đặc biệt với những người thích món nước – bún hơn là cơm. Cũng xuất phát từ vùng Cồn Hến, món bún này dần lan ra nhiều quán ăn trong thành phố và trở thành lựa chọn quen thuộc của người Huế mỗi buổi sáng.",
+      "en": "Born from the idea of switching up cơm hến for those who prefer noodles. Also rooted in Con Hen, it spread to many city eateries and became a familiar morning choice for Hue locals."
+    },
+    "price_range": {
+      "vi": "Khoảng 15.000 – 30.000đ/tô.",
+      "en": "About 15,000–30,000 VND per bowl."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bún hến Huế,hến Cồn Hến,bún trộn,đặc sản Huế",
+      "en": "Hue clam vermicelli,Con Hen clams,mixed noodles,Hue specialty"
+    },
+    "spicy_level": 4,
+    "satiety_level": 4
+  },
+  {
+    "STT": 500,
+    "id": "vit_lon_um_bau_hue",
+    "slug": "vit-lon-um-bau-hue",
+    "Name": {
+      "vi": "Vịt lộn um bầu Huế",
+      "en": "Hue Balut Stew with Gourd (Vịt lộn um bầu)"
+    },
+    "description": {
+      "vi": "Vịt lộn um bầu là món ăn dân dã nhưng rất được ưa chuộng ở Huế, nhất là những quán bình dân, quán nhậu. Hột vịt lộn được um cùng bầu non, rau răm, gừng và các loại gia vị, tạo nên nồi canh ngọt dịu, thơm, vừa bổ dưỡng vừa ấm bụng.",
+      "en": "A rustic, popular Hue comfort dish found at casual eateries and beer joints. Balut is simmered with young bottle gourd, Vietnamese coriander, ginger, and seasonings, creating a mildly sweet, fragrant broth that feels nourishing and warming."
+    },
+    "category": {
+      "vi": "Món um / canh – ăn với cơm hoặc ăn nhậu",
+      "en": "Stew/soup – with rice or as drinking food"
+    },
+    "ingredients": {
+      "vi": "Trứng vịt lộn, bầu non, gừng, rau răm, hành lá, hành tím, tỏi, nước mắm, muối, tiêu, ớt, dầu ăn.",
+      "en": "Balut eggs, young bottle gourd, ginger, Vietnamese coriander (rau răm), scallions, shallots, garlic, fish sauce, salt, pepper, chili, cooking oil."
+    },
+    "instructions": {
+      "vi": "Trứng vịt lộn rửa sạch, luộc sơ hoặc cho trực tiếp vào nồi um. Bầu non gọt vỏ, bỏ ruột già, thái lát vừa ăn. Phi thơm hành tỏi, cho trứng vịt lộn vào đảo sơ với nước mắm, gừng đập dập rồi đổ nước vào nấu. Khi nước sôi, cho bầu vào um đến khi bầu chín mềm nhưng không nát. Nêm lại gia vị, tắt bếp, thêm rau răm, hành lá, tiêu và ớt. Món này ăn nóng với cơm hoặc dùng như món nhắm đều ngon.",
+      "en": "Rinse balut eggs; you may parboil briefly or stew directly. Peel and slice young gourd. Sauté shallots/garlic, add eggs, splash fish sauce, and add crushed ginger. Pour in water and simmer; when boiling, add gourd and cook until tender but not mushy. Season, then finish with rau răm, scallions, pepper, and chili. Serve hot."
+    },
+    "region_code": {
+      "vi": "Bắc Trung Bộ",
+      "en": "North Central Coast"
+    },
+    "province_code": {
+      "vi": "Thừa Thiên Huế",
+      "en": "Thua Thien Hue (Hue)"
+    },
+    "Best_time": {
+      "vi": "Ăn ngon nhất vào bữa tối hoặc khi trời mưa lạnh.",
+      "en": "Best for dinner or on cold, rainy evenings."
+    },
+    "Best_season": {
+      "vi": "Mùa mưa, mùa đông xứ Huế.",
+      "en": "Rainy season and winter in Hue."
+    },
+    "origin_story": {
+      "vi": "Từ thói quen ăn trứng vịt lộn với rau răm, người Huế đã biến tấu thêm bằng cách om trứng cùng bầu non để có món canh ấm bụng. Món vịt lộn um bầu xuất hiện nhiều ở các quán bình dân, quán nhậu trong thành phố và dần được coi là một phần của ẩm thực thường nhật tại Huế.",
+      "en": "Building on the common pairing of balut with rau răm, Hue cooks began stewing it with young gourd for a warmer, more filling soup. It became a staple at casual eateries across the city and part of everyday Hue food culture."
+    },
+    "price_range": {
+      "vi": "Khoảng 25.000 – 50.000đ/phần nhỏ, tùy số lượng trứng.",
+      "en": "About 25,000–50,000 VND per small portion, depending on number of eggs."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "vịt lộn um bầu,đặc sản Huế,món um,canh vịt lộn",
+      "en": "balut stew,Hue specialty,stew dish,balut soup"
+    },
+    "spicy_level": 3,
+    "satiety_level": 4
+  },
+  {
+    "STT": 501,
+    "id": "banh_nam_hue",
+    "slug": "banh-nam-hue",
+    "Name": {
+      "vi": "Bánh nậm Huế",
+      "en": "Hue Flat Steamed Rice Cake (Bánh nậm)"
+    },
+    "description": {
+      "vi": "Bánh nậm là loại bánh mềm, mỏng, thơm mùi bột gạo và tôm thịt, được gói trong lá chuối rồi hấp chín. Chiếc bánh nhỏ nhắn, khi ăn chan thêm chút nước mắm ngọt cay là cảm nhận được ngay vị thanh tao, nhẹ nhàng đặc trưng của bánh Huế.",
+      "en": "A soft, thin steamed cake fragrant with rice flour and shrimp–pork topping. Wrapped in banana leaf and steamed, it’s delicate and light—best enjoyed with sweet-spicy fish sauce."
+    },
+    "category": {
+      "vi": "Bánh hấp – món ăn vặt / ăn sáng nhẹ",
+      "en": "Steamed cakes – snack/light breakfast"
+    },
+    "ingredients": {
+      "vi": "Bột gạo, bột năng, nước, tôm tươi, thịt heo băm, hành tím, hành lá, dầu ăn, nước mắm, đường, tiêu, ớt, lá chuối.",
+      "en": "Rice flour, tapioca starch, water, fresh shrimp, minced pork, shallots, scallions, cooking oil, fish sauce, sugar, pepper, chili, banana leaves."
+    },
+    "instructions": {
+      "vi": "Bột gạo trộn với bột năng, khuấy với nước và ít dầu, nấu trên lửa nhỏ, khuấy liên tục cho đến khi bột sánh mịn. Tôm và thịt heo băm xào với hành phi, nước mắm, tiêu cho thật thơm. Lá chuối rửa sạch, hơ qua lửa cho mềm. Phết một lớp bột lên lá, rải nhân tôm thịt, phủ thêm lớp bột mỏng, gói lại thành miếng dẹt. Hấp bánh trên hơi nước nóng cho đến khi bột chín trong, khi ăn chan nước mắm ớt chua ngọt.",
+      "en": "Mix rice flour with tapioca starch, stir in water and a little oil, then cook over low heat until smooth and thickened. Stir-fry shrimp and minced pork with fried shallots, fish sauce, and pepper. Soften banana leaves over a flame. Spread a thin layer of batter on the leaf, add topping, cover with another thin layer, fold into a flat packet, and steam until translucent. Serve with sweet-sour chili fish sauce."
+    },
+    "region_code": {
+      "vi": "Bắc Trung Bộ",
+      "en": "North Central Coast"
+    },
+    "province_code": {
+      "vi": "Thừa Thiên Huế",
+      "en": "Thua Thien Hue (Hue)"
+    },
+    "Best_time": {
+      "vi": "Ăn sáng, ăn xế chiều hoặc dùng như món khai vị.",
+      "en": "Breakfast, afternoon snack, or as an appetizer."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Bánh nậm cùng với bánh bèo, bánh bột lọc, bánh ram ít… tạo thành bộ 'bánh Huế' nổi tiếng. Đây là món bánh cung đình nhưng đã được bình dân hóa, xuất hiện trong mọi bữa ăn, mâm cỗ của người Huế. Nhiều gia đình, làng nghề vẫn giữ bí quyết làm bánh nậm truyền thống, góp phần gìn giữ nét ẩm thực cố đô.",
+      "en": "Along with bánh bèo, bánh bột lọc, bánh ram ít, etc., bánh nậm is part of Hue’s famous “bánh Huế” set. Once associated with refined court-style snacks, it became widely popular and appears at family meals and feasts. Many households and craft villages still preserve traditional recipes."
+    },
+    "price_range": {
+      "vi": "Khoảng 2.000 – 5.000đ/cái, 20.000 – 40.000đ/đĩa nhiều cái.",
+      "en": "About 2,000–5,000 VND each; 20,000–40,000 VND per plate."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh nậm Huế,bánh Huế,bánh hấp,đặc sản Huế",
+      "en": "Hue bánh nậm,Hue cakes,steamed cakes,Hue specialty"
+    },
+    "spicy_level": 2,
+    "satiety_level": 2
+  },
+  {
+    "STT": 502,
+    "id": "banh_mi_o_tho_hue",
+    "slug": "banh-mi-o-tho-hue",
+    "Name": {
+      "vi": "Bánh mì O Thọ Huế",
+      "en": "O Tho Hue Banh Mi"
+    },
+    "description": {
+      "vi": "Bánh mì O Thọ là một trong những thương hiệu bánh mì nổi tiếng nhất ở Huế, thu hút đông đảo người dân địa phương và du khách. Ổ bánh mì nhỏ, vỏ giòn, ruột xốp, kẹp đầy pate, chả, thịt nguội, rau và nước sốt đậm đà, ăn kèm ớt xanh cay xè đúng kiểu miền Trung.",
+      "en": "One of Hue’s most famous bánh mì spots. Small baguettes with crisp crust and fluffy crumb are stuffed with pâté, Vietnamese ham, cold cuts, herbs, pickles, and a bold sauce—often with a fiercely spicy green chili, true to Central Vietnam style."
+    },
+    "category": {
+      "vi": "Bánh mì – món ăn nhanh / ăn sáng",
+      "en": "Banh mi – quick meal/breakfast"
+    },
+    "ingredients": {
+      "vi": "Bánh mì que hoặc bánh mì nhỏ, pate gan, bơ, chả lụa, jambon, thịt nguội, dưa leo, đồ chua, rau mùi, ớt xanh, nước sốt (từ nước mắm, tương ớt, dầu), gia vị.",
+      "en": "Small baguette, liver pâté, butter, Vietnamese ham, jambon/cold cuts, cucumber, pickles, cilantro, green chili, sauce (fish sauce, chili sauce, oil), seasonings."
+    },
+    "instructions": {
+      "vi": "Bánh mì được nướng nóng lại cho giòn. Rạch dọc ổ bánh, phết pate, bơ, xếp chả, thịt nguội, đồ chua, dưa leo và rau mùi. Chan thêm chút nước sốt đậm đà, kẹp thêm trái ớt xanh nếu thích ăn cay. Ở Huế, mỗi quầy có một cách pha sốt riêng, tạo nên hương vị khác biệt khó lẫn.",
+      "en": "Reheat the baguette until crisp. Slice lengthwise, spread pâté and butter, layer meats, pickles, cucumber, and cilantro. Drizzle with the house sauce; add a green chili if you like it hot. Each stall has its own sauce blend, giving a distinct taste."
+    },
+    "region_code": {
+      "vi": "Bắc Trung Bộ",
+      "en": "North Central Coast"
+    },
+    "province_code": {
+      "vi": "Thừa Thiên Huế",
+      "en": "Thua Thien Hue (Hue)"
+    },
+    "Best_time": {
+      "vi": "Thường được ăn sáng hoặc làm bữa xế nhanh gọn.",
+      "en": "Breakfast or a quick afternoon bite."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Quầy bánh mì O Thọ có từ nhiều năm trước, nằm ở khu vực trung tâm thành phố Huế. Nhờ hương vị pate béo thơm, ổ bánh nhỏ nhưng 'chất', giá cả bình dân mà thương hiệu này được nhiều thế hệ học sinh, sinh viên và khách du lịch yêu thích. Dần dần, 'bánh mì O Thọ' được nhắc đến như một địa chỉ phải thử khi ghé Huế.",
+      "en": "A long-standing stall in central Hue, loved for rich pâté, “small but packed” sandwiches, and affordable prices. Generations of students and travelers have made it a must-try, and “bánh mì O Thọ” is often cited as a Hue food stop."
+    },
+    "price_range": {
+      "vi": "Khoảng 10.000 – 25.000đ/ổ tùy loại nhân.",
+      "en": "About 10,000–25,000 VND per sandwich depending on fillings."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh mì O Thọ,bánh mì Huế,ăn sáng,đặc sản đường phố Huế",
+      "en": "O Tho banh mi,Hue banh mi,breakfast,Hue street food"
+    },
+    "spicy_level": 3,
+    "satiety_level": 3
+  },
+  {
+    "STT": 503,
+    "id": "che_hue",
+    "slug": "che-hue",
+    "Name": {
+      "vi": "Chè Huế",
+      "en": "Hue Sweet Soups (Chè Huế)"
+    },
+    "description": {
+      "vi": "Chè Huế nổi tiếng khắp cả nước với sự phong phú về chủng loại và hương vị, từ chè cung đình cầu kỳ đến các loại chè dân dã vỉa hè. Chè hạt sen, chè bột lọc bọc thịt heo quay, chè đậu ván, chè khoai tía, chè đậu ngự… mỗi loại một mùi vị, màu sắc nhưng đều tinh tế và thanh nhẹ, thể hiện nét cầu kỳ trong ẩm thực cố đô.",
+      "en": "Famous nationwide for variety—from intricate royal-style chè to humble street cups. Lotus seed chè, tapioca dumplings with roasted pork, mung/adzuki beans, taro, royal beans… each has its own color and flavor yet stays refined and light, reflecting Hue’s careful culinary spirit."
+    },
+    "category": {
+      "vi": "Chè – món tráng miệng / ăn vặt",
+      "en": "Dessert sweet soups – snack/dessert"
+    },
+    "ingredients": {
+      "vi": "Tuỳ loại chè: hạt sen, đậu xanh, đậu ván, đậu đỏ, đậu ngự, bột lọc, thịt heo quay, nước cốt dừa, đường cát, đường phèn, vani, lá dứa, thạch, trái cây…",
+      "en": "Varies by type: lotus seeds, mung beans, white beans, red beans, royal beans, tapioca pearls, roasted pork, coconut milk, sugar/rock sugar, vanilla, pandan, jellies, fruits, etc."
+    },
+    "instructions": {
+      "vi": "Mỗi loại chè có cách nấu riêng, nhưng nhìn chung đều chú trọng phần nguyên liệu phải sạch, ngâm mềm và nấu vừa chín tới. Hạt sen, các loại đậu được ninh với đường phèn cho mềm bùi; bột lọc vo viên, luộc chín rồi cho vào nước đường; nước cốt dừa nấu sánh để chan lên trên. Các quán chè Huế thường bày nhiều loại trong tủ kính, khách có thể chọn vài ba vị trong một ly hoặc ăn riêng từng loại.",
+      "en": "Each chè has its own method, but the focus is clean ingredients and cooking them just tender. Beans and lotus seeds are simmered with rock sugar; tapioca dough is shaped and boiled, then added to syrup; coconut milk is cooked until slightly thick to pour on top. Many Hue shops display multiple kinds so you can mix several flavors in one cup."
+    },
+    "region_code": {
+      "vi": "Bắc Trung Bộ",
+      "en": "North Central Coast"
+    },
+    "province_code": {
+      "vi": "Thừa Thiên Huế",
+      "en": "Thua Thien Hue (Hue)"
+    },
+    "Best_time": {
+      "vi": "Phù hợp nhất vào buổi chiều và tối, làm món tráng miệng sau bữa ăn.",
+      "en": "Late afternoon and evening, as dessert after meals."
+    },
+    "Best_season": {
+      "vi": "Quanh năm, mùa hè chè đá đặc biệt được ưa chuộng.",
+      "en": "Year-round; iced chè is especially popular in summer."
+    },
+    "origin_story": {
+      "vi": "Chè Huế có nguồn gốc từ ẩm thực cung đình, nơi các món ngọt được chế biến tinh xảo để dâng vua chúa, đồng thời cũng phát triển mạnh trong dân gian như món ăn vặt bình dân. Sự giao thoa giữa hai tầng lớp này tạo nên một bản sắc chè Huế phong phú, vừa cầu kỳ vừa gần gũi. Ngày nay, những con đường như Hùng Vương, Nguyễn Huệ, Trần Hưng Đạo… đều có các quán chè nổi tiếng phục vụ du khách.",
+      "en": "Originated in Hue’s royal cuisine—delicate sweets made for the court—while also thriving as everyday street snacks. This blend created a rich, distinctive chè culture. Today streets like Hung Vuong, Nguyen Hue, Tran Hung Dao, etc. are lined with well-known chè shops."
+    },
+    "price_range": {
+      "vi": "Khoảng 10.000 – 25.000đ/ly tùy loại.",
+      "en": "About 10,000–25,000 VND per cup depending on type."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "chè Huế,chè cung đình,đặc sản ngọt,tráng miệng Huế",
+      "en": "Hue chè,royal desserts,Hue sweets,Hue dessert"
+    },
+    "spicy_level": 0,
+    "satiety_level": 2
+  },
+  {
+    "STT": 504,
+    "id": "nem_lui_hue",
+    "slug": "nem-lui-hue",
+    "Name": {
+      "vi": "Nem lụi Huế",
+      "en": "Hue Lemongrass Pork Skewers (Nem lụi)"
+    },
+    "description": {
+      "vi": "Nem lụi Huế là món nướng nổi tiếng, thường được ăn kèm bánh tráng, bún và rau sống. Thịt heo xay nhuyễn, trộn gia vị, quấn quanh que sả rồi nướng trên than hồng đến khi vàng thơm. Khi ăn, người ta cuốn nem với rau, đồ chua và chấm vào bát nước sốt đặc biệt béo bùi.",
+      "en": "A famous grilled dish served with rice paper, vermicelli, and fresh herbs. Seasoned minced pork is wrapped around lemongrass stalks and grilled over charcoal until fragrant. It’s dipped in a rich, nutty special sauce when eaten as fresh wraps."
+    },
+    "category": {
+      "vi": "Món nướng – ăn kèm bún/bánh tráng",
+      "en": "Grilled dish – served with noodles/rice paper"
+    },
+    "ingredients": {
+      "vi": "Thịt heo xay, mỡ heo, bì heo, sả cây, hành tỏi, ném, nước mắm, đường, tiêu, bột ngọt; ăn kèm bánh tráng, bún tươi, rau sống, dưa leo, khế, chuối chát và nước chấm làm từ gan, đậu phộng, mè, tương, nước mắm.",
+      "en": "Minced pork, pork fat, shredded pork skin, lemongrass stalks, garlic, shallot (ném), fish sauce, sugar, pepper; served with rice paper, vermicelli, herbs, cucumber, starfruit, green banana; dipping sauce with liver, peanuts, sesame, fermented bean sauce/tương, fish sauce."
+    },
+    "instructions": {
+      "vi": "Thịt heo xay trộn với mỡ và bì thái sợi, ướp cùng tỏi, ném, nước mắm, đường, tiêu rồi quết thật kỹ cho dẻo. Vo thịt quanh thân cây sả thành hình thuôn dài. Nướng nem trên bếp than, trở đều tay cho đến khi nem chín, bề mặt hơi cháy xém. Nước chấm được nấu từ gan heo xay, đậu phộng, mè, nước mắm, đường, tạo độ sền sệt và béo. Khi ăn, cuốn nem với rau, bún trong bánh tráng rồi chấm ngập sốt.",
+      "en": "Mix pork with fat and shredded skin; season with garlic, shallot, fish sauce, sugar, pepper and pound/knead until elastic. Mold onto lemongrass stalks. Grill over charcoal, turning until cooked and lightly charred. Cook dipping sauce from ground liver with peanuts, sesame, fish sauce, and sugar until thick and rich. Wrap with herbs and noodles in rice paper and dip generously."
+    },
+    "region_code": {
+      "vi": "Bắc Trung Bộ",
+      "en": "North Central Coast"
+    },
+    "province_code": {
+      "vi": "Thừa Thiên Huế",
+      "en": "Thua Thien Hue (Hue)"
+    },
+    "Best_time": {
+      "vi": "Thường ăn tối hoặc tối muộn trong các buổi tụ họp.",
+      "en": "Often enjoyed at dinner or late-night gatherings."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Nem lụi xuất hiện từ lâu trong ẩm thực Huế, có mặt trong các quán ăn gia đình, quán nhậu và cả những gánh hàng rong. Đây là món thể hiện rõ nét khẩu vị đậm đà, thích ăn cuốn của người miền Trung. Qua thời gian, nem lụi Huế trở thành món ăn mà hầu như du khách nào đến Huế cũng muốn thử một lần.",
+      "en": "Long present in Hue eateries—from family shops to street vendors—showcasing Central Vietnam’s love for bold flavors and wrap-and-dip eating. Over time it became a “must-try” dish for nearly every Hue visitor."
+    },
+    "price_range": {
+      "vi": "Khoảng 30.000 – 70.000đ/phần nem lụi kèm bún và rau.",
+      "en": "About 30,000–70,000 VND per set with noodles and herbs."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "nem lụi Huế,món nướng,đặc sản Huế,bún nem",
+      "en": "Hue nem lụi,grilled skewers,Hue specialty,wraps"
+    },
+    "spicy_level": 3,
+    "satiety_level": 4
+  },
+  {
+    "STT": 505,
+    "id": "nem_va_tre_hue",
+    "slug": "nem-va-tre-hue",
+    "Name": {
+      "vi": "Nem và tré Huế",
+      "en": "Hue Fermented Pork Roll & Fermented Shredded Pork (Nem & Tré)"
+    },
+    "description": {
+      "vi": "Nem chua và tré Huế thường được bán thành bộ, là món nhậu và món quà đặc sản nổi tiếng. Nem chua chua nhẹ, giòn giòn, còn tré được làm từ thịt tai heo, da heo, thính và gia vị, ủ lên men cho dậy mùi. Cả hai thường ăn kèm tỏi, ớt, rau thơm, rất bắt miệng.",
+      "en": "Often sold as a pair—classic drinking snacks and famous gift specialties. Nem chua is mildly sour and springy, while tré is made from pig ear and skin mixed with roasted rice powder (thính) and aromatics, then fermented until fragrant. Eaten with garlic, chili, and herbs."
+    },
+    "category": {
+      "vi": "Món lên men – ăn chơi / món nhậu / đặc sản làm quà",
+      "en": "Fermented foods – snack/drinking food/gift specialty"
+    },
+    "ingredients": {
+      "vi": "Thịt heo nạc và bì (làm nem), tai heo, da heo (làm tré), thính gạo, tỏi, ớt, riềng, lá ổi, lá chuối, muối, đường, gia vị.",
+      "en": "Lean pork and pork skin (for nem), pig ear and skin (for tré), roasted rice powder (thính), garlic, chili, galangal, guava leaves, banana leaves, salt, sugar, seasonings."
+    },
+    "instructions": {
+      "vi": "Nem chua được làm bằng cách trộn thịt heo xay với bì, tỏi, ớt, gia vị, gói trong lá chuối hoặc màng bọc, để lên men vài ngày. Tré dùng tai và da heo luộc chín, thái sợi, trộn với thính, riềng, tỏi, ớt, gia vị rồi gói trong lá chuối, buộc chặt và ủ đến khi lên men, có mùi thơm đặc trưng. Khi ăn, cắt nem, bóc tré, ăn kèm tỏi ớt, rau sống hoặc dùng với bia, rượu.",
+      "en": "For nem chua: mix ground pork with skin, garlic, chili, seasonings; wrap and ferment for a few days. For tré: boil pig ear/skin, shred, mix with thính, galangal, garlic, chili, and seasoning; wrap tightly in banana leaves and ferment until aromatic. Serve with garlic and chili, herbs, or with beer."
+    },
+    "region_code": {
+      "vi": "Bắc Trung Bộ",
+      "en": "North Central Coast"
+    },
+    "province_code": {
+      "vi": "Thừa Thiên Huế",
+      "en": "Thua Thien Hue (Hue)"
+    },
+    "Best_time": {
+      "vi": "Phù hợp làm món nhắm vào buổi tối, trong dịp lễ tết, gặp gỡ bạn bè.",
+      "en": "Great as evening snacks, during holidays, and friend gatherings."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Nem và tré là hai món lên men lâu đời của miền Trung, trong đó Huế là một trong những nơi có cách làm cầu kỳ và hương vị đặc trưng. Nhiều cơ sở gia truyền ở Huế chuyên làm nem – tré để cung cấp cho chợ và gửi đi các tỉnh khác. Với du khách, bộ nem tré Huế được xem là món quà gói gọn hương vị mặn mòi, đậm đà của xứ cố đô.",
+      "en": "Fermented specialties have a long history in Central Vietnam; Hue versions are especially fragrant and carefully seasoned. Many family-run producers supply local markets and ship nationwide. For travelers, nem–tré is a compact “taste of Hue” gift."
+    },
+    "price_range": {
+      "vi": "Khoảng 50.000 – 150.000đ/bộ nem tré tùy trọng lượng.",
+      "en": "About 50,000–150,000 VND per set depending on weight."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "nem Huế,tré Huế,đặc sản làm quà,món nhậu Huế",
+      "en": "Hue nem,Hue tré,gift specialty,Hue drinking snacks"
+    },
+    "spicy_level": 4,
+    "satiety_level": 2
+  },
+  {
+    "STT": 506,
+    "id": "banh_canh_nam_pho",
+    "slug": "banh-canh-nam-pho",
+    "Name": {
+      "vi": "Bánh canh Nam Phổ",
+      "en": "Nam Pho Thick Noodle Soup (Bánh canh Nam Phổ)"
+    },
+    "description": {
+      "vi": "Bánh canh Nam Phổ là món bánh canh nổi tiếng của làng Nam Phổ, cách trung tâm Huế không xa. Bát bánh canh có sợi bột mềm, nước dùng sánh đỏ cam từ gạch cua và tôm, kèm chả và hành ngò, tạo nên hương vị vừa béo vừa ngọt rất riêng.",
+      "en": "A renowned specialty from Nam Pho village near Hue. The noodles are soft, and the broth is thick and orange-red from crab roe and shrimp, topped with fish/shrimp cakes and herbs—rich, sweet, and uniquely Hue."
+    },
+    "category": {
+      "vi": "Bánh canh – món nước, ăn sáng / ăn tối",
+      "en": "Thick noodle soup – breakfast/dinner"
+    },
+    "ingredients": {
+      "vi": "Bột gạo và bột năng (làm sợi), tôm, cua hoặc ghẹ, chả tôm, chả cá, thịt bằm, hành tím, hành lá, dầu màu điều, nước mắm, muối, tiêu, ớt.",
+      "en": "Rice flour and tapioca starch (for noodles), shrimp, crab (or swimming crab), shrimp cake, fish cake, minced pork, shallots, scallions, annatto oil, fish sauce, salt, pepper, chili."
+    },
+    "instructions": {
+      "vi": "Bột gạo trộn với bột năng, cho nước vào nhào thành khối dẻo, cán và cắt thành sợi hoặc ép qua khuôn. Tôm, cua luộc lấy nước dùng, gỡ thịt, giã nhuyễn một phần để làm chả, phần còn lại nấu cùng nước dùng. Phi hành tím với dầu màu điều, cho tôm cua xay và thịt bằm vào xào, rồi đổ nước dùng vào, nêm gia vị. Cho sợi bánh canh vào nấu đến khi chín mềm, nước sánh lại. Múc ra tô, thêm chả, hành ngò, tiêu và ớt.",
+      "en": "Knead rice flour with tapioca starch and water; shape into strands or press through a mold. Simmer shrimp and crab to make broth; pick meat, pounding some into paste for cakes. Sauté shallots with annatto oil, stir-fry ground shrimp/crab and minced pork, then add broth and season. Cook noodles in the broth until tender and the soup thickens. Serve with cakes, scallions, pepper, and chili."
+    },
+    "region_code": {
+      "vi": "Bắc Trung Bộ",
+      "en": "North Central Coast"
+    },
+    "province_code": {
+      "vi": "Thừa Thiên Huế",
+      "en": "Thua Thien Hue (Hue)"
+    },
+    "Best_time": {
+      "vi": "Thường được ăn sáng hoặc tối.",
+      "en": "Commonly eaten for breakfast or dinner."
+    },
+    "Best_season": {
+      "vi": "Quanh năm, mùa lạnh ăn càng ngon.",
+      "en": "Year-round; especially satisfying in cool weather."
+    },
+    "origin_story": {
+      "vi": "Bánh canh Nam Phổ được cho là xuất phát từ làng Nam Phổ (huyện Phú Vang), nơi người dân sống bằng nghề đánh bắt hải sản. Tận dụng nguồn tôm cua dồi dào, họ sáng tạo nên món bánh canh sánh, béo, khác với kiểu bánh canh trong các vùng khác. Ngày nay, bánh canh Nam Phổ có mặt ở nhiều quán trong thành phố Huế, nhưng người sành ăn vẫn thích tìm về đúng làng để thưởng thức hương vị gốc.",
+      "en": "From Nam Pho village (Phu Vang district), where seafood is abundant. Locals created a thicker, richer bánh canh unlike other regions. It’s now sold throughout Hue, though many food lovers still travel to the village for the original taste."
+    },
+    "price_range": {
+      "vi": "Khoảng 15.000 – 30.000đ/tô.",
+      "en": "About 15,000–30,000 VND per bowl."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh canh Nam Phổ,bánh canh Huế,đặc sản làng Nam Phổ,món nước Huế",
+      "en": "Nam Pho bánh canh,Hue noodle soup,Nam Pho village specialty,Hue cuisine"
+    },
+    "spicy_level": 3,
+    "satiety_level": 4
+  },
+  {
+    "STT": 507,
+    "id": "va_tron_hue",
+    "slug": "va-tron-hue",
+    "Name": {
+      "vi": "Vả trộn Huế",
+      "en": "Hue Fig Salad (Vả trộn)"
+    },
+    "description": {
+      "vi": "Vả trộn là món gỏi đặc trưng xứ Huế, sử dụng trái vả – một loại quả họ sung, trồng nhiều quanh nhà. Trái vả luộc chín, thái mỏng, trộn với thịt ba chỉ, tôm, rau thơm, lạc rang và nước mắm chua ngọt, cho ra món ăn vừa lạ vừa thanh, rất hợp khẩu vị người thích rau.",
+      "en": "A distinctive Hue salad using green figs (a fig species commonly grown in home gardens). Boiled and thinly sliced figs are tossed with pork belly, shrimp, herbs, peanuts, and a sweet-sour fish sauce—refreshing, slightly unusual, and very herb-forward."
+    },
+    "category": {
+      "vi": "Gỏi / nộm – món khai vị / ăn kèm",
+      "en": "Salad – appetizer/side"
+    },
+    "ingredients": {
+      "vi": "Trái vả xanh, thịt ba chỉ luộc, tôm luộc (tùy thích), rau thơm, hành tây, lạc rang, mè rang, nước mắm, chanh, tỏi, ớt, đường, tiêu.",
+      "en": "Green figs (vả), boiled pork belly, boiled shrimp (optional), herbs, onion, roasted peanuts, toasted sesame, fish sauce, lime, garlic, chili, sugar, pepper."
+    },
+    "instructions": {
+      "vi": "Vả gọt vỏ, cắt lát mỏng, luộc sơ cho bớt chát rồi vắt ráo. Thịt ba chỉ, tôm luộc chín, thái nhỏ. Pha nước trộn từ nước mắm, chanh, đường, tỏi ớt băm. Cho vả, thịt, tôm, rau thơm, hành tây thái mỏng vào tô, rưới nước mắm trộn, đảo đều. Cuối cùng rắc lạc rang, mè rang, tiêu, nêm lại cho vừa miệng.",
+      "en": "Peel figs, slice thin, blanch/boil to reduce astringency, then squeeze dry. Slice pork belly and shrimp. Mix dressing (fish sauce, lime, sugar, minced garlic and chili). Toss figs with pork, shrimp, herbs, and onions; add dressing and mix. Finish with peanuts, sesame, and pepper."
+    },
+    "region_code": {
+      "vi": "Bắc Trung Bộ",
+      "en": "North Central Coast"
+    },
+    "province_code": {
+      "vi": "Thừa Thiên Huế",
+      "en": "Thua Thien Hue (Hue)"
+    },
+    "Best_time": {
+      "vi": "Ngon nhất khi ăn kèm trong bữa trưa hoặc tối.",
+      "en": "Best as a side at lunch or dinner."
+    },
+    "Best_season": {
+      "vi": "Mùa vả vào khoảng từ đầu hè đến thu, nhưng nhiều nơi có vả quanh năm.",
+      "en": "Fig season is early summer to autumn, though available year-round in many places."
+    },
+    "origin_story": {
+      "vi": "Cây vả được trồng nhiều ở vườn nhà người Huế, vừa để che bóng mát vừa lấy quả làm thức ăn. Từ món vả luộc chấm mắm đơn giản, người Huế sáng tạo thêm món vả trộn cầu kỳ hơn để đãi khách, dần trở thành món gỏi đặc trưng của vùng.",
+      "en": "Fig trees are common in Hue gardens for shade and food. From simple boiled figs dipped in fish sauce, locals developed a more elaborate salad to serve guests, which became a hallmark Hue dish."
+    },
+    "price_range": {
+      "vi": "Khoảng 30.000 – 60.000đ/đĩa tại quán ăn gia đình.",
+      "en": "About 30,000–60,000 VND per plate at family eateries."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "vả trộn Huế,gỏi vả,đặc sản rau Huế,món khai vị",
+      "en": "Hue fig salad,fig salad,Hue herbal specialty,appetizer"
+    },
+    "spicy_level": 3,
+    "satiety_level": 2
+  },
+  {
+    "STT": 508,
+    "id": "hen_xuc_banh_trang_hue",
+    "slug": "hen-xuc-banh-trang-hue",
+    "Name": {
+      "vi": "Hến xúc bánh tráng Huế",
+      "en": "Stir-fried Clams with Crispy Rice Paper (Hến xúc bánh tráng)"
+    },
+    "description": {
+      "vi": "Hến xúc bánh tráng là món ăn đơn giản nhưng rất được lòng thực khách. Hến xào với hành, mắm ruốc, rau răm, ăn kèm bánh tráng nướng giòn tan. Vị ngọt của hến, thơm của gia vị và vị bùi của bánh tráng tạo nên món nhậu, món ăn chơi hấp dẫn.",
+      "en": "A simple but addictive dish: clams stir-fried with aromatics and Hue shrimp paste, finished with Vietnamese coriander, served with crunchy grilled rice paper. Sweet clams, aromatic seasoning, and crispy crackers make an excellent snack or drinking dish."
+    },
+    "category": {
+      "vi": "Món xào – ăn chơi / món nhậu",
+      "en": "Stir-fry – snack/drinking food"
+    },
+    "ingredients": {
+      "vi": "Hến tươi, hành tím, tỏi, ném, rau răm, mắm ruốc Huế, nước mắm, tiêu, ớt, dầu ăn, bánh tráng nướng (bánh đa).",
+      "en": "Fresh clams, shallots, garlic, ném, Vietnamese coriander (rau răm), Hue shrimp paste, fish sauce, pepper, chili, cooking oil, grilled rice paper crackers (bánh tráng nướng)."
+    },
+    "instructions": {
+      "vi": "Hến ngâm và rửa sạch cát, luộc chín rồi tách lấy thịt, lọc nước hến để dùng. Phi thơm hành, tỏi, ném, cho mắm ruốc vào xào dậy mùi, sau đó cho hến vào đảo nhanh tay, nêm nước mắm, tiêu, ớt và rau răm thái nhỏ. Xào đến khi hến thấm nhưng không bị khô. Khi ăn, múc hến xào lên miếng bánh tráng nướng, xúc từng miếng thưởng thức.",
+      "en": "Clean clams, boil, pick the meat; strain and keep clam broth if needed. Sauté shallots/garlic/ném, add shrimp paste until fragrant, then toss in clams quickly. Season with fish sauce, pepper, chili, and chopped rau răm. Stir-fry until clams are seasoned but not dry. Serve scooped onto rice paper crackers."
+    },
+    "region_code": {
+      "vi": "Bắc Trung Bộ",
+      "en": "North Central Coast"
+    },
+    "province_code": {
+      "vi": "Thừa Thiên Huế",
+      "en": "Thua Thien Hue (Hue)"
+    },
+    "Best_time": {
+      "vi": "Thường dùng làm món nhắm chiều tối hoặc ăn vặt.",
+      "en": "Popular as an afternoon/evening snack or drinking food."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Cũng như cơm hến, món hến xúc bánh tráng gắn với vùng Cồn Hến và các khu vực ven sông Hương. Người dân tận dụng nguyên liệu sẵn có là hến và bánh tráng để làm món ăn chơi, dần dần xuất hiện nhiều trong các quán nhậu, quán ăn bình dân và trở thành món quen thuộc của người Huế.",
+      "en": "Like cơm hến, this dish is tied to Con Hen and riverside areas of the Perfume River. Locals paired available clams with rice paper crackers for an easy snack, later becoming common in casual eateries and beer joints."
+    },
+    "price_range": {
+      "vi": "Khoảng 30.000 – 70.000đ/đĩa tùy quán.",
+      "en": "About 30,000–70,000 VND per plate depending on the shop."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "hến xúc bánh tráng,đặc sản Huế,món nhậu,món ăn vặt",
+      "en": "clam with rice paper,Hue specialty,drinking snack,Hue street food"
+    },
+    "spicy_level": 3,
+    "satiety_level": 3
+  },
+  {
+    "STT": 509,
+    "id": "banh_beo_chen_hue",
+    "slug": "banh-beo-chen-hue",
+    "Name": {
+      "vi": "Bánh bèo chén Huế",
+      "en": "Hue Steamed Rice Cakes in Small Cups (Bánh bèo chén)"
+    },
+    "description": {
+      "vi": "Bánh bèo chén là món bánh nổi tiếng bậc nhất của Huế. Bánh được hấp trong những chiếc chén nhỏ, phía trên rắc tôm chấy, da heo chiên giòn, hành phi rồi chan nước mắm ngọt. Mỗi chén bánh chỉ vừa một hai miếng, ăn hoài không ngán.",
+      "en": "Perhaps Hue’s most iconic savory cake. Steamed in tiny cups, topped with dried shrimp floss, crispy pork skin, and fried shallots, then drizzled with sweet fish sauce. Each cup is just a bite or two—easy to keep eating."
+    },
+    "category": {
+      "vi": "Bánh hấp – món ăn vặt / ăn nhẹ",
+      "en": "Steamed cakes – snack/light meal"
+    },
+    "ingredients": {
+      "vi": "Bột gạo, bột năng, nước, tôm tươi, da heo chiên giòn hoặc bánh mì vụn, hành lá, hành tím, dầu ăn, nước mắm, đường, ớt, tỏi.",
+      "en": "Rice flour, tapioca starch, water, fresh shrimp, crispy fried pork skin (or bread crumbs), scallions, shallots, cooking oil, fish sauce, sugar, chili, garlic."
+    },
+    "instructions": {
+      "vi": "Bột gạo trộn với bột năng, khuấy với nước và gia vị, để bột nghỉ. Múc bột vào từng chén nhỏ, hấp đến khi bánh chín, mặt bánh trong và hơi lõm ở giữa. Tôm luộc chín, bóc vỏ, giã nhuyễn rồi xào khô với ít dầu, muối, đường để làm tôm chấy. Hành tím phi vàng, hành lá làm mỡ hành. Khi ăn, rắc tôm chấy, da heo chiên giòn, mỡ hành lên mặt bánh rồi chan nước mắm ớt pha ngọt.",
+      "en": "Mix rice flour with tapioca starch and water; rest the batter. Pour into small cups and steam until set, glossy, and slightly dimpled in the center. Boil and peel shrimp; pound and stir-fry until dry to make shrimp floss. Fry shallots; make scallion oil. Top each cup with shrimp floss, crispy pork skin, and scallion oil, then pour over sweet chili fish sauce."
+    },
+    "region_code": {
+      "vi": "Bắc Trung Bộ",
+      "en": "North Central Coast"
+    },
+    "province_code": {
+      "vi": "Thừa Thiên Huế",
+      "en": "Thua Thien Hue (Hue)"
+    },
+    "Best_time": {
+      "vi": "Thích hợp ăn sáng, ăn xế hoặc tối nhẹ.",
+      "en": "Great for breakfast, afternoon snack, or a light dinner."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Bánh bèo được cho là xuất phát từ ẩm thực cung đình Huế nhưng nhanh chóng trở thành món ăn bình dân phổ biến khắp các con hẻm, chợ. Hình ảnh những mẹ, những o gánh cả mâm chén bánh bèo đi khắp phố phường đã gắn liền với ký ức của nhiều người Huế.",
+      "en": "Often linked to Hue court cuisine but quickly became a beloved everyday street food in markets and alleys. The image of vendors carrying trays of bánh bèo cups is part of Hue’s culinary memory."
+    },
+    "price_range": {
+      "vi": "Khoảng 10.000 – 30.000đ/mâm bánh bèo nhiều chén.",
+      "en": "About 10,000–30,000 VND per tray of many cups."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh bèo chén Huế,bánh bèo Huế,bánh hấp,đặc sản Huế",
+      "en": "Hue bánh bèo,Hue steamed cakes,Hue specialty,savory snack"
+    },
+    "spicy_level": 2,
+    "satiety_level": 2
+  },
+  {
+    "STT": 510,
+    "id": "banh_bot_loc_hue",
+    "slug": "banh-bot-loc-hue",
+    "Name": {
+      "vi": "Bánh bột lọc Huế",
+      "en": "Hue Tapioca Dumplings (Bánh bột lọc)"
+    },
+    "description": {
+      "vi": "Bánh bột lọc Huế nổi tiếng với lớp vỏ trong, dai dai, bên trong là nhân tôm, thịt rim mặn ngọt. Bánh có hai loại: bột lọc trần và bột lọc gói lá chuối, thường ăn kèm nước mắm ớt cay nồng. Đây là một trong những món bánh mà du khách nào đến Huế cũng muốn thử.",
+      "en": "Famous for its clear, chewy wrapper and a savory-sweet shrimp-and-pork filling. Comes as unwrapped dumplings or banana-leaf steamed parcels, typically dipped in spicy fish sauce. A must-try Hue cake for visitors."
+    },
+    "category": {
+      "vi": "Bánh hấp / luộc – món ăn vặt mặn",
+      "en": "Steamed/boiled cakes – savory snack"
+    },
+    "ingredients": {
+      "vi": "Bột năng (bột lọc), tôm đất, thịt ba chỉ, hành tím, dầu điều, nước mắm, đường, tiêu, ớt, lá chuối (nếu gói).",
+      "en": "Tapioca starch, small shrimp, pork belly, shallots, annatto oil, fish sauce, sugar, pepper, chili, banana leaves (for wrapped version)."
+    },
+    "instructions": {
+      "vi": "Nhân được làm bằng cách rim tôm cả vỏ với thịt ba chỉ thái nhỏ, nêm nước mắm, đường, dầu điều cho có màu đẹp. Bột lọc nhào với nước nóng đến khi dẻo mịn. Với bánh trần, vo viên bột, cho nhân vào giữa, gói kín rồi luộc đến khi bánh trong. Với bánh gói, phết bột lên lá chuối, cho tôm thịt lên trên, gập lại và hấp chín. Khi ăn, chan nước mắm ớt pha chua ngọt.",
+      "en": "Make filling by braising whole shrimp (often with shells) with diced pork belly, fish sauce, sugar, and annatto oil for color. Knead tapioca dough with hot water until smooth. For unwrapped dumplings: enclose filling, boil until translucent. For leaf-wrapped: spread dough on banana leaf, add filling, fold, and steam. Serve with sweet-sour chili fish sauce."
+    },
+    "region_code": {
+      "vi": "Bắc Trung Bộ",
+      "en": "North Central Coast"
+    },
+    "province_code": {
+      "vi": "Thừa Thiên Huế",
+      "en": "Thua Thien Hue (Hue)"
+    },
+    "Best_time": {
+      "vi": "Ăn xế chiều, tối hoặc dùng như món điểm tâm.",
+      "en": "Afternoon or evening snack; also for breakfast."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Bánh bột lọc là món bánh đặc trưng của Huế, về sau lan ra nhiều tỉnh miền Trung và cả nước. Ở Huế, mỗi nhà, mỗi quán có cách nêm nhân, pha nước chấm riêng, tạo nên nhiều phiên bản khác nhau nhưng vẫn giữ được cái hồn chung là vỏ trong, nhân tôm thịt đậm đà.",
+      "en": "A hallmark Hue cake that later spread across Central Vietnam and the country. Each household and shop has its own seasoning and dipping sauce style, but the shared essence is the clear chewy wrapper and rich filling."
+    },
+    "price_range": {
+      "vi": "Khoảng 2.000 – 5.000đ/cái, 20.000 – 40.000đ/đĩa.",
+      "en": "About 2,000–5,000 VND each; 20,000–40,000 VND per plate."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh bột lọc Huế,bánh Huế,bánh mặn,đặc sản Huế",
+      "en": "Hue bánh bột lọc,Hue cakes,savory dumplings,Hue specialty"
+    },
+    "spicy_level": 3,
+    "satiety_level": 3
+  },
+  {
+    "STT": 511,
+    "id": "banh_khoai_hue",
+    "slug": "banh-khoai-hue",
+    "Name": {
+      "vi": "Bánh khoái Huế",
+      "en": "Hue Crispy Pancake (Bánh khoái)"
+    },
+    "description": {
+      "vi": "Bánh khoái là món bánh chiên giòn, trông giống bánh xèo nhưng nhỏ hơn, dày hơn, nhân nhiều hơn và được ăn với loại nước chấm riêng biệt. Bánh nóng giòn, nhân tôm thịt, trứng, giá, ăn kèm rau sống và chấm vào bát nước sốt đặc sánh, béo bùi, là trải nghiệm khó quên với thực khách.",
+      "en": "A crispy fried pancake similar to bánh xèo but smaller, thicker, and more heavily filled—served with a distinctive thick dipping sauce. Hot and crunchy with shrimp, pork, egg, and sprouts; dipped into a rich, nutty sauce for an unforgettable bite."
+    },
+    "category": {
+      "vi": "Bánh chiên – món ăn vặt / món chính nhẹ",
+      "en": "Fried cakes – snack/light main"
+    },
+    "ingredients": {
+      "vi": "Bột gạo, bột nghệ, trứng, tôm, thịt heo, giá đỗ, hành lá, dầu ăn, rau sống, dưa leo, khế, chuối chát; nước chấm từ gan heo, đậu phộng, mè, nước mắm, tương, gia vị.",
+      "en": "Rice flour, turmeric powder, eggs, shrimp, pork, bean sprouts, scallions, cooking oil; served with herbs, cucumber, starfruit, green banana; sauce from pork liver, peanuts, sesame, fish sauce, fermented bean sauce/tương, seasonings."
+    },
+    "instructions": {
+      "vi": "Pha bột gạo với nước, bột nghệ và trứng gà cho sánh. Bắc khuôn nhỏ lên bếp, cho dầu vào, múc bột đổ vào khuôn, thêm tôm, thịt, giá rồi đậy nắp chiên cho vàng giòn. Nước chấm được nấu từ gan heo xay, đậu phộng, mè, nước mắm, tương và đường cho sền sệt. Khi ăn, gắp bánh khoái cuốn với rau sống, chấm vào bát nước sốt đặc.",
+      "en": "Mix rice flour with water, turmeric, and egg to a pourable batter. Heat a small pan/mold with oil, pour batter, add shrimp, pork, sprouts, cover and fry until golden and crisp. Cook sauce with ground liver, peanuts, sesame, fish sauce, tương, and sugar until thick. Eat with herbs, dipping into the sauce."
+    },
+    "region_code": {
+      "vi": "Bắc Trung Bộ",
+      "en": "North Central Coast"
+    },
+    "province_code": {
+      "vi": "Thừa Thiên Huế",
+      "en": "Thua Thien Hue (Hue)"
+    },
+    "Best_time": {
+      "vi": "Thích hợp ăn chiều tối, làm món chính nhẹ hoặc nhậu.",
+      "en": "Afternoon/evening as a light meal or drinking food."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Bánh khoái có nguồn gốc từ Huế, được cho là phiên bản địa phương của bánh xèo nhưng đã được biến tấu để phù hợp với khẩu vị và cách ăn cuốn chấm nước sốt đặc. Những quán bánh khoái lâu năm ở khu vực Đại Nội, cầu Trường Tiền là địa chỉ quen thuộc của du khách khi muốn thưởng thức món này.",
+      "en": "A Hue-born variation of bánh xèo adapted to local taste and the wrap-and-dip style with thick sauce. Long-running shops near the Citadel and Truong Tien Bridge are popular stops for travelers."
+    },
+    "price_range": {
+      "vi": "Khoảng 20.000 – 50.000đ/phần 2–3 cái.",
+      "en": "About 20,000–50,000 VND per serving (2–3 pancakes)."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh khoái Huế,bánh chiên,bánh xèo Huế,đặc sản Huế",
+      "en": "Hue bánh khoái,fried pancake,Hue specialty,Hue street food"
+    },
+    "spicy_level": 3,
+    "satiety_level": 4
+  },
+  {
+    "STT": 512,
+    "id": "banh_ram_it_hue",
+    "slug": "banh-ram-it-hue",
+    "Name": {
+      "vi": "Bánh ram ít Huế",
+      "en": "Hue Ram It Cakes (Bánh ram ít)"
+    },
+    "description": {
+      "vi": "Bánh ram ít là sự kết hợp độc đáo giữa lớp bánh ram chiên giòn bên dưới và bánh ít nếp dẻo bên trên, ở giữa là nhân tôm thịt. Miếng bánh nhỏ xinh, giòn – dẻo hòa quyện, chấm kèm nước mắm ngọt, là món được nhiều người yêu thích trong bộ sưu tập bánh Huế.",
+      "en": "A clever combination: a crispy fried “ram” base topped with a chewy steamed sticky-rice “ít” cake, with shrimp–pork filling inside. Small, pretty, and satisfying—crisp and chewy in one bite."
+    },
+    "category": {
+      "vi": "Bánh hấp – chiên, món ăn vặt mặn",
+      "en": "Steamed & fried cakes – savory snack"
+    },
+    "ingredients": {
+      "vi": "Gạo nếp, bột nếp, bột gạo, tôm, thịt heo, hành tím, hành lá, dầu ăn, nước mắm, đường, tiêu, ớt.",
+      "en": "Glutinous rice, glutinous rice flour, rice flour, shrimp, pork, shallots, scallions, cooking oil, fish sauce, sugar, pepper, chili."
+    },
+    "instructions": {
+      "vi": "Bánh ram được làm từ bột gạo/nếp nhào với nước, nặn thành miếng nhỏ dẹt rồi chiên vàng giòn. Bánh ít làm từ bột nếp nhào dẻo, bọc nhân tôm thịt xào hành, nặn tròn và hấp chín. Khi ăn, đặt một viên bánh ít lên trên miếng bánh ram, rưới thêm mỡ hành, hành phi. Chan nước mắm ớt pha chua ngọt lên khi dùng.",
+      "en": "Make the ram base from rice/glutinous dough, shape small flat rounds and fry until golden and crisp. Make the ít cake from glutinous dough, fill with shrimp–pork sautéed with shallots, shape balls, and steam. Place an ít cake on each ram base, top with scallion oil and fried shallots; serve with sweet-sour chili fish sauce."
+    },
+    "region_code": {
+      "vi": "Bắc Trung Bộ",
+      "en": "North Central Coast"
+    },
+    "province_code": {
+      "vi": "Thừa Thiên Huế",
+      "en": "Thua Thien Hue (Hue)"
+    },
+    "Best_time": {
+      "vi": "Ăn xế chiều hoặc tối như món ăn vặt.",
+      "en": "Afternoon or evening snack."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Bánh ram ít là món bánh truyền thống của Huế, thể hiện sự cầu kỳ trong ẩm thực khi kết hợp hai loại bánh khác nhau trong một món nhỏ. Thường xuất hiện trong mâm cỗ, tiệc hay các quán bánh Huế, món này được xem là một trong những 'bộ tứ' bánh Huế nổi tiếng.",
+      "en": "A traditional Hue cake showing culinary finesse by pairing two different cakes into one. Often served at feasts and at Hue cake shops; considered part of the famous Hue cake set."
+    },
+    "price_range": {
+      "vi": "Khoảng 20.000 – 40.000đ/đĩa vài chiếc.",
+      "en": "About 20,000–40,000 VND per plate."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bánh ram ít Huế,bánh Huế,đặc sản Huế,bánh mặn",
+      "en": "Hue ram ít,Hue cakes,Hue specialty,savory cakes"
+    },
+    "spicy_level": 2,
+    "satiety_level": 3
+  },
+  {
+    "STT": 513,
+    "id": "com_am_phu_hue",
+    "slug": "com-am-phu-hue",
+    "Name": {
+      "vi": "Cơm âm phủ Huế",
+      "en": "Hue “Am Phu” Mixed Rice (Cơm âm phủ)"
+    },
+    "description": {
+      "vi": "Cơm âm phủ là món cơm trộn nhiều màu sắc, với cơm trắng ở giữa và các loại topping xếp xung quanh như thịt ram, chả, trứng, nem, dưa leo, rau, chả lụa… nhìn vừa đẹp mắt vừa đầy đặn. Khi ăn, thực khách trộn đều cơm với các món kèm và nước mắm chua ngọt.",
+      "en": "A colorful mixed rice plate: white rice in the center with assorted toppings arranged around it—braised pork, ham, egg strips, fermented pork, cucumber, herbs, etc. Mix everything together with sweet-sour fish sauce for a filling, balanced meal."
+    },
+    "category": {
+      "vi": "Cơm trộn – món chính",
+      "en": "Mixed rice – main dish"
+    },
+    "ingredients": {
+      "vi": "Cơm trắng, thịt heo ram, trứng chiên thái sợi, chả lụa, nem chua, xúc xích hoặc jambon, dưa leo, cà rốt, rau thơm, hành phi, nước mắm, đường, tỏi, ớt.",
+      "en": "Steamed rice, braised pork, thin omelet strips, Vietnamese ham, fermented pork (nem chua), sausage or jambon, cucumber, carrot, herbs, fried shallots; dressing: fish sauce, sugar, garlic, chili, lime."
+    },
+    "instructions": {
+      "vi": "Cơm nấu tơi, để nóng hoặc nguội bớt. Thịt heo ướp gia vị rồi ram mặn ngọt, cắt miếng nhỏ. Trứng chiên mỏng, thái sợi. Các loại chả, nem, xúc xích thái lát. Bày cơm ở giữa đĩa, xếp các loại nhân xung quanh theo múi, rắc thêm hành phi. Pha nước mắm tỏi ớt chua ngọt để chan khi ăn, trộn đều lên thưởng thức.",
+      "en": "Cook fluffy rice; let cool slightly. Braise pork in savory-sweet seasoning and cut into small pieces. Fry a thin omelet and slice into strips. Slice the meats and vegetables. Arrange rice in the center and toppings around like wedges; sprinkle fried shallots. Serve with sweet-sour garlic-chili fish sauce; mix before eating."
+    },
+    "region_code": {
+      "vi": "Bắc Trung Bộ",
+      "en": "North Central Coast"
+    },
+    "province_code": {
+      "vi": "Thừa Thiên Huế",
+      "en": "Thua Thien Hue (Hue)"
+    },
+    "Best_time": {
+      "vi": "Thích hợp cho bữa trưa hoặc tối.",
+      "en": "Ideal for lunch or dinner."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Có nhiều giai thoại về tên gọi 'cơm âm phủ', trong đó phổ biến là câu chuyện về một quán cơm mở bán khuya cho người lao động, ánh đèn leo lét trông như cõi âm nên được gọi vui là quán cơm âm phủ. Theo thời gian, món cơm trộn nhiều món kèm này trở thành đặc sản, được đặt theo cái tên thú vị đó và gắn với Huế như một nét ẩm thực độc đáo.",
+      "en": "Many stories explain the name “cơm âm phủ,” commonly linked to a late-night eatery serving workers under dim lights that felt “otherworldly.” The name stuck, and the dish—mixed rice with many toppings—became a Hue specialty known for its playful identity."
+    },
+    "price_range": {
+      "vi": "Khoảng 30.000 – 60.000đ/đĩa.",
+      "en": "About 30,000–60,000 VND per plate."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "cơm âm phủ Huế,cơm trộn,đặc sản Huế,món chính",
+      "en": "Hue am phu rice,mixed rice,Hue specialty,main dish"
+    },
+    "spicy_level": 3,
+    "satiety_level": 5
+  },
+  {
+    "STT": 514,
+    "id": "mam_so_lang_co",
+    "slug": "mam-so-lang-co",
+    "Name": {
+      "vi": "Mắm sò Lăng Cô",
+      "en": "Lang Co Fermented Clam Paste (Mắm sò Lăng Cô)"
+    },
+    "description": {
+      "vi": "Mắm sò Lăng Cô là đặc sản nổi tiếng của vùng đầm Lăng Cô, Huế. Sò tươi được làm sạch, ướp muối, ủ lên men với thính, cho ra loại mắm có màu đẹp, vị mặn mòi, thơm đặc trưng của hải sản. Mắm sò dùng để chấm rau sống, thịt luộc hoặc làm gia vị rất đưa cơm.",
+      "en": "A famous specialty from Lang Co lagoon area. Fresh clams are cleaned, salted, and fermented with roasted rice powder to create a savory, oceanic paste with a pleasant aroma. Used as a dip for herbs, boiled pork, or as a flavorful condiment with rice."
+    },
+    "category": {
+      "vi": "Mắm – gia vị / món ăn kèm",
+      "en": "Fermented sauce – condiment/side"
+    },
+    "ingredients": {
+      "vi": "Sò tươi, muối hạt, thính gạo, ớt, tỏi, đường (tùy nhà làm).",
+      "en": "Fresh clams, coarse salt, roasted rice powder (thính), chili, garlic, sugar (optional)."
+    },
+    "instructions": {
+      "vi": "Sò bắt về được rửa sạch cát, tách thịt, để ráo rồi trộn với muối hạt theo tỉ lệ phù hợp, cho vào chum ủ một thời gian. Sau đó, sò được trộn thêm với thính gạo rang xay, ớt, tỏi, đường tùy công thức từng nhà, tiếp tục ủ cho đến khi mắm dậy mùi thơm, có vị mặn ngọt hài hòa.",
+      "en": "Clean clams thoroughly, remove meat, drain, and mix with salt at the right ratio. Ferment in a jar for a period, then mix with roasted rice powder, chili, garlic, and optional sugar; ferment further until aromatic and balanced."
+    },
+    "region_code": {
+      "vi": "Bắc Trung Bộ",
+      "en": "North Central Coast"
+    },
+    "province_code": {
+      "vi": "Thừa Thiên Huế",
+      "en": "Thua Thien Hue (Hue)"
+    },
+    "Best_time": {
+      "vi": "Dùng trong bữa cơm hàng ngày, quanh năm.",
+      "en": "Used year-round in everyday meals."
+    },
+    "Best_season": {
+      "vi": "Mùa sò nhiều thường vào những tháng biển êm, nhưng mắm làm rồi có thể dùng lâu.",
+      "en": "Clam season is best when seas are calm, but the finished paste keeps well and can be used long after."
+    },
+    "origin_story": {
+      "vi": "Đầm Lăng Cô là vùng nước lợ giàu hải sản, trong đó sò là nguồn nguyên liệu dồi dào. Người dân đã nghĩ ra cách làm mắm sò để bảo quản hải sản lâu hơn, đồng thời tạo ra món ăn kèm đặc sản. Theo thời gian, mắm sò Lăng Cô được nhiều du khách biết đến và mua về làm quà mỗi khi đi ngang đèo Hải Vân.",
+      "en": "Lang Co’s brackish lagoon is rich in seafood, including clams. Locals developed fermented clam paste to preserve seafood longer and create a distinctive condiment. It’s now a popular gift for travelers passing Hai Van Pass."
+    },
+    "price_range": {
+      "vi": "Khoảng 60.000 – 120.000đ/hũ tùy loại.",
+      "en": "About 60,000–120,000 VND per jar depending on size/type."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "mắm sò Lăng Cô,đặc sản Lăng Cô,mắm Huế,đặc sản làm quà",
+      "en": "Lang Co clam paste,Lang Co specialty,Hue fermented sauce,gift specialty"
+    },
+    "spicy_level": 3,
+    "satiety_level": 1
+  },
+  {
+    "STT": 515,
+    "id": "mam_ca_ro_hue",
+    "slug": "mam-ca-ro-hue",
+    "Name": {
+      "vi": "Mắm cá rò Huế",
+      "en": "Hue Fermented Ro Fish Paste (Mắm cá rò)"
+    },
+    "description": {
+      "vi": "Mắm cá rò là loại mắm làm từ cá rò – một loại cá nhỏ, nhiều xương, sống ở vùng đầm phá và cửa biển miền Trung. Ở Huế, mắm cá rò được ưa chuộng vì vị mặn đậm, thơm, thường dùng chấm rau sống, thịt luộc hoặc kho với thịt rất đưa cơm.",
+      "en": "A robust fermented fish condiment made from small ro fish found in Central Vietnam lagoons and estuaries. In Hue it’s prized for strong savory aroma and salty depth—used to dip herbs and boiled pork or to braise with meat for an excellent rice companion."
+    },
+    "category": {
+      "vi": "Mắm – gia vị / món ăn kèm",
+      "en": "Fermented sauce – condiment/side"
+    },
+    "ingredients": {
+      "vi": "Cá rò tươi, muối hạt, thính gạo, ớt, tỏi, đường (tùy cách làm).",
+      "en": "Fresh ro fish, coarse salt, roasted rice powder (thính), chili, garlic, sugar (optional)."
+    },
+    "instructions": {
+      "vi": "Cá rò được làm sạch, để ráo rồi trộn với muối, xếp vào chum hoặc hũ ủ trong thời gian nhất định cho chín mắm. Sau đó, cá được trộn với thính, ớt, tỏi, đường để cân bằng vị, tiếp tục ủ cho đến khi mắm có mùi thơm đặc trưng, cá rã xương mềm.",
+      "en": "Clean fish, drain, mix with salt, and ferment in a jar for a set time. Then mix in roasted rice powder, chili, garlic, and optional sugar to balance flavor, and continue fermenting until fragrant and the bones soften."
+    },
+    "region_code": {
+      "vi": "Bắc Trung Bộ",
+      "en": "North Central Coast"
+    },
+    "province_code": {
+      "vi": "Thừa Thiên Huế",
+      "en": "Thua Thien Hue (Hue)"
+    },
+    "Best_time": {
+      "vi": "Dùng quanh năm trong bữa cơm.",
+      "en": "Used year-round with family meals."
+    },
+    "Best_season": {
+      "vi": "Mùa cá rò nhiều là lúc mắm ngon nhất, nhưng mắm để được khá lâu.",
+      "en": "Best made when ro fish are in season, but the paste stores well."
+    },
+    "origin_story": {
+      "vi": "Là vùng có hệ đầm phá lớn như phá Tam Giang, Thừa Thiên Huế từ lâu đã nổi tiếng với nhiều loại mắm cá. Mắm cá rò là một trong những loại mắm phổ biến, xuất hiện trong hầu hết các mâm cơm gia đình nông thôn. Ngày nay, nó cũng được đóng hũ bán cho khách du lịch như một món quà mang hương vị miền biển.",
+      "en": "With large lagoon systems like Tam Giang, Thua Thien Hue is known for many fermented fish products. Mắm cá rò is one of the most common, long present in rural family meals and now also sold in jars to tourists as a coastal-flavored gift."
+    },
+    "price_range": {
+      "vi": "Khoảng 50.000 – 100.000đ/hũ.",
+      "en": "About 50,000–100,000 VND per jar."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "mắm cá rò Huế,mắm Huế,đặc sản phá Tam Giang,gia vị truyền thống",
+      "en": "Hue ro fish paste,Hue fermented sauce,Tam Giang lagoon specialty,traditional condiment"
+    },
+    "spicy_level": 3,
+    "satiety_level": 1
+  },
+  {
+    "STT": 516,
+    "id": "me_xung_hue",
+    "slug": "me-xung-hue",
+    "Name": {
+      "vi": "Mè xửng Huế",
+      "en": "Hue Sesame Peanut Candy (Mè xửng)"
+    },
+    "description": {
+      "vi": "Mè xửng là loại kẹo đặc sản nổi tiếng gắn liền với Huế, có dạng miếng vuông hoặc thanh, làm từ đường, mạch nha, lạc và mè (vừng). Kẹo dẻo dai, thơm mùi mè rang, béo bùi của đậu phộng, thường được dùng kèm trà nóng, là món quà không thể thiếu khi nhắc đến Huế.",
+      "en": "A classic Hue specialty candy—square or bar-shaped—made from sugar, malt syrup, peanuts, and toasted sesame. Chewy and fragrant, often enjoyed with hot tea and a must-buy gift when visiting Hue."
+    },
+    "category": {
+      "vi": "Kẹo – món ngọt / đặc sản làm quà",
+      "en": "Candy – sweet/gift specialty"
+    },
+    "ingredients": {
+      "vi": "Đường, mạch nha, bột năng hoặc bột nếp, mè rang, đậu phộng rang, vani (tùy cơ sở).",
+      "en": "Sugar, malt syrup, tapioca or glutinous flour, toasted sesame, roasted peanuts, vanilla (optional)."
+    },
+    "instructions": {
+      "vi": "Đường và mạch nha được nấu trên lửa nhỏ đến khi sánh, cho bột vào khuấy liên tục để tạo độ dẻo. Thêm mè rang và đậu phộng rang vào đảo đều, sau đó đổ hỗn hợp ra khuôn phẳng, cán đều, rắc thêm mè lên mặt. Khi nguội, cắt kẹo thành miếng vừa ăn, đóng gói bảo quản.",
+      "en": "Cook sugar with malt syrup over low heat until thick; stir in flour to achieve chewiness. Add toasted sesame and peanuts, mix well, then press into a flat mold and sprinkle sesame on top. Once cool, cut into bite-size pieces and package."
+    },
+    "region_code": {
+      "vi": "Bắc Trung Bộ",
+      "en": "North Central Coast"
+    },
+    "province_code": {
+      "vi": "Thừa Thiên Huế",
+      "en": "Thua Thien Hue (Hue)"
+    },
+    "Best_time": {
+      "vi": "Dùng như món nhâm nhi cùng trà vào buổi sáng hoặc chiều.",
+      "en": "Best with tea in the morning or afternoon."
+    },
+    "Best_season": {
+      "vi": "Quanh năm, đặc biệt bán chạy dịp lễ tết.",
+      "en": "Year-round; especially popular during holidays and Tet."
+    },
+    "origin_story": {
+      "vi": "Mè xửng được sáng tạo từ các làng nghề kẹo mứt của Huế, là sự kết hợp giữa kẹo lạc, kẹo vừng và kỹ thuật nấu mạch nha truyền thống. Qua hàng chục năm, mè xửng trở thành thương hiệu đặc sản xứ Huế, với nhiều cơ sở lâu đời chuyên sản xuất và phân phối đi khắp cả nước.",
+      "en": "Created by Hue confectionery craft villages, combining traditional malt-syrup cooking with peanuts and sesame. Over decades it became a signature Hue brand, produced by long-standing makers and distributed nationwide."
+    },
+    "price_range": {
+      "vi": "Khoảng 30.000 – 80.000đ/hộp tùy loại.",
+      "en": "About 30,000–80,000 VND per box depending on type/brand."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "mè xửng Huế,kẹo mè xửng,đặc sản làm quà,đặc sản Huế",
+      "en": "Hue mè xửng,sesame candy,gift specialty,Hue specialty"
+    },
+    "spicy_level": 0,
+    "satiety_level": 1
+  },
+  {
+    "STT": 517,
+    "id": "mam_tom_chua_hue",
+    "slug": "mam-tom-chua-hue",
+    "Name": {
+      "vi": "Mắm tôm chua Huế",
+      "en": "Hue Fermented Shrimp Paste (Mắm tôm chua)"
+    },
+    "description": {
+      "vi": "Mắm tôm chua Huế là loại mắm nổi tiếng, có màu đỏ đẹp mắt, vị chua ngọt nhẹ, thơm mùi tôm lên men với riềng, tỏi, ớt. Mắm thường được dùng chấm thịt luộc, đặc biệt là thịt ba chỉ cuốn rau sống, bánh tráng, tạo nên món ăn rất đặc trưng của Huế.",
+      "en": "A famous Hue fermented shrimp relish with an attractive reddish color and a gentle sweet-sour taste. Shrimp are fermented with galangal, garlic, and chili, producing a fragrant condiment often eaten with boiled pork belly wrapped with herbs and rice paper."
+    },
+    "category": {
+      "vi": "Mắm – gia vị / món ăn kèm",
+      "en": "Fermented sauce – condiment/side"
+    },
+    "ingredients": {
+      "vi": "Tôm đất tươi, muối, cơm nguội hoặc xôi, riềng, tỏi, ớt, đường, rượu trắng (tùy công thức).",
+      "en": "Fresh small shrimp, salt, cold rice or sticky rice, galangal, garlic, chili, sugar, white liquor (optional)."
+    },
+    "instructions": {
+      "vi": "Tôm đất rửa sạch, cắt râu, để ráo, trộn với muối và chút rượu, ủ sơ. Sau đó trộn tôm với cơm nguội hoặc xôi để tạo men, thêm riềng, tỏi, ớt thái lát, đường, cho vào hũ thủy tinh hoặc chum, nén kín và ủ trong vài tuần đến khi tôm chuyển màu đỏ cam, mắm dậy mùi thơm, vị chua ngọt hài hòa.",
+      "en": "Rinse shrimp, trim whiskers, drain, mix with salt and a little liquor, and pre-cure briefly. Mix shrimp with cold rice or sticky rice to start fermentation; add sliced galangal, garlic, chili, and sugar. Pack tightly in a glass jar, seal, and ferment for a few weeks until orange-red and pleasantly aromatic with balanced sweet-sour flavor."
+    },
+    "region_code": {
+      "vi": "Bắc Trung Bộ",
+      "en": "North Central Coast"
+    },
+    "province_code": {
+      "vi": "Thừa Thiên Huế",
+      "en": "Thua Thien Hue (Hue)"
+    },
+    "Best_time": {
+      "vi": "Dùng quanh năm trong bữa cơm, đặc biệt ngon khi ăn cùng thịt luộc và rau.",
+      "en": "Year-round; especially delicious with boiled pork and herbs."
+    },
+    "Best_season": {
+      "vi": "Tôm làm mắm ngon nhất thường là mùa tôm đất vào, nhưng mắm để được lâu.",
+      "en": "Best when shrimp are in season, but the finished paste stores well."
+    },
+    "origin_story": {
+      "vi": "Mắm tôm chua xuất phát từ thói quen làm mắm để dự trữ của người dân vùng biển và đầm phá Huế. Qua quá trình thử nghiệm, người Huế đã tìm ra cách kết hợp tôm với cơm, riềng, ớt để tạo nên loại mắm vừa thơm vừa dễ ăn hơn mắm tôm thông thường. Ngày nay, mắm tôm chua Huế là đặc sản được đóng hũ đẹp mắt, bán khắp nơi cho du khách.",
+      "en": "Born from the tradition of making fermented foods to preserve seafood in Hue’s coastal and lagoon communities. Hue cooks refined the process by combining shrimp with rice and aromatics to create a milder, more approachable fermented shrimp paste. Today it’s widely sold in gift jars for tourists."
+    },
+    "price_range": {
+      "vi": "Khoảng 60.000 – 120.000đ/hũ tùy thương hiệu.",
+      "en": "About 60,000–120,000 VND per jar depending on brand."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "mắm tôm chua Huế,đặc sản Huế,mắm tôm chua,đặc sản làm quà",
+      "en": "Hue fermented shrimp,mắm tôm chua,Hue specialty,gift specialty"
+    },
+    "spicy_level": 4,
+    "satiety_level": 1
+  },
+  {
+    "STT": 518,
+    "id": "keo_cau_hue",
+    "slug": "keo-cau-hue",
+    "Name": {
+      "vi": "Kẹo cau Huế",
+      "en": "Hue Betel-Nut-Shaped Candy (Kẹo cau)"
+    },
+    "description": {
+      "vi": "Kẹo cau Huế là loại kẹo dân dã, có hình dáng giống múi cau, bên ngoài là lớp đường trắng cứng, bên trong là nhân đậu phộng hoặc mè. Kẹo giòn, ngọt, thường được các cụ già nhâm nhi cùng trà, và là một phần ký ức tuổi thơ của nhiều người xứ Huế.",
+      "en": "A simple traditional candy shaped like betel nut segments. It has a hard white sugar shell with a peanut or sesame center. Crunchy and sweet, often enjoyed with tea and nostalgic for many Hue childhoods."
+    },
+    "category": {
+      "vi": "Kẹo – món ngọt / quà vặt",
+      "en": "Candy – sweet snack"
+    },
+    "ingredients": {
+      "vi": "Đường, nước, đậu phộng rang hoặc mè rang, màu thực phẩm tự nhiên (nếu có).",
+      "en": "Sugar, water, roasted peanuts or toasted sesame, natural food coloring (optional)."
+    },
+    "instructions": {
+      "vi": "Đường nấu với nước đến khi sánh, có độ dẻo nhất định. Đậu phộng hoặc mè rang được trộn vào phần nhân, vo thành dây hoặc khối. Lớp đường bên ngoài được nấu sệt rồi đổ phủ, sau đó cắt khối kẹo thành miếng nhỏ hình múi cau. Kẹo để nguội sẽ cứng lại, bảo quản trong hộp kín.",
+      "en": "Cook sugar with water until thickened to the right stage. Shape peanut/sesame filling into small logs or pieces. Coat with cooked sugar syrup, then cut into small pieces resembling betel nut segments. Cool until hard and store airtight."
+    },
+    "region_code": {
+      "vi": "Bắc Trung Bộ",
+      "en": "North Central Coast"
+    },
+    "province_code": {
+      "vi": "Thừa Thiên Huế",
+      "en": "Thua Thien Hue (Hue)"
+    },
+    "Best_time": {
+      "vi": "Dùng nhâm nhi với trà, buổi sáng hoặc chiều.",
+      "en": "With tea in the morning or afternoon."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Kẹo cau xuất hiện từ thời mà người dân còn hay ăn trầu cau, lấy hình ảnh múi cau làm cảm hứng. Các lò kẹo thủ công ở Huế đã tạo nên loại kẹo đơn giản nhưng gần gũi này, bán nhiều trong các chợ truyền thống như Đông Ba, An Cựu… và trở thành món quà quê được nhiều người tìm mua.",
+      "en": "Inspired by the long-standing betel-and-areca chewing culture, artisans shaped candies like betel nut segments. Handmade candy makers in Hue sell it in traditional markets such as Dong Ba and An Cuu, making it a beloved rustic gift."
+    },
+    "price_range": {
+      "vi": "Khoảng 20.000 – 50.000đ/gói tùy trọng lượng.",
+      "en": "About 20,000–50,000 VND per bag depending on weight."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "kẹo cau Huế,kẹo truyền thống,quà vặt Huế,đặc sản Huế",
+      "en": "Hue kẹo cau,traditional candy,Hue snack,Hue specialty"
+    },
+    "spicy_level": 0,
+    "satiety_level": 1
+  },
+  {
+    "STT": 519,
+    "id": "bun_thit_nuong_hue",
+    "slug": "bun-thit-nuong-hue",
+    "Name": {
+      "vi": "Bún thịt nướng Huế",
+      "en": "Hue Grilled Pork Vermicelli (Bún thịt nướng)"
+    },
+    "description": {
+      "vi": "Bún thịt nướng Huế là món bún trộn với thịt heo nướng, nem lụi, chả ram, rau sống và nước mắm chua ngọt. Thịt nướng thơm, chả ram giòn, nem lụi béo, kết hợp cùng bún và rau mát, tạo nên tô bún đầy đủ vị, rất dễ ăn.",
+      "en": "A mixed vermicelli bowl topped with grilled pork, nem lụi, crispy spring rolls, herbs, and sweet-sour fish sauce. Smoky pork, crunchy rolls, and fresh greens make it hearty yet easy to eat."
+    },
+    "category": {
+      "vi": "Bún trộn – món chính",
+      "en": "Mixed vermicelli – main dish"
+    },
+    "ingredients": {
+      "vi": "Bún tươi, thịt heo ướp nướng, nem lụi, chả ram (nem rán nhỏ), rau sống, dưa leo, đồ chua, lạc rang, hành phi, nước mắm, chanh, tỏi, ớt, đường.",
+      "en": "Rice vermicelli, marinated grilled pork, nem lụi, crispy mini spring rolls (chả ram), mixed herbs, cucumber, pickles, roasted peanuts, fried shallots; dressing: fish sauce, lime, garlic, chili, sugar."
+    },
+    "instructions": {
+      "vi": "Thịt heo thái miếng mỏng, ướp với sả, tỏi, mật ong hoặc đường, nước mắm rồi nướng trên than hoặc lò. Nem lụi, chả ram chiên hoặc nướng chín. Cho bún vào tô, xếp thịt nướng, nem lụi, chả ram, rau sống, đồ chua lên trên, rắc lạc rang, hành phi. Pha nước mắm tỏi ớt chua ngọt, khi ăn rưới đều lên tô bún và trộn đều.",
+      "en": "Slice pork and marinate with lemongrass, garlic, sugar/honey, fish sauce; grill over charcoal or in an oven. Cook nem lụi and fry spring rolls. Place vermicelli in a bowl, top with pork, nem lụi, spring rolls, herbs, and pickles; sprinkle peanuts and fried shallots. Pour over sweet-sour garlic-chili fish sauce and toss."
+    },
+    "region_code": {
+      "vi": "Bắc Trung Bộ",
+      "en": "North Central Coast"
+    },
+    "province_code": {
+      "vi": "Thừa Thiên Huế",
+      "en": "Thua Thien Hue (Hue)"
+    },
+    "Best_time": {
+      "vi": "Thường ăn trưa hoặc tối.",
+      "en": "Commonly eaten for lunch or dinner."
+    },
+    "Best_season": {
+      "vi": "Quanh năm.",
+      "en": "Year-round."
+    },
+    "origin_story": {
+      "vi": "Bún thịt nướng phổ biến ở nhiều nơi, nhưng ở Huế món ăn này mang nét riêng khi kết hợp cùng nem lụi và chả ram nhỏ, nước mắm pha có thêm vị mắm ruốc nhẹ tùy quán. Đây là món ăn vừa no vừa ngon, xuất hiện nhiều trong các quán bình dân của người Huế.",
+      "en": "While grilled pork vermicelli exists nationwide, the Hue version often includes nem lụi and small crispy chả ram, and some shops add a faint shrimp-paste note to the dressing. It’s a popular everyday meal in Hue’s casual eateries."
+    },
+    "price_range": {
+      "vi": "Khoảng 25.000 – 45.000đ/tô.",
+      "en": "About 25,000–45,000 VND per bowl."
+    },
+    "Img": null,
+    "Tags": {
+      "vi": "bún thịt nướng Huế,bún nem nướng,đặc sản Huế,món bún trộn",
+      "en": "Hue grilled pork vermicelli,vermicelli bowl,Hue specialty,mixed noodles"
+    },
+    "spicy_level": 3,
+    "satiety_level": 5
+  }
+]

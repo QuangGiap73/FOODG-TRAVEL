@@ -1,44 +1,56 @@
-﻿<button class="menu-toggle" type="button" aria-label="Mở menu" data-sidebar-toggle>
+<button class="menu-toggle" type="button" aria-label="Mở menu" data-sidebar-toggle>
   <span></span>
   <span></span>
   <span></span>
 </button>
 
-<div class="topbar-heading">
-  <div>
-    <p class="eyebrow">Admin workspace</p>
-    <h1><%= pageTitle %></h1>
-  </div>
+<div class="topbar-search">
+  <svg class="topbar-search__icon" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M21 21l-4.3-4.3" />
+    <circle cx="11" cy="11" r="7" />
+  </svg>
+  <input
+    class="topbar-search__input"
+    type="search"
+    placeholder="Tìm kiếm nhanh..."
+    aria-label="Tìm kiếm nhanh"
+  />
+  <kbd class="topbar-search__kbd">⌘K</kbd>
 </div>
 
 <div class="topbar-actions">
   <button class="icon-button topbar-notice-button" type="button" aria-label="Thông báo">
     <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5"/>
-      <path d="M10 21a2 2 0 0 0 4 0"/>
+      <path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5" />
+      <path d="M10 21a2 2 0 0 0 4 0" />
     </svg>
     <span class="topbar-notice-dot"></span>
   </button>
 
-  <div class="profile-chip profile-chip--large">
-    <div class="profile-chip__avatar">A</div>
-    <div>
-      <strong><%= user.displayName %></strong>
-      <small><%= user.role %></small>
-    </div>
-    <svg class="profile-chip__caret" viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M7 10l5 5 5-5"/>
-    </svg>
-  </div>
-
-  <form method="post" action="/logout" class="topbar-logout-form">
-    <button class="secondary-button topbar-logout-button" type="submit">
-      <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
-        <path d="M10 17l5-5-5-5"/>
-        <path d="M15 12H3"/>
+  <div class="profile-chip profile-chip--compact" data-profile-dropdown>
+    <button
+      class="profile-chip__button"
+      type="button"
+      data-profile-dropdown-trigger
+      aria-expanded="false"
+      aria-label="Mở menu tài khoản"
+    >
+      <div class="profile-chip__avatar"><%= (user.displayName || 'A').charAt(0) %></div>
+      <div class="profile-chip__meta">
+        <strong><%= user.displayName %></strong>
+        <small><%= user.role %></small>
+      </div>
+      <svg class="profile-chip__caret" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M7 10l5 5 5-5" />
       </svg>
-      <span>Đăng xuất</span>
     </button>
-  </form>
+
+    <div class="profile-chip__menu" data-profile-dropdown-menu>
+      <form method="post" action="/logout" class="profile-chip__logout-form">
+        <button class="profile-chip__logout-button" type="submit">
+          Đăng xuất
+        </button>
+      </form>
+    </div>
+  </div>
 </div>

@@ -5,6 +5,7 @@
     "moduleResolution": "nodenext",
     "noImplicitReturns": true,
     "noUnusedLocals": true,
+    "rootDir": "src", // thêm 
     "outDir": "lib",
     "sourceMap": true,
     "strict": true,
