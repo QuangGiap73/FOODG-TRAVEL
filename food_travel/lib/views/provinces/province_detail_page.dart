@@ -24,10 +24,10 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
   final _infoSectionKey = GlobalKey();
   final _foodSectionKey = GlobalKey();
   final ValueNotifier<int> _imageIndex = ValueNotifier<int>(0);
+  final ValueNotifier<bool> _introExpanded = ValueNotifier<bool>(false);
 
   Timer? _autoSlideTimer;
   int _imageCount = 0;
-  bool _expanded = false;
   String _selectedLegacyFilter = '';
 
   @override
@@ -36,6 +36,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
     _pageController.dispose();
     _scrollController.dispose();
     _imageIndex.dispose();
+    _introExpanded.dispose();
     super.dispose();
   }
 
@@ -91,6 +92,15 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
     return humanized.isEmpty ? '' : '$humanized c\u0169';
   }
 
+  String _normalizeKey(String value) {
+    return value
+        .trim()
+        .toLowerCase()
+        .replaceAll('_', ' ')
+        .replaceAll('-', ' ')
+        .replaceAll(RegExp(r'\s+'), ' ');
+  }
+
   List<String> _legacyCodesOf(ProvinceModel province) {
     final ignored = {
       province.id.trim().toLowerCase(),
@@ -105,15 +115,45 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
         .toList();
   }
 
-  List<DishModel> _filterDishes(List<DishModel> dishes) {
+  List<DishModel> _filterDishes(
+    List<DishModel> dishes, {
+    ProvinceModel? displayProvince,
+  }) {
     if (_selectedLegacyFilter.isEmpty) return dishes;
+    final targetKeys = {
+      _selectedLegacyFilter,
+      _legacyLabel(_selectedLegacyFilter).replaceAll(' c\u0169', ''),
+      displayProvince?.id ?? '',
+      displayProvince?.code ?? '',
+      displayProvince?.name ?? '',
+      displayProvince?.slug ?? '',
+    }.map(_normalizeKey).where((value) => value.isNotEmpty).toSet();
+
     return dishes
-        .where(
-          (dish) =>
-              dish.legacyProvinceCode.trim().toLowerCase() ==
-              _selectedLegacyFilter.toLowerCase(),
-        )
+        .where((dish) => _dishMatchesProvinceKeys(dish, targetKeys))
         .toList();
+  }
+
+  bool _dishMatchesProvinceKeys(DishModel dish, Set<String> targetKeys) {
+    final dishKeys = {
+      dish.legacyProvinceCode,
+      dish.legacyProvinceName,
+      dish.provinceCode,
+      dish.provinceName,
+      dish.provinceCode34,
+      dish.provinceName34,
+      dish.provinceI18n['vi'] ?? '',
+      dish.provinceI18n['en'] ?? '',
+    }.map(_normalizeKey).where((value) => value.isNotEmpty).toSet();
+
+    return dishKeys.any(targetKeys.contains);
+  }
+
+  Stream<ProvinceModel?> _watchDisplayProvince(ProvinceModel province) {
+    if (_selectedLegacyFilter.trim().isEmpty) {
+      return Stream.value(province);
+    }
+    return _service.watchProvinceDetailByCode(_selectedLegacyFilter);
   }
 
   Future<void> _scrollToSection(GlobalKey key) async {
@@ -133,7 +173,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
     final theme = Theme.of(context);
 
     return StreamBuilder<ProvinceModel?>(
-      stream: _service.watchProvinceById(widget.provinceId),
+      stream: _service.watchProvinceDetailByCode(widget.provinceId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
@@ -153,14 +193,6 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
           );
         }
 
-        final images = province.imageUrls.isNotEmpty
-            ? province.imageUrls
-            : (province.imageUrl.isNotEmpty
-                ? [province.imageUrl]
-                : const <String>[]);
-        _startAutoSlide(images.length);
-
-        final region = (province.regionCode ?? '').trim();
         final legacyCodes = _legacyCodesOf(province);
 
         if (_selectedLegacyFilter.isNotEmpty &&
@@ -190,41 +222,64 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
           body: Stack(
             children: [
               _buildPageBannerBackground(),
-              StreamBuilder<List<DishModel>>(
-                stream: _service.watchDishesByProvinceKeys(
-                  _provinceQueryKeys(province),
-                ),
-                builder: (context, dishSnapshot) {
-                  final dishes = dishSnapshot.data ?? const <DishModel>[];
-                  final visibleDishes = _filterDishes(dishes);
+              StreamBuilder<ProvinceModel?>(
+                stream: _watchDisplayProvince(province),
+                builder: (context, displaySnapshot) {
+                  final displayProvince = displaySnapshot.data ?? province;
+                  final images = displayProvince.imageUrls.isNotEmpty
+                      ? displayProvince.imageUrls
+                      : (displayProvince.imageUrl.isNotEmpty
+                          ? [displayProvince.imageUrl]
+                          : const <String>[]);
+                  _startAutoSlide(images.length);
 
-                  return ListView(
-                    controller: _scrollController,
-                    padding: const EdgeInsets.fromLTRB(16, 104, 16, 28),
-                    children: [
-                      _buildHeroSection(
-                        theme: theme,
-                        province: province,
-                        images: images,
-                        region: region,
-                        dishCount: dishes.length,
-                      ),
-                      const SizedBox(height: 18),
-                      if (legacyCodes.isNotEmpty) ...[
-                        _buildLegacySection(theme, legacyCodes),
-                        const SizedBox(height: 18),
-                      ],
-                      _buildIntroSection(theme, province, key: _infoSectionKey),
-                      const SizedBox(height: 18),
-                      _buildFoodSection(
-                        key: _foodSectionKey,
-                        theme: theme,
-                        province: province,
-                        legacyCodes: legacyCodes,
-                        snapshot: dishSnapshot,
-                        dishes: visibleDishes,
-                      ),
-                    ],
+                  final region = (displayProvince.regionCode ?? '').trim();
+
+                  return StreamBuilder<List<DishModel>>(
+                    stream: _service.watchDishesByProvinceKeys(
+                      _provinceQueryKeys(province),
+                    ),
+                    builder: (context, dishSnapshot) {
+                      final dishes = dishSnapshot.data ?? const <DishModel>[];
+                      final visibleDishes = _filterDishes(
+                        dishes,
+                        displayProvince: displayProvince,
+                      );
+
+                      return ListView(
+                        controller: _scrollController,
+                        padding: const EdgeInsets.fromLTRB(16, 104, 16, 28),
+                        children: [
+                          _buildHeroSection(
+                            theme: theme,
+                            province: displayProvince,
+                            images: images,
+                            region: region,
+                            dishCount: visibleDishes.length,
+                            legacyCount: legacyCodes.length,
+                          ),
+                          const SizedBox(height: 18),
+                          if (legacyCodes.isNotEmpty) ...[
+                            _buildLegacySection(theme, legacyCodes),
+                            const SizedBox(height: 18),
+                          ],
+                          _buildIntroSection(
+                            theme,
+                            displayProvince,
+                            key: _infoSectionKey,
+                          ),
+                          const SizedBox(height: 18),
+                          _buildFoodSection(
+                            key: _foodSectionKey,
+                            theme: theme,
+                            province: displayProvince,
+                            legacyCodes: legacyCodes,
+                            snapshot: dishSnapshot,
+                            dishes: visibleDishes,
+                          ),
+                        ],
+                      );
+                    },
                   );
                 },
               ),
@@ -270,6 +325,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
     required List<String> images,
     required String region,
     required int dishCount,
+    required int legacyCount,
   }) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(28),
@@ -340,11 +396,11 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
                         Icons.restaurant_menu_rounded,
                         '$dishCount m\u00f3n n\u1ed5i b\u1eadt',
                       ),
-                      if (_legacyCodesOf(province).isNotEmpty)
+                      if (legacyCount > 0)
                         _buildMetricChip(
                           theme,
                           Icons.layers_rounded,
-                          '${_legacyCodesOf(province).length} \u0111\u1ecba ph\u01b0\u01a1ng c\u0169',
+                          '$legacyCount \u0111\u1ecba ph\u01b0\u01a1ng c\u0169',
                         ),
                     ],
                   ),
@@ -411,7 +467,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
         ),
         const SizedBox(height: 12),
         SizedBox(
-          height: 122,
+          height: 140,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: legacyCodes.length,
@@ -423,12 +479,13 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
                 onTap: () {
                   setState(() {
                     _selectedLegacyFilter = isActive ? '' : code;
+                    _introExpanded.value = false;
                   });
                 },
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 220),
                   width: 182,
-                  padding: const EdgeInsets.all(14),
+                  padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: isActive ? const Color(0xFFFF8A00) : Colors.white,
                     borderRadius: BorderRadius.circular(22),
@@ -451,8 +508,8 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: 42,
-                        height: 42,
+                        width: 38,
+                        height: 38,
                         decoration: BoxDecoration(
                           color: isActive
                               ? Colors.white.withValues(alpha: 0.2)
@@ -465,7 +522,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
                               isActive ? Colors.white : const Color(0xFFFF8A00),
                         ),
                       ),
-                      const Spacer(),
+                      const SizedBox(height: 10),
                       Text(
                         _legacyLabel(code),
                         maxLines: 1,
@@ -476,12 +533,12 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
                               isActive ? Colors.white : const Color(0xFF111827),
                         ),
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 4),
                       Text(
                         isActive
-                            ? '\u0110ang l\u1ecdc m\u00f3n \u0103n theo \u0111\u1ecba ph\u01b0\u01a1ng n\u00e0y.'
-                            : 'Nh\u1ea5n \u0111\u1ec3 xem c\u00e1c m\u00f3n \u0103n xu\u1ea5t ph\u00e1t t\u1eeb v\u00f9ng n\u00e0y.',
-                        maxLines: 2,
+                            ? '\u0110ang xem n\u1ed9i dung c\u1ee7a \u0111\u1ecba ph\u01b0\u01a1ng n\u00e0y.'
+                            : 'Nh\u1ea5n \u0111\u1ec3 xem m\u00f4 t\u1ea3, \u1ea3nh v\u00e0 m\u00f3n \u0103n.',
+                        maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: isActive
@@ -506,7 +563,12 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
     ProvinceModel province, {
     Key? key,
   }) {
-    final desc = (province.description ?? '').trim();
+    final languageCode = Localizations.localeOf(context).languageCode;
+    final desc = (languageCode == 'en'
+            ? province.descriptionEn ?? province.description
+            : province.description)
+        ?.trim() ??
+        '';
 
     return Container(
       key: key,
@@ -582,28 +644,42 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
             ],
           ),
           const SizedBox(height: 14),
-          Text(
-            desc.isEmpty
-                ? 'Th\u00f4ng tin gi\u1edbi thi\u1ec7u \u0111ang \u0111\u01b0\u1ee3c c\u1eadp nh\u1eadt.'
-                : desc,
-            maxLines: _expanded ? null : 5,
-            overflow: _expanded ? TextOverflow.visible : TextOverflow.ellipsis,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: const Color(0xFF374151),
-              height: 1.6,
-            ),
+          ValueListenableBuilder<bool>(
+            valueListenable: _introExpanded,
+            builder: (context, expanded, _) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    desc.isEmpty
+                        ? 'Th\u00f4ng tin gi\u1edbi thi\u1ec7u \u0111ang \u0111\u01b0\u1ee3c c\u1eadp nh\u1eadt.'
+                        : desc,
+                    maxLines: expanded ? null : 5,
+                    overflow: expanded
+                        ? TextOverflow.visible
+                        : TextOverflow.ellipsis,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: const Color(0xFF374151),
+                      height: 1.6,
+                    ),
+                  ),
+                  if (desc.length > 180) ...[
+                    const SizedBox(height: 8),
+                    TextButton(
+                      onPressed: () => _introExpanded.value = !expanded,
+                      style: TextButton.styleFrom(
+                        foregroundColor: const Color(0xFFFF8A00),
+                        padding: EdgeInsets.zero,
+                      ),
+                      child: Text(
+                        expanded ? 'Thu g\u1ecdn' : 'Xem th\u00eam',
+                      ),
+                    ),
+                  ],
+                ],
+              );
+            },
           ),
-          if (desc.length > 180) ...[
-            const SizedBox(height: 8),
-            TextButton(
-              onPressed: () => setState(() => _expanded = !_expanded),
-              style: TextButton.styleFrom(
-                foregroundColor: const Color(0xFFFF8A00),
-                padding: EdgeInsets.zero,
-              ),
-              child: Text(_expanded ? 'Thu g\u1ecdn' : 'Xem th\u00eam'),
-            ),
-          ],
         ],
       ),
     );
@@ -717,17 +793,184 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
               ),
             )
           else
-            ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: dishes.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 14),
-              itemBuilder: (context, index) {
-                return _buildDishCard(dishes[index], theme);
-              },
+            _buildHorizontalDishList(theme, dishes.take(10).toList()),
+          if (province.places.isNotEmpty) ...[
+            const SizedBox(height: 22),
+            _buildFamousPlacesSection(
+              theme,
+              province.places.take(10).toList(),
             ),
+          ],
         ],
       ),
+    );
+  }
+
+  Widget _buildHorizontalDishList(ThemeData theme, List<DishModel> dishes) {
+    return SizedBox(
+      height: 158,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: dishes.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        itemBuilder: (context, index) {
+          return _buildSmallDishCard(dishes[index], theme);
+        },
+      ),
+    );
+  }
+
+  Widget _buildSmallDishCard(DishModel dish, ThemeData theme) {
+    final imageUrl = dish.imageUrl.trim();
+    return InkWell(
+      borderRadius: BorderRadius.circular(18),
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => DishDetailPage(dishId: dish.id),
+          ),
+        );
+      },
+      child: SizedBox(
+        width: 124,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: SizedBox(
+                width: 124,
+                height: 92,
+                child: imageUrl.isNotEmpty
+                    ? Image.network(
+                        imageUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) =>
+                            _buildImagePlaceholder(Icons.restaurant_rounded),
+                      )
+                    : _buildImagePlaceholder(Icons.restaurant_rounded),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              dish.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: const Color(0xFF111827),
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 3),
+            Row(
+              children: [
+                const Icon(
+                  Icons.local_fire_department_rounded,
+                  size: 14,
+                  color: Color(0xFFFF8A00),
+                ),
+                const SizedBox(width: 3),
+                Text(
+                  '${dish.spicyLevel}/5',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: const Color(0xFF6B7280),
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFamousPlacesSection(
+    ThemeData theme,
+    List<ProvincePlaceModel> places,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                '\u0110\u1ecba \u0111i\u1ec3m n\u1ed5i ti\u1ebfng',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w900,
+                  color: const Color(0xFF1F2937),
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {},
+              style: TextButton.styleFrom(
+                foregroundColor: const Color(0xFFFF8A00),
+                padding: EdgeInsets.zero,
+              ),
+              child: const Text('Xem t\u1ea5t c\u1ea3'),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+          height: 136,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: places.length,
+            separatorBuilder: (_, __) => const SizedBox(width: 12),
+            itemBuilder: (context, index) {
+              return _buildPlaceCard(theme, places[index]);
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPlaceCard(ThemeData theme, ProvincePlaceModel place) {
+    final imageUrl = place.imageUrl.trim();
+    return SizedBox(
+      width: 124,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: SizedBox(
+              width: 124,
+              height: 92,
+              child: imageUrl.isNotEmpty
+                  ? Image.network(
+                      imageUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) =>
+                          _buildImagePlaceholder(Icons.place_rounded),
+                    )
+                  : _buildImagePlaceholder(Icons.place_rounded),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            place.displayName('vi'),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: const Color(0xFF111827),
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildImagePlaceholder(IconData icon) {
+    return Container(
+      color: const Color(0xFFF6E9D9),
+      alignment: Alignment.center,
+      child: Icon(icon, color: const Color(0xFFFF8A00), size: 28),
     );
   }
 

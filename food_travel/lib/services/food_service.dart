@@ -23,7 +23,12 @@ class FoodService {
         .snapshots()
         .asyncMap((snapshot) async {
           if (snapshot.docs.isNotEmpty) {
-            return snapshot.docs.map(ProvinceModel.fromDoc).toList();
+            final canonical = snapshot.docs.map(ProvinceModel.fromDoc).toList();
+            final legacySnapshot =
+                await _db.collection(_legacyProvinceCollection).get();
+            final legacy =
+                legacySnapshot.docs.map(ProvinceModel.fromDoc).toList();
+            return _mergeProvinceHomeMedia(canonical, legacy);
           }
           final legacy =
               await _db
@@ -34,6 +39,43 @@ class FoodService {
         });
   }
 
+  List<ProvinceModel> _mergeProvinceHomeMedia(
+    List<ProvinceModel> canonical,
+    List<ProvinceModel> legacy,
+  ) {
+    if (legacy.isEmpty) return canonical;
+
+    final legacyByKey = <String, ProvinceModel>{};
+    for (final province in legacy) {
+      for (final key in _provinceLookupKeys(province)) {
+        legacyByKey.putIfAbsent(key, () => province);
+      }
+    }
+
+    return canonical.map((province) {
+      for (final key in _provinceLookupKeys(province)) {
+        final detail = legacyByKey[key];
+        if (detail != null) {
+          return province.mergeHomeMediaFrom(detail);
+        }
+      }
+      return province;
+    }).toList();
+  }
+
+  Set<String> _provinceLookupKeys(ProvinceModel province) {
+    return {
+      province.id,
+      province.code,
+      province.name,
+      province.slug ?? '',
+      ...province.mergedFrom,
+    }
+        .map(_normalize)
+        .where((value) => value.isNotEmpty)
+        .toSet();
+  }
+
   Stream<ProvinceModel?> watchProvinceById(String id) {
     return _db
         .collection(_canonicalProvinceCollection)
@@ -41,10 +83,62 @@ class FoodService {
         .snapshots()
         .asyncMap((doc) async {
           if (doc.exists) return ProvinceModel.fromDoc(doc);
-          final legacy =
-              await _db.collection(_legacyProvinceCollection).doc(id).get();
-          return legacy.exists ? ProvinceModel.fromDoc(legacy) : null;
+          final canonical = await _findProvinceInCollection(
+            collection: _canonicalProvinceCollection,
+            id: id,
+          );
+          if (canonical != null) return canonical;
+          return _findProvinceInCollection(
+            collection: _legacyProvinceCollection,
+            id: id,
+          );
         });
+  }
+
+  Stream<ProvinceModel?> watchProvinceDetailByCode(String id) {
+    return _db
+        .collection(_canonicalProvinceCollection)
+        .doc(id)
+        .snapshots()
+        .asyncMap((doc) async {
+          final canonical = doc.exists
+              ? ProvinceModel.fromDoc(doc)
+              : await _findProvinceInCollection(
+                  collection: _canonicalProvinceCollection,
+                  id: id,
+                );
+          final lookupKey = canonical?.code.trim().isNotEmpty == true
+              ? canonical!.code
+              : id;
+          final detail = await _findProvinceInCollection(
+            collection: _legacyProvinceCollection,
+            id: lookupKey,
+          );
+
+          if (canonical == null) return detail;
+          if (detail == null) return canonical;
+          return canonical.mergeDetailFrom(detail);
+        });
+  }
+
+  Future<ProvinceModel?> _findProvinceInCollection({
+    required String collection,
+    required String id,
+  }) async {
+    final byId = await _db.collection(collection).doc(id).get();
+    if (byId.exists) return ProvinceModel.fromDoc(byId);
+
+    for (final field in const ['code', 'provinceCodeLabel', 'province_code']) {
+      final query = await _db
+          .collection(collection)
+          .where(field, isEqualTo: id)
+          .limit(1)
+          .get();
+      if (query.docs.isNotEmpty) {
+        return ProvinceModel.fromDoc(query.docs.first);
+      }
+    }
+    return null;
   }
 
   /// Lay mon an theo ma tinh.

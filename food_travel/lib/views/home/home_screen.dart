@@ -1238,7 +1238,9 @@ class _HomeFeedState extends State<_HomeFeed> {
                       Navigator.pushNamed(
                         context,
                         RouteNames.provinceDetail,
-                        arguments: target.id,
+                        arguments: target.code.trim().isNotEmpty
+                            ? target.code
+                            : target.id,
                       );
                     },
                     child: _buildProvinceImageSlide(
