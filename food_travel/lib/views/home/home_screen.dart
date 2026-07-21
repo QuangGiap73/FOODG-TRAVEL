@@ -1409,7 +1409,7 @@ class _HomeFeedState extends State<_HomeFeed> {
                   height: 220,
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
-                    itemCount: filtered.length,
+                    itemCount: filtered.length > 12 ? 12 : filtered.length,
                     separatorBuilder: (_, __) => const SizedBox(width: 10),
                     itemBuilder: (context, index) {
                       final dish = filtered[index];

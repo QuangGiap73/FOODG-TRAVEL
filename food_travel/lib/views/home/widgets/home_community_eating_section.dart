@@ -23,7 +23,7 @@ class HomeCommunityEatingSection extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
 
     return StreamBuilder<List<CommunityPost>>(
-      stream: CommunityService().watchLatestPosts(limit: 80),
+      stream: CommunityService().watchLatestPosts(limit: 20),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const SizedBox.shrink();
