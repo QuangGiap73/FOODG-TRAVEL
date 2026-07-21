@@ -21,7 +21,15 @@
   const provinceSlug = document.getElementById('province-slug');
   const provinceLat = document.getElementById('province-lat');
   const provinceLng = document.getElementById('province-lng');
+  const provincePopulation = document.getElementById('province-population');
+  const provinceAreaKm2 = document.getElementById('province-area-km2');
+  const provinceEstablishedDate = document.getElementById('province-established-date');
+  const provinceVehiclePlate = document.getElementById('province-vehicle-plate');
+  const provinceCodeLabel = document.getElementById('province-code-label');
+  const provinceDescriptionEn = document.getElementById('province-description-en');
   const provinceDescription = document.getElementById('province-description');
+  const provincePlaceAdd = document.getElementById('province-place-add');
+  const provincePlaceList = document.getElementById('province-place-list');
   const provinceImages = document.getElementById('province-images');
   const provinceImageFiles = document.getElementById('province-image-files');
   const provinceImagePreview = document.getElementById('province-image-preview');
@@ -51,10 +59,17 @@
   const drawerSlug = document.getElementById('province-drawer-slug');
   const drawerDishes = document.getElementById('province-drawer-dishes');
   const drawerCheckins = document.getElementById('province-drawer-checkins');
+  const drawerPopulation = document.getElementById('province-drawer-population');
+  const drawerArea = document.getElementById('province-drawer-area');
+  const drawerEstablished = document.getElementById('province-drawer-established');
+  const drawerPlate = document.getElementById('province-drawer-plate');
+  const drawerCodeLabel = document.getElementById('province-drawer-code-label');
   const drawerCoordinates = document.getElementById('province-drawer-coordinates');
   const drawerCreated = document.getElementById('province-drawer-created');
   const drawerUpdated = document.getElementById('province-drawer-updated');
+  const drawerDescriptionEn = document.getElementById('province-drawer-description-en');
   const drawerDescription = document.getElementById('province-drawer-description');
+  const drawerPlaces = document.getElementById('province-drawer-places');
   const drawerGallery = document.getElementById('province-drawer-gallery');
 
   let regionsCache = Array.isArray(initial.regions) ? initial.regions : [];
@@ -62,16 +77,28 @@
   let currentRegionFilter = '';
   let currentEditingCode = '';
   let selectedFiles = [];
+  let provincePlaces = [];
   const objectUrls = new Set();
+  let toastTimer = null;
+  const placePreviewUrls = new WeakMap();
 
   function notify(type, message) {
-    if (window.notify?.[type]) {
-      window.notify[type](message);
-      return;
-    }
-    if (type === 'error') {
-      window.alert(message);
-    }
+    const toast = document.createElement('div');
+    toast.className = `provinces-toast provinces-toast--${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    requestAnimationFrame(() => {
+      toast.classList.add('is-visible');
+    });
+
+    clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(() => {
+      toast.classList.remove('is-visible');
+      window.setTimeout(() => {
+        toast.remove();
+      }, 220);
+    }, 2000);
   }
 
   function setError(node, message) {
@@ -105,6 +132,131 @@
         seen.add(item);
         return true;
       });
+  }
+
+  function parsePlaceRows() {
+    if (!provincePlaceList) return [];
+    return Array.from(provincePlaceList.querySelectorAll('[data-place-row]')).map((row) => ({
+      nameVi: String(row.querySelector('[data-place-name-vi]')?.value || '').trim(),
+      nameEn: String(row.querySelector('[data-place-name-en]')?.value || '').trim(),
+      imageUrl: String(row.querySelector('[data-place-image-url]')?.value || '').trim(),
+      slug: String(row.querySelector('[data-place-slug]')?.value || '').trim(),
+    })).filter((item) => item.nameVi || item.nameEn || item.imageUrl || item.slug);
+  }
+
+  function setPlacePreview(row, src) {
+    const preview = row.querySelector('[data-place-preview]');
+    const previewBox = row.querySelector('.provinces-place-card__preview');
+    if (!previewBox) return;
+
+    previewBox.innerHTML = src
+      ? `<img data-place-preview src="${src}" alt="">`
+      : '<span>Chưa có ảnh</span>';
+  }
+
+  function createPlaceRow(place = {}) {
+    const item = document.createElement('div');
+    item.className = 'provinces-place-row';
+    item.dataset.placeRow = 'true';
+    item.innerHTML = `
+      <div class="provinces-place-card__header">
+        <strong>Địa điểm</strong>
+        <button type="button" class="secondary-button provinces-place-row__remove">Xóa</button>
+      </div>
+      <div class="provinces-place-card__preview">
+        ${place.imageUrl ? `<img data-place-preview src="${place.imageUrl}" alt="">` : '<span>Chưa có ảnh</span>'}
+      </div>
+      <div class="provinces-place-grid">
+        <label>
+          <span>Tên VI</span>
+          <input data-place-name-vi type="text" placeholder="Tên địa điểm (VI)" value="${place.nameVi || ''}">
+        </label>
+        <label>
+          <span>Tên EN</span>
+          <input data-place-name-en type="text" placeholder="Place name (EN)" value="${place.nameEn || ''}">
+        </label>
+        <label>
+          <span>Slug</span>
+          <input data-place-slug type="text" placeholder="slug" value="${place.slug || ''}">
+        </label>
+        <label>
+          <span>Ảnh URL</span>
+          <input data-place-image-url type="url" placeholder="https://..." value="${place.imageUrl || ''}">
+        </label>
+        <label class="provinces-place-file">
+          <span>Ảnh từ máy</span>
+          <input data-place-image-file type="file" accept="image/*">
+        </label>
+      </div>
+    `;
+    const fileInput = item.querySelector('[data-place-image-file]');
+    const imageInput = item.querySelector('[data-place-image-url]');
+
+    fileInput?.addEventListener('change', async () => {
+      const file = fileInput.files?.[0];
+      const oldUrl = placePreviewUrls.get(item);
+      if (oldUrl) URL.revokeObjectURL(oldUrl);
+      if (!file) return;
+
+      const objectUrl = URL.createObjectURL(file);
+      placePreviewUrls.set(item, objectUrl);
+      setPlacePreview(item, objectUrl);
+      try {
+        const uploadedUrl = await uploadProvinceImage(file);
+        imageInput.value = uploadedUrl;
+        const currentObjectUrl = placePreviewUrls.get(item);
+        if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl);
+        placePreviewUrls.delete(item);
+        setPlacePreview(item, uploadedUrl);
+      } catch (error) {
+        console.error('Upload anh dia diem that bai:', error);
+        notify('error', error.message || 'Không thể tải ảnh địa điểm lên');
+      }
+    });
+
+    imageInput?.addEventListener('input', () => {
+      const oldUrl = placePreviewUrls.get(item);
+      if (oldUrl) {
+        URL.revokeObjectURL(oldUrl);
+        placePreviewUrls.delete(item);
+      }
+      const url = String(imageInput.value || '').trim();
+      setPlacePreview(item, url);
+    });
+
+    item.querySelector('.provinces-place-row__remove')?.addEventListener('click', () => {
+      const oldUrl = placePreviewUrls.get(item);
+      if (oldUrl) URL.revokeObjectURL(oldUrl);
+      placePreviewUrls.delete(item);
+      item.remove();
+      if (!provincePlaceList.children.length) {
+        provincePlaceList.innerHTML = '<p class="provinces-muted">Chưa có địa điểm nào.</p>';
+      }
+    });
+
+    return item;
+  }
+
+  function renderPlaceRows(places = []) {
+    if (!provincePlaceList) return;
+    const rows = Array.isArray(places) && places.length ? places : provincePlaces;
+    provincePlaceList.innerHTML = '';
+    if (!rows.length) {
+      provincePlaceList.innerHTML = '<p class="provinces-muted">Chưa có địa điểm nào.</p>';
+      return;
+    }
+
+    rows.forEach((place) => {
+      provincePlaceList.appendChild(createPlaceRow(place));
+    });
+  }
+
+  function addEmptyPlaceRow() {
+    if (!provincePlaceList) return;
+    if (provincePlaceList.querySelector('.provinces-muted')) {
+      provincePlaceList.innerHTML = '';
+    }
+    provincePlaceList.appendChild(createPlaceRow());
   }
 
   function clearObjectUrls() {
@@ -262,7 +414,20 @@
             </summary>
             <div class="provinces-action-menu__dropdown">
               <button class="provinces-action-menu__item" type="button" data-province-view="${province.code}">Xem</button>
-              <button class="provinces-action-menu__item" type="button" data-province-edit="${province.code}">Sửa</button>
+              <button
+                class="provinces-action-menu__item"
+                type="button"
+                data-province-edit="${province.code}"
+                data-province-code="${province.code}"
+                data-province-name="${province.name || ''}"
+                data-province-region="${province.regionsCode || ''}"
+                data-province-slug="${province.slug || ''}"
+                data-province-lat="${province.centerLat || 0}"
+                data-province-lng="${province.centerLng || 0}"
+                data-province-description="${province.description || ''}"
+                data-province-image-url="${province.imageUrl || ''}"
+                data-province-image-urls="${Array.isArray(province.imageUrls) ? province.imageUrls.join('\n') : ''}"
+              >Sửa</button>
               <button class="provinces-action-menu__item provinces-action-menu__item--danger" type="button" data-province-delete="${province.code}">Xóa</button>
             </div>
           </details>
@@ -321,10 +486,12 @@
     resetError(provinceError);
     currentEditingCode = '';
     selectedFiles = [];
+    provincePlaces = [];
     provinceSubmitButton.textContent = 'Lưu tỉnh thành';
     provinceModalTitle.textContent = 'Thêm tỉnh thành';
     clearObjectUrls();
     renderImagePreview([], []);
+    renderPlaceRows([]);
     if (currentRegionFilter) {
       provinceRegion.value = currentRegionFilter;
     }
@@ -339,13 +506,44 @@
     provinceSlug.value = province.slug || '';
     provinceLat.value = province.centerLat || 0;
     provinceLng.value = province.centerLng || 0;
+    provincePopulation.value = province.population || '';
+    provinceAreaKm2.value = province.areaKm2 || '';
+    provinceEstablishedDate.value = province.establishedDate || '';
+    provinceVehiclePlate.value = province.vehiclePlateCode || '';
+    provinceCodeLabel.value = province.provinceCodeLabel || province.code || '';
+    provinceDescriptionEn.value = province.descriptionEn || '';
     provinceDescription.value = province.description || '';
+    provincePlaces = Array.isArray(province.places) ? province.places : [];
+    renderPlaceRows(provincePlaces);
     provinceImages.value = normalizeProvinceImages(province).join('\n');
     selectedFiles = [];
+    provincePlaces = Array.isArray(province.places) ? province.places : [];
     provinceSubmitButton.textContent = 'Cập nhật tỉnh thành';
     provinceModalTitle.textContent = 'Chỉnh sửa tỉnh thành';
     renderImagePreview(parseImageUrls(provinceImages.value), selectedFiles);
     openModal(provinceModal);
+  }
+
+  function readProvinceFromButton(button) {
+    if (!button) return null;
+
+    const code = String(button.dataset.provinceEdit || button.dataset.provinceCode || '').trim();
+    if (!code) return null;
+
+    return {
+      code,
+      name: String(button.dataset.provinceName || '').trim(),
+      regionsCode: String(button.dataset.provinceRegion || '').trim(),
+      slug: String(button.dataset.provinceSlug || '').trim(),
+      centerLat: Number(button.dataset.provinceLat || 0) || 0,
+      centerLng: Number(button.dataset.provinceLng || 0) || 0,
+      description: String(button.dataset.provinceDescription || '').trim(),
+      imageUrl: String(button.dataset.provinceImageUrl || '').trim(),
+      imageUrls: String(button.dataset.provinceImageUrls || '')
+        .split('\n')
+        .map((item) => item.trim())
+        .filter(Boolean),
+    };
   }
 
   function toDateLabel(value) {
@@ -365,10 +563,27 @@
     drawerSlug.textContent = province.slug || '-';
     drawerDishes.textContent = Number(province.dishesCount || 0).toLocaleString('vi-VN');
     drawerCheckins.textContent = Number(province.checkinsCount || 0).toLocaleString('vi-VN');
+    drawerPopulation.textContent = province.population || '-';
+    drawerArea.textContent = province.areaKm2 || '-';
+    drawerEstablished.textContent = province.establishedDate || '-';
+    drawerPlate.textContent = province.vehiclePlateCode || '-';
+    drawerCodeLabel.textContent = province.provinceCodeLabel || province.code || '-';
     drawerCoordinates.textContent = formatCoordinate(province.centerLat, province.centerLng);
     drawerCreated.textContent = toDateLabel(province.createdAt);
     drawerUpdated.textContent = toDateLabel(province.updatedAt);
+    drawerDescriptionEn.textContent = province.descriptionEn || '-';
     drawerDescription.textContent = province.description || '-';
+    drawerPlaces.innerHTML = Array.isArray(province.places) && province.places.length
+      ? province.places.map((place) => `
+          <div class="province-place-card">
+            ${place.imageUrl ? `<img src="${place.imageUrl}" alt="">` : '<div class="province-place-card__empty">No image</div>'}
+            <div>
+              <strong>${place.nameVi || '-'}</strong>
+              <small>${place.nameEn || ''}</small>
+            </div>
+          </div>
+        `).join('')
+      : '<span class="provinces-muted">Chưa có địa điểm.</span>';
     drawerGallery.innerHTML = images.map((url) => `<img src="${url}" alt="">`).join('') || '<span class="provinces-muted">Không có ảnh.</span>';
 
     if (images[0]) {
@@ -405,10 +620,11 @@
         }),
       });
 
+      closeModal(regionModal);
+      closeDrawer();
       regionForm.reset();
       regionMacro.value = 'bac';
       await loadRegions();
-      closeModal(regionModal);
       notify('success', 'Đã thêm miền');
     } catch (error) {
       setError(regionError, error.message);
@@ -426,6 +642,28 @@
       provinceSubmitButton.disabled = true;
       const uploadedUrls = await uploadSelectedFiles();
       const imageUrls = mergeImageUrls(manualUrls, uploadedUrls);
+      const placeRows = Array.from(provincePlaceList?.querySelectorAll('[data-place-row]') || []);
+      const places = [];
+      for (const row of placeRows) {
+        const nameVi = String(row.querySelector('[data-place-name-vi]')?.value || '').trim();
+        const nameEn = String(row.querySelector('[data-place-name-en]')?.value || '').trim();
+        const slug = String(row.querySelector('[data-place-slug]')?.value || '').trim();
+        const imageUrlInput = String(row.querySelector('[data-place-image-url]')?.value || '').trim();
+        const file = row.querySelector('[data-place-image-file]')?.files?.[0] || null;
+        let finalImageUrl = imageUrlInput;
+        if (file) {
+          finalImageUrl = await uploadProvinceImage(file);
+        }
+        if (nameVi || nameEn || slug || finalImageUrl) {
+          places.push({
+            nameVi,
+            nameEn,
+            imageUrl: finalImageUrl,
+            slug,
+          });
+        }
+      }
+
       const payload = {
         code: provinceCode.value.trim(),
         name: provinceName.value.trim(),
@@ -433,7 +671,14 @@
         slug: provinceSlug.value.trim(),
         centerLat: provinceLat.value,
         centerLng: provinceLng.value,
+        population: provincePopulation.value.trim(),
+        areaKm2: provinceAreaKm2.value.trim(),
+        establishedDate: provinceEstablishedDate.value.trim(),
+        vehiclePlateCode: provinceVehiclePlate.value.trim(),
+        provinceCodeLabel: provinceCodeLabel.value.trim(),
+        descriptionEn: provinceDescriptionEn.value.trim(),
         description: provinceDescription.value.trim(),
+        places,
         imageUrls,
         imageUrl: imageUrls[0] || '',
       };
@@ -449,9 +694,10 @@
         body: JSON.stringify(payload),
       });
 
-      resetProvinceForm();
-      await loadProvinces();
       closeModal(provinceModal);
+      closeDrawer();
+      await loadProvinces();
+      resetProvinceForm();
       notify('success', isEditing ? 'Đã cập nhật tỉnh thành' : 'Đã thêm tỉnh thành');
     } catch (error) {
       setError(provinceError, error.message);
@@ -504,7 +750,9 @@
 
     const editButton = event.target.closest('[data-province-edit]');
     if (editButton) {
-      const province = provincesCache.find((item) => item.code === editButton.dataset.provinceEdit);
+      const province =
+        provincesCache.find((item) => item.code === editButton.dataset.provinceEdit) ||
+        readProvinceFromButton(editButton);
       if (province) fillProvinceForm(province);
       return;
     }
@@ -559,6 +807,8 @@
     openModal(provinceModal);
     provinceCode.focus();
   });
+
+  provincePlaceAdd?.addEventListener('click', addEmptyPlaceRow);
 
   regionOpenCreate?.addEventListener('click', () => {
     regionForm.reset();

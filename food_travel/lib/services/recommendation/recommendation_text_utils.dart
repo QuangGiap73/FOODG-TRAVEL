@@ -28,7 +28,7 @@ class RecommendationTextUtils {
     final buffer = StringBuffer();
     for (final char in value.split('')) {
       final index = from.indexOf(char);
-      buffer.write(index == -1 ? char : to[index]);
+      buffer.write(index == -1 || index >= to.length ? char : to[index]);
     }
     return buffer.toString();
   }

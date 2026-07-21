@@ -118,7 +118,22 @@
                   </summary>
                   <div class="provinces-action-menu__dropdown">
                     <button class="provinces-action-menu__item" type="button" data-province-view="<%= province.code %>">Xem</button>
-                    <button class="provinces-action-menu__item" type="button" data-province-edit="<%= province.code %>">Sửa</button>
+                    <button
+                      class="provinces-action-menu__item"
+                      type="button"
+                      data-province-edit="<%= province.code %>"
+                      data-province-code="<%= province.code %>"
+                      data-province-name="<%= province.name || '' %>"
+                      data-province-region="<%= province.regionsCode || '' %>"
+                      data-province-slug="<%= province.slug || '' %>"
+                      data-province-lat="<%= province.centerLat || 0 %>"
+                      data-province-lng="<%= province.centerLng || 0 %>"
+                      data-province-description="<%= province.description || '' %>"
+                      data-province-image-url="<%= province.imageUrl || '' %>"
+                      data-province-image-urls="<%= Array.isArray(province.imageUrls) ? province.imageUrls.join('\n') : '' %>"
+                    >
+                      Sửa
+                    </button>
                     <button class="provinces-action-menu__item provinces-action-menu__item--danger" type="button" data-province-delete="<%= province.code %>">Xóa</button>
                   </div>
                 </details>
@@ -172,10 +187,44 @@
       <span>Kinh độ</span>
       <input id="province-lng" type="number" step="any" placeholder="105.804817" />
     </label>
+    <label>
+      <span>Dân số</span>
+      <input id="province-population" type="text" placeholder="8.435.000" />
+    </label>
+    <label>
+      <span>Diện tích (km²)</span>
+      <input id="province-area-km2" type="text" placeholder="3,359" />
+    </label>
+    <label>
+      <span>Ngày thành lập</span>
+      <input id="province-established-date" type="text" placeholder="1010" />
+    </label>
+    <label>
+      <span>Biển số xe</span>
+      <input id="province-vehicle-plate" type="text" placeholder="29, 30, 31..." />
+    </label>
+    <label>
+      <span>Mã tỉnh/thành</span>
+      <input id="province-code-label" type="text" placeholder="ha_noi" />
+    </label>
+    <label class="user-form-grid__full">
+      <span>Mô tả tiếng Anh</span>
+      <textarea id="province-description-en" rows="3" placeholder="English description..."></textarea>
+    </label>
     <label class="user-form-grid__full">
       <span>Mô tả</span>
       <textarea id="province-description" rows="3" placeholder="Mô tả ngắn về tỉnh thành..."></textarea>
     </label>
+    <div class="user-form-grid__full provinces-place-editor">
+      <div class="provinces-place-editor__header">
+        <span>Danh sách địa điểm nổi bật</span>
+      </div>
+      <div id="province-place-list" class="provinces-place-list"></div>
+      <div class="provinces-place-editor__footer">
+        <button type="button" class="secondary-button" id="province-place-add">+ Thêm địa điểm</button>
+      </div>
+      <p class="provinces-muted">Mỗi địa điểm có thể lưu tên Việt/Anh và chọn ảnh từ máy hoặc nhập URL.</p>
+    </div>
     <label class="user-form-grid__full">
       <span>Danh sách ảnh URL (mỗi dòng một link)</span>
       <textarea id="province-images" rows="4" placeholder="https://..."></textarea>
@@ -216,12 +265,25 @@
     <div class="province-drawer__row"><span>Slug</span><strong id="province-drawer-slug">-</strong></div>
     <div class="province-drawer__row"><span>Số món</span><strong id="province-drawer-dishes">0</strong></div>
     <div class="province-drawer__row"><span>Số check-in</span><strong id="province-drawer-checkins">0</strong></div>
+    <div class="province-drawer__row"><span>Dân số</span><strong id="province-drawer-population">-</strong></div>
+    <div class="province-drawer__row"><span>Diện tích</span><strong id="province-drawer-area">-</strong></div>
+    <div class="province-drawer__row"><span>Ngày thành lập</span><strong id="province-drawer-established">-</strong></div>
+    <div class="province-drawer__row"><span>Biển số xe</span><strong id="province-drawer-plate">-</strong></div>
+    <div class="province-drawer__row"><span>Mã tỉnh/thành</span><strong id="province-drawer-code-label">-</strong></div>
     <div class="province-drawer__row"><span>Tọa độ</span><strong id="province-drawer-coordinates">-</strong></div>
     <div class="province-drawer__row"><span>Ngày tạo</span><strong id="province-drawer-created">-</strong></div>
     <div class="province-drawer__row"><span>Cập nhật</span><strong id="province-drawer-updated">-</strong></div>
     <div class="province-drawer__block">
+      <span>Mô tả tiếng Anh</span>
+      <p id="province-drawer-description-en">-</p>
+    </div>
+    <div class="province-drawer__block">
       <span>Mô tả</span>
       <p id="province-drawer-description">-</p>
+    </div>
+    <div class="province-drawer__block">
+      <span>Địa điểm nổi bật</span>
+      <div class="province-drawer__places" id="province-drawer-places"></div>
     </div>
     <div class="province-drawer__block">
       <span>Bộ ảnh</span>

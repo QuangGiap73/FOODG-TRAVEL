@@ -248,9 +248,11 @@ class _HomeFeedState extends State<_HomeFeed> {
   final _searchController = TextEditingController();
   final _userService = UserService();
   StreamSubscription? _profileSub;
+  StreamSubscription<List<ProvinceModel>>? _provincesSub;
   StreamSubscription<List<DishModel>>? _dishesSub;
   Timer? _autoSlideTimer;
   Timer? _promoBannerTimer;
+  Timer? _provinceLoadTimer;
   final ValueNotifier<int> _imageIndex = ValueNotifier<int>(0);
   final ValueNotifier<int> _promoBannerIndex = ValueNotifier<int>(0);
   String? _lastProvinceId;
@@ -259,7 +261,9 @@ class _HomeFeedState extends State<_HomeFeed> {
   Stream<List<DishModel>>? _dishesStream;
   List<DishModel> _provinceDishes = const [];
   Object? _dishesError;
-  Stream<List<ProvinceModel>>? _provincesStream;
+  List<ProvinceModel> _provinces = const [];
+  bool _provincesLoading = true;
+  Object? _provincesError;
 
   final _locationPrefs = LocationPreferenceService();
   final _locationService = LocationService();
@@ -300,7 +304,7 @@ class _HomeFeedState extends State<_HomeFeed> {
     super.initState();
     // Tai san du lieu quan gan day ngay khi vao Home.
     _nearbyHomeController = NearbyHomeController()..load();
-    _provincesStream = _service.watchProvinces();
+    _startProvinceListener();
     _startProfileListener();
     _bootTimer = Timer(const Duration(milliseconds: 1200), () {
       if (!mounted) return;
@@ -328,9 +332,11 @@ class _HomeFeedState extends State<_HomeFeed> {
     LocationPreferenceService.enabled.removeListener(_onLocationPrefChanged);
     _stopGpsListener();
     _profileSub?.cancel();
+    _provincesSub?.cancel();
     _dishesSub?.cancel();
     _autoSlideTimer?.cancel();
     _promoBannerTimer?.cancel();
+    _provinceLoadTimer?.cancel();
     _bootTimer?.cancel();
     _imageIndex.dispose();
     _promoBannerIndex.dispose();
@@ -356,6 +362,42 @@ class _HomeFeedState extends State<_HomeFeed> {
         curve: Curves.easeOut,
       );
     });
+  }
+
+  void _startProvinceListener() {
+    _provincesSub?.cancel();
+    _provinceLoadTimer?.cancel();
+    _provincesLoading = true;
+    _provincesError = null;
+    _provinceLoadTimer = Timer(const Duration(seconds: 8), () {
+      if (!mounted || _provinces.isNotEmpty || !_provincesLoading) return;
+      debugPrint('[Home] provinces load timeout');
+      setState(() {
+        _provincesLoading = false;
+        _provincesError = TimeoutException('Province load timeout');
+      });
+    });
+    _provincesSub = _service.watchProvinces().listen(
+      (provinces) {
+        if (!mounted) return;
+        _provinceLoadTimer?.cancel();
+        setState(() {
+          _provinces = provinces;
+          _cachedProvinces = provinces;
+          _provincesLoading = false;
+          _provincesError = null;
+        });
+      },
+      onError: (error) {
+        _provinceLoadTimer?.cancel();
+        debugPrint('[Home] provinces load failed: $error');
+        if (!mounted) return;
+        setState(() {
+          _provincesLoading = false;
+          _provincesError = error;
+        });
+      },
+    );
   }
 
   void _startProfileListener() {
@@ -985,151 +1027,7 @@ class _HomeFeedState extends State<_HomeFeed> {
         ),
         const SizedBox(height: 16),
         if (_selectedProvince != null) _buildTodaySuggestionBlock(),
-        StreamBuilder<List<ProvinceModel>>(
-          stream: _provincesStream ??= _service.watchProvinces(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: LinearProgressIndicator(),
-              );
-            }
-            if (snapshot.hasError) {
-              return _buildEmpty(t.homeProvinceLoadError);
-            }
-
-            final provinces = snapshot.data ?? [];
-            if (provinces.isEmpty) {
-              // Khong co du lieu tinh -> app bar hien placeholder.
-              widget.onProvinceLabelChanged('');
-              widget.onProvincePickerReady(null);
-              return _buildEmpty(t.homeProvinceEmpty);
-            }
-
-            // Cache list tinh hien tai de mo picker tu app bar.
-            _cachedProvinces = provinces;
-            widget.onProvincePickerReady(_openProvincePicker);
-
-            final selected = _selectedProvince;
-            final selectedInList =
-                selected != null && provinces.any((p) => p.id == selected.id);
-            if (!selectedInList) {
-              _selectionInitialized = false;
-            }
-
-            final preferred = _findPreferredProvince(provinces);
-            final selectedProvince = selectedInList ? selected : null;
-            ProvinceModel target;
-            if (!_bootResolved) {
-              final bootCandidate = selectedProvince ?? preferred ?? provinces.first;
-              _bootTargetProvinceId ??= bootCandidate.id;
-              target = provinces.firstWhere(
-                (p) => p.id == _bootTargetProvinceId,
-                orElse: () => bootCandidate,
-              );
-            } else {
-              target =
-                  (!_selectionInitialized && preferred != null)
-                      ? preferred
-                      : (selectedProvince ?? preferred ?? provinces.first);
-            }
-
-            // Luon cap nhat label app bar theo tinh dang su dung.
-            widget.onProvinceLabelChanged(target.name);
-
-            if (!_selectionInitialized || !selectedInList) {
-              _selectionInitialized = true;
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (!mounted) return;
-                _setProvince(target);
-                if (_pageController.hasClients) {
-                  _pageController.jumpToPage(0);
-                }
-              });
-            }
-
-            final images =
-                target.imageUrls.isNotEmpty
-                    ? target.imageUrls
-                    : (target.imageUrl.isNotEmpty
-                        ? [target.imageUrl]
-                        : const <String>[]);
-
-            if (_lastProvinceId != target.id) {
-              _lastProvinceId = target.id;
-              // Dong bo ten tinh len app bar.
-              widget.onProvinceLabelChanged(target.name);
-              _imageIndex.value = 0;
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                for (final url in images) {
-                  precacheImage(NetworkImage(url), context);
-                }
-              });
-            }
-
-            _startImageAutoSlide(images.length);
-
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      monthlyDestinationTitle,
-                      textAlign: TextAlign.left,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                if (images.isEmpty)
-                  _buildEmpty(t.homeProvinceNoImage)
-                else
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: SizedBox(
-                      height: 190,
-                      child: PageView.builder(
-                        controller: _pageController,
-                        onPageChanged: (index) => _imageIndex.value = index,
-                        itemCount: images.length,
-                        itemBuilder: (context, index) {
-                          final imageUrl = images[index];
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(
-                                context,
-                                RouteNames.provinceDetail,
-                                arguments: target.id,
-                              );
-                            },
-                            child: _buildProvinceImageSlide(
-                              imageUrl: imageUrl,
-                              name: target.name,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                const SizedBox(height: 8),
-                if (images.length > 1)
-                  Center(
-                    child: ValueListenableBuilder<int>(
-                      valueListenable: _imageIndex,
-                      builder: (context, value, _) {
-                        return _buildDots(images.length, value);
-                      },
-                    ),
-                  ),
-              ],
-            );
-          },
-        ),
+        _buildMonthlyDestinationBlock(theme, t, monthlyDestinationTitle),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: NearbyPlacesSection(
@@ -1225,6 +1123,152 @@ class _HomeFeedState extends State<_HomeFeed> {
     );
   }
 
+  Widget _buildMonthlyDestinationBlock(
+    ThemeData theme,
+    AppLocalizations t,
+    String monthlyDestinationTitle,
+  ) {
+    if (_provincesSub == null && _provincesLoading) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && _provincesSub == null) {
+          _startProvinceListener();
+        }
+      });
+    }
+
+    if (_provincesLoading && _provinces.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: LinearProgressIndicator(),
+      );
+    }
+    if (_provincesError != null) {
+      return _buildEmpty(t.homeProvinceLoadError);
+    }
+
+    final provinces = _provinces;
+    if (provinces.isEmpty) {
+      widget.onProvinceLabelChanged('');
+      widget.onProvincePickerReady(null);
+      return _buildEmpty(t.homeProvinceEmpty);
+    }
+
+    widget.onProvincePickerReady(_openProvincePicker);
+
+    final selected = _selectedProvince;
+    final selectedInList =
+        selected != null && provinces.any((p) => p.id == selected.id);
+    if (!selectedInList) {
+      _selectionInitialized = false;
+    }
+
+    final preferred = _findPreferredProvince(provinces);
+    final selectedProvince = selectedInList ? selected : null;
+    late final ProvinceModel target;
+    if (!_bootResolved) {
+      final bootCandidate = selectedProvince ?? preferred ?? provinces.first;
+      _bootTargetProvinceId ??= bootCandidate.id;
+      target = provinces.firstWhere(
+        (p) => p.id == _bootTargetProvinceId,
+        orElse: () => bootCandidate,
+      );
+    } else {
+      target = (!_selectionInitialized && preferred != null)
+          ? preferred
+          : (selectedProvince ?? preferred ?? provinces.first);
+    }
+
+    widget.onProvinceLabelChanged(target.name);
+
+    if (!_selectionInitialized || !selectedInList) {
+      _selectionInitialized = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _setProvince(target);
+        if (_pageController.hasClients) {
+          _pageController.jumpToPage(0);
+        }
+      });
+    }
+
+    final images = target.imageUrls.isNotEmpty
+        ? target.imageUrls
+        : (target.imageUrl.isNotEmpty ? [target.imageUrl] : const <String>[]);
+
+    if (_lastProvinceId != target.id) {
+      _lastProvinceId = target.id;
+      widget.onProvinceLabelChanged(target.name);
+      _imageIndex.value = 0;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        for (final url in images) {
+          precacheImage(NetworkImage(url), context);
+        }
+      });
+    }
+
+    _startImageAutoSlide(images.length);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              monthlyDestinationTitle,
+              textAlign: TextAlign.left,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        if (images.isEmpty)
+          _buildEmpty(t.homeProvinceNoImage)
+        else
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: SizedBox(
+              height: 190,
+              child: PageView.builder(
+                controller: _pageController,
+                onPageChanged: (index) => _imageIndex.value = index,
+                itemCount: images.length,
+                itemBuilder: (context, index) {
+                  final imageUrl = images[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        RouteNames.provinceDetail,
+                        arguments: target.id,
+                      );
+                    },
+                    child: _buildProvinceImageSlide(
+                      imageUrl: imageUrl,
+                      name: target.name,
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        const SizedBox(height: 8),
+        if (images.length > 1)
+          Center(
+            child: ValueListenableBuilder<int>(
+              valueListenable: _imageIndex,
+              builder: (context, value, _) {
+                return _buildDots(images.length, value);
+              },
+            ),
+          ),
+      ],
+    );
+  }
+
   Widget _buildTodaySuggestionBlock() {
     final t = AppLocalizations.of(context)!;
     if (_dishesError != null) {
@@ -1235,11 +1279,17 @@ class _HomeFeedState extends State<_HomeFeed> {
         _provinceDishes.isNotEmpty ? _provinceDishes : _todayDishesCache;
     if (dishes.isEmpty) return const SizedBox.shrink();
 
-    final recommendedDishes = _recommendationService.recommendToday(
-      dishes: dishes,
-      preferences: _userPreferences,
-      now: DateTime.now(),
-    );
+    late final List<DishModel> recommendedDishes;
+    try {
+      recommendedDishes = _recommendationService.recommendToday(
+        dishes: dishes,
+        preferences: _userPreferences,
+        now: DateTime.now(),
+      );
+    } catch (error) {
+      debugPrint('[Home] recommendation failed: $error');
+      recommendedDishes = dishes.take(12).toList();
+    }
     if (recommendedDishes.isEmpty) return const SizedBox.shrink();
 
     return Padding(

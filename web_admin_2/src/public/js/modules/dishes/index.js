@@ -130,25 +130,48 @@
     if (!pageList) return;
     const totalPages = Number(meta.totalPages || 1);
     const page = Number(meta.page || 1);
+    const createPageItem = (targetPage, label = targetPage, className = '') =>
+      `<li class="${className}"><a href="#" data-page="${targetPage}">${label}</a></li>`;
+    const createEllipsisItem = () => '<li class="disabled dishes-pagination-ellipsis"><span>...</span></li>';
+
+    const windowSize = 2;
+    const pages = new Set([1, totalPages]);
+
+    for (let index = page - windowSize; index <= page + windowSize; index += 1) {
+      if (index > 1 && index < totalPages) {
+        pages.add(index);
+      }
+    }
 
     pageList.innerHTML = '';
 
-    pageList.insertAdjacentHTML(
-      'beforeend',
-      `<li class="${page <= 1 ? 'disabled' : ''}"><a href="#" data-page="${page - 1}">Prev</a></li>`,
-    );
+    pageList.insertAdjacentHTML('beforeend', createPageItem(page - 1, 'Prev', page <= 1 ? 'disabled' : ''));
 
-    for (let index = 1; index <= totalPages; index += 1) {
-      pageList.insertAdjacentHTML(
-        'beforeend',
-        `<li class="${index === page ? 'is-active' : ''}"><a href="#" data-page="${index}">${index}</a></li>`,
-      );
+    let previousPage = 0;
+    Array.from(pages)
+      .sort((left, right) => left - right)
+      .forEach((currentPageNumber) => {
+        if (previousPage && currentPageNumber - previousPage > 1) {
+          pageList.insertAdjacentHTML('beforeend', createEllipsisItem());
+        }
+
+        pageList.insertAdjacentHTML(
+          'beforeend',
+          createPageItem(
+            currentPageNumber,
+            currentPageNumber,
+            currentPageNumber === page ? 'is-active' : '',
+          ),
+        );
+
+        previousPage = currentPageNumber;
+      });
+
+    if (totalPages <= 1 && page !== 1) {
+      pageList.insertAdjacentHTML('beforeend', createPageItem(1, 1, 'is-active'));
     }
 
-    pageList.insertAdjacentHTML(
-      'beforeend',
-      `<li class="${page >= totalPages ? 'disabled' : ''}"><a href="#" data-page="${page + 1}">Next</a></li>`,
-    );
+    pageList.insertAdjacentHTML('beforeend', createPageItem(page + 1, 'Next', page >= totalPages ? 'disabled' : ''));
   }
 
   async function fetchDishes(page = 1) {

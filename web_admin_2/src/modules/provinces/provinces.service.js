@@ -122,6 +122,13 @@ async function createProvince(payload) {
     code: data.code,
     name: data.name,
     regionsCode: data.regionsCode,
+    descriptionEn: data.descriptionEn,
+    population: data.population,
+    areaKm2: data.areaKm2,
+    establishedDate: data.establishedDate,
+    vehiclePlateCode: data.vehiclePlateCode,
+    provinceCodeLabel: data.provinceCodeLabel,
+    places: data.places,
   };
 }
 
@@ -148,6 +155,13 @@ async function updateProvince(code, payload) {
     code: data.code,
     name: data.name,
     regionsCode: data.regionsCode,
+    descriptionEn: data.descriptionEn,
+    population: data.population,
+    areaKm2: data.areaKm2,
+    establishedDate: data.establishedDate,
+    vehiclePlateCode: data.vehiclePlateCode,
+    provinceCodeLabel: data.provinceCodeLabel,
+    places: data.places,
   };
 }
 

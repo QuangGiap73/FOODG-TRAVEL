@@ -1,14 +1,14 @@
 :root {
-  --bg: #f6f1e8;
-  --surface: #fffdf8;
+  --bg: #fff8f1;
+  --surface: #fffdfb;
   --surface-strong: #ffffff;
-  --line: #eadbc8;
+  --line: #efd8c3;
   --text: #2f2419;
-  --muted: #7d6a58;
-  --accent: #f47b20;
-  --accent-strong: #dc5f00;
-  --accent-soft: #fff0dd;
-  --shadow: 0 16px 48px rgba(109, 72, 33, 0.08);
+  --muted: #7a6654;
+  --accent: #f07a1a;
+  --accent-strong: #d96500;
+  --accent-soft: #fff1e5;
+  --shadow: 0 16px 40px rgba(240, 122, 26, 0.08);
   --radius-lg: 24px;
   --radius-md: 16px;
   --radius-sm: 12px;
@@ -27,8 +27,8 @@ body {
   color: var(--text);
   overflow-x: hidden;
   background:
-    radial-gradient(circle at top left, rgba(244, 123, 32, 0.18), transparent 32%),
-    linear-gradient(180deg, #fffaf4 0%, #f7f0e7 100%);
+    radial-gradient(circle at top left, rgba(240, 122, 26, 0.12), transparent 28%),
+    linear-gradient(180deg, #fffaf5 0%, #fff4ea 100%);
 }
 
 a {
@@ -61,7 +61,7 @@ input {
   padding: 26px 16px 14px;
   border-right: 1px solid rgba(234, 219, 200, 0.8);
   background:
-    linear-gradient(180deg, rgba(255, 252, 247, 0.97) 0%, rgba(255, 248, 240, 0.95) 100%),
+    linear-gradient(180deg, rgba(255, 253, 249, 0.98) 0%, rgba(255, 247, 237, 0.96) 100%),
     url("/public/images/banner_web.png") center bottom / contain no-repeat;
   backdrop-filter: blur(14px);
   min-width: 0;
@@ -79,11 +79,21 @@ input {
   min-height: 68px;
   padding: 12px 20px;
   border-bottom: 1px solid rgba(234, 219, 200, 0.7);
-  background: rgba(255, 252, 247, 0.92);
+  background: rgba(255, 251, 246, 0.94);
   position: sticky;
   top: 0;
   z-index: 20;
   backdrop-filter: blur(14px);
+}
+
+.page-title {
+  color: var(--text);
+}
+
+.menu-toggle:hover,
+.sidebar-close:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .admin-content {
