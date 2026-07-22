@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../models/dish_model.dart';
 import '../../../models/journey/checkin_model.dart';
 import '../../../models/journey/journey_province_progress.dart';
@@ -26,6 +27,7 @@ class JourneyProvinceDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFFFFBF6),
       body: StreamBuilder<JourneyProvinceProgress?>(
@@ -80,7 +82,7 @@ class JourneyProvinceDetailPage extends StatelessWidget {
                                 children: [
                                   const SizedBox(height: 10),
                                   _SectionTitle(
-                                    title: 'Món nổi bật',
+                                    title: t.journeyFeaturedDishesTitle,
                                     trailing: featuredDishes.isEmpty
                                         ? null
                                         : _CountBadge(
@@ -95,10 +97,10 @@ class JourneyProvinceDetailPage extends StatelessWidget {
                                   ),
                                   const SizedBox(height: 20),
                                   _SectionTitle(
-                                    title: 'Quán đã ăn',
+                                    title: t.journeyVisitedPlacesTitle,
                                     trailing: TextButton(
                                       onPressed: () {},
-                                      child: const Text('Xem tất cả'),
+                                      child: Text(t.commonViewAll),
                                     ),
                                   ),
                                   const SizedBox(height: 12),
@@ -134,7 +136,9 @@ class JourneyProvinceDetailPage extends StatelessWidget {
                                             size: 18,
                                           ),
                                           label: Text(
-                                            'Tìm quán mới tại $provinceName',
+                                            t.journeyFindNewPlaceInProvince(
+                                              provinceName,
+                                            ),
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                           ),
@@ -176,8 +180,8 @@ class JourneyProvinceDetailPage extends StatelessWidget {
                                             Icons.history_rounded,
                                             size: 18,
                                           ),
-                                          label: const Text(
-                                            'Xem lịch sử check-in',
+                                          label: Text(
+                                            t.journeyViewCheckinHistory,
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                           ),
@@ -435,7 +439,7 @@ class _ProvinceHeroSection extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        _buildSubtitle(),
+                        _buildSubtitle(context),
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: 14,
@@ -500,11 +504,12 @@ class _ProvinceHeroSection extends StatelessWidget {
     );
   }
 
-  String _buildSubtitle() {
+  String _buildSubtitle(BuildContext context) {
     if (progress.checkinCount > 0) {
-      return 'Bạn đã có ${progress.checkinCount} lượt check-in tại tỉnh thành này';
+      return AppLocalizations.of(context)!
+          .journeyProvinceCheckinSubtitle(progress.checkinCount);
     }
-    return 'Khám phá hành trình ẩm thực và những quán bạn đã ghé qua';
+    return AppLocalizations.of(context)!.journeyProvinceEmptySubtitle;
   }
 }
 
@@ -548,7 +553,7 @@ class _StatsCard extends StatelessWidget {
               icon: Icons.verified_outlined,
               color: const Color(0xFF5CA8FF),
               value: progress.checkinCount,
-              label: 'lượt check-in',
+              label: AppLocalizations.of(context)!.journeyCheckinStatLabel,
             ),
           ),
           const _StatDivider(),
@@ -557,7 +562,7 @@ class _StatsCard extends StatelessWidget {
               icon: Icons.storefront_rounded,
               color: const Color(0xFFFF7A00),
               value: effectiveVisitedPlaceCount,
-              label: 'quán đã ăn',
+              label: AppLocalizations.of(context)!.journeyVisitedPlaceStatLabel,
             ),
           ),
           const _StatDivider(),
@@ -566,7 +571,8 @@ class _StatsCard extends StatelessWidget {
               icon: Icons.map_outlined,
               color: const Color(0xFF78B942),
               value: effectiveVisitedDistrictCount,
-              label: 'quận đã đi qua',
+              label:
+                  AppLocalizations.of(context)!.journeyVisitedDistrictStatLabel,
             ),
           ),
         ],
@@ -719,9 +725,9 @@ class _FeaturedDishCards extends StatelessWidget {
           borderRadius: BorderRadius.circular(18),
           border: Border.all(color: const Color(0xFFF2E5D6)),
         ),
-        child: const Text(
-          'Chưa có dữ liệu món nổi bật cho tỉnh thành này.',
-          style: TextStyle(
+        child: Text(
+          AppLocalizations.of(context)!.journeyFeaturedDishesEmpty,
+          style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
             color: Color(0xFF707680),
@@ -869,9 +875,9 @@ class _FeaturedDishCard extends StatelessWidget {
                           color: const Color(0xFFFFF0DF),
                           borderRadius: BorderRadius.circular(999),
                         ),
-                        child: const Text(
-                          'Xem chi tiết',
-                          style: TextStyle(
+                        child: Text(
+                          AppLocalizations.of(context)!.commonViewDetail,
+                          style: const TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w800,
                             color: Color(0xFFFF7A00),
@@ -998,7 +1004,8 @@ class _VisitedPlaceCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(999),
                         ),
                         child: Text(
-                          '${item.checkinCount} lần',
+                          AppLocalizations.of(context)!
+                              .journeyVisitCount(item.checkinCount),
                           style: const TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w800,
@@ -1101,16 +1108,16 @@ class _EmptyVisitedPlacesCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.coffee_outlined,
                 color: Color(0xFFFF7A00),
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Text(
-                'Chưa có quán đã ăn',
-                style: TextStyle(
+                AppLocalizations.of(context)!.journeyVisitedPlacesEmptyTitle,
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w800,
                   color: Color(0xFF202531),
@@ -1120,7 +1127,8 @@ class _EmptyVisitedPlacesCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            'Khi bạn check-in tại $provinceName, các quán đã ghé sẽ hiển thị ở đây.',
+            AppLocalizations.of(context)!
+                .journeyVisitedPlacesEmptyMessage(provinceName),
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
@@ -1145,6 +1153,7 @@ class _VisitedPlaceMetaRow extends StatelessWidget {
       future: _loadMeta(),
       builder: (context, snapshot) {
         final meta = snapshot.data ?? _VisitedPlaceMeta.empty(item.lastDistanceMeters);
+        final t = AppLocalizations.of(context)!;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -1161,7 +1170,7 @@ class _VisitedPlaceMetaRow extends StatelessWidget {
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
-                          meta.ratingText,
+                          meta.ratingText(t),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
@@ -1185,7 +1194,7 @@ class _VisitedPlaceMetaRow extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      meta.distanceText,
+                      meta.distanceText(t),
                       maxLines: 1,
                       textAlign: TextAlign.right,
                       overflow: TextOverflow.ellipsis,
@@ -1376,13 +1385,13 @@ class _VisitedPlaceMeta {
     return _VisitedPlaceMeta(rating: null, distanceMeters: distanceMeters);
   }
 
-  String get ratingText {
-    if (rating == null || rating! <= 0) return 'Chưa có đánh giá';
+  String ratingText(AppLocalizations t) {
+    if (rating == null || rating! <= 0) return t.journeyNoRating;
     return rating!.toStringAsFixed(1);
   }
 
-  String get distanceText {
-    if (distanceMeters <= 0) return 'Chưa xác định khoảng cách';
+  String distanceText(AppLocalizations t) {
+    if (distanceMeters <= 0) return t.journeyUnknownDistance;
     if (distanceMeters < 1000) return '${distanceMeters.round()} m';
     return '${(distanceMeters / 1000).toStringAsFixed(1)} km';
   }

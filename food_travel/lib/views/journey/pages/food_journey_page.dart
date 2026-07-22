@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../models/journey/badge_model.dart';
 import '../../../models/journey/journey_stats.dart';
 import '../../../views/journey/pages/mission_detail_page.dart';
@@ -14,6 +15,7 @@ class FoodJourneyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
@@ -32,21 +34,21 @@ class FoodJourneyPage extends StatelessWidget {
             color: Color(0xFF111111),
           ),
         ),
-        title: const Column(
+        title: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Hành trình ẩm thực ',
-              style: TextStyle(
+              t.homeJourneyTitle,
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
                 color: Color(0xFF111111),
               ),
             ),
-            SizedBox(height: 2),
+            const SizedBox(height: 2),
             Text(
-              'Khám phá Việt Nam qua từng món ăn',
-              style: TextStyle(fontSize: 12, color: Color(0xFF6B7280)),
+              t.journeySubtitle,
+              style: const TextStyle(fontSize: 12, color: Color(0xFF6B7280)),
             ),
           ],
         ),
@@ -77,21 +79,21 @@ class FoodJourneyPage extends StatelessWidget {
                             color: const Color(0xFF111111),
                           ),
                         ),
-                        const Column(
+                        Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              'Hành trình ẩm thực ',
-                              style: TextStyle(
+                              t.homeJourneyTitle,
+                              style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
                                 color: Color(0xFF111111),
                               ),
                             ),
-                            SizedBox(height: 4),
+                            const SizedBox(height: 4),
                             Text(
-                              'Khám phá Việt Nam qua từng món ăn',
-                              style: TextStyle(
+                              t.journeySubtitle,
+                              style: const TextStyle(
                                 fontSize: 12,
                                 color: Color(0xFF6B7280),
                               ),
@@ -219,12 +221,12 @@ class _JourneyStatsLayout extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          const Positioned(
+          Positioned(
             left: 130,
             top: 20,
             child: _JourneyBadgeChip(
               icon: Icons.emoji_events_rounded,
-              label: 'Explorer',
+              label: AppLocalizations.of(context)!.journeyExplorer,
             ),
           ),
           Positioned(
@@ -355,9 +357,9 @@ class _JourneyPointsBlock extends StatelessWidget {
                   ],
                 ),
               ),
-              const TextSpan(
-                text: 'Điểm',
-                style: TextStyle(
+              TextSpan(
+                text: AppLocalizations.of(context)!.homeJourneyPointsLabel,
+                style: const TextStyle(
                   color: Color(0xFF8A4300),
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
@@ -415,9 +417,9 @@ class _JourneyStreakBlock extends StatelessWidget {
                   ],
                 ),
               ),
-              const TextSpan(
-                text: 'ngày liên tiếp',
-                style: TextStyle(
+              TextSpan(
+                text: AppLocalizations.of(context)!.journeyConsecutiveDays,
+                style: const TextStyle(
                   color: Color(0xFF8A4300),
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
@@ -462,7 +464,8 @@ class _JourneyProgressBlock extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'Cần $pointsToNextLevel điểm để lên Lv.${level + 1}.',
+            AppLocalizations.of(context)!
+                .homeJourneyNeedPoints(pointsToNextLevel, level + 1),
             style: const TextStyle(
               color: Color(0xFF6C3B00),
               fontSize: 12,
@@ -616,9 +619,9 @@ class JourneyBadgesSection extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const Expanded(
+                  Expanded(
                     child: Text(
-                      'Huy hiệu của bạn',
+                      AppLocalizations.of(context)!.journeyBadgesTitle,
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w800,
@@ -634,9 +637,9 @@ class JourneyBadgesSection extends StatelessWidget {
                       padding: EdgeInsets.zero,
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    child: const Text(
-                      'Xem tất cả',
-                      style: TextStyle(
+                    child: Text(
+                      AppLocalizations.of(context)!.commonViewAll,
+                      style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
                       ),
@@ -742,8 +745,9 @@ class JourneyBadgesSection extends StatelessWidget {
                     Expanded(
                       child: Text(
                         badge.isUnlocked
-                            ? 'Đã mở khóa'
-                            : 'Tiến độ hiện tại: $progressText',
+                            ? AppLocalizations.of(context)!.journeyUnlocked
+                            : AppLocalizations.of(context)!
+                                .journeyCurrentProgress(progressText),
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
@@ -752,7 +756,9 @@ class JourneyBadgesSection extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      badge.isUnlocked ? 'Hoàn thành' : progressText,
+                      badge.isUnlocked
+                          ? AppLocalizations.of(context)!.journeyCompleted
+                          : progressText,
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w800,

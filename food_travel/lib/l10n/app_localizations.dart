@@ -662,6 +662,354 @@ abstract class AppLocalizations {
   /// **'Need {points} points to reach Lv.{level}'**
   String homeJourneyNeedPoints(int points, int level);
 
+  /// No description provided for @commonViewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View all'**
+  String get commonViewAll;
+
+  /// No description provided for @journeySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore Vietnam through every dish'**
+  String get journeySubtitle;
+
+  /// No description provided for @journeyExplorer.
+  ///
+  /// In en, this message translates to:
+  /// **'Explorer'**
+  String get journeyExplorer;
+
+  /// No description provided for @journeyConsecutiveDays.
+  ///
+  /// In en, this message translates to:
+  /// **'day streak'**
+  String get journeyConsecutiveDays;
+
+  /// No description provided for @journeyBadgesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your badges'**
+  String get journeyBadgesTitle;
+
+  /// No description provided for @journeyUnlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlocked'**
+  String get journeyUnlocked;
+
+  /// No description provided for @journeyCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get journeyCompleted;
+
+  /// No description provided for @journeyCurrentProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Current progress: {progress}'**
+  String journeyCurrentProgress(String progress);
+
+  /// No description provided for @journeyDailyMissionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s missions'**
+  String get journeyDailyMissionsTitle;
+
+  /// No description provided for @journeyRewardPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'+{points} points'**
+  String journeyRewardPoints(int points);
+
+  /// No description provided for @journeyMissionDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mission details'**
+  String get journeyMissionDetailTitle;
+
+  /// No description provided for @journeyProgressTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress'**
+  String get journeyProgressTitle;
+
+  /// No description provided for @journeyRewardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reward'**
+  String get journeyRewardTitle;
+
+  /// No description provided for @journeyTimeRemainingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Time remaining'**
+  String get journeyTimeRemainingTitle;
+
+  /// No description provided for @timeHoursShort.
+  ///
+  /// In en, this message translates to:
+  /// **'hrs'**
+  String get timeHoursShort;
+
+  /// No description provided for @timeMinutesShort.
+  ///
+  /// In en, this message translates to:
+  /// **'min'**
+  String get timeMinutesShort;
+
+  /// No description provided for @timeSecondsShort.
+  ///
+  /// In en, this message translates to:
+  /// **'sec'**
+  String get timeSecondsShort;
+
+  /// No description provided for @journeyActionExploreNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore now'**
+  String get journeyActionExploreNow;
+
+  /// No description provided for @journeyActionFindPlaceToSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Find a place to save'**
+  String get journeyActionFindPlaceToSave;
+
+  /// No description provided for @journeyActionFindVietnameseDish.
+  ///
+  /// In en, this message translates to:
+  /// **'Find a Vietnamese dish'**
+  String get journeyActionFindVietnameseDish;
+
+  /// No description provided for @journeyActionStartMission.
+  ///
+  /// In en, this message translates to:
+  /// **'Start mission'**
+  String get journeyActionStartMission;
+
+  /// No description provided for @journeyMissionCheckinNewPlaceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Check in at 1 new place'**
+  String get journeyMissionCheckinNewPlaceTitle;
+
+  /// No description provided for @journeyMissionCheckinNewPlaceDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Check in at a place you have not visited before.'**
+  String get journeyMissionCheckinNewPlaceDescription;
+
+  /// No description provided for @journeyMissionTryVietnameseFoodTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a Vietnamese dish'**
+  String get journeyMissionTryVietnameseFoodTitle;
+
+  /// No description provided for @journeyMissionTryVietnameseFoodDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover a Vietnamese dish today.'**
+  String get journeyMissionTryVietnameseFoodDescription;
+
+  /// No description provided for @journeyMissionSaveWishlistPlaceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save 1 place to try'**
+  String get journeyMissionSaveWishlistPlaceTitle;
+
+  /// No description provided for @journeyMissionSaveWishlistPlaceDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Save a place to your favorites list.'**
+  String get journeyMissionSaveWishlistPlaceDescription;
+
+  /// No description provided for @journeyMissionHighRatingPlaceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Check in at a highly rated place'**
+  String get journeyMissionHighRatingPlaceTitle;
+
+  /// No description provided for @journeyMissionHighRatingPlaceDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit a well-rated place to earn more points.'**
+  String get journeyMissionHighRatingPlaceDescription;
+
+  /// No description provided for @journeyMissionUnlockProvinceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock another province'**
+  String get journeyMissionUnlockProvinceTitle;
+
+  /// No description provided for @journeyMissionUnlockProvinceDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Check in at a new province to expand your journey map.'**
+  String get journeyMissionUnlockProvinceDescription;
+
+  /// No description provided for @journeyProvinceListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Province list'**
+  String get journeyProvinceListTitle;
+
+  /// No description provided for @journeyDiscoveredProvinceCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Discovered {discovered}/{total} provinces.'**
+  String journeyDiscoveredProvinceCount(int discovered, int total);
+
+  /// No description provided for @journeyCheckinCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} check-ins'**
+  String journeyCheckinCount(int count);
+
+  /// No description provided for @journeyNotDiscovered.
+  ///
+  /// In en, this message translates to:
+  /// **'Not discovered'**
+  String get journeyNotDiscovered;
+
+  /// No description provided for @journeySignedOutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No user'**
+  String get journeySignedOutTitle;
+
+  /// No description provided for @journeySignedOutMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to track your food journey on the map.'**
+  String get journeySignedOutMessage;
+
+  /// No description provided for @journeyDiscovered.
+  ///
+  /// In en, this message translates to:
+  /// **'Discovered'**
+  String get journeyDiscovered;
+
+  /// No description provided for @journeyMapTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Vietnam discovery map'**
+  String get journeyMapTitle;
+
+  /// No description provided for @journeyProvinceUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'provinces'**
+  String get journeyProvinceUnit;
+
+  /// No description provided for @journeyMapLoadErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load map'**
+  String get journeyMapLoadErrorTitle;
+
+  /// No description provided for @journeyMapAssetLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'The GeoJSON asset cannot be read. Check the map file.'**
+  String get journeyMapAssetLoadError;
+
+  /// No description provided for @journeyMapGeoJsonLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to read GeoJSON: {details}'**
+  String journeyMapGeoJsonLoadError(String details);
+
+  /// No description provided for @journeyFeaturedDishesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Featured dishes'**
+  String get journeyFeaturedDishesTitle;
+
+  /// No description provided for @journeyVisitedPlacesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Places eaten'**
+  String get journeyVisitedPlacesTitle;
+
+  /// No description provided for @journeyFindNewPlaceInProvince.
+  ///
+  /// In en, this message translates to:
+  /// **'Find a new place in {province}'**
+  String journeyFindNewPlaceInProvince(String province);
+
+  /// No description provided for @journeyViewCheckinHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'View check-in history'**
+  String get journeyViewCheckinHistory;
+
+  /// No description provided for @journeyProvinceCheckinSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You have {count} check-ins in this province'**
+  String journeyProvinceCheckinSubtitle(int count);
+
+  /// No description provided for @journeyProvinceEmptySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore your food journey and the places you have visited'**
+  String get journeyProvinceEmptySubtitle;
+
+  /// No description provided for @journeyCheckinStatLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'check-ins'**
+  String get journeyCheckinStatLabel;
+
+  /// No description provided for @journeyVisitedPlaceStatLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'places eaten'**
+  String get journeyVisitedPlaceStatLabel;
+
+  /// No description provided for @journeyVisitedDistrictStatLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'districts visited'**
+  String get journeyVisitedDistrictStatLabel;
+
+  /// No description provided for @journeyFeaturedDishesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No featured dish data for this province yet.'**
+  String get journeyFeaturedDishesEmpty;
+
+  /// No description provided for @journeyVisitCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} times'**
+  String journeyVisitCount(int count);
+
+  /// No description provided for @journeyVisitedPlacesEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No places eaten yet'**
+  String get journeyVisitedPlacesEmptyTitle;
+
+  /// No description provided for @journeyVisitedPlacesEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'When you check in at {province}, visited places will appear here.'**
+  String journeyVisitedPlacesEmptyMessage(String province);
+
+  /// No description provided for @journeyNoRating.
+  ///
+  /// In en, this message translates to:
+  /// **'No rating yet'**
+  String get journeyNoRating;
+
+  /// No description provided for @journeyUnknownDistance.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown distance'**
+  String get journeyUnknownDistance;
+
   /// No description provided for @homeMissionTodayTitle.
   ///
   /// In en, this message translates to:
@@ -697,6 +1045,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'See all'**
   String get homeBadgesSeeAll;
+
+  /// No description provided for @provinceExploreTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore {province}'**
+  String provinceExploreTitle(Object province);
+
+  /// No description provided for @provinceHeroSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A distinctive food destination • {region}'**
+  String provinceHeroSubtitle(Object region);
+
+  /// No description provided for @provinceDefaultRegion.
+  ///
+  /// In en, this message translates to:
+  /// **'Vietnam'**
+  String get provinceDefaultRegion;
+
+  /// No description provided for @provinceDishMetric.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} featured dishes'**
+  String provinceDishMetric(Object count);
+
+  /// No description provided for @provinceLegacyMetric.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} former localities'**
+  String provinceLegacyMetric(Object count);
+
+  /// No description provided for @provinceHeroBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore province'**
+  String get provinceHeroBadge;
+
+  /// No description provided for @provinceOverviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Province overview'**
+  String get provinceOverviewTitle;
+
+  /// No description provided for @provinceOverviewSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cultural highlights, history, and food experiences.'**
+  String get provinceOverviewSubtitle;
+
+  /// No description provided for @provinceOverviewAction.
+  ///
+  /// In en, this message translates to:
+  /// **'View information'**
+  String get provinceOverviewAction;
+
+  /// No description provided for @provinceFoodAction.
+  ///
+  /// In en, this message translates to:
+  /// **'View dishes'**
+  String get provinceFoodAction;
+
+  /// No description provided for @provinceDescriptionUpdating.
+  ///
+  /// In en, this message translates to:
+  /// **'Introduction information is being updated.'**
+  String get provinceDescriptionUpdating;
+
+  /// No description provided for @provinceFeaturedDishesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Featured dishes'**
+  String get provinceFeaturedDishesTitle;
+
+  /// No description provided for @provinceFeaturedDishesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Signature dishes from {province}.'**
+  String provinceFeaturedDishesSubtitle(Object province);
+
+  /// No description provided for @provinceAllFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get provinceAllFilter;
+
+  /// No description provided for @provinceDishLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load dish list.'**
+  String get provinceDishLoadError;
+
+  /// No description provided for @provinceDishEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No dishes available for this province yet.'**
+  String get provinceDishEmpty;
+
+  /// No description provided for @provinceLegacyDishEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No dishes available for {province} yet.'**
+  String provinceLegacyDishEmpty(Object province);
+
+  /// No description provided for @provinceFamousPlacesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Famous places'**
+  String get provinceFamousPlacesTitle;
+
+  /// No description provided for @provinceLegacySectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Local identity'**
+  String get provinceLegacySectionTitle;
+
+  /// No description provided for @provinceLegacySectionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore former localities that shape the identity of this new province/city.'**
+  String get provinceLegacySectionSubtitle;
+
+  /// No description provided for @provinceLegacyActiveHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Viewing this locality\'s content.'**
+  String get provinceLegacyActiveHint;
+
+  /// No description provided for @provinceLegacyInactiveHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to view description, photos, and dishes.'**
+  String get provinceLegacyInactiveHint;
 
   /// No description provided for @navHome.
   ///
@@ -757,6 +1237,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'See more'**
   String get commonSeeMore;
+
+  /// No description provided for @commonViewDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'View details'**
+  String get commonViewDetail;
 
   /// No description provided for @commonCollapse.
   ///
@@ -842,6 +1328,42 @@ abstract class AppLocalizations {
   /// **'Community'**
   String get communityTitle;
 
+  /// No description provided for @communitySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your food journey'**
+  String get communitySubtitle;
+
+  /// No description provided for @communityComposerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What tasty dish did you just try?'**
+  String get communityComposerHint;
+
+  /// No description provided for @communityAddPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add photo'**
+  String get communityAddPhoto;
+
+  /// No description provided for @communityCheckInAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Check-in'**
+  String get communityCheckInAction;
+
+  /// No description provided for @communityReviewAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Review'**
+  String get communityReviewAction;
+
+  /// No description provided for @communityTabAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get communityTabAll;
+
   /// No description provided for @communityTabNewest.
   ///
   /// In en, this message translates to:
@@ -865,6 +1387,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'By province'**
   String get communityTabProvince;
+
+  /// No description provided for @systemGuideTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'System guides'**
+  String get systemGuideTitle;
 
   /// No description provided for @communityPostButton.
   ///
@@ -980,6 +1508,84 @@ abstract class AppLocalizations {
   /// **'You haven\'t posted yet.'**
   String get communityMyPostsEmpty;
 
+  /// No description provided for @communityMyPostsNoMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching posts'**
+  String get communityMyPostsNoMatches;
+
+  /// No description provided for @communityCreateNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a post now'**
+  String get communityCreateNow;
+
+  /// No description provided for @communityMyPostsOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Post overview'**
+  String get communityMyPostsOverview;
+
+  /// No description provided for @communityMyPostsTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total posts'**
+  String get communityMyPostsTotal;
+
+  /// No description provided for @communityMyPostsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search your posts...'**
+  String get communityMyPostsSearchHint;
+
+  /// No description provided for @communityStatusPublished.
+  ///
+  /// In en, this message translates to:
+  /// **'Published'**
+  String get communityStatusPublished;
+
+  /// No description provided for @communityStatusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get communityStatusPending;
+
+  /// No description provided for @communityStatusHidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden'**
+  String get communityStatusHidden;
+
+  /// No description provided for @communityStatusHiddenShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Hidden'**
+  String get communityStatusHiddenShort;
+
+  /// No description provided for @communityStatusRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Rejected'**
+  String get communityStatusRejected;
+
+  /// No description provided for @communityNewPostTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New post'**
+  String get communityNewPostTitle;
+
+  /// No description provided for @communityFoodExperienceSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share a food experience'**
+  String get communityFoodExperienceSubtitle;
+
+  /// No description provided for @communityExplorerLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Explorer Lv.5'**
+  String get communityExplorerLevel;
+
   /// No description provided for @communityPostEmptyContent.
   ///
   /// In en, this message translates to:
@@ -997,6 +1603,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Take a photo'**
   String get postPickFromCamera;
+
+  /// No description provided for @postPickVideoFromGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose video from gallery'**
+  String get postPickVideoFromGallery;
+
+  /// No description provided for @postRecordVideo.
+  ///
+  /// In en, this message translates to:
+  /// **'Record video'**
+  String get postRecordVideo;
 
   /// No description provided for @postCreateTitle.
   ///
@@ -1033,6 +1651,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add place'**
   String get postAddPlace;
+
+  /// No description provided for @postAddMediaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add images'**
+  String get postAddMediaTitle;
+
+  /// No description provided for @postAttachPlaceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Attach location'**
+  String get postAttachPlaceTitle;
+
+  /// No description provided for @postAddPhotoOrVideo.
+  ///
+  /// In en, this message translates to:
+  /// **'Add photo\nor video'**
+  String get postAddPhotoOrVideo;
+
+  /// No description provided for @postChoosePlaceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a restaurant or place'**
+  String get postChoosePlaceTitle;
+
+  /// No description provided for @postNearYouDistanceMeters.
+  ///
+  /// In en, this message translates to:
+  /// **'Near you ({meters}m)'**
+  String postNearYouDistanceMeters(int meters);
+
+  /// No description provided for @postNearYouDistanceKm.
+  ///
+  /// In en, this message translates to:
+  /// **'Near you ({distance}km)'**
+  String postNearYouDistanceKm(String distance);
 
   /// No description provided for @postPlaceSearchHint.
   ///

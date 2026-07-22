@@ -202,7 +202,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
               ),
               ListTile(
                 leading: const Icon(Icons.video_library_outlined),
-                title: const Text('Chọn video từ thư viện'),
+                title: Text(t.postPickVideoFromGallery),
                 onTap: () {
                   Navigator.pop(ctx);
                   _pickVideoFromGallery();
@@ -210,7 +210,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
               ),
               ListTile(
                 leading: const Icon(Icons.videocam_outlined),
-                title: const Text('Quay video'),
+                title: Text(t.postRecordVideo),
                 onTap: () {
                   Navigator.pop(ctx);
                   _pickVideoFromCamera();
@@ -535,7 +535,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
               const SizedBox(height: 22),
               _SectionTitle(
                 icon: Icons.image_outlined,
-                title: 'Thêm hình ảnh',
+                title: t.postAddMediaTitle,
                 color: primaryText,
                 accent: accent,
               ),
@@ -552,7 +552,7 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
               const SizedBox(height: 22),
               _SectionTitle(
                 icon: Icons.place_rounded,
-                title: 'Gắn địa điểm',
+                title: t.postAttachPlaceTitle,
                 color: primaryText,
                 accent: accent,
               ),
@@ -581,12 +581,16 @@ class _CommunityCreatePostPageState extends State<CommunityCreatePostPage> {
     if (place == null || _userLat == null || _userLng == null) return '';
     final d = _distanceKm(_userLat!, _userLng!, place.lat, place.lng);
     if (d < 0.1) {
-      return 'Gáº§n báº¡n (${(d * 1000).round()}m)';
+      return AppLocalizations.of(context)!
+          .postNearYouDistanceMeters((d * 1000).round());
     }
     if (d < 1) {
-      return 'Gáº§n báº¡n (${(d * 1000).round()}m)';
+      return AppLocalizations.of(context)!
+          .postNearYouDistanceMeters((d * 1000).round());
     }
-    return 'Gáº§n báº¡n (${d.toStringAsFixed(1)}km)';
+    return AppLocalizations.of(context)!.postNearYouDistanceKm(
+      d.toStringAsFixed(1),
+    );
   }
 
   double _distanceKm(double lat1, double lng1, double lat2, double lng2) {
@@ -670,7 +674,7 @@ class _ModeSelector extends StatelessWidget {
           Expanded(
             child: _ComposerModeTab(
               icon: Icons.image_outlined,
-              label: 'Đăng ảnh',
+              label: AppLocalizations.of(context)!.communityAddPhoto,
               selected: selectedMode == 0,
               accent: accent,
               onTap: () => onChanged(0),
@@ -680,7 +684,7 @@ class _ModeSelector extends StatelessWidget {
           Expanded(
             child: _ComposerModeTab(
               icon: Icons.location_on_outlined,
-              label: 'Check-in',
+              label: AppLocalizations.of(context)!.communityCheckInAction,
               selected: selectedMode == 1,
               accent: accent,
               onTap: () => onChanged(1),
@@ -690,7 +694,7 @@ class _ModeSelector extends StatelessWidget {
           Expanded(
             child: _ComposerModeTab(
               icon: Icons.star_border_rounded,
-              label: 'Review',
+              label: AppLocalizations.of(context)!.communityReviewAction,
               selected: selectedMode == 2,
               accent: accent,
               onTap: () => onChanged(2),
@@ -898,8 +902,9 @@ class _ComposerInputCard extends StatelessWidget {
                                   : const Color(0xFFFFECD8),
                               borderRadius: BorderRadius.circular(999),
                             ),
-                            child: const Text(
-                              'ðŸ… Explorer Lv.5',
+                            child: Text(
+                              AppLocalizations.of(context)!
+                                  .communityExplorerLevel,
                               style: TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.w800,
@@ -936,7 +941,8 @@ class _ComposerInputCard extends StatelessWidget {
                         height: 1.38,
                       ),
                       decoration: InputDecoration(
-                        hintText: 'Bạn vừa ăn món gì ngon?',
+                        hintText:
+                            AppLocalizations.of(context)!.communityComposerHint,
                         hintStyle: TextStyle(color: hintText),
                         border: InputBorder.none,
                         counterText: '',
@@ -1137,7 +1143,7 @@ class _AddPhotoTile extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                'Thêm ảnh\nhoặc video',
+                AppLocalizations.of(context)!.postAddPhotoOrVideo,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: isDark ? Colors.white70 : const Color(0xFF64748B),
@@ -1325,7 +1331,7 @@ class _PlaceSelector extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Chọn quán ăn hoặc địa điểm',
+                      t.postChoosePlaceTitle,
                       style: TextStyle(
                         fontWeight: FontWeight.w900,
                         color: textColor,

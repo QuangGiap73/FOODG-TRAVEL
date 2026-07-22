@@ -319,6 +319,208 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
+  String get commonViewAll => 'Xem tất cả';
+
+  @override
+  String get journeySubtitle => 'Khám phá Việt Nam qua từng món ăn';
+
+  @override
+  String get journeyExplorer => 'Nhà khám phá';
+
+  @override
+  String get journeyConsecutiveDays => 'ngày liên tiếp';
+
+  @override
+  String get journeyBadgesTitle => 'Huy hiệu của bạn';
+
+  @override
+  String get journeyUnlocked => 'Đã mở khóa';
+
+  @override
+  String get journeyCompleted => 'Hoàn thành';
+
+  @override
+  String journeyCurrentProgress(String progress) {
+    return 'Tiến độ hiện tại: $progress';
+  }
+
+  @override
+  String get journeyDailyMissionsTitle => 'Nhiệm vụ hôm nay';
+
+  @override
+  String journeyRewardPoints(int points) {
+    return '+$points điểm';
+  }
+
+  @override
+  String get journeyMissionDetailTitle => 'Chi tiết nhiệm vụ';
+
+  @override
+  String get journeyProgressTitle => 'Tiến độ';
+
+  @override
+  String get journeyRewardTitle => 'Phần thưởng';
+
+  @override
+  String get journeyTimeRemainingTitle => 'Thời gian còn lại';
+
+  @override
+  String get timeHoursShort => 'giờ';
+
+  @override
+  String get timeMinutesShort => 'phút';
+
+  @override
+  String get timeSecondsShort => 'giây';
+
+  @override
+  String get journeyActionExploreNow => 'Đi khám phá ngay';
+
+  @override
+  String get journeyActionFindPlaceToSave => 'Tìm quán để lưu';
+
+  @override
+  String get journeyActionFindVietnameseDish => 'Tìm món Việt ngay';
+
+  @override
+  String get journeyActionStartMission => 'Bắt đầu nhiệm vụ';
+
+  @override
+  String get journeyMissionCheckinNewPlaceTitle => 'Check-in 1 quán mới';
+
+  @override
+  String get journeyMissionCheckinNewPlaceDescription =>
+      'Hãy check-in tại một quán bạn chưa từng ăn.';
+
+  @override
+  String get journeyMissionTryVietnameseFoodTitle => 'Thử một món Việt';
+
+  @override
+  String get journeyMissionTryVietnameseFoodDescription =>
+      'Khám phá một món ăn Việt Nam hôm nay.';
+
+  @override
+  String get journeyMissionSaveWishlistPlaceTitle => 'Lưu 1 quán muốn ăn';
+
+  @override
+  String get journeyMissionSaveWishlistPlaceDescription =>
+      'Lưu một quán vào danh sách yêu thích.';
+
+  @override
+  String get journeyMissionHighRatingPlaceTitle =>
+      'Check-in quán được đánh giá cao';
+
+  @override
+  String get journeyMissionHighRatingPlaceDescription =>
+      'Ghé một quán có đánh giá tốt để tích thêm điểm.';
+
+  @override
+  String get journeyMissionUnlockProvinceTitle => 'Mở khóa thêm một tỉnh thành';
+
+  @override
+  String get journeyMissionUnlockProvinceDescription =>
+      'Check-in ở tỉnh mới để mở rộng bản đồ hành trình.';
+
+  @override
+  String get journeyProvinceListTitle => 'Danh sách tỉnh thành';
+
+  @override
+  String journeyDiscoveredProvinceCount(int discovered, int total) {
+    return 'Đã khám phá $discovered/$total tỉnh thành.';
+  }
+
+  @override
+  String journeyCheckinCount(int count) {
+    return '$count check-in';
+  }
+
+  @override
+  String get journeyNotDiscovered => 'Chưa khám phá';
+
+  @override
+  String get journeySignedOutTitle => 'Chưa có người dùng';
+
+  @override
+  String get journeySignedOutMessage =>
+      'Đăng nhập để theo dõi hành trình ẩm thực của bạn trên bản đồ.';
+
+  @override
+  String get journeyDiscovered => 'Đã khám phá';
+
+  @override
+  String get journeyMapTitle => 'Bản đồ khám phá Việt Nam';
+
+  @override
+  String get journeyProvinceUnit => 'tỉnh thành';
+
+  @override
+  String get journeyMapLoadErrorTitle => 'Không tải được bản đồ';
+
+  @override
+  String get journeyMapAssetLoadError =>
+      'Asset GeoJSON hiện tại không đọc được. Kiểm tra lại file bản đồ.';
+
+  @override
+  String journeyMapGeoJsonLoadError(String details) {
+    return 'Không đọc được GeoJSON: $details';
+  }
+
+  @override
+  String get journeyFeaturedDishesTitle => 'Món nổi bật';
+
+  @override
+  String get journeyVisitedPlacesTitle => 'Quán đã ăn';
+
+  @override
+  String journeyFindNewPlaceInProvince(String province) {
+    return 'Tìm quán mới tại $province';
+  }
+
+  @override
+  String get journeyViewCheckinHistory => 'Xem lịch sử check-in';
+
+  @override
+  String journeyProvinceCheckinSubtitle(int count) {
+    return 'Bạn đã có $count lượt check-in tại tỉnh thành này';
+  }
+
+  @override
+  String get journeyProvinceEmptySubtitle =>
+      'Khám phá hành trình ẩm thực và những quán bạn đã ghé qua';
+
+  @override
+  String get journeyCheckinStatLabel => 'lượt check-in';
+
+  @override
+  String get journeyVisitedPlaceStatLabel => 'quán đã ăn';
+
+  @override
+  String get journeyVisitedDistrictStatLabel => 'quận đã đi qua';
+
+  @override
+  String get journeyFeaturedDishesEmpty =>
+      'Chưa có dữ liệu món nổi bật cho tỉnh thành này.';
+
+  @override
+  String journeyVisitCount(int count) {
+    return '$count lần';
+  }
+
+  @override
+  String get journeyVisitedPlacesEmptyTitle => 'Chưa có quán đã ăn';
+
+  @override
+  String journeyVisitedPlacesEmptyMessage(String province) {
+    return 'Khi bạn check-in tại $province, các quán đã ghé sẽ hiển thị ở đây.';
+  }
+
+  @override
+  String get journeyNoRating => 'Chưa có đánh giá';
+
+  @override
+  String get journeyUnknownDistance => 'Chưa xác định khoảng cách';
+
+  @override
   String get homeMissionTodayTitle => 'Nhiệm vụ hôm nay';
 
   @override
@@ -335,6 +537,88 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get homeBadgesSeeAll => 'Xem tất cả';
+
+  @override
+  String provinceExploreTitle(Object province) {
+    return 'Khám phá $province';
+  }
+
+  @override
+  String provinceHeroSubtitle(Object region) {
+    return 'Vùng đất ẩm thực đặc sắc • $region';
+  }
+
+  @override
+  String get provinceDefaultRegion => 'Việt Nam';
+
+  @override
+  String provinceDishMetric(Object count) {
+    return '$count món nổi bật';
+  }
+
+  @override
+  String provinceLegacyMetric(Object count) {
+    return '$count địa phương cũ';
+  }
+
+  @override
+  String get provinceHeroBadge => 'Khám phá tỉnh thành';
+
+  @override
+  String get provinceOverviewTitle => 'Tổng quan tỉnh thành';
+
+  @override
+  String get provinceOverviewSubtitle =>
+      'Điểm nhấn văn hóa, lịch sử và trải nghiệm ẩm thực.';
+
+  @override
+  String get provinceOverviewAction => 'Xem thông tin';
+
+  @override
+  String get provinceFoodAction => 'Xem món ăn';
+
+  @override
+  String get provinceDescriptionUpdating =>
+      'Thông tin giới thiệu đang được cập nhật.';
+
+  @override
+  String get provinceFeaturedDishesTitle => 'Món ăn nổi bật';
+
+  @override
+  String provinceFeaturedDishesSubtitle(Object province) {
+    return 'Các món ngon tiêu biểu của $province.';
+  }
+
+  @override
+  String get provinceAllFilter => 'Tất cả';
+
+  @override
+  String get provinceDishLoadError => 'Không tải được danh sách món ăn.';
+
+  @override
+  String get provinceDishEmpty => 'Chưa có món ăn nào cho tỉnh này.';
+
+  @override
+  String provinceLegacyDishEmpty(Object province) {
+    return 'Chưa có món ăn nào thuộc $province.';
+  }
+
+  @override
+  String get provinceFamousPlacesTitle => 'Địa điểm nổi tiếng';
+
+  @override
+  String get provinceLegacySectionTitle => 'Dấu ấn địa phương';
+
+  @override
+  String get provinceLegacySectionSubtitle =>
+      'Khám phá các tỉnh cũ đang tạo nên bản sắc của tỉnh/thành mới.';
+
+  @override
+  String get provinceLegacyActiveHint =>
+      'Đang xem nội dung của địa phương này.';
+
+  @override
+  String get provinceLegacyInactiveHint => 'Nhấn để xem mô tả, ảnh và món ăn.';
 
   @override
   String get navHome => 'Trang chủ';
@@ -365,6 +649,9 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get commonSeeMore => 'Xem thêm';
+
+  @override
+  String get commonViewDetail => 'Xem chi tiết';
 
   @override
   String get commonCollapse => 'Thu gọn';
@@ -409,16 +696,37 @@ class AppLocalizationsVi extends AppLocalizations {
   String get communityTitle => 'Cộng đồng';
 
   @override
+  String get communitySubtitle => 'Chia sẻ hành trình ẩm thực của bạn';
+
+  @override
+  String get communityComposerHint => 'Bạn vừa ăn món gì ngon?';
+
+  @override
+  String get communityAddPhoto => 'Đăng ảnh';
+
+  @override
+  String get communityCheckInAction => 'Check-in';
+
+  @override
+  String get communityReviewAction => 'Review';
+
+  @override
+  String get communityTabAll => 'Tất cả';
+
+  @override
   String get communityTabNewest => 'Mới nhất';
 
   @override
-  String get communityTabTrending => 'Nổi bật';
+  String get communityTabTrending => 'Đang hot';
 
   @override
   String get communityTabNear => 'Gần bạn';
 
   @override
   String get communityTabProvince => 'Theo tỉnh';
+
+  @override
+  String get systemGuideTitle => 'Cẩm nang từ hệ thống';
 
   @override
   String get communityPostButton => 'Tạo bài viết';
@@ -479,6 +787,45 @@ class AppLocalizationsVi extends AppLocalizations {
   String get communityMyPostsEmpty => 'Bạn chưa đăng bài viết nào.';
 
   @override
+  String get communityMyPostsNoMatches => 'Không có bài viết phù hợp';
+
+  @override
+  String get communityCreateNow => 'Tạo bài viết ngay';
+
+  @override
+  String get communityMyPostsOverview => 'Tổng quan bài viết';
+
+  @override
+  String get communityMyPostsTotal => 'Tổng bài viết';
+
+  @override
+  String get communityMyPostsSearchHint => 'Tìm bài viết của bạn...';
+
+  @override
+  String get communityStatusPublished => 'Đã xuất bản';
+
+  @override
+  String get communityStatusPending => 'Chờ duyệt';
+
+  @override
+  String get communityStatusHidden => 'Đã ẩn';
+
+  @override
+  String get communityStatusHiddenShort => 'Bị ẩn';
+
+  @override
+  String get communityStatusRejected => 'Từ chối';
+
+  @override
+  String get communityNewPostTitle => 'Bài viết mới';
+
+  @override
+  String get communityFoodExperienceSubtitle => 'Chia sẻ trải nghiệm ẩm thực';
+
+  @override
+  String get communityExplorerLevel => 'Nhà khám phá Lv.5';
+
+  @override
   String get communityPostEmptyContent => 'Nội dung bài viết đang trống.';
 
   @override
@@ -486,6 +833,12 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get postPickFromCamera => 'Chụp ảnh';
+
+  @override
+  String get postPickVideoFromGallery => 'Chọn video từ thư viện';
+
+  @override
+  String get postRecordVideo => 'Quay video';
 
   @override
   String get postCreateTitle => 'Tạo bài viết';
@@ -504,6 +857,28 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get postAddPlace => 'Thêm địa điểm';
+
+  @override
+  String get postAddMediaTitle => 'Thêm hình ảnh';
+
+  @override
+  String get postAttachPlaceTitle => 'Gắn địa điểm';
+
+  @override
+  String get postAddPhotoOrVideo => 'Thêm ảnh\nhoặc video';
+
+  @override
+  String get postChoosePlaceTitle => 'Chọn quán ăn hoặc địa điểm';
+
+  @override
+  String postNearYouDistanceMeters(int meters) {
+    return 'Gần bạn (${meters}m)';
+  }
+
+  @override
+  String postNearYouDistanceKm(String distance) {
+    return 'Gần bạn (${distance}km)';
+  }
 
   @override
   String get postPlaceSearchHint => 'Tìm địa điểm...';

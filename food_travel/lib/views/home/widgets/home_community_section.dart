@@ -23,7 +23,7 @@ class HomeCommunitySection extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
 
     return StreamBuilder<List<CommunityPost>>(
-      stream: CommunityService().watchLatestPosts(limit: 80),
+      stream: CommunityService().watchLatestPosts(limit: 20),
       builder: (context, snapshot) {
         final posts = snapshot.data ?? const <CommunityPost>[];
         final featured = _pickPost(posts);

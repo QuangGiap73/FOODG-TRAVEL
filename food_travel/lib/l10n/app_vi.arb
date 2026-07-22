@@ -1,4 +1,4 @@
-{
+﻿{
   "appTitle": "FoodG Travel",
   "language": "Ngôn ngữ",
   "chooseLanguage": "Chọn ngôn ngữ",
@@ -124,12 +124,158 @@
       }
     }
   },
+  "commonViewAll": "Xem tất cả",
+  "journeySubtitle": "Khám phá Việt Nam qua từng món ăn",
+  "journeyExplorer": "Nhà khám phá",
+  "journeyConsecutiveDays": "ngày liên tiếp",
+  "journeyBadgesTitle": "Huy hiệu của bạn",
+  "journeyUnlocked": "Đã mở khóa",
+  "journeyCompleted": "Hoàn thành",
+  "journeyCurrentProgress": "Tiến độ hiện tại: {progress}",
+  "@journeyCurrentProgress": {
+    "placeholders": {
+      "progress": {
+        "type": "String"
+      }
+    }
+  },
+  "journeyDailyMissionsTitle": "Nhiệm vụ hôm nay",
+  "journeyRewardPoints": "+{points} điểm",
+  "@journeyRewardPoints": {
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
+  "journeyMissionDetailTitle": "Chi tiết nhiệm vụ",
+  "journeyProgressTitle": "Tiến độ",
+  "journeyRewardTitle": "Phần thưởng",
+  "journeyTimeRemainingTitle": "Thời gian còn lại",
+  "timeHoursShort": "giờ",
+  "timeMinutesShort": "phút",
+  "timeSecondsShort": "giây",
+  "journeyActionExploreNow": "Đi khám phá ngay",
+  "journeyActionFindPlaceToSave": "Tìm quán để lưu",
+  "journeyActionFindVietnameseDish": "Tìm món Việt ngay",
+  "journeyActionStartMission": "Bắt đầu nhiệm vụ",
+  "journeyMissionCheckinNewPlaceTitle": "Check-in 1 quán mới",
+  "journeyMissionCheckinNewPlaceDescription": "Hãy check-in tại một quán bạn chưa từng ăn.",
+  "journeyMissionTryVietnameseFoodTitle": "Thử một món Việt",
+  "journeyMissionTryVietnameseFoodDescription": "Khám phá một món ăn Việt Nam hôm nay.",
+  "journeyMissionSaveWishlistPlaceTitle": "Lưu 1 quán muốn ăn",
+  "journeyMissionSaveWishlistPlaceDescription": "Lưu một quán vào danh sách yêu thích.",
+  "journeyMissionHighRatingPlaceTitle": "Check-in quán được đánh giá cao",
+  "journeyMissionHighRatingPlaceDescription": "Ghé một quán có đánh giá tốt để tích thêm điểm.",
+  "journeyMissionUnlockProvinceTitle": "Mở khóa thêm một tỉnh thành",
+  "journeyMissionUnlockProvinceDescription": "Check-in ở tỉnh mới để mở rộng bản đồ hành trình.",
+  "journeyProvinceListTitle": "Danh sách tỉnh thành",
+  "journeyDiscoveredProvinceCount": "Đã khám phá {discovered}/{total} tỉnh thành.",
+  "@journeyDiscoveredProvinceCount": {
+    "placeholders": {
+      "discovered": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "journeyCheckinCount": "{count} check-in",
+  "@journeyCheckinCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "journeyNotDiscovered": "Chưa khám phá",
+  "journeySignedOutTitle": "Chưa có người dùng",
+  "journeySignedOutMessage": "Đăng nhập để theo dõi hành trình ẩm thực của bạn trên bản đồ.",
+  "journeyDiscovered": "Đã khám phá",
+  "journeyMapTitle": "Bản đồ khám phá Việt Nam",
+  "journeyProvinceUnit": "tỉnh thành",
+  "journeyMapLoadErrorTitle": "Không tải được bản đồ",
+  "journeyMapAssetLoadError": "Asset GeoJSON hiện tại không đọc được. Kiểm tra lại file bản đồ.",
+  "journeyMapGeoJsonLoadError": "Không đọc được GeoJSON: {details}",
+  "@journeyMapGeoJsonLoadError": {
+    "placeholders": {
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "journeyFeaturedDishesTitle": "Món nổi bật",
+  "journeyVisitedPlacesTitle": "Quán đã ăn",
+  "journeyFindNewPlaceInProvince": "Tìm quán mới tại {province}",
+  "@journeyFindNewPlaceInProvince": {
+    "placeholders": {
+      "province": {
+        "type": "String"
+      }
+    }
+  },
+  "journeyViewCheckinHistory": "Xem lịch sử check-in",
+  "journeyProvinceCheckinSubtitle": "Bạn đã có {count} lượt check-in tại tỉnh thành này",
+  "@journeyProvinceCheckinSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "journeyProvinceEmptySubtitle": "Khám phá hành trình ẩm thực và những quán bạn đã ghé qua",
+  "journeyCheckinStatLabel": "lượt check-in",
+  "journeyVisitedPlaceStatLabel": "quán đã ăn",
+  "journeyVisitedDistrictStatLabel": "quận đã đi qua",
+  "journeyFeaturedDishesEmpty": "Chưa có dữ liệu món nổi bật cho tỉnh thành này.",
+  "journeyVisitCount": "{count} lần",
+  "@journeyVisitCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "journeyVisitedPlacesEmptyTitle": "Chưa có quán đã ăn",
+  "journeyVisitedPlacesEmptyMessage": "Khi bạn check-in tại {province}, các quán đã ghé sẽ hiển thị ở đây.",
+  "@journeyVisitedPlacesEmptyMessage": {
+    "placeholders": {
+      "province": {
+        "type": "String"
+      }
+    }
+  },
+  "journeyNoRating": "Chưa có đánh giá",
+  "journeyUnknownDistance": "Chưa xác định khoảng cách",
   "homeMissionTodayTitle": "Nhiệm vụ hôm nay",
   "homeMissionSeeAll": "Xem tất cả nhiệm vụ",
   "homeMissionCheckinNewPlace": "Check-in 1 quán mới",
   "homeMissionTryVietnameseFood": "Thử một món Việt",
   "homeBadgesTitle": "Huy hiệu của bạn",
   "homeBadgesSeeAll": "Xem tất cả",
+  "provinceExploreTitle": "Khám phá {province}",
+  "provinceHeroSubtitle": "Vùng đất ẩm thực đặc sắc • {region}",
+  "provinceDefaultRegion": "Việt Nam",
+  "provinceDishMetric": "{count} món nổi bật",
+  "provinceLegacyMetric": "{count} địa phương cũ",
+  "provinceHeroBadge": "Khám phá tỉnh thành",
+  "provinceOverviewTitle": "Tổng quan tỉnh thành",
+  "provinceOverviewSubtitle": "Điểm nhấn văn hóa, lịch sử và trải nghiệm ẩm thực.",
+  "provinceOverviewAction": "Xem thông tin",
+  "provinceFoodAction": "Xem món ăn",
+  "provinceDescriptionUpdating": "Thông tin giới thiệu đang được cập nhật.",
+  "provinceFeaturedDishesTitle": "Món ăn nổi bật",
+  "provinceFeaturedDishesSubtitle": "Các món ngon tiêu biểu của {province}.",
+  "provinceAllFilter": "Tất cả",
+  "provinceDishLoadError": "Không tải được danh sách món ăn.",
+  "provinceDishEmpty": "Chưa có món ăn nào cho tỉnh này.",
+  "provinceLegacyDishEmpty": "Chưa có món ăn nào thuộc {province}.",
+  "provinceFamousPlacesTitle": "Địa điểm nổi tiếng",
+  "provinceLegacySectionTitle": "Dấu ấn địa phương",
+  "provinceLegacySectionSubtitle": "Khám phá các tỉnh cũ đang tạo nên bản sắc của tỉnh/thành mới.",
+  "provinceLegacyActiveHint": "Đang xem nội dung của địa phương này.",
+  "provinceLegacyInactiveHint": "Nhấn để xem mô tả, ảnh và món ăn.",
   "navHome": "Trang chủ",
   "navExplore": "Khám phá",
   "navMap": "Bản đồ",
@@ -140,6 +286,7 @@
   "commonDelete": "Xóa",
   "commonEdit": "Sửa",
   "commonSeeMore": "Xem thêm",
+  "commonViewDetail": "Xem chi tiết",
   "commonCollapse": "Thu gọn",
   "commonSend": "Gửi",
   "commonNo": "Không",
@@ -154,10 +301,17 @@
   "commentLoginRequired": "Vui lòng đăng nhập để bình luận.",
   "commentHint": "Viết bình luận...",
   "communityTitle": "Cộng đồng",
+  "communitySubtitle": "Chia sẻ hành trình ẩm thực của bạn",
+  "communityComposerHint": "Bạn vừa ăn món gì ngon?",
+  "communityAddPhoto": "Đăng ảnh",
+  "communityCheckInAction": "Check-in",
+  "communityReviewAction": "Review",
+  "communityTabAll": "Tất cả",
   "communityTabNewest": "Mới nhất",
-  "communityTabTrending": "Nổi bật",
+  "communityTabTrending": "Đang hot",
   "communityTabNear": "Gần bạn",
   "communityTabProvince": "Theo tỉnh",
+  "systemGuideTitle": "Cẩm nang từ hệ thống",
   "communityPostButton": "Tạo bài viết",
   "communityLoadError": "Không thể tải bài viết.",
   "communityEmptyNewest": "Chưa có bài viết nào.",
@@ -177,15 +331,50 @@
   "communityMyPostsLoginRequired": "Vui lòng đăng nhập để xem bài viết của bạn.",
   "communityMyPostsLoadError": "Không thể tải bài viết của bạn.",
   "communityMyPostsEmpty": "Bạn chưa đăng bài viết nào.",
+  "communityMyPostsNoMatches": "Không có bài viết phù hợp",
+  "communityCreateNow": "Tạo bài viết ngay",
+  "communityMyPostsOverview": "Tổng quan bài viết",
+  "communityMyPostsTotal": "Tổng bài viết",
+  "communityMyPostsSearchHint": "Tìm bài viết của bạn...",
+  "communityStatusPublished": "Đã xuất bản",
+  "communityStatusPending": "Chờ duyệt",
+  "communityStatusHidden": "Đã ẩn",
+  "communityStatusHiddenShort": "Bị ẩn",
+  "communityStatusRejected": "Từ chối",
+  "communityNewPostTitle": "Bài viết mới",
+  "communityFoodExperienceSubtitle": "Chia sẻ trải nghiệm ẩm thực",
+  "communityExplorerLevel": "Nhà khám phá Lv.5",
   "communityPostEmptyContent": "Nội dung bài viết đang trống.",
   "postPickFromGallery": "Chọn từ thư viện",
   "postPickFromCamera": "Chụp ảnh",
+  "postPickVideoFromGallery": "Chọn video từ thư viện",
+  "postRecordVideo": "Quay video",
   "postCreateTitle": "Tạo bài viết",
   "postEditTitle": "Sửa bài viết",
   "postPublish": "Đăng",
   "postTextHint": "Chia sẻ trải nghiệm của bạn...",
   "postUploading": "Đang tải...",
   "postAddPlace": "Thêm địa điểm",
+  "postAddMediaTitle": "Thêm hình ảnh",
+  "postAttachPlaceTitle": "Gắn địa điểm",
+  "postAddPhotoOrVideo": "Thêm ảnh\nhoặc video",
+  "postChoosePlaceTitle": "Chọn quán ăn hoặc địa điểm",
+  "postNearYouDistanceMeters": "Gần bạn ({meters}m)",
+  "@postNearYouDistanceMeters": {
+    "placeholders": {
+      "meters": {
+        "type": "int"
+      }
+    }
+  },
+  "postNearYouDistanceKm": "Gần bạn ({distance}km)",
+  "@postNearYouDistanceKm": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
   "postPlaceSearchHint": "Tìm địa điểm...",
   "postPlaceSearchPrompt": "Nhập tên để tìm kiếm.",
   "postPlaceSearchEmpty": "Không tìm thấy địa điểm.",

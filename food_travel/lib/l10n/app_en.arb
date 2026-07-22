@@ -124,12 +124,158 @@
       }
     }
   },
+  "commonViewAll": "View all",
+  "journeySubtitle": "Explore Vietnam through every dish",
+  "journeyExplorer": "Explorer",
+  "journeyConsecutiveDays": "day streak",
+  "journeyBadgesTitle": "Your badges",
+  "journeyUnlocked": "Unlocked",
+  "journeyCompleted": "Completed",
+  "journeyCurrentProgress": "Current progress: {progress}",
+  "@journeyCurrentProgress": {
+    "placeholders": {
+      "progress": {
+        "type": "String"
+      }
+    }
+  },
+  "journeyDailyMissionsTitle": "Today's missions",
+  "journeyRewardPoints": "+{points} points",
+  "@journeyRewardPoints": {
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
+  "journeyMissionDetailTitle": "Mission details",
+  "journeyProgressTitle": "Progress",
+  "journeyRewardTitle": "Reward",
+  "journeyTimeRemainingTitle": "Time remaining",
+  "timeHoursShort": "hrs",
+  "timeMinutesShort": "min",
+  "timeSecondsShort": "sec",
+  "journeyActionExploreNow": "Explore now",
+  "journeyActionFindPlaceToSave": "Find a place to save",
+  "journeyActionFindVietnameseDish": "Find a Vietnamese dish",
+  "journeyActionStartMission": "Start mission",
+  "journeyMissionCheckinNewPlaceTitle": "Check in at 1 new place",
+  "journeyMissionCheckinNewPlaceDescription": "Check in at a place you have not visited before.",
+  "journeyMissionTryVietnameseFoodTitle": "Try a Vietnamese dish",
+  "journeyMissionTryVietnameseFoodDescription": "Discover a Vietnamese dish today.",
+  "journeyMissionSaveWishlistPlaceTitle": "Save 1 place to try",
+  "journeyMissionSaveWishlistPlaceDescription": "Save a place to your favorites list.",
+  "journeyMissionHighRatingPlaceTitle": "Check in at a highly rated place",
+  "journeyMissionHighRatingPlaceDescription": "Visit a well-rated place to earn more points.",
+  "journeyMissionUnlockProvinceTitle": "Unlock another province",
+  "journeyMissionUnlockProvinceDescription": "Check in at a new province to expand your journey map.",
+  "journeyProvinceListTitle": "Province list",
+  "journeyDiscoveredProvinceCount": "Discovered {discovered}/{total} provinces.",
+  "@journeyDiscoveredProvinceCount": {
+    "placeholders": {
+      "discovered": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "journeyCheckinCount": "{count} check-ins",
+  "@journeyCheckinCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "journeyNotDiscovered": "Not discovered",
+  "journeySignedOutTitle": "No user",
+  "journeySignedOutMessage": "Sign in to track your food journey on the map.",
+  "journeyDiscovered": "Discovered",
+  "journeyMapTitle": "Vietnam discovery map",
+  "journeyProvinceUnit": "provinces",
+  "journeyMapLoadErrorTitle": "Unable to load map",
+  "journeyMapAssetLoadError": "The GeoJSON asset cannot be read. Check the map file.",
+  "journeyMapGeoJsonLoadError": "Unable to read GeoJSON: {details}",
+  "@journeyMapGeoJsonLoadError": {
+    "placeholders": {
+      "details": {
+        "type": "String"
+      }
+    }
+  },
+  "journeyFeaturedDishesTitle": "Featured dishes",
+  "journeyVisitedPlacesTitle": "Places eaten",
+  "journeyFindNewPlaceInProvince": "Find a new place in {province}",
+  "@journeyFindNewPlaceInProvince": {
+    "placeholders": {
+      "province": {
+        "type": "String"
+      }
+    }
+  },
+  "journeyViewCheckinHistory": "View check-in history",
+  "journeyProvinceCheckinSubtitle": "You have {count} check-ins in this province",
+  "@journeyProvinceCheckinSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "journeyProvinceEmptySubtitle": "Explore your food journey and the places you have visited",
+  "journeyCheckinStatLabel": "check-ins",
+  "journeyVisitedPlaceStatLabel": "places eaten",
+  "journeyVisitedDistrictStatLabel": "districts visited",
+  "journeyFeaturedDishesEmpty": "No featured dish data for this province yet.",
+  "journeyVisitCount": "{count} times",
+  "@journeyVisitCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "journeyVisitedPlacesEmptyTitle": "No places eaten yet",
+  "journeyVisitedPlacesEmptyMessage": "When you check in at {province}, visited places will appear here.",
+  "@journeyVisitedPlacesEmptyMessage": {
+    "placeholders": {
+      "province": {
+        "type": "String"
+      }
+    }
+  },
+  "journeyNoRating": "No rating yet",
+  "journeyUnknownDistance": "Unknown distance",
   "homeMissionTodayTitle": "Today's missions",
   "homeMissionSeeAll": "See all missions",
   "homeMissionCheckinNewPlace": "Check in at 1 new place",
   "homeMissionTryVietnameseFood": "Try a Vietnamese dish",
   "homeBadgesTitle": "Your badges",
   "homeBadgesSeeAll": "See all",
+  "provinceExploreTitle": "Explore {province}",
+  "provinceHeroSubtitle": "A distinctive food destination • {region}",
+  "provinceDefaultRegion": "Vietnam",
+  "provinceDishMetric": "{count} featured dishes",
+  "provinceLegacyMetric": "{count} former localities",
+  "provinceHeroBadge": "Explore province",
+  "provinceOverviewTitle": "Province overview",
+  "provinceOverviewSubtitle": "Cultural highlights, history, and food experiences.",
+  "provinceOverviewAction": "View information",
+  "provinceFoodAction": "View dishes",
+  "provinceDescriptionUpdating": "Introduction information is being updated.",
+  "provinceFeaturedDishesTitle": "Featured dishes",
+  "provinceFeaturedDishesSubtitle": "Signature dishes from {province}.",
+  "provinceAllFilter": "All",
+  "provinceDishLoadError": "Unable to load dish list.",
+  "provinceDishEmpty": "No dishes available for this province yet.",
+  "provinceLegacyDishEmpty": "No dishes available for {province} yet.",
+  "provinceFamousPlacesTitle": "Famous places",
+  "provinceLegacySectionTitle": "Local identity",
+  "provinceLegacySectionSubtitle": "Explore former localities that shape the identity of this new province/city.",
+  "provinceLegacyActiveHint": "Viewing this locality's content.",
+  "provinceLegacyInactiveHint": "Tap to view description, photos, and dishes.",
   "navHome": "Home",
   "navExplore": "Explore",
   "navMap": "Map",
@@ -140,6 +286,7 @@
   "commonDelete": "Delete",
   "commonEdit": "Edit",
   "commonSeeMore": "See more",
+  "commonViewDetail": "View details",
   "commonCollapse": "Collapse",
   "commonSend": "Send",
   "commonNo": "No",
@@ -154,10 +301,17 @@
   "commentLoginRequired": "Please sign in to comment.",
   "commentHint": "Write a comment...",
   "communityTitle": "Community",
+  "communitySubtitle": "Share your food journey",
+  "communityComposerHint": "What tasty dish did you just try?",
+  "communityAddPhoto": "Add photo",
+  "communityCheckInAction": "Check-in",
+  "communityReviewAction": "Review",
+  "communityTabAll": "All",
   "communityTabNewest": "Newest",
   "communityTabTrending": "Trending",
   "communityTabNear": "Nearby",
   "communityTabProvince": "By province",
+  "systemGuideTitle": "System guides",
   "communityPostButton": "Create post",
   "communityLoadError": "Unable to load posts.",
   "communityEmptyNewest": "No posts yet.",
@@ -177,15 +331,50 @@
   "communityMyPostsLoginRequired": "Please sign in to view your posts.",
   "communityMyPostsLoadError": "Unable to load your posts.",
   "communityMyPostsEmpty": "You haven't posted yet.",
+  "communityMyPostsNoMatches": "No matching posts",
+  "communityCreateNow": "Create a post now",
+  "communityMyPostsOverview": "Post overview",
+  "communityMyPostsTotal": "Total posts",
+  "communityMyPostsSearchHint": "Search your posts...",
+  "communityStatusPublished": "Published",
+  "communityStatusPending": "Pending",
+  "communityStatusHidden": "Hidden",
+  "communityStatusHiddenShort": "Hidden",
+  "communityStatusRejected": "Rejected",
+  "communityNewPostTitle": "New post",
+  "communityFoodExperienceSubtitle": "Share a food experience",
+  "communityExplorerLevel": "Explorer Lv.5",
   "communityPostEmptyContent": "Post content is empty.",
   "postPickFromGallery": "Choose from gallery",
   "postPickFromCamera": "Take a photo",
+  "postPickVideoFromGallery": "Choose video from gallery",
+  "postRecordVideo": "Record video",
   "postCreateTitle": "Create post",
   "postEditTitle": "Edit post",
   "postPublish": "Post",
   "postTextHint": "Share your experience...",
   "postUploading": "Uploading...",
   "postAddPlace": "Add place",
+  "postAddMediaTitle": "Add images",
+  "postAttachPlaceTitle": "Attach location",
+  "postAddPhotoOrVideo": "Add photo\nor video",
+  "postChoosePlaceTitle": "Choose a restaurant or place",
+  "postNearYouDistanceMeters": "Near you ({meters}m)",
+  "@postNearYouDistanceMeters": {
+    "placeholders": {
+      "meters": {
+        "type": "int"
+      }
+    }
+  },
+  "postNearYouDistanceKm": "Near you ({distance}km)",
+  "@postNearYouDistanceKm": {
+    "placeholders": {
+      "distance": {
+        "type": "String"
+      }
+    }
+  },
   "postPlaceSearchHint": "Search place...",
   "postPlaceSearchPrompt": "Start typing to search.",
   "postPlaceSearchEmpty": "No places found.",

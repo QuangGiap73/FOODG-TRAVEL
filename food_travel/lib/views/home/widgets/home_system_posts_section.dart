@@ -1,5 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../models/system_post.dart';
 import '../../../services/system_posts/system_post_service.dart';
 import '../system_post_detail_page.dart';
@@ -9,6 +10,7 @@ class HomeSystemPostsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final languageCode = Localizations.localeOf(context).languageCode;
@@ -44,7 +46,7 @@ class HomeSystemPostsSection extends StatelessWidget {
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
-                    'Cẩm nang từ hệ thống',
+                    t.systemGuideTitle,
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w800,
                     ),

@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../models/journey/mission_model.dart';
+import '../journey_l10n_helpers.dart';
 
 class DailyMissionSection extends StatefulWidget {
   const DailyMissionSection({
@@ -47,6 +49,7 @@ class _DailyMissionSectionState extends State<DailyMissionSection> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return StreamBuilder<List<JourneyMission>>(
       stream: _missionStream(),
       builder: (context, snapshot) {
@@ -79,6 +82,9 @@ class _DailyMissionSectionState extends State<DailyMissionSection> {
                   setState(() => _showAll = !_showAll);
                   widget.onViewAll?.call();
                 },
+                title: t.journeyDailyMissionsTitle,
+                collapseLabel: t.commonCollapse,
+                expandLabel: t.commonViewAll,
               ),
               const SizedBox(height: 12),
               if (snapshot.connectionState == ConnectionState.waiting)
@@ -90,6 +96,8 @@ class _DailyMissionSectionState extends State<DailyMissionSection> {
                     padding: EdgeInsets.only(bottom: isLast ? 0 : 10),
                     child: _MissionItemCard(
                       mission: mission,
+                      title: journeyMissionTitle(t, mission),
+                      rewardLabel: t.journeyRewardPoints(mission.rewardPoints),
                       onTap: () => widget.onMissionTap?.call(mission),
                     ),
                   );
@@ -224,20 +232,26 @@ class _SectionHeader extends StatelessWidget {
   const _SectionHeader({
     required this.expanded,
     required this.canExpand,
+    required this.title,
+    required this.collapseLabel,
+    required this.expandLabel,
     this.onViewAll,
   });
 
   final bool expanded;
   final bool canExpand;
+  final String title;
+  final String collapseLabel;
+  final String expandLabel;
   final VoidCallback? onViewAll;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Expanded(
+        Expanded(
           child: Text(
-            'Nhiệm vụ hôm nay',
+            title,
             style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w800,
@@ -251,7 +265,7 @@ class _SectionHeader extends StatelessWidget {
             child: Row(
               children: [
                 Text(
-                  expanded ? 'Thu gọn' : 'Xem tất cả',
+                  expanded ? collapseLabel : expandLabel,
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
@@ -275,9 +289,16 @@ class _SectionHeader extends StatelessWidget {
 }
 
 class _MissionItemCard extends StatelessWidget {
-  const _MissionItemCard({required this.mission, this.onTap});
+  const _MissionItemCard({
+    required this.mission,
+    required this.title,
+    required this.rewardLabel,
+    this.onTap,
+  });
 
   final JourneyMission mission;
+  final String title;
+  final String rewardLabel;
   final VoidCallback? onTap;
 
   @override
@@ -313,7 +334,7 @@ class _MissionItemCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    mission.title,
+                    title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
@@ -359,7 +380,7 @@ class _MissionItemCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '+${mission.rewardPoints} điểm',
+                    rewardLabel,
                     textAlign: TextAlign.right,
                     style: const TextStyle(
                       fontSize: 11,

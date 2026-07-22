@@ -14,6 +14,7 @@ class FoodService {
   static const _canonicalProvinceCollection = 'provinces_v2';
   static const _legacyProvinceCollection = 'provinces';
   static const _provinceDishDisplayLimit = 60;
+  Future<List<ProvinceModel>>? _legacyProvincesCache;
 
   /// Lang nghe danh sach tinh (sap xep theo ten).
   Stream<List<ProvinceModel>> watchProvinces() {
@@ -24,19 +25,19 @@ class FoodService {
         .asyncMap((snapshot) async {
           if (snapshot.docs.isNotEmpty) {
             final canonical = snapshot.docs.map(ProvinceModel.fromDoc).toList();
-            final legacySnapshot =
-                await _db.collection(_legacyProvinceCollection).get();
-            final legacy =
-                legacySnapshot.docs.map(ProvinceModel.fromDoc).toList();
+            final legacy = await _loadLegacyProvincesOnce();
             return _mergeProvinceHomeMedia(canonical, legacy);
           }
-          final legacy =
-              await _db
-                  .collection(_legacyProvinceCollection)
-                  .orderBy('name')
-                  .get();
-          return legacy.docs.map(ProvinceModel.fromDoc).toList();
+          return _loadLegacyProvincesOnce();
         });
+  }
+
+  Future<List<ProvinceModel>> _loadLegacyProvincesOnce() {
+    return _legacyProvincesCache ??= _db
+        .collection(_legacyProvinceCollection)
+        .orderBy('name')
+        .get()
+        .then((snapshot) => snapshot.docs.map(ProvinceModel.fromDoc).toList());
   }
 
   List<ProvinceModel> _mergeProvinceHomeMedia(

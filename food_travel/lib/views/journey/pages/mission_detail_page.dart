@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../models/journey/mission_model.dart';
+import '../journey_l10n_helpers.dart';
 
 class MissionDetailPage extends StatefulWidget {
   const MissionDetailPage({
@@ -52,6 +54,7 @@ class _MissionDetailPageState extends State<MissionDetailPage>{
   }
   @override
   Widget build(BuildContext context){
+    final t = AppLocalizations.of(context)!;
     final mission = widget.mission;
     final completed = mission.isCompleted || mission.progress >=1.0;
 
@@ -79,7 +82,7 @@ class _MissionDetailPageState extends State<MissionDetailPage>{
                     const SizedBox(height: 8),
 
                     Text(
-                      mission.description,
+                      journeyMissionDescription(t, mission),
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 14,
@@ -163,8 +166,8 @@ class _MissionDetailAppBar extends StatelessWidget {
             ),
           ),
 
-          const Text(
-            'Chi tiết nhiệm vụ',
+          Text(
+            AppLocalizations.of(context)!.journeyMissionDetailTitle,
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w800,
@@ -271,8 +274,8 @@ class _ProgressSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Tiến độ',
+          Text(
+            AppLocalizations.of(context)!.journeyProgressTitle,
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w800,
@@ -328,8 +331,8 @@ class _RewardSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Phần thưởng',
+          Text(
+            AppLocalizations.of(context)!.journeyRewardTitle,
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w800,
@@ -350,7 +353,7 @@ class _RewardSection extends StatelessWidget {
               const SizedBox(width: 8),
 
               Text(
-                '+$rewardPoints điểm',
+                AppLocalizations.of(context)!.journeyRewardPoints(rewardPoints),
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w900,
@@ -380,10 +383,10 @@ class _TimeRemainingSection extends StatelessWidget {
     return _DetailCard(
       child: Column(
         children: [
-          const Align(
+          Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              'Thời gian còn lại',
+              AppLocalizations.of(context)!.journeyTimeRemainingTitle,
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w800,
@@ -399,17 +402,17 @@ class _TimeRemainingSection extends StatelessWidget {
             children: [
               _TimeBox(
                 value: hours,
-                label: 'giờ',
+                label: AppLocalizations.of(context)!.timeHoursShort,
               ),
               const _TimeColon(),
               _TimeBox(
                 value: minutes,
-                label: 'phút',
+                label: AppLocalizations.of(context)!.timeMinutesShort,
               ),
               const _TimeColon(),
               _TimeBox(
                 value: seconds,
-                label: 'giây',
+                label: AppLocalizations.of(context)!.timeSecondsShort,
               ),
             ],
           ),
@@ -524,7 +527,12 @@ class _ActionButton extends StatelessWidget {
             ),
           ),
           child: Text(
-            completed ? 'Đã hoàn thành' : _buttonText(mission.type),
+            completed
+                ? AppLocalizations.of(context)!.journeyCompleted
+                : journeyMissionActionText(
+                    AppLocalizations.of(context)!,
+                    mission.type,
+                  ),
             style: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w900,
@@ -535,22 +543,6 @@ class _ActionButton extends StatelessWidget {
     );
   }
 
-  String _buttonText(String type) {
-    switch (type) {
-      case 'checkin_new_place':
-      case 'checkin_any_place':
-        return 'Đi khám phá ngay';
-
-      case 'save_wishlist_place':
-        return 'Tìm quán để lưu';
-
-      case 'try_vietnamese_food':
-        return 'Tìm món Việt ngay';
-
-      default:
-        return 'Bắt đầu nhiệm vụ';
-    }
-  }
 }
 class _DetailCard extends StatelessWidget {
   const _DetailCard({

@@ -321,6 +321,208 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get commonViewAll => 'View all';
+
+  @override
+  String get journeySubtitle => 'Explore Vietnam through every dish';
+
+  @override
+  String get journeyExplorer => 'Explorer';
+
+  @override
+  String get journeyConsecutiveDays => 'day streak';
+
+  @override
+  String get journeyBadgesTitle => 'Your badges';
+
+  @override
+  String get journeyUnlocked => 'Unlocked';
+
+  @override
+  String get journeyCompleted => 'Completed';
+
+  @override
+  String journeyCurrentProgress(String progress) {
+    return 'Current progress: $progress';
+  }
+
+  @override
+  String get journeyDailyMissionsTitle => 'Today\'s missions';
+
+  @override
+  String journeyRewardPoints(int points) {
+    return '+$points points';
+  }
+
+  @override
+  String get journeyMissionDetailTitle => 'Mission details';
+
+  @override
+  String get journeyProgressTitle => 'Progress';
+
+  @override
+  String get journeyRewardTitle => 'Reward';
+
+  @override
+  String get journeyTimeRemainingTitle => 'Time remaining';
+
+  @override
+  String get timeHoursShort => 'hrs';
+
+  @override
+  String get timeMinutesShort => 'min';
+
+  @override
+  String get timeSecondsShort => 'sec';
+
+  @override
+  String get journeyActionExploreNow => 'Explore now';
+
+  @override
+  String get journeyActionFindPlaceToSave => 'Find a place to save';
+
+  @override
+  String get journeyActionFindVietnameseDish => 'Find a Vietnamese dish';
+
+  @override
+  String get journeyActionStartMission => 'Start mission';
+
+  @override
+  String get journeyMissionCheckinNewPlaceTitle => 'Check in at 1 new place';
+
+  @override
+  String get journeyMissionCheckinNewPlaceDescription =>
+      'Check in at a place you have not visited before.';
+
+  @override
+  String get journeyMissionTryVietnameseFoodTitle => 'Try a Vietnamese dish';
+
+  @override
+  String get journeyMissionTryVietnameseFoodDescription =>
+      'Discover a Vietnamese dish today.';
+
+  @override
+  String get journeyMissionSaveWishlistPlaceTitle => 'Save 1 place to try';
+
+  @override
+  String get journeyMissionSaveWishlistPlaceDescription =>
+      'Save a place to your favorites list.';
+
+  @override
+  String get journeyMissionHighRatingPlaceTitle =>
+      'Check in at a highly rated place';
+
+  @override
+  String get journeyMissionHighRatingPlaceDescription =>
+      'Visit a well-rated place to earn more points.';
+
+  @override
+  String get journeyMissionUnlockProvinceTitle => 'Unlock another province';
+
+  @override
+  String get journeyMissionUnlockProvinceDescription =>
+      'Check in at a new province to expand your journey map.';
+
+  @override
+  String get journeyProvinceListTitle => 'Province list';
+
+  @override
+  String journeyDiscoveredProvinceCount(int discovered, int total) {
+    return 'Discovered $discovered/$total provinces.';
+  }
+
+  @override
+  String journeyCheckinCount(int count) {
+    return '$count check-ins';
+  }
+
+  @override
+  String get journeyNotDiscovered => 'Not discovered';
+
+  @override
+  String get journeySignedOutTitle => 'No user';
+
+  @override
+  String get journeySignedOutMessage =>
+      'Sign in to track your food journey on the map.';
+
+  @override
+  String get journeyDiscovered => 'Discovered';
+
+  @override
+  String get journeyMapTitle => 'Vietnam discovery map';
+
+  @override
+  String get journeyProvinceUnit => 'provinces';
+
+  @override
+  String get journeyMapLoadErrorTitle => 'Unable to load map';
+
+  @override
+  String get journeyMapAssetLoadError =>
+      'The GeoJSON asset cannot be read. Check the map file.';
+
+  @override
+  String journeyMapGeoJsonLoadError(String details) {
+    return 'Unable to read GeoJSON: $details';
+  }
+
+  @override
+  String get journeyFeaturedDishesTitle => 'Featured dishes';
+
+  @override
+  String get journeyVisitedPlacesTitle => 'Places eaten';
+
+  @override
+  String journeyFindNewPlaceInProvince(String province) {
+    return 'Find a new place in $province';
+  }
+
+  @override
+  String get journeyViewCheckinHistory => 'View check-in history';
+
+  @override
+  String journeyProvinceCheckinSubtitle(int count) {
+    return 'You have $count check-ins in this province';
+  }
+
+  @override
+  String get journeyProvinceEmptySubtitle =>
+      'Explore your food journey and the places you have visited';
+
+  @override
+  String get journeyCheckinStatLabel => 'check-ins';
+
+  @override
+  String get journeyVisitedPlaceStatLabel => 'places eaten';
+
+  @override
+  String get journeyVisitedDistrictStatLabel => 'districts visited';
+
+  @override
+  String get journeyFeaturedDishesEmpty =>
+      'No featured dish data for this province yet.';
+
+  @override
+  String journeyVisitCount(int count) {
+    return '$count times';
+  }
+
+  @override
+  String get journeyVisitedPlacesEmptyTitle => 'No places eaten yet';
+
+  @override
+  String journeyVisitedPlacesEmptyMessage(String province) {
+    return 'When you check in at $province, visited places will appear here.';
+  }
+
+  @override
+  String get journeyNoRating => 'No rating yet';
+
+  @override
+  String get journeyUnknownDistance => 'Unknown distance';
+
+  @override
   String get homeMissionTodayTitle => 'Today\'s missions';
 
   @override
@@ -337,6 +539,88 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeBadgesSeeAll => 'See all';
+
+  @override
+  String provinceExploreTitle(Object province) {
+    return 'Explore $province';
+  }
+
+  @override
+  String provinceHeroSubtitle(Object region) {
+    return 'A distinctive food destination • $region';
+  }
+
+  @override
+  String get provinceDefaultRegion => 'Vietnam';
+
+  @override
+  String provinceDishMetric(Object count) {
+    return '$count featured dishes';
+  }
+
+  @override
+  String provinceLegacyMetric(Object count) {
+    return '$count former localities';
+  }
+
+  @override
+  String get provinceHeroBadge => 'Explore province';
+
+  @override
+  String get provinceOverviewTitle => 'Province overview';
+
+  @override
+  String get provinceOverviewSubtitle =>
+      'Cultural highlights, history, and food experiences.';
+
+  @override
+  String get provinceOverviewAction => 'View information';
+
+  @override
+  String get provinceFoodAction => 'View dishes';
+
+  @override
+  String get provinceDescriptionUpdating =>
+      'Introduction information is being updated.';
+
+  @override
+  String get provinceFeaturedDishesTitle => 'Featured dishes';
+
+  @override
+  String provinceFeaturedDishesSubtitle(Object province) {
+    return 'Signature dishes from $province.';
+  }
+
+  @override
+  String get provinceAllFilter => 'All';
+
+  @override
+  String get provinceDishLoadError => 'Unable to load dish list.';
+
+  @override
+  String get provinceDishEmpty => 'No dishes available for this province yet.';
+
+  @override
+  String provinceLegacyDishEmpty(Object province) {
+    return 'No dishes available for $province yet.';
+  }
+
+  @override
+  String get provinceFamousPlacesTitle => 'Famous places';
+
+  @override
+  String get provinceLegacySectionTitle => 'Local identity';
+
+  @override
+  String get provinceLegacySectionSubtitle =>
+      'Explore former localities that shape the identity of this new province/city.';
+
+  @override
+  String get provinceLegacyActiveHint => 'Viewing this locality\'s content.';
+
+  @override
+  String get provinceLegacyInactiveHint =>
+      'Tap to view description, photos, and dishes.';
 
   @override
   String get navHome => 'Home';
@@ -367,6 +651,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonSeeMore => 'See more';
+
+  @override
+  String get commonViewDetail => 'View details';
 
   @override
   String get commonCollapse => 'Collapse';
@@ -412,6 +699,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get communityTitle => 'Community';
 
   @override
+  String get communitySubtitle => 'Share your food journey';
+
+  @override
+  String get communityComposerHint => 'What tasty dish did you just try?';
+
+  @override
+  String get communityAddPhoto => 'Add photo';
+
+  @override
+  String get communityCheckInAction => 'Check-in';
+
+  @override
+  String get communityReviewAction => 'Review';
+
+  @override
+  String get communityTabAll => 'All';
+
+  @override
   String get communityTabNewest => 'Newest';
 
   @override
@@ -422,6 +727,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get communityTabProvince => 'By province';
+
+  @override
+  String get systemGuideTitle => 'System guides';
 
   @override
   String get communityPostButton => 'Create post';
@@ -483,6 +791,45 @@ class AppLocalizationsEn extends AppLocalizations {
   String get communityMyPostsEmpty => 'You haven\'t posted yet.';
 
   @override
+  String get communityMyPostsNoMatches => 'No matching posts';
+
+  @override
+  String get communityCreateNow => 'Create a post now';
+
+  @override
+  String get communityMyPostsOverview => 'Post overview';
+
+  @override
+  String get communityMyPostsTotal => 'Total posts';
+
+  @override
+  String get communityMyPostsSearchHint => 'Search your posts...';
+
+  @override
+  String get communityStatusPublished => 'Published';
+
+  @override
+  String get communityStatusPending => 'Pending';
+
+  @override
+  String get communityStatusHidden => 'Hidden';
+
+  @override
+  String get communityStatusHiddenShort => 'Hidden';
+
+  @override
+  String get communityStatusRejected => 'Rejected';
+
+  @override
+  String get communityNewPostTitle => 'New post';
+
+  @override
+  String get communityFoodExperienceSubtitle => 'Share a food experience';
+
+  @override
+  String get communityExplorerLevel => 'Explorer Lv.5';
+
+  @override
   String get communityPostEmptyContent => 'Post content is empty.';
 
   @override
@@ -490,6 +837,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get postPickFromCamera => 'Take a photo';
+
+  @override
+  String get postPickVideoFromGallery => 'Choose video from gallery';
+
+  @override
+  String get postRecordVideo => 'Record video';
 
   @override
   String get postCreateTitle => 'Create post';
@@ -508,6 +861,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get postAddPlace => 'Add place';
+
+  @override
+  String get postAddMediaTitle => 'Add images';
+
+  @override
+  String get postAttachPlaceTitle => 'Attach location';
+
+  @override
+  String get postAddPhotoOrVideo => 'Add photo\nor video';
+
+  @override
+  String get postChoosePlaceTitle => 'Choose a restaurant or place';
+
+  @override
+  String postNearYouDistanceMeters(int meters) {
+    return 'Near you (${meters}m)';
+  }
+
+  @override
+  String postNearYouDistanceKm(String distance) {
+    return 'Near you (${distance}km)';
+  }
 
   @override
   String get postPlaceSearchHint => 'Search place...';

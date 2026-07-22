@@ -11,10 +11,14 @@ class SystemPostService {
       _db.collection('system_posts');
 
   Stream<List<SystemPost>> watchPublishedPosts({int limit = 10}) {
-    return _posts.snapshots().map((snapshot) {
+    final queryLimit = (limit * 5).clamp(limit, 30);
+    return _posts
+        .where('status', isEqualTo: 'published')
+        .limit(queryLimit)
+        .snapshots()
+        .map((snapshot) {
       final items = snapshot.docs
           .map(SystemPost.fromDoc)
-          .where((post) => post.isPublished)
           .toList();
 
       items.sort((a, b) {

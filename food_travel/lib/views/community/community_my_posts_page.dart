@@ -250,7 +250,7 @@ class _CommunityMyPostsPageState extends State<CommunityMyPostsPage> {
                       padding: const EdgeInsets.symmetric(vertical: 48),
                       child: Center(
                         child: Text(
-                          'Không có bài viết phù hợp',
+                          t.communityMyPostsNoMatches,
                           style: TextStyle(color: textSecondary),
                         ),
                       ),
@@ -344,7 +344,7 @@ class _MyPostsEmptyState extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                child: const Text('Tạo bài viết ngay'),
+                child: Text(AppLocalizations.of(context)!.communityCreateNow),
               ),
             ),
           ],
@@ -369,30 +369,33 @@ class _ModerationBadgeData {
 }
 
 // Gom cấu hình badge vào 1 chỗ để card bài viết chỉ việc đọc ra và render.
-_ModerationBadgeData _badgeForStatus(String moderationStatus) {
+_ModerationBadgeData _badgeForStatus(
+  String moderationStatus,
+  AppLocalizations t,
+) {
   switch (moderationStatus.toLowerCase()) {
     case 'pending':
-      return const _ModerationBadgeData(
-        label: 'Chờ duyệt',
+      return _ModerationBadgeData(
+        label: t.communityStatusPending,
         backgroundColor: Color(0xFFFFF4DE),
         textColor: Color(0xFFD97706),
       );
     case 'hidden':
-      return const _ModerationBadgeData(
-        label: 'Đã ẩn',
+      return _ModerationBadgeData(
+        label: t.communityStatusHidden,
         backgroundColor: Color(0xFFEFF3F8),
         textColor: Color(0xFF475569),
       );
     case 'rejected':
-      return const _ModerationBadgeData(
-        label: 'Từ chối',
+      return _ModerationBadgeData(
+        label: t.communityStatusRejected,
         backgroundColor: Color(0xFFFEECEC),
         textColor: Color(0xFFDC2626),
       );
     case 'published':
     default:
-      return const _ModerationBadgeData(
-        label: 'Đã xuất bản',
+      return _ModerationBadgeData(
+        label: t.communityStatusPublished,
         backgroundColor: Color(0xFFEAF8ED),
         textColor: Color(0xFF16A34A),
       );
@@ -439,6 +442,7 @@ class _PostOverviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
       decoration: BoxDecoration(
@@ -462,8 +466,8 @@ class _PostOverviewCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Tổng quan bài viết',
+                Text(
+                  t.communityMyPostsOverview,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w800,
@@ -477,21 +481,21 @@ class _PostOverviewCard extends StatelessWidget {
                       child: _OverviewMetric(
                         icon: Icons.article_outlined,
                         value: '${summary.total}',
-                        label: 'Tổng bài viết',
+                        label: t.communityMyPostsTotal,
                       ),
                     ),
                     Expanded(
                       child: _OverviewMetric(
                         icon: Icons.check_circle_outline_rounded,
                         value: '${summary.published}',
-                        label: 'Đã xuất bản',
+                        label: t.communityStatusPublished,
                       ),
                     ),
                     Expanded(
                       child: _OverviewMetric(
                         icon: Icons.timelapse_rounded,
                         value: '${summary.pending}',
-                        label: 'Chờ duyệt',
+                        label: t.communityStatusPending,
                       ),
                     ),
                   ],
@@ -574,6 +578,7 @@ class _PostsSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return Row(
       children: [
         Expanded(
@@ -581,7 +586,7 @@ class _PostsSearchBar extends StatelessWidget {
             controller: controller,
             onChanged: onChanged,
             decoration: InputDecoration(
-              hintText: 'Tìm bài viết của bạn...',
+              hintText: t.communityMyPostsSearchHint,
               prefixIcon: const Icon(Icons.search_rounded),
               filled: true,
               fillColor: Colors.white,
@@ -628,11 +633,12 @@ class _PostFilterRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const filters = [
-      (_PostFilter.all, 'Tất cả'),
-      (_PostFilter.published, 'Đã xuất bản'),
-      (_PostFilter.pending, 'Chờ duyệt'),
-      (_PostFilter.hidden, 'Bị ẩn'),
+    final t = AppLocalizations.of(context)!;
+    final filters = [
+      (_PostFilter.all, t.communityTabAll),
+      (_PostFilter.published, t.communityStatusPublished),
+      (_PostFilter.pending, t.communityStatusPending),
+      (_PostFilter.hidden, t.communityStatusHiddenShort),
     ];
 
     return SizedBox(
@@ -699,11 +705,13 @@ class _MyPostCard extends StatelessWidget {
     final border = isDark ? const Color(0xFF232A33) : const Color(0xFFF6E9DA);
     final media = post.media;
     final place = post.place;
-    final statusBadge = _badgeForStatus(post.moderationStatus);
-    final title = post.text.trim().isNotEmpty ? post.text.trim() : 'Bài viết mới';
+    final t = AppLocalizations.of(context)!;
+    final statusBadge = _badgeForStatus(post.moderationStatus, t);
+    final title =
+        post.text.trim().isNotEmpty ? post.text.trim() : t.communityNewPostTitle;
     final subtitle = place != null
         ? '${place.name}${place.address.trim().isNotEmpty ? ' • ${place.address}' : ''}'
-        : 'Chia sẻ trải nghiệm ẩm thực';
+        : t.communityFoodExperienceSubtitle;
     final firstMedia = media.isNotEmpty ? media.first : null;
     final imageUrl = firstMedia != null ? firstMedia.previewUrl : (place?.photoUrl ?? '');
     final hasVideo = firstMedia?.isVideo == true;

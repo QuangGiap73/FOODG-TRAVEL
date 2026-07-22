@@ -327,6 +327,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
     required int dishCount,
     required int legacyCount,
   }) {
+    final t = AppLocalizations.of(context)!;
     return ClipRRect(
       borderRadius: BorderRadius.circular(28),
       child: Container(
@@ -389,18 +390,20 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
                       _buildMetricChip(
                         theme,
                         Icons.location_on_rounded,
-                        region.isEmpty ? 'Vi\u1ec7t Nam' : _formatRegion(region),
+                        region.isEmpty
+                            ? t.provinceDefaultRegion
+                            : _formatRegion(region),
                       ),
                       _buildMetricChip(
                         theme,
                         Icons.restaurant_menu_rounded,
-                        '$dishCount m\u00f3n n\u1ed5i b\u1eadt',
+                        t.provinceDishMetric(dishCount),
                       ),
                       if (legacyCount > 0)
                         _buildMetricChip(
                           theme,
                           Icons.layers_rounded,
-                          '$legacyCount \u0111\u1ecba ph\u01b0\u01a1ng c\u0169',
+                          t.provinceLegacyMetric(legacyCount),
                         ),
                     ],
                   ),
@@ -418,7 +421,9 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
     required ProvinceModel province,
     required String region,
   }) {
-    final regionText = region.isEmpty ? 'Việt Nam' : _formatRegion(region);
+    final t = AppLocalizations.of(context)!;
+    final regionText =
+        region.isEmpty ? t.provinceDefaultRegion : _formatRegion(region);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(4, 2, 4, 0),
@@ -426,7 +431,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Khám phá ${province.name}',
+            t.provinceExploreTitle(province.name),
             style: theme.textTheme.headlineSmall?.copyWith(
               color: const Color(0xFF1F2937),
               fontWeight: FontWeight.w900,
@@ -435,7 +440,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
           ),
           const SizedBox(height: 6),
           Text(
-            'Vùng đất ẩm thực đặc sắc • $regionText',
+            t.provinceHeroSubtitle(regionText),
             style: theme.textTheme.bodyMedium?.copyWith(
               color: const Color(0xFF6B7280),
               fontWeight: FontWeight.w500,
@@ -447,11 +452,12 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
   }
 
   Widget _buildLegacySection(ThemeData theme, List<String> legacyCodes) {
+    final t = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'D\u1ea5u \u1ea5n \u0111\u1ecba ph\u01b0\u01a1ng',
+          t.provinceLegacySectionTitle,
           style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w800,
             color: const Color(0xFF1F2937),
@@ -459,7 +465,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
         ),
         const SizedBox(height: 6),
         Text(
-          'Kh\u00e1m ph\u00e1 c\u00e1c t\u1ec9nh c\u0169 \u0111ang t\u1ea1o n\u00ean b\u1ea3n s\u1eafc c\u1ee7a t\u1ec9nh/th\u00e0nh m\u1edbi.',
+          t.provinceLegacySectionSubtitle,
           style: theme.textTheme.bodyMedium?.copyWith(
             color: const Color(0xFF6B7280),
             height: 1.45,
@@ -536,8 +542,8 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
                       const SizedBox(height: 4),
                       Text(
                         isActive
-                            ? '\u0110ang xem n\u1ed9i dung c\u1ee7a \u0111\u1ecba ph\u01b0\u01a1ng n\u00e0y.'
-                            : 'Nh\u1ea5n \u0111\u1ec3 xem m\u00f4 t\u1ea3, \u1ea3nh v\u00e0 m\u00f3n \u0103n.',
+                            ? t.provinceLegacyActiveHint
+                            : t.provinceLegacyInactiveHint,
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                         style: theme.textTheme.bodySmall?.copyWith(
@@ -563,6 +569,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
     ProvinceModel province, {
     Key? key,
   }) {
+    final t = AppLocalizations.of(context)!;
     final languageCode = Localizations.localeOf(context).languageCode;
     final desc = (languageCode == 'en'
             ? province.descriptionEn ?? province.description
@@ -608,7 +615,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'T\u1ed5ng quan t\u1ec9nh th\u00e0nh',
+                      t.provinceOverviewTitle,
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w800,
                         color: const Color(0xFF1F2937),
@@ -616,7 +623,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      '\u0110i\u1ec3m nh\u1ea5n v\u0103n h\u00f3a, l\u1ecbch s\u1eed v\u00e0 tr\u1ea3i nghi\u1ec7m \u1ea9m th\u1ef1c.',
+                      t.provinceOverviewSubtitle,
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: const Color(0xFF6B7280),
                       ),
@@ -632,12 +639,12 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
             runSpacing: 10,
             children: [
               _buildActionButton(
-                label: 'Xem th\u00f4ng tin',
+                label: t.provinceOverviewAction,
                 icon: Icons.article_outlined,
                 onTap: () => _scrollToSection(_infoSectionKey),
               ),
               _buildActionButton(
-                label: 'Xem m\u00f3n \u0103n',
+                label: t.provinceFoodAction,
                 icon: Icons.restaurant_menu_rounded,
                 onTap: () => _scrollToSection(_foodSectionKey),
               ),
@@ -652,7 +659,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
                 children: [
                   Text(
                     desc.isEmpty
-                        ? 'Th\u00f4ng tin gi\u1edbi thi\u1ec7u \u0111ang \u0111\u01b0\u1ee3c c\u1eadp nh\u1eadt.'
+                        ? t.provinceDescriptionUpdating
                         : desc,
                     maxLines: expanded ? null : 5,
                     overflow: expanded
@@ -672,7 +679,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
                         padding: EdgeInsets.zero,
                       ),
                       child: Text(
-                        expanded ? 'Thu g\u1ecdn' : 'Xem th\u00eam',
+                        expanded ? t.commonCollapse : t.commonSeeMore,
                       ),
                     ),
                   ],
@@ -693,6 +700,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
     required AsyncSnapshot<List<DishModel>> snapshot,
     required List<DishModel> dishes,
   }) {
+    final t = AppLocalizations.of(context)!;
     return Container(
       key: key,
       padding: const EdgeInsets.all(18),
@@ -718,7 +726,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'M\u00f3n \u0103n n\u1ed5i b\u1eadt',
+                      t.provinceFeaturedDishesTitle,
                       style: theme.textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.w800,
                         color: const Color(0xFF1F2937),
@@ -726,7 +734,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'C\u00e1c m\u00f3n ngon ti\u00eau bi\u1ec3u c\u1ee7a ${province.name}.',
+                      t.provinceFeaturedDishesSubtitle(province.name),
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: const Color(0xFF6B7280),
                       ),
@@ -759,7 +767,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
               spacing: 8,
               runSpacing: 8,
               children: [
-                _buildFilterChip(theme, '', 'T\u1ea5t c\u1ea3'),
+                _buildFilterChip(theme, '', t.provinceAllFilter),
                 ...legacyCodes.map(
                   (code) => _buildFilterChip(theme, code, _legacyLabel(code)),
                 ),
@@ -771,7 +779,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
             const Center(child: CircularProgressIndicator())
           else if (snapshot.hasError)
             Text(
-              'Kh\u00f4ng t\u1ea3i \u0111\u01b0\u1ee3c danh s\u00e1ch m\u00f3n \u0103n.',
+              t.provinceDishLoadError,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: const Color(0xFFB91C1C),
               ),
@@ -785,8 +793,10 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
               ),
               child: Text(
                 _selectedLegacyFilter.isEmpty
-                    ? 'Ch\u01b0a c\u00f3 m\u00f3n \u0103n n\u00e0o cho t\u1ec9nh n\u00e0y.'
-                    : 'Ch\u01b0a c\u00f3 m\u00f3n \u0103n n\u00e0o thu\u1ed9c ${_legacyLabel(_selectedLegacyFilter)}.',
+                    ? t.provinceDishEmpty
+                    : t.provinceLegacyDishEmpty(
+                        _legacyLabel(_selectedLegacyFilter),
+                      ),
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: const Color(0xFF6B7280),
                 ),
@@ -889,6 +899,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
     ThemeData theme,
     List<ProvincePlaceModel> places,
   ) {
+    final t = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -896,7 +907,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
           children: [
             Expanded(
               child: Text(
-                '\u0110\u1ecba \u0111i\u1ec3m n\u1ed5i ti\u1ebfng',
+                t.provinceFamousPlacesTitle,
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w900,
                   color: const Color(0xFF1F2937),
@@ -909,7 +920,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
                 foregroundColor: const Color(0xFFFF8A00),
                 padding: EdgeInsets.zero,
               ),
-              child: const Text('Xem t\u1ea5t c\u1ea3'),
+              child: Text(t.homeBadgesSeeAll),
             ),
           ],
         ),
@@ -1038,6 +1049,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
 
   Widget _buildHero(List<String> images, String name) {
     final theme = Theme.of(context);
+    final t = AppLocalizations.of(context)!;
     if (images.isEmpty) {
       return Container(
         height: 180,
@@ -1118,9 +1130,9 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
                       color: Colors.white.withValues(alpha: 0.18),
                       borderRadius: BorderRadius.circular(999),
                     ),
-                    child: const Text(
-                      'Kh\u00e1m ph\u00e1 t\u1ec9nh th\u00e0nh',
-                      style: TextStyle(
+                    child: Text(
+                      t.provinceHeroBadge,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
                       ),

@@ -233,7 +233,7 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
                             top: 0,
                             child: CommunityBannerHeader(
                               title: t.communityTitle,
-                              subtitle: 'Chia sẻ hành trình ẩm thực của bạn',
+                              subtitle: t.communitySubtitle,
                               isDark: isDark,
                               onSearchTap: () {},
                               bellAction: _buildHeaderBellAction(),
@@ -465,6 +465,7 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
   }
 
   Widget _buildCommunityFilterBar(bool isDark) {
+    final t = AppLocalizations.of(context)!;
     return Builder(
       builder: (context) {
         final tabController = DefaultTabController.of(context);
@@ -475,28 +476,28 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
             return Row(
               children: [
                 _buildCommunityPill(
-                  label: 'Tất cả',
+                  label: t.communityTabAll,
                   selected: selectedIndex == 0,
                   onTap: () => tabController.animateTo(0),
                   isDark: isDark,
                 ),
                 const SizedBox(width: 8),
                 _buildCommunityPill(
-                  label: 'Đang hot',
+                  label: t.communityTabTrending,
                   selected: selectedIndex == 1,
                   onTap: () => tabController.animateTo(1),
                   isDark: isDark,
                 ),
                 const SizedBox(width: 8),
                 _buildCommunityPill(
-                  label: 'Gần bạn',
+                  label: t.communityTabNear,
                   selected: selectedIndex == 2,
                   onTap: () => tabController.animateTo(2),
                   isDark: isDark,
                 ),
                 const SizedBox(width: 8),
                 _buildCommunityPill(
-                  label: 'Theo tỉnh',
+                  label: t.communityTabProvince,
                   selected: selectedIndex == 3,
                   onTap: () => tabController.animateTo(3),
                   isDark: isDark,

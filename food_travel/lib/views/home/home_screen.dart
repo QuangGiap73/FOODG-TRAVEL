@@ -292,6 +292,10 @@ class _HomeFeedState extends State<_HomeFeed> {
   static const List<String> _promoBanners = [
     'assets/home/banner_1.png',
     'assets/home/banner_2.png',
+    'assets/home/banner_3.png',
+    'assets/home/banner_4.png',
+    'assets/home/banner_5.png',
+    'assets/home/banner_6.png',
   ];
 
   @override

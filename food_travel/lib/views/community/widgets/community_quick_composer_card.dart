@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
+
 class CommunityQuickComposerCard extends StatefulWidget {
   const CommunityQuickComposerCard({
     super.key,
@@ -30,6 +32,7 @@ class _CommunityQuickComposerCardState extends State<CommunityQuickComposerCard>
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
@@ -88,7 +91,7 @@ class _CommunityQuickComposerCardState extends State<CommunityQuickComposerCard>
                   style: TextStyle(color: textColor, fontSize: 13),
                   decoration: InputDecoration(
                     isDense: true,
-                    hintText: 'Bạn vừa ăn món gì ngon?',
+                    hintText: t.communityComposerHint,
                     hintStyle: TextStyle(color: hintColor),
                     filled: true,
                     fillColor: fieldBg,
@@ -121,7 +124,7 @@ class _CommunityQuickComposerCardState extends State<CommunityQuickComposerCard>
               Expanded(
                 child: _ActionPill(
                   icon: Icons.image_outlined,
-                  label: 'Đăng ảnh',
+                  label: t.communityAddPhoto,
                   iconColor: pillIconColor,
                   textColor: pillTextColor,
                   background: pillBackground,
@@ -132,7 +135,7 @@ class _CommunityQuickComposerCardState extends State<CommunityQuickComposerCard>
               Expanded(
                 child: _ActionPill(
                   icon: Icons.place_outlined,
-                  label: 'Check-in',
+                  label: t.communityCheckInAction,
                   iconColor: pillIconColor,
                   textColor: pillTextColor,
                   background: pillBackground,
@@ -143,7 +146,7 @@ class _CommunityQuickComposerCardState extends State<CommunityQuickComposerCard>
               Expanded(
                 child: _ActionPill(
                   icon: Icons.rate_review_outlined,
-                  label: 'Review',
+                  label: t.communityReviewAction,
                   iconColor: pillIconColor,
                   textColor: pillTextColor,
                   background: pillBackground,

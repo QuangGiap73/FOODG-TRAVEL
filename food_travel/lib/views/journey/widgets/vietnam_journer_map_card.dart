@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../models/journey/journey_province_progress.dart';
 import '../../../models/journey/journey_schema.dart';
 import '../pages/journey_province_detail_page.dart';
@@ -191,8 +192,8 @@ class _VietnamJourneyMapCardState extends State<VietnamJourneyMapCard> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                const Text(
-                  'Danh s\u00e1ch t\u1ec9nh th\u00e0nh',
+                Text(
+                  AppLocalizations.of(context)!.journeyProvinceListTitle,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w900,
@@ -201,7 +202,10 @@ class _VietnamJourneyMapCardState extends State<VietnamJourneyMapCard> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  '\u0110\u00e3 kh\u00e1m ph\u00e1 ${data.discoveredCount}/${data.items.length} t\u1ec9nh th\u00e0nh.',
+                  AppLocalizations.of(context)!.journeyDiscoveredProvinceCount(
+                    data.discoveredCount,
+                    data.items.length,
+                  ),
                   style: const TextStyle(
                     fontSize: 13,
                     color: Color(0xFF6B7280),
@@ -244,8 +248,12 @@ class _VietnamJourneyMapCardState extends State<VietnamJourneyMapCard> {
                         ),
                         trailing: Text(
                           item.isDiscovered
-                              ? '${item.progress.checkinCount} check-in'
-                              : 'Ch\u01b0a kh\u00e1m ph\u00e1',
+                              ? AppLocalizations.of(context)!
+                                  .journeyCheckinCount(
+                                    item.progress.checkinCount,
+                                  )
+                              : AppLocalizations.of(context)!
+                                  .journeyNotDiscovered,
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
@@ -273,16 +281,16 @@ class _JourneySignedOutState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    final t = AppLocalizations.of(context)!;
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _Header(),
-        SizedBox(height: 12),
+        const _Header(),
+        const SizedBox(height: 12),
         _MapCardMessage(
           icon: Icons.person_outline_rounded,
-          title: 'Ch\u01b0a c\u00f3 ng\u01b0\u1eddi d\u00f9ng',
-          message:
-              '\u0110\u0103ng nh\u1eadp \u0111\u1ec3 theo d\u00f5i h\u00e0nh tr\u00ecnh \u1ea9m th\u1ef1c c\u1ee7a b\u1ea1n tr\u00ean b\u1ea3n \u0111\u1ed3.',
+          title: t.journeySignedOutTitle,
+          message: t.journeySignedOutMessage,
         ),
       ],
     );
@@ -309,11 +317,17 @@ class _JourneyMapContent extends StatelessWidget {
         const SizedBox(height: 12),
         _JourneyMapPanel(data: data, onProvinceTap: onProvinceTap),
         const SizedBox(height: 14),
-        const Row(
+        Row(
           children: [
-            _MapLegendItem(color: Color(0xFFFF8A00), label: '\u0110\u00e3 kh\u00e1m ph\u00e1'),
-            SizedBox(width: 20),
-            _MapLegendItem(color: Color(0xFFD7DDE5), label: 'Ch\u01b0a kh\u00e1m ph\u00e1'),
+            _MapLegendItem(
+              color: const Color(0xFFFF8A00),
+              label: AppLocalizations.of(context)!.journeyDiscovered,
+            ),
+            const SizedBox(width: 20),
+            _MapLegendItem(
+              color: const Color(0xFFD7DDE5),
+              label: AppLocalizations.of(context)!.journeyNotDiscovered,
+            ),
           ],
         ),
         if (data.discoveredItems.isNotEmpty) ...[
@@ -333,7 +347,7 @@ class _JourneyMapContent extends StatelessWidget {
                     ),
                     onPressed: () => onProvinceTap(item),
                     label: Text(
-                      '${item.displayName} â€¢ ${item.progress.checkinCount}',
+                      '${item.displayName} • ${item.progress.checkinCount}',
                     ),
                   );
                 }).toList(),
@@ -353,9 +367,9 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Expanded(
+        Expanded(
           child: Text(
-            'B\u1ea3n \u0111\u1ed3 kh\u00e1m ph\u00e1 Vi\u1ec7t Nam',
+            AppLocalizations.of(context)!.journeyMapTitle,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w900,
@@ -373,7 +387,7 @@ class _Header extends StatelessWidget {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            child: const Text('Xem t\u1ea5t c\u1ea3'),
+            child: Text(AppLocalizations.of(context)!.commonViewAll),
           ),
       ],
     );
@@ -517,8 +531,8 @@ class _DiscoverySummaryCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            '\u0110\u00e3 kh\u00e1m ph\u00e1',
+          Text(
+            AppLocalizations.of(context)!.journeyDiscovered,
             style: TextStyle(
               fontSize: 11,
               color: Color(0xFF6B7280),
@@ -551,8 +565,8 @@ class _DiscoverySummaryCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 3),
-          const Text(
-            't\u1ec9nh th\u00e0nh',
+          Text(
+            AppLocalizations.of(context)!.journeyProvinceUnit,
             style: TextStyle(
               fontSize: 12,
               color: Color(0xFF374151),
@@ -668,11 +682,13 @@ class _MapErrorState extends StatelessWidget {
     final details = error?.toString().trim();
     return _MapCardMessage(
       icon: Icons.map_outlined,
-      title: 'Kh\u00f4ng t\u1ea3i \u0111\u01b0\u1ee3c b\u1ea3n \u0111\u1ed3',
+      title: AppLocalizations.of(context)!.journeyMapLoadErrorTitle,
       message:
           details == null || details.isEmpty
-              ? 'Asset GeoJSON hi\u1ec7n t\u1ea1i kh\u00f4ng \u0111\u1ecdc \u0111\u01b0\u1ee3c. Ki\u1ec3m tra l\u1ea1i file b\u1ea3n \u0111\u1ed3.'
-              : 'Kh\u00f4ng \u0111\u1ecdc \u0111\u01b0\u1ee3c GeoJSON: $details',
+              ? AppLocalizations.of(context)!.journeyMapAssetLoadError
+              : AppLocalizations.of(context)!.journeyMapGeoJsonLoadError(
+                  details,
+                ),
     );
   }
 }
