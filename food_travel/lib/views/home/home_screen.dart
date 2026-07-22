@@ -1375,10 +1375,11 @@ class _HomeFeedState extends State<_HomeFeed> {
   }
 
   Widget _buildPromoJourneyCard(ThemeData theme) {
+    final t = AppLocalizations.of(context)!;
     final isDark = theme.brightness == Brightness.dark;
     final quickActions = <_HomeQuickAction>[
       _HomeQuickAction(
-        label: 'Gan toi',
+        label: t.homeQuickNearby,
         icon: Icons.location_on_rounded,
         onTap: () {
           Navigator.push(
@@ -1387,14 +1388,14 @@ class _HomeFeedState extends State<_HomeFeed> {
               builder:
                   (_) => MapPage(
                     initialNearbyPlaces: _nearbyHomeController.places,
-                    initialNearbyQuery: 'Quan gan toi',
+                    initialNearbyQuery: t.homeNearbyMapQuery,
                   ),
             ),
           );
         },
       ),
       _HomeQuickAction(
-        label: 'Check-in',
+        label: t.homeQuickCheckIn,
         icon: Icons.verified_rounded,
         onTap: () {
           Navigator.push(
@@ -1404,7 +1405,7 @@ class _HomeFeedState extends State<_HomeFeed> {
         },
       ),
       _HomeQuickAction(
-        label: 'Luu quan',
+        label: t.homeQuickSavedPlaces,
         icon: Icons.bookmark_rounded,
         onTap: () {
           Navigator.push(
@@ -1414,7 +1415,7 @@ class _HomeFeedState extends State<_HomeFeed> {
         },
       ),
       _HomeQuickAction(
-        label: 'Ban do',
+        label: t.homeQuickMap,
         icon: Icons.map_rounded,
         onTap: () {
           Navigator.push(

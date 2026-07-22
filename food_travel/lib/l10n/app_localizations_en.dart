@@ -277,6 +277,68 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeDishFallback => 'Dish';
 
   @override
+  String get homeQuickNearby => 'Near me';
+
+  @override
+  String get homeQuickCheckIn => 'Check-in';
+
+  @override
+  String get homeQuickSavedPlaces => 'Saved places';
+
+  @override
+  String get homeQuickMap => 'Map';
+
+  @override
+  String get homeNearbyMapQuery => 'Restaurants near me';
+
+  @override
+  String get homeJourneyTitle => 'Food journey';
+
+  @override
+  String homeJourneyExplorerLevel(int level) {
+    return 'Explorer Lv.$level';
+  }
+
+  @override
+  String homeJourneyTotalPoints(int points) {
+    return '$points points';
+  }
+
+  @override
+  String get homeJourneyStreakLabel => 'Streak';
+
+  @override
+  String homeJourneyStreakDays(int days) {
+    return '$days days';
+  }
+
+  @override
+  String get homeJourneyPointsLabel => 'Points';
+
+  @override
+  String homeJourneyNeedPoints(int points, int level) {
+    return 'Need $points points to reach Lv.$level';
+  }
+
+  @override
+  String get homeMissionTodayTitle => 'Today\'s missions';
+
+  @override
+  String get homeMissionSeeAll => 'See all missions';
+
+  @override
+  String get homeMissionCheckinNewPlace => 'Check in at 1 new place';
+
+  @override
+  String get homeMissionTryVietnameseFood => 'Try a Vietnamese dish';
+
+  @override
+  String get homeBadgesTitle => 'Your badges';
+
+  @override
+  String get homeBadgesSeeAll => 'See all';
+
+  @override
   String get navHome => 'Home';
 
   @override

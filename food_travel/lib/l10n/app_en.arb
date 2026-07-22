@@ -81,6 +81,55 @@
   "homeTodayEatTitle": "What to eat today?",
   "homeTodayRefresh": "Refresh",
   "homeDishFallback": "Dish",
+  "homeQuickNearby": "Near me",
+  "homeQuickCheckIn": "Check-in",
+  "homeQuickSavedPlaces": "Saved places",
+  "homeQuickMap": "Map",
+  "homeNearbyMapQuery": "Restaurants near me",
+  "homeJourneyTitle": "Food journey",
+  "homeJourneyExplorerLevel": "Explorer Lv.{level}",
+  "@homeJourneyExplorerLevel": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "homeJourneyTotalPoints": "{points} points",
+  "@homeJourneyTotalPoints": {
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
+  "homeJourneyStreakLabel": "Streak",
+  "homeJourneyStreakDays": "{days} days",
+  "@homeJourneyStreakDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "homeJourneyPointsLabel": "Points",
+  "homeJourneyNeedPoints": "Need {points} points to reach Lv.{level}",
+  "@homeJourneyNeedPoints": {
+    "placeholders": {
+      "points": {
+        "type": "int"
+      },
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "homeMissionTodayTitle": "Today's missions",
+  "homeMissionSeeAll": "See all missions",
+  "homeMissionCheckinNewPlace": "Check in at 1 new place",
+  "homeMissionTryVietnameseFood": "Try a Vietnamese dish",
+  "homeBadgesTitle": "Your badges",
+  "homeBadgesSeeAll": "See all",
   "navHome": "Home",
   "navExplore": "Explore",
   "navMap": "Map",

@@ -81,6 +81,55 @@
   "homeTodayEatTitle": "Hôm nay ăn gì?",
   "homeTodayRefresh": "Đổi gợi ý",
   "homeDishFallback": "Món",
+  "homeQuickNearby": "Gần tôi",
+  "homeQuickCheckIn": "Check-in",
+  "homeQuickSavedPlaces": "Lưu quán",
+  "homeQuickMap": "Bản đồ",
+  "homeNearbyMapQuery": "Quán gần tôi",
+  "homeJourneyTitle": "Hành trình ẩm thực",
+  "homeJourneyExplorerLevel": "Explorer Lv.{level}",
+  "@homeJourneyExplorerLevel": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "homeJourneyTotalPoints": "{points} điểm",
+  "@homeJourneyTotalPoints": {
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
+  "homeJourneyStreakLabel": "Chuỗi ngày",
+  "homeJourneyStreakDays": "{days} ngày",
+  "@homeJourneyStreakDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "homeJourneyPointsLabel": "Điểm",
+  "homeJourneyNeedPoints": "Cần {points} điểm để lên Lv.{level}",
+  "@homeJourneyNeedPoints": {
+    "placeholders": {
+      "points": {
+        "type": "int"
+      },
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "homeMissionTodayTitle": "Nhiệm vụ hôm nay",
+  "homeMissionSeeAll": "Xem tất cả nhiệm vụ",
+  "homeMissionCheckinNewPlace": "Check-in 1 quán mới",
+  "homeMissionTryVietnameseFood": "Thử một món Việt",
+  "homeBadgesTitle": "Huy hiệu của bạn",
+  "homeBadgesSeeAll": "Xem tất cả",
   "navHome": "Trang chủ",
   "navExplore": "Khám phá",
   "navMap": "Bản đồ",

@@ -590,6 +590,114 @@ abstract class AppLocalizations {
   /// **'Dish'**
   String get homeDishFallback;
 
+  /// No description provided for @homeQuickNearby.
+  ///
+  /// In en, this message translates to:
+  /// **'Near me'**
+  String get homeQuickNearby;
+
+  /// No description provided for @homeQuickCheckIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Check-in'**
+  String get homeQuickCheckIn;
+
+  /// No description provided for @homeQuickSavedPlaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved places'**
+  String get homeQuickSavedPlaces;
+
+  /// No description provided for @homeQuickMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Map'**
+  String get homeQuickMap;
+
+  /// No description provided for @homeNearbyMapQuery.
+  ///
+  /// In en, this message translates to:
+  /// **'Restaurants near me'**
+  String get homeNearbyMapQuery;
+
+  /// No description provided for @homeJourneyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Food journey'**
+  String get homeJourneyTitle;
+
+  /// No description provided for @homeJourneyExplorerLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Explorer Lv.{level}'**
+  String homeJourneyExplorerLevel(int level);
+
+  /// No description provided for @homeJourneyTotalPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'{points} points'**
+  String homeJourneyTotalPoints(int points);
+
+  /// No description provided for @homeJourneyStreakLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Streak'**
+  String get homeJourneyStreakLabel;
+
+  /// No description provided for @homeJourneyStreakDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{days} days'**
+  String homeJourneyStreakDays(int days);
+
+  /// No description provided for @homeJourneyPointsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Points'**
+  String get homeJourneyPointsLabel;
+
+  /// No description provided for @homeJourneyNeedPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'Need {points} points to reach Lv.{level}'**
+  String homeJourneyNeedPoints(int points, int level);
+
+  /// No description provided for @homeMissionTodayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s missions'**
+  String get homeMissionTodayTitle;
+
+  /// No description provided for @homeMissionSeeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'See all missions'**
+  String get homeMissionSeeAll;
+
+  /// No description provided for @homeMissionCheckinNewPlace.
+  ///
+  /// In en, this message translates to:
+  /// **'Check in at 1 new place'**
+  String get homeMissionCheckinNewPlace;
+
+  /// No description provided for @homeMissionTryVietnameseFood.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a Vietnamese dish'**
+  String get homeMissionTryVietnameseFood;
+
+  /// No description provided for @homeBadgesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your badges'**
+  String get homeBadgesTitle;
+
+  /// No description provided for @homeBadgesSeeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get homeBadgesSeeAll;
+
   /// No description provided for @navHome.
   ///
   /// In en, this message translates to:

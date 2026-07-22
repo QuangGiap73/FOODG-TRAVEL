@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../../models/journey/badge_model.dart';
 import '../../../models/journey/journey_stats.dart';
@@ -79,6 +80,8 @@ class _JourneyOverviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     return StreamBuilder<JourneyStats>(
       stream: _statsStream(),
       builder: (context, snapshot) {
@@ -113,17 +116,17 @@ class _JourneyOverviewCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Row(
+                  Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.location_on_rounded,
                         size: 14,
                         color: Colors.white,
                       ),
-                      SizedBox(width: 4),
+                      const SizedBox(width: 4),
                       Expanded(
                         child: Text(
-                          'Hanh trinh am thuc',
+                          t.homeJourneyTitle,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -133,7 +136,7 @@ class _JourneyOverviewCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Icon(
+                      const Icon(
                         Icons.chevron_right_rounded,
                         size: 16,
                         color: Colors.white,
@@ -167,7 +170,7 @@ class _JourneyOverviewCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Explorer Lv.$level',
+                              t.homeJourneyExplorerLevel(level),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
@@ -178,7 +181,7 @@ class _JourneyOverviewCard extends StatelessWidget {
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              '$totalPoints diem',
+                              t.homeJourneyTotalPoints(totalPoints),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
@@ -198,15 +201,15 @@ class _JourneyOverviewCard extends StatelessWidget {
                       Expanded(
                         child: _StatChip(
                           icon: Icons.local_fire_department_rounded,
-                          title: 'Streak',
-                          value: '${stats.currentStreak} ngay',
+                          title: t.homeJourneyStreakLabel,
+                          value: t.homeJourneyStreakDays(stats.currentStreak),
                         ),
                       ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: _StatChip(
                           icon: Icons.workspace_premium_rounded,
-                          title: 'Diem',
+                          title: t.homeJourneyPointsLabel,
                           value: '$totalPoints',
                         ),
                       ),
@@ -224,7 +227,7 @@ class _JourneyOverviewCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Can $remain diem de len Lv.${level + 1}',
+                    t.homeJourneyNeedPoints(remain, level + 1),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -322,6 +325,8 @@ class _HomeMissionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     return StreamBuilder<List<JourneyMission>>(
       stream: _missionStream(),
       builder: (context, snapshot) {
@@ -354,12 +359,12 @@ class _HomeMissionCard extends StatelessWidget {
                     color: Color(0xFFFF8A00),
                   ),
                   const SizedBox(width: 4),
-                  const Expanded(
+                  Expanded(
                     child: Text(
-                      'Nhiem vu hom nay',
+                      t.homeMissionTodayTitle,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w800,
                         color: Color(0xFF1F2937),
@@ -384,21 +389,21 @@ class _HomeMissionCard extends StatelessWidget {
                 alignment: Alignment.centerRight,
                 child: InkWell(
                   onTap: onTapAll,
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 2),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 2),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Xem tat ca nhiem vu',
-                          style: TextStyle(
+                          t.homeMissionSeeAll,
+                          style: const TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.w700,
                             color: Color(0xFF7B6D62),
                           ),
                         ),
-                        SizedBox(width: 2),
-                        Icon(
+                        const SizedBox(width: 2),
+                        const Icon(
                           Icons.chevron_right_rounded,
                           size: 14,
                           color: Color(0xFF7B6D62),
@@ -481,6 +486,13 @@ class _MissionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+    final title = switch (mission.id) {
+      'checkin_new_place' => t.homeMissionCheckinNewPlace,
+      'try_vietnamese_food' => t.homeMissionTryVietnameseFood,
+      _ => mission.title,
+    };
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
@@ -506,7 +518,7 @@ class _MissionRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  mission.title,
+                  title,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -573,6 +585,8 @@ class _HomeBadgesRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     return StreamBuilder<List<JourneyBadge>>(
       stream: _badgeStream(),
       builder: (context, snapshot) {
@@ -590,10 +604,10 @@ class _HomeBadgesRow extends StatelessWidget {
                   color: Color(0xFFFF8A00),
                 ),
                 const SizedBox(width: 5),
-                const Expanded(
+                Expanded(
                   child: Text(
-                    'Huy hieu cua ban',
-                    style: TextStyle(
+                    t.homeBadgesTitle,
+                    style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w800,
                       color: Color(0xFF1F2937),
@@ -602,21 +616,21 @@ class _HomeBadgesRow extends StatelessWidget {
                 ),
                 InkWell(
                   onTap: onTapAll,
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 2),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 2),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Xem tat ca',
-                          style: TextStyle(
+                          t.homeBadgesSeeAll,
+                          style: const TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.w700,
                             color: Color(0xFFFF7A1A),
                           ),
                         ),
-                        SizedBox(width: 1),
-                        Icon(
+                        const SizedBox(width: 1),
+                        const Icon(
                           Icons.chevron_right_rounded,
                           size: 13,
                           color: Color(0xFFFF7A1A),

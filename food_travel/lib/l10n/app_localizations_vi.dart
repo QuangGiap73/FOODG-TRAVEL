@@ -275,6 +275,68 @@ class AppLocalizationsVi extends AppLocalizations {
   String get homeDishFallback => 'Món';
 
   @override
+  String get homeQuickNearby => 'Gần tôi';
+
+  @override
+  String get homeQuickCheckIn => 'Check-in';
+
+  @override
+  String get homeQuickSavedPlaces => 'Lưu quán';
+
+  @override
+  String get homeQuickMap => 'Bản đồ';
+
+  @override
+  String get homeNearbyMapQuery => 'Quán gần tôi';
+
+  @override
+  String get homeJourneyTitle => 'Hành trình ẩm thực';
+
+  @override
+  String homeJourneyExplorerLevel(int level) {
+    return 'Explorer Lv.$level';
+  }
+
+  @override
+  String homeJourneyTotalPoints(int points) {
+    return '$points điểm';
+  }
+
+  @override
+  String get homeJourneyStreakLabel => 'Chuỗi ngày';
+
+  @override
+  String homeJourneyStreakDays(int days) {
+    return '$days ngày';
+  }
+
+  @override
+  String get homeJourneyPointsLabel => 'Điểm';
+
+  @override
+  String homeJourneyNeedPoints(int points, int level) {
+    return 'Cần $points điểm để lên Lv.$level';
+  }
+
+  @override
+  String get homeMissionTodayTitle => 'Nhiệm vụ hôm nay';
+
+  @override
+  String get homeMissionSeeAll => 'Xem tất cả nhiệm vụ';
+
+  @override
+  String get homeMissionCheckinNewPlace => 'Check-in 1 quán mới';
+
+  @override
+  String get homeMissionTryVietnameseFood => 'Thử một món Việt';
+
+  @override
+  String get homeBadgesTitle => 'Huy hiệu của bạn';
+
+  @override
+  String get homeBadgesSeeAll => 'Xem tất cả';
+
+  @override
   String get navHome => 'Trang chủ';
 
   @override
