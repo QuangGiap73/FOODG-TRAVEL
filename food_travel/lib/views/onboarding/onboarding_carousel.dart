@@ -16,6 +16,9 @@ class OnboardingCarousel extends StatefulWidget {
 class _OnboardingCarouselState extends State<OnboardingCarousel> {
   final _page = PageController();
   int _index = 0;
+  bool _isTransitioning = false;
+  bool _isCompleting = false;
+  Future<void>? _pageAnimation;
 
   final _slides = const [
     _Slide(
@@ -42,6 +45,7 @@ class _OnboardingCarouselState extends State<OnboardingCarousel> {
   ];
 
   Future<void> _showPermissionSheet() async {
+    if (!mounted) return;
     final ok = await showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
@@ -56,6 +60,7 @@ class _OnboardingCarouselState extends State<OnboardingCarousel> {
   }
 
   Future<void> _showLanguageSheet() async {
+    if (!mounted) return;
     await showModalBottomSheet<void>(
       context: context,
       backgroundColor: Colors.transparent,
@@ -63,22 +68,65 @@ class _OnboardingCarouselState extends State<OnboardingCarousel> {
     );
   }
 
-  void _next() {
+  Future<void> _next() async {
+    if (_isTransitioning || _isCompleting) return;
+    _isTransitioning = true;
+
     if (_index < _slides.length - 1) {
-      _page.nextPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
-    } else {
-      _showLanguageSheet().then((_) => _showPermissionSheet());
+      try {
+        final animation = _page.nextPage(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+        _pageAnimation = animation;
+        await animation;
+      } finally {
+        _pageAnimation = null;
+        _isTransitioning = false;
+      }
+      return;
+    }
+
+    try {
+      await _showLanguageSheet();
+      if (!mounted || _isCompleting) return;
+      await _showPermissionSheet();
+    } finally {
+      _isTransitioning = false;
     }
   }
 
   Future<void> _completeOnboarding() async {
+    if (_isCompleting) return;
+    _isCompleting = true;
+
+    // If Skip is tapped while a programmed page transition is finishing,
+    // keep this route active until its ScrollEndNotification is delivered.
+    final activeAnimation = _pageAnimation;
+    if (activeAnimation != null) {
+      await activeAnimation;
+    }
+    if (!mounted) return;
+
+    // A user swipe can also leave PageView in a ballistic scroll. Jumping to
+    // its nearest page ends that activity while the Material is still active.
+    if (_page.hasClients && _page.position.isScrollingNotifier.value) {
+      final currentPage = (_page.page ?? _index.toDouble()).round();
+      _page.jumpToPage(currentPage);
+      await WidgetsBinding.instance.endOfFrame;
+    }
+    if (!mounted) return;
+
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('onboarding_seen', true);
     if (!mounted) return;
     Navigator.pushReplacementNamed(context, RouteNames.login);
+  }
+
+  @override
+  void dispose() {
+    _page.dispose();
+    super.dispose();
   }
 
   @override

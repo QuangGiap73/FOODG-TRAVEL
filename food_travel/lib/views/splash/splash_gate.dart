@@ -424,10 +424,15 @@ class _LogoStrokePainter extends CustomPainter {
   }
 
   Offset _pointOnPath(Path path, double t) {
-    final metrics = path.computeMetrics();
+    // PathMetrics is a lazy, single-pass iterable on some Flutter engines.
+    // Materializing it avoids consuming the first metric in `isEmpty` before
+    // reading it again, which otherwise throws "Bad state: No element".
+    final metrics = path.computeMetrics().toList(growable: false);
     if (metrics.isEmpty) return Offset.zero;
     final metric = metrics.first;
-    final tangent = metric.getTangentForOffset(metric.length * t.clamp(0.0, 1.0));
+    final tangent = metric.getTangentForOffset(
+      metric.length * t.clamp(0.0, 1.0),
+    );
     return tangent?.position ?? Offset.zero;
   }
 

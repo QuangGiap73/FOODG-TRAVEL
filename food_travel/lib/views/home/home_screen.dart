@@ -351,7 +351,12 @@ class _HomeFeedState extends State<_HomeFeed> {
     if (_promoBanners.length < 2) return;
 
     _promoBannerTimer = Timer.periodic(const Duration(seconds: 4), (_) {
-      if (!_promoBannerController.hasClients) return;
+      if (!mounted ||
+          ModalRoute.of(context)?.isCurrent != true ||
+          !_promoBannerController.hasClients ||
+          _promoBannerController.position.isScrollingNotifier.value) {
+        return;
+      }
       final current =
           _promoBannerController.page?.round() ?? _promoBannerIndex.value;
       final next = (current + 1) % _promoBanners.length;
@@ -646,7 +651,12 @@ class _HomeFeedState extends State<_HomeFeed> {
     if (_imageCount < 2) return;
 
     _autoSlideTimer = Timer.periodic(const Duration(seconds: 4), (_) {
-      if (!_pageController.hasClients) return;
+      if (!mounted ||
+          ModalRoute.of(context)?.isCurrent != true ||
+          !_pageController.hasClients ||
+          _pageController.position.isScrollingNotifier.value) {
+        return;
+      }
       final current = _pageController.page?.round() ?? _imageIndex.value;
       final next = (current + 1) % _imageCount;
       _pageController.animateToPage(
@@ -1231,28 +1241,34 @@ class _HomeFeedState extends State<_HomeFeed> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: SizedBox(
               height: 190,
-              child: PageView.builder(
-                controller: _pageController,
-                onPageChanged: (index) => _imageIndex.value = index,
-                itemCount: images.length,
-                itemBuilder: (context, index) {
-                  final imageUrl = images[index];
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        RouteNames.provinceDetail,
-                        arguments: target.code.trim().isNotEmpty
-                            ? target.code
-                            : target.id,
-                      );
-                    },
-                    child: _buildProvinceImageSlide(
-                      imageUrl: imageUrl,
-                      name: target.name,
-                    ),
-                  );
-                },
+              child: NotificationListener<ScrollNotification>(
+                // PageController animations can finish during a route/tree
+                // transition. Do not let their late ScrollEndNotification
+                // reach an inactive Material ancestor.
+                onNotification: (_) => true,
+                child: PageView.builder(
+                  controller: _pageController,
+                  onPageChanged: (index) => _imageIndex.value = index,
+                  itemCount: images.length,
+                  itemBuilder: (context, index) {
+                    final imageUrl = images[index];
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          RouteNames.provinceDetail,
+                          arguments: target.code.trim().isNotEmpty
+                              ? target.code
+                              : target.id,
+                        );
+                      },
+                      child: _buildProvinceImageSlide(
+                        imageUrl: imageUrl,
+                        name: target.name,
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
           ),
@@ -1456,16 +1472,20 @@ class _HomeFeedState extends State<_HomeFeed> {
                 child: Stack(
                   alignment: Alignment.bottomCenter,
                   children: [
-                    PageView.builder(
-                      controller: _promoBannerController,
-                      itemCount: _promoBanners.length,
-                      onPageChanged: (index) => _promoBannerIndex.value = index,
-                      itemBuilder: (context, index) {
-                        return Image.asset(
-                          _promoBanners[index],
-                          fit: BoxFit.cover,
-                        );
-                      },
+                    NotificationListener<ScrollNotification>(
+                      onNotification: (_) => true,
+                      child: PageView.builder(
+                        controller: _promoBannerController,
+                        itemCount: _promoBanners.length,
+                        onPageChanged: (index) =>
+                            _promoBannerIndex.value = index,
+                        itemBuilder: (context, index) {
+                          return Image.asset(
+                            _promoBanners[index],
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      ),
                     ),
                     Positioned(
                       bottom: 8,
