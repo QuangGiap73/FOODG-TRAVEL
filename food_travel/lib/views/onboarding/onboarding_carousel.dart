@@ -48,7 +48,9 @@ class _OnboardingCarouselState extends State<OnboardingCarousel> {
       backgroundColor: Colors.transparent,
       builder: (_) => const _LocationPermissionSheet(),
     );
-    if (ok == true && mounted) {
+    // Both "allow" and the explicit "later" choice finish onboarding.
+    // A dismissed sheet (null) keeps the user on the last slide.
+    if (ok != null && mounted) {
       await _completeOnboarding();
     }
   }

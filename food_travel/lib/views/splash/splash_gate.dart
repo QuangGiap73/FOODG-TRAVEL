@@ -1,8 +1,48 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../router/route_names.dart';
+
+/// Reads the device-level onboarding flag before showing the animated splash.
+///
+/// This flag is intentionally independent from Firebase authentication: signing
+/// out must not make a user repeat the introductory onboarding.
+class AppStartupGate extends StatefulWidget {
+  const AppStartupGate({super.key});
+
+  @override
+  State<AppStartupGate> createState() => _AppStartupGateState();
+}
+
+class _AppStartupGateState extends State<AppStartupGate> {
+  late final Future<bool> _hasSeenOnboarding = _loadOnboardingState();
+
+  Future<bool> _loadOnboardingState() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('onboarding_seen') ?? false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<bool>(
+      future: _hasSeenOnboarding,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Scaffold(
+            backgroundColor: Color(0xFFFF5A00),
+            body: Center(
+              child: CircularProgressIndicator(color: Colors.white),
+            ),
+          );
+        }
+
+        return SplashGate(hasSeenOnboarding: snapshot.data!);
+      },
+    );
+  }
+}
 
 class SplashGate extends StatefulWidget {
   const SplashGate({

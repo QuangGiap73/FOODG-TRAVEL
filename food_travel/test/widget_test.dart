@@ -1,30 +1,29 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
+import 'package:food_travel/controller/l10n/locale_controller.dart';
+import 'package:food_travel/controller/theme_controller.dart';
 import 'package:food_travel/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('MyApp builds with its configured app shell', (tester) async {
+    const testHomeKey = Key('test-home');
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+    await tester.pumpWidget(
+      MyApp(
+        themeController: ThemeController(),
+        localeController: LocaleController(),
+        home: const Scaffold(
+          key: testHomeKey,
+          body: Text('FoodG Travel'),
+        ),
+      ),
+    );
     await tester.pump();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    final materialApp = tester.widget<MaterialApp>(find.byType(MaterialApp));
+    expect(materialApp.title, 'FoodG Travel');
+    expect(materialApp.supportedLocales, const [Locale('vi'), Locale('en')]);
+    expect(find.byKey(testHomeKey), findsOneWidget);
+    expect(find.text('FoodG Travel'), findsOneWidget);
   });
 }

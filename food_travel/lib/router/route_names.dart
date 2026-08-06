@@ -1,5 +1,5 @@
 class RouteNames {
-  static const authGate = '/';
+  static const authGate = '/auth-gate';
   static const welcome = '/welcome';
   static const onboarding = '/onboarding';
   static const login = '/login';
