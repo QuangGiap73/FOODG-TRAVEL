@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geolocator/geolocator.dart';
@@ -40,36 +41,59 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
   bool _checkedSurvey = false;
+  late final List<Widget?> _pages;
+  final ValueNotifier<bool> _homeTabActive = ValueNotifier<bool>(true);
   // Ten tinh dang hien thi tren app bar (duoc HomeFeed cap nhat theo GPS/khao sat).
   String _appBarProvinceText = '';
   // Callback de app bar goi mo danh sach tinh trong HomeFeed.
   VoidCallback? _openProvincePickerFromHome;
 
-  List<Widget> _buildPages() {
-    return [
-      _HomeFeed(
-        onProvinceLabelChanged: (value) {
-          if (!mounted || value == _appBarProvinceText) return;
-          // Tranh setState trung luc cay widget dang build.
-          WidgetsBinding.instance.addPostFrameCallback((_) {
+  Widget _createPage(int index) {
+    switch (index) {
+      case 0:
+        return _HomeFeed(
+          isActive: _homeTabActive,
+          onProvinceLabelChanged: (value) {
             if (!mounted || value == _appBarProvinceText) return;
-            setState(() => _appBarProvinceText = value);
-          });
-        },
-        onProvincePickerReady: (callback) {
-          _openProvincePickerFromHome = callback;
-        },
-      ),
-      const CommunityFeedPage(),
-      const MapPage(),
-      const FavoritesTabsPage(),
-      const PersonalPage(),
-    ];
+            // Tranh setState trung luc cay widget dang build.
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (!mounted || value == _appBarProvinceText) return;
+              setState(() => _appBarProvinceText = value);
+            });
+          },
+          onProvincePickerReady: (callback) {
+            _openProvincePickerFromHome = callback;
+          },
+        );
+      case 1:
+        return const CommunityFeedPage();
+      case 2:
+        return const MapPage();
+      case 3:
+        return const FavoritesTabsPage();
+      case 4:
+        return const PersonalPage();
+      default:
+        return const SizedBox.shrink();
+    }
+  }
+
+  void _selectTab(int index) {
+    if (index == _currentIndex) return;
+    // Notify Home before IndexedStack makes it offstage so active PageView
+    // animations can be stopped while their Material ancestor is still active.
+    _homeTabActive.value = index == 0;
+    setState(() {
+      _pages[index] ??= _createPage(index);
+      _currentIndex = index;
+    });
   }
 
   @override
   void initState() {
     super.initState();
+    _pages = List<Widget?>.filled(5, null);
+    _pages[0] = _createPage(0);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _maybeShowSurvey();
     });
@@ -88,6 +112,12 @@ class _HomeScreenState extends State<HomeScreen> {
     if (profile?.onboardingCompleted == true) return;
 
     await showSurveySheet(context);
+  }
+
+  @override
+  void dispose() {
+    _homeTabActive.dispose();
+    super.dispose();
   }
 
   @override
@@ -132,7 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius: BorderRadius.circular(12),
                     onTap: () {
                       if (_currentIndex != 0) {
-                        setState(() => _currentIndex = 0);
+                        _selectTab(0);
                         return;
                       }
                       // Mo danh sach tinh ngay tren app bar (chi khi dang o Home).
@@ -211,10 +241,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               )
               : null,
-      body: IndexedStack(index: _currentIndex, children: _buildPages()),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: List<Widget>.generate(
+          _pages.length,
+          (index) => _pages[index] ?? const SizedBox.shrink(),
+        ),
+      ),
       bottomNavigationBar: HomeBottomNav(
         currentIndex: _currentIndex,
-        onChanged: (index) => setState(() => _currentIndex = index),
+        onChanged: _selectTab,
       ),
     );
   }
@@ -223,10 +259,12 @@ class _HomeScreenState extends State<HomeScreen> {
 class _HomeFeed extends StatefulWidget {
   const _HomeFeed({
     super.key,
+    required this.isActive,
     required this.onProvinceLabelChanged,
     required this.onProvincePickerReady,
   });
 
+  final ValueListenable<bool> isActive;
   // HomeFeed gui ten tinh hien tai cho app bar o HomeScreen.
   final ValueChanged<String> onProvinceLabelChanged;
   // HomeFeed gui callback de app bar mo bottom sheet chon tinh.
@@ -254,9 +292,10 @@ class _HomeFeedState extends State<_HomeFeed> {
   String? _lastProvinceId;
   List<DishModel> _dishesCache = const [];
   String? _dishesCacheProvinceId;
-  Stream<List<DishModel>>? _dishesStream;
   List<DishModel> _provinceDishes = const [];
+  Stream<List<DishModel>>? _dishesStream;
   Object? _dishesError;
+  String? _activeDishQueryKey;
   List<ProvinceModel> _provinces = const [];
   bool _provincesLoading = true;
   Object? _provincesError;
@@ -301,6 +340,7 @@ class _HomeFeedState extends State<_HomeFeed> {
   @override
   void initState() {
     super.initState();
+    widget.isActive.addListener(_onHomeTabVisibilityChanged);
     // Tai san du lieu quan gan day ngay khi vao Home.
     _nearbyHomeController = NearbyHomeController()..load();
     _startProvinceListener();
@@ -327,6 +367,7 @@ class _HomeFeedState extends State<_HomeFeed> {
   @override
   void dispose() {
     // Huy callback o HomeScreen de tranh goi vao state da dispose.
+    widget.isActive.removeListener(_onHomeTabVisibilityChanged);
     widget.onProvincePickerReady(null);
     LocationPreferenceService.enabled.removeListener(_onLocationPrefChanged);
     _stopGpsListener();
@@ -346,12 +387,28 @@ class _HomeFeedState extends State<_HomeFeed> {
     super.dispose();
   }
 
+  void _onHomeTabVisibilityChanged() {
+    if (widget.isActive.value) return;
+    _stopPageAnimation(_pageController, _imageIndex.value);
+    _stopPageAnimation(_promoBannerController, _promoBannerIndex.value);
+  }
+
+  void _stopPageAnimation(PageController controller, int fallbackPage) {
+    if (!controller.hasClients ||
+        !controller.position.isScrollingNotifier.value) {
+      return;
+    }
+    final currentPage = (controller.page ?? fallbackPage.toDouble()).round();
+    controller.jumpToPage(currentPage);
+  }
+
   void _startPromoBannerAutoSlide() {
     _promoBannerTimer?.cancel();
     if (_promoBanners.length < 2) return;
 
     _promoBannerTimer = Timer.periodic(const Duration(seconds: 4), (_) {
       if (!mounted ||
+          !widget.isActive.value ||
           ModalRoute.of(context)?.isCurrent != true ||
           !_promoBannerController.hasClients ||
           _promoBannerController.position.isScrollingNotifier.value) {
@@ -430,10 +487,16 @@ class _HomeFeedState extends State<_HomeFeed> {
   }
 
   void _setProvince(ProvinceModel province) {
-    if (_selectedProvince?.id == province.id) {
+    final keys = _provinceQueryKeys(province);
+    final normalizedKeys = keys.map(_normalizeKey).toSet().toList()..sort();
+    final queryKey = normalizedKeys.join('|');
+    if (_activeDishQueryKey == queryKey) {
+      if (_selectedProvince?.id != province.id) {
+        setState(() => _selectedProvince = province);
+      }
       return;
     }
-    final keys = _provinceQueryKeys(province);
+    _activeDishQueryKey = queryKey;
     debugPrint(
       '[Home] setProvince: name=${province.name} code=${province.code} id=${province.id} keys=$keys',
     );
@@ -486,10 +549,6 @@ class _HomeFeedState extends State<_HomeFeed> {
     final normName = _normalizeKey(name);
     final normSlug = _normalizeKey(slug);
     final noAccentName = _removeDiacritics(name);
-    final gpsName = _gpsProvinceName?.trim() ?? '';
-    final gpsCode = _gpsProvinceCode?.trim() ?? '';
-    final gpsNoAccent = _removeDiacritics(gpsName);
-
     return [
       code,
       id,
@@ -502,9 +561,6 @@ class _HomeFeedState extends State<_HomeFeed> {
       normName,
       normSlug,
       noAccentName,
-      gpsName,
-      gpsCode,
-      gpsNoAccent,
     ].where((v) => v.isNotEmpty).toSet().toList();
   }
 
@@ -652,6 +708,7 @@ class _HomeFeedState extends State<_HomeFeed> {
 
     _autoSlideTimer = Timer.periodic(const Duration(seconds: 4), (_) {
       if (!mounted ||
+          !widget.isActive.value ||
           ModalRoute.of(context)?.isCurrent != true ||
           !_pageController.hasClients ||
           _pageController.position.isScrollingNotifier.value) {
