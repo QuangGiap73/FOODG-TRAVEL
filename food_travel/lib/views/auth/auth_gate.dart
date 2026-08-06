@@ -8,9 +8,33 @@ import '../../controller/restaurants/place_favorite_controller.dart';
 import '../../services/notifications/notification_service.dart';
 import '../home/home_screen.dart';
 import '../onboarding/welcome_screen.dart';
+import '../splash/splash_gate.dart';
 
-class AuthGate extends StatelessWidget {
-  const AuthGate({super.key});
+class AuthGate extends StatefulWidget {
+  const AuthGate({
+    super.key,
+    this.showLoginSuccessAnimation = false,
+  });
+
+  final bool showLoginSuccessAnimation;
+
+  @override
+  State<AuthGate> createState() => _AuthGateState();
+}
+
+class _AuthGateState extends State<AuthGate> {
+  late bool _showLoginSuccessAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _showLoginSuccessAnimation = widget.showLoginSuccessAnimation;
+  }
+
+  void _finishLoginAnimation() {
+    if (!mounted || !_showLoginSuccessAnimation) return;
+    setState(() => _showLoginSuccessAnimation = false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +57,29 @@ class AuthGate extends StatelessWidget {
         }
 
         if (snapshot.hasData) {
-          return const HomeScreen();
+          if (!widget.showLoginSuccessAnimation) {
+            return const HomeScreen();
+          }
+
+          return PopScope(
+            canPop: false,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                HomeScreen(
+                  allowInitialSurvey: !_showLoginSuccessAnimation,
+                ),
+                if (_showLoginSuccessAnimation)
+                  SplashGate(
+                    hasSeenOnboarding: true,
+                    finalLogoAsset: 'assets/logo.jpg',
+                    duration: const Duration(milliseconds: 3600),
+                    navigateOnComplete: false,
+                    onCompleted: _finishLoginAnimation,
+                  ),
+              ],
+            ),
+          );
         }
 
         return const WelcomeScreen();

@@ -32,6 +32,12 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const OnboardingCarousel());
       case RouteNames.login:
         return MaterialPageRoute(builder: (_) => const LoginScreen());
+      case RouteNames.loginSuccessLogo:
+        return MaterialPageRoute(
+          builder: (_) => const AuthGate(
+            showLoginSuccessAnimation: true,
+          ),
+        );
       case RouteNames.register:
         return MaterialPageRoute(builder: (_) => const RegisterScreen());
       case RouteNames.home:

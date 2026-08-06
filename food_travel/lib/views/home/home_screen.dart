@@ -32,7 +32,12 @@ import 'widgets/nearby_places_section.dart';
 import 'widgets/today_eat_section.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({
+    super.key,
+    this.allowInitialSurvey = true,
+  });
+
+  final bool allowInitialSurvey;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -94,9 +99,21 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _pages = List<Widget?>.filled(5, null);
     _pages[0] = _createPage(0);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _maybeShowSurvey();
-    });
+    if (widget.allowInitialSurvey) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _maybeShowSurvey();
+      });
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant HomeScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!oldWidget.allowInitialSurvey && widget.allowInitialSurvey) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _maybeShowSurvey();
+      });
+    }
   }
 
   Future<void> _maybeShowSurvey() async {

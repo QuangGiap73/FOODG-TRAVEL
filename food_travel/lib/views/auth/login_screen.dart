@@ -103,7 +103,11 @@ class _LoginScreenState extends State<LoginScreen> {
       }
 
       if (!mounted) return;
-      Navigator.pushReplacementNamed(context, RouteNames.authGate);
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        RouteNames.loginSuccessLogo,
+        (route) => false,
+      );
 
       unawaited(
         _ensureUserProfile(user, email)
@@ -150,7 +154,11 @@ class _LoginScreenState extends State<LoginScreen> {
       }
 
       if (!mounted) return;
-      Navigator.pushReplacementNamed(context, RouteNames.authGate);
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        RouteNames.loginSuccessLogo,
+        (route) => false,
+      );
     } on TimeoutException {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

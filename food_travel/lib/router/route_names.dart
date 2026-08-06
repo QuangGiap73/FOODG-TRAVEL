@@ -3,6 +3,7 @@ class RouteNames {
   static const welcome = '/welcome';
   static const onboarding = '/onboarding';
   static const login = '/login';
+  static const loginSuccessLogo = '/login-success-logo';
   static const register = '/register';
   static const home = '/home';
   static const personal = '/personal';
