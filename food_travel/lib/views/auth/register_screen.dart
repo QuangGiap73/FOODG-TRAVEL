@@ -1,11 +1,13 @@
-﻿import 'package:flutter/material.dart';
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../models/user_model.dart';
+import '../../router/route_names.dart';
 import '../../services/auth_service.dart';
 import '../../services/user_service.dart';
-import '../../router/route_names.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -16,20 +18,40 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
-
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
-  bool _obscurePassword = true;
-  bool _obscureConfirmPassword = true;
-  bool _isLoading = false;
-  bool _agree = false;
-
   final _authService = AuthService();
   final _userService = UserService();
+
+  bool _isLoading = false;
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
+  bool _agree = false;
+
+  Future<void> _ensureUserProfile(User user, String fallbackEmail, String fullName, String phone) async {
+    final existing = await _userService.getUserById(user.uid);
+    if (existing == null) {
+      await _userService.createUser(
+        UserModel(
+          id: user.uid,
+          fullName: fullName,
+          email: user.email ?? fallbackEmail,
+          phone: phone.isEmpty ? null : phone,
+          photoUrl: user.photoURL,
+          role: 'user',
+        ),
+      );
+      return;
+    }
+
+    if (existing.role.isEmpty) {
+      await _userService.ensureUserRole(uid: user.uid, role: 'user');
+    }
+  }
 
   String _mapRegisterError(AppLocalizations t, FirebaseAuthException e) {
     switch (e.code) {
@@ -45,9 +67,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> _handleRegister() async {
+    final t = AppLocalizations.of(context)!;
     if (!_formKey.currentState!.validate()) return;
 
-    final t = AppLocalizations.of(context)!;
     final fullName = _nameController.text.trim();
     final email = _emailController.text.trim();
     final phone = _phoneController.text.trim();
@@ -69,41 +91,46 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
 
     setState(() => _isLoading = true);
-
     try {
-      final UserCredential cred = await _authService.registerWithEmail(
-        email: email,
-        password: password,
-      );
+      final cred = await _authService
+          .registerWithEmail(email: email, password: password)
+          .timeout(const Duration(seconds: 20));
 
       final user = cred.user;
       if (user == null) {
         throw Exception(t.authRegisterUserMissing);
       }
 
-      final userModel = UserModel(
-        id: user.uid,
-        fullName: fullName,
-        email: email,
-        phone: phone.isEmpty ? null : phone,
-        role: 'user',
+      unawaited(
+        _ensureUserProfile(user, email, fullName, phone)
+            .timeout(const Duration(seconds: 12))
+            .catchError((error, _) {
+          debugPrint('ensureUserProfile failed: $error');
+        }),
       );
-      await _userService.createUser(userModel);
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(t.authRegisterSuccess)),
       );
-
-      // Sau khi đăng ký xong, quay về màn đăng nhập
+      await _authService.logout();
+      if (!mounted) return;
       Navigator.pushReplacementNamed(context, RouteNames.login);
+    } on TimeoutException {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(t.authError('Đăng ký quá lâu. Kiểm tra mạng.'))),
+      );
     } on FirebaseAuthException catch (e) {
-      final message = _mapRegisterError(t, e);
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(message)));
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(_mapRegisterError(t, e))),
+      );
     } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(t.authError(e.toString()))));
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(t.authError(e.toString()))),
+      );
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -124,30 +151,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final t = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final scaffoldBg = isDark ? const Color(0xFF0F131A) : const Color(0xFFFAFAF9);
-    final cardColor = isDark ? const Color(0xFF161B24) : Colors.white;
-    final borderColor = isDark ? Colors.white10 : const Color(0xFFE2E8F0);
-    final dividerColor = isDark ? Colors.white12 : Colors.grey.shade200;
-    final textPrimary = isDark ? Colors.white : Colors.black87;
-    final textSecondary = isDark ? Colors.white70 : Colors.black54;
-    final fieldFill = isDark ? const Color(0xFF1E2633) : const Color(0xFFF8FAFC);
+    final bg = isDark ? const Color(0xFF0E1218) : const Color(0xFFFFF7F0);
+    final cardBg = isDark ? const Color(0xFF171B22) : Colors.white;
+    final textPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
+    final textSecondary = isDark ? Colors.white70 : const Color(0xFF64748B);
+    final borderColor = isDark ? const Color(0xFF2A303A) : const Color(0xFFE9E5DF);
+    final accent = const Color(0xFFF97316);
 
     return Scaffold(
-      backgroundColor: scaffoldBg,
+      backgroundColor: bg,
       body: SafeArea(
         top: false,
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 260,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.only(bottom: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 240,
                 width: double.infinity,
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
                     Image.asset(
-                      'assets/login/login-3.png',
+                      'assets/login/login_banner.png',
                       fit: BoxFit.contain,
                       alignment: Alignment.topCenter,
                       errorBuilder: (_, __, ___) => const SizedBox.shrink(),
@@ -186,370 +213,327 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ],
                 ),
               ),
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      t.authRegisterTitle,
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w800,
-                        color: textPrimary,
-                      ),
+              Transform.translate(
+                offset: const Offset(0, -46),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 0, 16, 0),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(18),
+                    decoration: BoxDecoration(
+                      color: cardBg,
+                      borderRadius: BorderRadius.circular(26),
+                      border: Border.all(color: borderColor),
+                      boxShadow: isDark
+                          ? null
+                          : const [
+                              BoxShadow(
+                                color: Color(0x12000000),
+                                blurRadius: 18,
+                                offset: Offset(0, 8),
+                              ),
+                            ],
                     ),
-                    const SizedBox(height: 6),
-                    Text(
-                      t.authRegisterSubtitle,
-                      style: TextStyle(color: textSecondary, height: 1.4),
-                    ),
-                    const SizedBox(height: 18),
-                    Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF1F5F9),
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 10),
-                              decoration: BoxDecoration(
-                                color: isDark ? cardColor : Colors.white,
-                                borderRadius: BorderRadius.circular(12),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    blurRadius: 6,
-                                    color: Color(0x11000000),
-                                    offset: Offset(0, 2),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          t.authRegisterTitle,
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w900,
+                            color: textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          t.authRegisterSubtitle,
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: textSecondary,
+                            fontWeight: FontWeight.w600,
+                            height: 1.4,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Form(
+                          key: _formKey,
+                          child: Column(
+                            children: [
+                              _AuthField(
+                                label: t.authFullNameLabel,
+                                hintText: t.authFullNameLabel,
+                                icon: Icons.person_outline,
+                                controller: _nameController,
+                                fillColor: isDark ? const Color(0xFF1E2633) : const Color(0xFFF8FAFC),
+                                textColor: textPrimary,
+                                hintColor: textSecondary,
+                                borderColor: borderColor,
+                                focusedColor: accent,
+                                validator: (v) => v == null || v.trim().isEmpty ? t.authFullNameRequired : null,
+                              ),
+                              const SizedBox(height: 12),
+                              _AuthField(
+                                label: t.authEmailLabel,
+                                hintText: 'Email',
+                                icon: Icons.email_outlined,
+                                controller: _emailController,
+                                keyboardType: TextInputType.emailAddress,
+                                fillColor: isDark ? const Color(0xFF1E2633) : const Color(0xFFF8FAFC),
+                                textColor: textPrimary,
+                                hintColor: textSecondary,
+                                borderColor: borderColor,
+                                focusedColor: accent,
+                                validator: (v) {
+                                  if (v == null || v.trim().isEmpty) return t.authEmailRequired;
+                                  if (!v.contains('@')) return t.authEmailInvalid;
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 12),
+                              _AuthField(
+                                label: t.authPhoneOptionalLabel,
+                                hintText: t.authPhoneOptionalLabel,
+                                icon: Icons.phone_outlined,
+                                controller: _phoneController,
+                                keyboardType: TextInputType.phone,
+                                fillColor: isDark ? const Color(0xFF1E2633) : const Color(0xFFF8FAFC),
+                                textColor: textPrimary,
+                                hintColor: textSecondary,
+                                borderColor: borderColor,
+                                focusedColor: accent,
+                              ),
+                              const SizedBox(height: 12),
+                              _AuthField(
+                                label: t.authPasswordLabel,
+                                hintText: t.authPasswordLabel,
+                                icon: Icons.lock_outline,
+                                controller: _passwordController,
+                                obscure: _obscurePassword,
+                                onToggle: () => setState(() => _obscurePassword = !_obscurePassword),
+                                fillColor: isDark ? const Color(0xFF1E2633) : const Color(0xFFF8FAFC),
+                                textColor: textPrimary,
+                                hintColor: textSecondary,
+                                borderColor: borderColor,
+                                focusedColor: accent,
+                                validator: (v) {
+                                  if (v == null || v.trim().isEmpty) return t.authPasswordRequired;
+                                  if (v.trim().length < 6) return t.authPasswordTooShort;
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 12),
+                              _AuthField(
+                                label: t.authConfirmPasswordLabel,
+                                hintText: t.authConfirmPasswordLabel,
+                                icon: Icons.lock_outline,
+                                controller: _confirmPasswordController,
+                                obscure: _obscureConfirmPassword,
+                                onToggle: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
+                                fillColor: isDark ? const Color(0xFF1E2633) : const Color(0xFFF8FAFC),
+                                textColor: textPrimary,
+                                hintColor: textSecondary,
+                                borderColor: borderColor,
+                                focusedColor: accent,
+                                validator: (v) {
+                                  if (v == null || v.trim().isEmpty) return t.authConfirmPasswordRequired;
+                                  if (v.trim() != _passwordController.text.trim()) return t.authPasswordMismatch;
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 10),
+                              Row(
+                                children: [
+                                  Checkbox(
+                                    value: _agree,
+                                    onChanged: (value) => setState(() => _agree = value ?? false),
+                                    activeColor: accent,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      '${t.authAgreePrefix}${t.authTerms}${t.authAnd}${t.authPrivacy}${t.authDot}',
+                                      style: TextStyle(
+                                        color: textSecondary,
+                                        fontSize: 12,
+                                        height: 1.4,
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),
-                              alignment: Alignment.center,
-                              child: const Text(
-                                'Email',
-                                style: TextStyle(fontWeight: FontWeight.w700),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: _isLoading ? null : _handleRegister,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: accent,
+                              foregroundColor: Colors.white,
+                              elevation: 0,
+                              minimumSize: const Size.fromHeight(52),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18),
                               ),
                             ),
+                            child: _isLoading
+                                ? const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : Text(
+                                    t.authRegisterAction,
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
                           ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Container(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 10),
-                              decoration: BoxDecoration(
-                                color: Colors.transparent,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                'Số điện thoại',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  color: textSecondary,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: cardColor,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: borderColor),
-                        boxShadow: isDark
-                            ? null
-                            : const [
-                                BoxShadow(
-                                  blurRadius: 16,
-                                  color: Color(0x14000000),
-                                  offset: Offset(0, 6),
-                                ),
-                              ],
-                      ),
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
+                        ),
+                        const SizedBox(height: 18),
+                        Row(
                           children: [
-                            _Field(
-                              label: t.authFullNameLabel,
-                              icon: Icons.person_outline,
-                              controller: _nameController,
-                              validator: (v) =>
-                                  v == null || v.trim().isEmpty
-                                      ? t.authFullNameRequired
-                                      : null,
-                              fillColor: fieldFill,
-                              textColor: textPrimary,
-                              hintColor: textSecondary,
-                              borderColor: borderColor,
-                              focusedColor: const Color(0xFFFF6A00),
-                            ),
-                            const SizedBox(height: 12),
-                            _Field(
-                              label: t.authEmailLabel,
-                              icon: Icons.email_outlined,
-                              controller: _emailController,
-                              keyboardType: TextInputType.emailAddress,
-                              validator: (v) {
-                                if (v == null || v.trim().isEmpty) {
-                                  return t.authEmailRequired;
-                                }
-                                if (!v.contains('@')) {
-                                  return t.authEmailInvalid;
-                                }
-                                return null;
-                              },
-                              fillColor: fieldFill,
-                              textColor: textPrimary,
-                              hintColor: textSecondary,
-                              borderColor: borderColor,
-                              focusedColor: const Color(0xFFFF6A00),
-                            ),
-                            const SizedBox(height: 12),
-                            _Field(
-                              label: t.authPhoneOptionalLabel,
-                              icon: Icons.phone_outlined,
-                              controller: _phoneController,
-                              keyboardType: TextInputType.phone,
-                              fillColor: fieldFill,
-                              textColor: textPrimary,
-                              hintColor: textSecondary,
-                              borderColor: borderColor,
-                              focusedColor: const Color(0xFFFF6A00),
-                            ),
-                            const SizedBox(height: 12),
-                            _Field(
-                              label: t.authPasswordLabel,
-                              icon: Icons.lock_outline,
-                              controller: _passwordController,
-                              obscure: _obscurePassword,
-                              onToggle: () => setState(
-                                  () => _obscurePassword = !_obscurePassword),
-                              validator: (v) {
-                                if (v == null || v.trim().isEmpty) {
-                                  return t.authPasswordRequired;
-                                }
-                                if (v.trim().length < 6) {
-                                  return t.authPasswordTooShort;
-                                }
-                                return null;
-                              },
-                              fillColor: fieldFill,
-                              textColor: textPrimary,
-                              hintColor: textSecondary,
-                              borderColor: borderColor,
-                              focusedColor: const Color(0xFFFF6A00),
-                            ),
-                            const SizedBox(height: 12),
-                            _Field(
-                              label: t.authConfirmPasswordLabel,
-                              icon: Icons.lock_outline,
-                              controller: _confirmPasswordController,
-                              obscure: _obscureConfirmPassword,
-                              onToggle: () => setState(() =>
-                                  _obscureConfirmPassword =
-                                      !_obscureConfirmPassword),
-                              validator: (v) {
-                                if (v == null || v.trim().isEmpty) {
-                                  return t.authConfirmPasswordRequired;
-                                }
-                                if (v.trim() !=
-                                    _passwordController.text.trim()) {
-                                  return t.authPasswordMismatch;
-                                }
-                                return null;
-                              },
-                              fillColor: fieldFill,
-                              textColor: textPrimary,
-                              hintColor: textSecondary,
-                              borderColor: borderColor,
-                              focusedColor: const Color(0xFFFF6A00),
-                            ),
-                            const SizedBox(height: 14),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Checkbox(
-                                  value: _agree,
-                                  activeColor: const Color(0xFFFF6A00),
-                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                  visualDensity:
-                                      const VisualDensity(horizontal: -2, vertical: -2),
-                                  onChanged: (v) =>
-                                      setState(() => _agree = v ?? false),
+                            Expanded(child: Divider(color: borderColor)),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              child: Text(
+                                '${t.authOr} ${t.authRegisterAction.toLowerCase()}',
+                                style: TextStyle(
+                                  color: textSecondary,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
                                 ),
-                                const SizedBox(width: 6),
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(top: 2),
-                                    child: RichText(
-                                      text: TextSpan(
-                                        text: t.authAgreePrefix,
-                                        style: TextStyle(
-                                          color: textSecondary,
-                                          fontSize: 13,
-                                        ),
-                                        children: [
-                                          TextSpan(
-                                            text: t.authTerms,
-                                            style: const TextStyle(
-                                              color: Color(0xFFFF6A00),
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                          TextSpan(text: t.authAnd),
-                                          TextSpan(
-                                            text: t.authPrivacy,
-                                            style: const TextStyle(
-                                              color: Color(0xFFFF6A00),
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                          TextSpan(text: t.authDot),
-                                        ],
+                              ),
+                            ),
+                            Expanded(child: Divider(color: borderColor)),
+                          ],
+                        ),
+                        const SizedBox(height: 14),
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton(
+                            onPressed: null,
+                            style: OutlinedButton.styleFrom(
+                              side: BorderSide(color: borderColor),
+                              backgroundColor: isDark ? const Color(0xFF171B22) : Colors.white,
+                              minimumSize: const Size.fromHeight(52),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  width: 24,
+                                  height: 24,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(999),
+                                  ),
+                                  child: const Center(
+                                    child: Text(
+                                      'G',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w900,
+                                        color: Color(0xFF4285F4),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 18),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: _isLoading ? null : _handleRegister,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFFF6A00),
-                          minimumSize: const Size.fromHeight(54),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                          shadowColor: Colors.orange.shade200,
-                          elevation: 10,
-                        ),
-                        child: _isLoading
-                            ? const SizedBox(
-                                width: 22,
-                                height: 22,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: Colors.white,
-                                ),
-                              )
-                            : Text(
-                                t.authRegisterAction,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-                    Row(
-                      children: [
-                        Expanded(child: Divider(color: dividerColor)),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Text(
-                            '${t.authOr} ${t.authRegisterAction.toLowerCase()}',
-                            style: TextStyle(
-                              color: textSecondary,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        Expanded(child: Divider(color: dividerColor)),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: null,
-                            style: OutlinedButton.styleFrom(
-                              side:
-                                  const BorderSide(color: Color(0xFFE2E8F0)),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 12),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(Icons.g_mobiledata,
-                                    color: Colors.red, size: 22),
-                                const SizedBox(width: 8),
+                                const SizedBox(width: 10),
                                 Text(
                                   t.authContinueGoogle,
                                   style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w800,
                                     color: textPrimary,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 13,
                                   ),
                                 ),
                               ],
                             ),
                           ),
                         ),
+                        const SizedBox(height: 16),
+                        Center(
+                        child: GestureDetector(
+                            onTap: () => Navigator.pushReplacementNamed(context, RouteNames.login),
+                            child: RichText(
+                              text: TextSpan(
+                                style: TextStyle(
+                                  color: textSecondary,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                children: [
+                                  const TextSpan(text: 'Đã có tài khoản? '),
+                                  TextSpan(
+                                    text: t.authLoginAction,
+                                    style: TextStyle(
+                                      color: accent,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
-                    const SizedBox(height: 24),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class _Field extends StatelessWidget {
-  const _Field({
+class _AuthField extends StatelessWidget {
+  const _AuthField({
     required this.label,
+    required this.hintText,
     required this.icon,
     required this.controller,
-    this.obscure = false,
-    this.onToggle,
-    this.validator,
-    this.keyboardType,
     required this.fillColor,
     required this.textColor,
     required this.hintColor,
     required this.borderColor,
     required this.focusedColor,
+    this.obscure = false,
+    this.onToggle,
+    this.validator,
+    this.keyboardType,
   });
 
   final String label;
+  final String hintText;
   final IconData icon;
   final TextEditingController controller;
-  final bool obscure;
-  final VoidCallback? onToggle;
-  final String? Function(String?)? validator;
-  final TextInputType? keyboardType;
   final Color fillColor;
   final Color textColor;
   final Color hintColor;
   final Color borderColor;
   final Color focusedColor;
+  final bool obscure;
+  final VoidCallback? onToggle;
+  final String? Function(String?)? validator;
+  final TextInputType? keyboardType;
 
   @override
   Widget build(BuildContext context) {
@@ -559,8 +543,8 @@ class _Field extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-            fontSize: 12,
             color: hintColor,
+            fontSize: 12,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -570,21 +554,23 @@ class _Field extends StatelessWidget {
           obscureText: obscure,
           keyboardType: keyboardType,
           validator: validator,
+          style: TextStyle(color: textColor),
           decoration: InputDecoration(
-            filled: true,
-            fillColor: fillColor,
+            hintText: hintText,
+            hintStyle: TextStyle(color: hintColor),
             prefixIcon: Icon(icon, color: hintColor),
             suffixIcon: onToggle == null
                 ? null
                 : IconButton(
                     icon: Icon(
-                      obscure
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined,
+                      obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
                       color: hintColor,
                     ),
                     onPressed: onToggle,
                   ),
+            filled: true,
+            fillColor: fillColor,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
               borderSide: BorderSide(color: borderColor),
@@ -597,9 +583,7 @@ class _Field extends StatelessWidget {
               borderRadius: BorderRadius.circular(14),
               borderSide: BorderSide(color: focusedColor),
             ),
-            hintStyle: TextStyle(color: hintColor),
           ),
-          style: TextStyle(color: textColor),
         ),
       ],
     );

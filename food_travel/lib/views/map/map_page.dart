@@ -43,6 +43,34 @@ class _NearbyCacheEntry {
   final List<GoongNearbyPlace> places;
 }
 
+List<GoongNearbyPlace> _sortPlacesByDistance(
+  Iterable<GoongNearbyPlace> places,
+  LatLng origin,
+) {
+  final sorted = List<GoongNearbyPlace>.from(places);
+  sorted.sort((a, b) {
+    final aDistance = Geolocator.distanceBetween(
+      origin.latitude,
+      origin.longitude,
+      a.lat,
+      a.lng,
+    );
+    final bDistance = Geolocator.distanceBetween(
+      origin.latitude,
+      origin.longitude,
+      b.lat,
+      b.lng,
+    );
+    final byDistance = aDistance.compareTo(bDistance);
+    if (byDistance != 0) return byDistance;
+
+    final aRating = a.rating ?? 0;
+    final bRating = b.rating ?? 0;
+    return bRating.compareTo(aRating);
+  });
+  return sorted;
+}
+
 enum _DirectionsChoice {
   inApp,
   googleMaps,
@@ -104,6 +132,7 @@ class _MapPageState extends State<MapPage> {
   final List<GoongNearbyPlace> _nearbyPlaces = [];
   NearbyPlacesLayer? _nearbyLayer;
   bool _nearbyLoading = false;
+  bool _nearbySheetExpanded = false;
   int _selectedCategory = 0;
   final Map<String, _NearbyCacheEntry> _nearbyCache = {};
   String? _toastMessage;
@@ -376,6 +405,13 @@ class _MapPageState extends State<MapPage> {
   Future<void> _onUserLocationUpdated(UserLocation location) async {
     // MapLibre can also emit user location updates.
     _lastLatLng = location.position;
+    if (_nearbyPlaces.length > 1) {
+      final sorted = _sortPlacesByDistance(_nearbyPlaces, location.position);
+      _nearbyPlaces
+        ..clear()
+        ..addAll(sorted);
+      if (mounted) setState(() {});
+    }
     await _ensurePuckReady();
     await _updateUserMarker(location.position);
   }
@@ -709,9 +745,10 @@ class _MapPageState extends State<MapPage> {
       final cached = _nearbyCache[cacheKey];
       if (cached != null &&
           DateTime.now().difference(cached.at) < _nearbyCacheTtl) {
+        final sortedCached = _sortPlacesByDistance(cached.places, target);
         _nearbyPlaces
           ..clear()
-          ..addAll(cached.places);
+          ..addAll(sortedCached);
         setState(() {});
         if (_styleReady) {
           _ensureNearbyLayer();
@@ -734,10 +771,14 @@ class _MapPageState extends State<MapPage> {
         return;
       }
 
+      final sortedPlaces = _sortPlacesByDistance(places, target);
       _nearbyPlaces
         ..clear()
-        ..addAll(places);
-      _nearbyCache[cacheKey] = _NearbyCacheEntry(DateTime.now(), places);
+        ..addAll(sortedPlaces);
+      _nearbyCache[cacheKey] = _NearbyCacheEntry(
+        DateTime.now(),
+        List.of(sortedPlaces),
+      );
       setState(() {}); // Hien danh sach ngay ca khi marker chua ve.
 
       if (_styleReady) {
@@ -893,6 +934,11 @@ class _MapPageState extends State<MapPage> {
             NearbyPlacesSheet(
               places: _nearbyPlaces,
               userLocation: _lastLatLng,
+              onExtentChanged: (extent) {
+                final expanded = extent > 0.24;
+                if (!mounted || expanded == _nearbySheetExpanded) return;
+                setState(() => _nearbySheetExpanded = expanded);
+              },
               onOpenDetail: (place) {
                 _openPlaceDetail(place);
               },
@@ -900,18 +946,25 @@ class _MapPageState extends State<MapPage> {
                 _openDirectionsChooser(place);
               },
             ),
-          Positioned(
-            right: 16,
-            bottom: 24,
-            child: _MapControls(
-              nearbyLoading: _nearbyLoading,
-              onFindNearby: _findNearbyFood,
-              onRecenter: _recenterOnUser,
-              onZoomIn: _zoomIn,
-              onZoomOut: _zoomOut,
+            Positioned(
+              right: 16,
+              bottom: 24,
+              child: AnimatedOpacity(
+                opacity: _nearbySheetExpanded ? 0.35 : 1,
+                duration: const Duration(milliseconds: 180),
+                child: IgnorePointer(
+                  ignoring: _nearbySheetExpanded,
+                  child: _MapControls(
+                    nearbyLoading: _nearbyLoading,
+                    onFindNearby: _findNearbyFood,
+                    onRecenter: _recenterOnUser,
+                    onZoomIn: _zoomIn,
+                    onZoomOut: _zoomOut,
+                  ),
+                ),
+              ),
             ),
-          ),
-        ],
+          ],
       ),
     );
   }

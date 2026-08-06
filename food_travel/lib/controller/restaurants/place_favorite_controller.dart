@@ -46,7 +46,19 @@ class PlaceFavoriteController extends ChangeNotifier {
     if (uid == null) return;
 
     final key = keyOf(place);
-    await _service.toggleFavorite(uid, place, placeKey: key);
+    final nextState = !_favoriteIds.contains(key);
+    try {
+      await _service.toggleFavorite(uid, place, placeKey: key);
+      if (nextState) {
+        _favoriteIds = {..._favoriteIds, key};
+      } else {
+        _favoriteIds = {..._favoriteIds}..remove(key);
+      }
+      notifyListeners();
+    } catch (error) {
+      debugPrint('[PlaceFavoriteController] toggle failed: $error');
+      rethrow;
+    }
   }
 
   @override

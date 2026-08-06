@@ -245,18 +245,17 @@ class NearbyHomeController extends ChangeNotifier {
   }) {
     final list = List<GoongNearbyPlace>.from(input);
     list.sort((a, b) {
-      // Uu tien quan dang mo cua.
-      final aOpen = a.isOpen == true ? 1 : 0;
-      final bOpen = b.isOpen == true ? 1 : 0;
-      if (aOpen != bOpen) return bOpen.compareTo(aOpen);
-
-      // Sau do sap xep theo khoang cach tang dan.
+      // Sap xep theo khoang cach tang dan de quan gan nhat luon len truoc.
       final aDist = Geolocator.distanceBetween(userLat, userLng, a.lat, a.lng);
       final bDist = Geolocator.distanceBetween(userLat, userLng, b.lat, b.lng);
       final byDistance = aDist.compareTo(bDist);
       if (byDistance != 0) return byDistance;
 
-      // Cuoi cung uu tien rating cao hon.
+      // Neu cung khoang cach thi uu tien quan dang mo cua, sau do rating cao hon.
+      final aOpen = a.isOpen == true ? 1 : 0;
+      final bOpen = b.isOpen == true ? 1 : 0;
+      if (aOpen != bOpen) return bOpen.compareTo(aOpen);
+
       final aRating = a.rating ?? 0;
       final bRating = b.rating ?? 0;
       return bRating.compareTo(aRating);

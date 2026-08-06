@@ -14,12 +14,14 @@ class NearbyPlacesSheet extends StatelessWidget {
     required this.onOpenDetail,
     this.onDirections,
     this.userLocation,
+    this.onExtentChanged,
   });
 
   final List<GoongNearbyPlace> places;
   final ValueChanged<GoongNearbyPlace> onOpenDetail;
   final ValueChanged<GoongNearbyPlace>? onDirections;
   final LatLng? userLocation;
+  final ValueChanged<double>? onExtentChanged;
 
   // Tinh khoang cach tu vi tri hien tai den quan.
   double? _distanceMeters(GoongNearbyPlace place) {
@@ -285,6 +287,19 @@ class NearbyPlacesSheet extends StatelessWidget {
     if (places.isEmpty) return const SizedBox.shrink();
     final theme = Theme.of(context);
     final t = AppLocalizations.of(context)!;
+    final displayPlaces = List<GoongNearbyPlace>.from(places);
+    if (userLocation != null) {
+      displayPlaces.sort((a, b) {
+        final aDistance = _distanceMeters(a) ?? double.infinity;
+        final bDistance = _distanceMeters(b) ?? double.infinity;
+        final byDistance = aDistance.compareTo(bDistance);
+        if (byDistance != 0) return byDistance;
+
+        final aRating = a.rating ?? 0;
+        final bRating = b.rating ?? 0;
+        return bRating.compareTo(aRating);
+      });
+    }
 
     // Sheet truot len de hien thi danh sach quan.
     return DraggableScrollableSheet(
@@ -292,92 +307,98 @@ class NearbyPlacesSheet extends StatelessWidget {
       minChildSize: 0.16,
       maxChildSize: 0.62,
       builder: (context, scrollController) {
-        return Container(
-          decoration: BoxDecoration(
-            color: theme.colorScheme.surface,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.12),
-                blurRadius: 12,
-                offset: const Offset(0, -4),
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              const SizedBox(height: 8),
-              Container(
-                width: 42,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: theme.dividerColor,
-                  borderRadius: BorderRadius.circular(999),
+        return NotificationListener<DraggableScrollableNotification>(
+          onNotification: (notification) {
+            onExtentChanged?.call(notification.extent);
+            return false;
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surface,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.12),
+                  blurRadius: 12,
+                  offset: const Offset(0, -4),
                 ),
-              ),
-              const SizedBox(height: 8),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Row(
-                        children: [
-                          const Icon(Icons.place_outlined, size: 18),
-                          const SizedBox(width: 6),
-                          Text(
-                            t.mapNearbyPlacesTitle(places.length),
-                            style: theme.textTheme.titleSmall?.copyWith(
-                              fontWeight: FontWeight.w700,
+              ],
+            ),
+            child: Column(
+              children: [
+                const SizedBox(height: 8),
+                Container(
+                  width: 42,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: theme.dividerColor,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Row(
+                          children: [
+                            const Icon(Icons.place_outlined, size: 18),
+                            const SizedBox(width: 6),
+                            Text(
+                              t.mapNearbyPlacesTitle(displayPlaces.length),
+                              style: theme.textTheme.titleSmall?.copyWith(
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.surfaceVariant.withOpacity(0.5),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            t.mapSortDistance,
-                            style: theme.textTheme.labelSmall?.copyWith(
-                              fontWeight: FontWeight.w600,
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.surfaceVariant.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              t.mapSortDistance,
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 4),
-                          const Icon(Icons.swap_vert, size: 14),
-                        ],
+                            const SizedBox(width: 4),
+                            const Icon(Icons.swap_vert, size: 14),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              Expanded(
-                child: ListView.separated(
-                  controller: scrollController,
-                  itemCount: places.length,
-                  padding: const EdgeInsets.fromLTRB(16, 4, 16, 20),
-                  separatorBuilder: (_, __) => const SizedBox(height: 12),
-                  itemBuilder: (context, index) {
-                    final place = places[index];
-                    return _buildPlaceCard(
-                      context,
-                      place,
-                      highlight: index == 0,
-                    );
-                  },
+                const SizedBox(height: 8),
+                Expanded(
+                  child: ListView.separated(
+                    controller: scrollController,
+                    itemCount: displayPlaces.length,
+                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 20),
+                    separatorBuilder: (_, __) => const SizedBox(height: 12),
+                    itemBuilder: (context, index) {
+                      final place = displayPlaces[index];
+                      return _buildPlaceCard(
+                        context,
+                        place,
+                        highlight: index == 0,
+                      );
+                    },
+                  ),
                 ),
+              ],
               ),
-            ],
           ),
         );
       },

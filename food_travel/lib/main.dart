@@ -12,7 +12,7 @@ import 'controller/l10n/locale_controller.dart';
 import 'config/app_scaffold_messenger.dart';
 import 'firebase_options.dart';
 import 'router/app_router.dart';
-import 'views/home/home_screen.dart';
+import 'views/auth/auth_gate.dart';
 
 // Handler khi push den luc app dang background/terminated
 // (bat buoc de FCM xu ly dung khi app tat)
@@ -80,7 +80,7 @@ class MyApp extends StatelessWidget {
               Locale('en'),
             ],
             localizationsDelegates: AppLocalizations.localizationsDelegates,
-            home: const HomeScreen(),
+            home: const AuthGate(),
             onGenerateRoute: AppRouter.onGenerateRoute,
           ),
         );

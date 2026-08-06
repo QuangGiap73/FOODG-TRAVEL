@@ -32,7 +32,19 @@ class FavoriteController extends ChangeNotifier {
   Future<void> toggleFavorite(String dishId) async {
     final uid = _uid;
     if (uid == null ) return;
-    await _service.toggleFavorite(uid, dishId);
+    final nextState = !_favoriteIds.contains(dishId);
+    try {
+      await _service.toggleFavorite(uid, dishId);
+      if (nextState) {
+        _favoriteIds = {..._favoriteIds, dishId};
+      } else {
+        _favoriteIds = {..._favoriteIds}..remove(dishId);
+      }
+      notifyListeners();
+    } catch (error) {
+      debugPrint('[FavoriteController] toggleFavorite failed: $error');
+      rethrow;
+    }
   }
   @override
   void dispose(){

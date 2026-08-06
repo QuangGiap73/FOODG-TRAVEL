@@ -57,6 +57,11 @@ class _PersonalPageState extends State<PersonalPage> {
 
     if (ok != true) return;
     await AuthService().logout();
+    if (!mounted) return;
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      RouteNames.authGate,
+      (route) => false,
+    );
   }
   Future<void> _openEdit() async {
     bool? result;
