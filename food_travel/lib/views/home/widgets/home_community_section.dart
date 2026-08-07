@@ -29,10 +29,12 @@ class HomeCommunitySection extends StatelessWidget {
         final featured = _pickPost(posts);
         if (featured == null) return const SizedBox.shrink();
 
-        final firstMedia = featured.media.isNotEmpty ? featured.media.first : null;
-        final mediaUrl = firstMedia != null
-            ? firstMedia.previewUrl
-            : (featured.place?.photoUrl ?? '');
+        final firstMedia =
+            featured.media.isNotEmpty ? featured.media.first : null;
+        final mediaUrl =
+            firstMedia != null
+                ? firstMedia.previewUrl
+                : (featured.place?.photoUrl ?? '');
         final hasVideo = firstMedia?.isVideo == true;
 
         return Column(
@@ -48,7 +50,7 @@ class HomeCommunitySection extends StatelessWidget {
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
-                    'Cong dong dang an gi?',
+                    'Cộng đồng đang ăn gì?',
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w800,
                     ),
@@ -57,7 +59,9 @@ class HomeCommunitySection extends StatelessWidget {
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const CommunityFeedPage()),
+                      MaterialPageRoute(
+                        builder: (_) => const CommunityFeedPage(),
+                      ),
                     );
                   },
                   style: TextButton.styleFrom(
@@ -67,7 +71,7 @@ class HomeCommunitySection extends StatelessWidget {
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
                   child: const Text(
-                    'Xem cong dong',
+                    'Xem cộng đồng',
                     style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
                   ),
                 ),
@@ -81,7 +85,8 @@ class HomeCommunitySection extends StatelessWidget {
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (_) => CommunityPostDetailPage(postId: featured.id),
+                      builder:
+                          (_) => CommunityPostDetailPage(postId: featured.id),
                     ),
                   );
                 },
@@ -90,11 +95,16 @@ class HomeCommunitySection extends StatelessWidget {
                     color: isDark ? const Color(0xFF171B22) : Colors.white,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: isDark ? const Color(0xFF2A303A) : const Color(0xFFF4E5D6),
+                      color:
+                          isDark
+                              ? const Color(0xFF2A303A)
+                              : const Color(0xFFF4E5D6),
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: isDark ? 0.18 : 0.04),
+                        color: Colors.black.withValues(
+                          alpha: isDark ? 0.18 : 0.04,
+                        ),
                         blurRadius: 16,
                         offset: const Offset(0, 8),
                       ),
@@ -113,20 +123,24 @@ class HomeCommunitySection extends StatelessWidget {
                                 children: [
                                   CircleAvatar(
                                     radius: 20,
-                                    backgroundColor: isDark
-                                        ? const Color(0xFF232A33)
-                                        : const Color(0xFFFFF1E4),
-                                    backgroundImage: featured.authorPhoto.trim().isNotEmpty
-                                        ? NetworkImage(featured.authorPhoto)
-                                        : null,
-                                    child: featured.authorPhoto.trim().isEmpty
-                                        ? const Icon(Icons.person, size: 18)
-                                        : null,
+                                    backgroundColor:
+                                        isDark
+                                            ? const Color(0xFF232A33)
+                                            : const Color(0xFFFFF1E4),
+                                    backgroundImage:
+                                        featured.authorPhoto.trim().isNotEmpty
+                                            ? NetworkImage(featured.authorPhoto)
+                                            : null,
+                                    child:
+                                        featured.authorPhoto.trim().isEmpty
+                                            ? const Icon(Icons.person, size: 18)
+                                            : null,
                                   ),
                                   const SizedBox(width: 8),
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           featured.authorName.isNotEmpty
@@ -160,7 +174,7 @@ class HomeCommunitySection extends StatelessWidget {
                               Text(
                                 featured.text.trim().isNotEmpty
                                     ? featured.text.trim()
-                                    : 'Cong dong dang chia se trai nghiem an uong moi.',
+                                    : 'Cộng đồng đang chia sẻ trải nghiệm ăn uống mới.',
                                 maxLines: 3,
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
@@ -174,7 +188,8 @@ class HomeCommunitySection extends StatelessWidget {
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      featured.place?.address ?? _timeLabel(featured),
+                                      featured.place?.address ??
+                                          _timeLabel(featured),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
@@ -230,10 +245,11 @@ class HomeCommunitySection extends StatelessWidget {
                               children: [
                                 mediaUrl.isNotEmpty
                                     ? Image.network(
-                                        mediaUrl,
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (_, __, ___) => _fallbackImage(),
-                                      )
+                                      mediaUrl,
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (_, __, ___) => _fallbackImage(),
+                                    )
                                     : _fallbackImage(),
                                 if (hasVideo)
                                   const Center(
@@ -272,19 +288,21 @@ class HomeCommunitySection extends StatelessWidget {
     if (posts.isEmpty) return null;
 
     final now = DateTime.now();
-    final today = posts.where((post) {
-      final created = post.createdAt?.toDate();
-      if (created == null) return false;
-      return created.year == now.year &&
-          created.month == now.month &&
-          created.day == now.day;
-    }).toList();
+    final today =
+        posts.where((post) {
+          final created = post.createdAt?.toDate();
+          if (created == null) return false;
+          return created.year == now.year &&
+              created.month == now.month &&
+              created.day == now.day;
+        }).toList();
 
-    final nearbyToday = today.where((post) {
-      final place = post.place;
-      if (place == null || userLat == null || userLng == null) return false;
-      return _distanceKm(userLat!, userLng!, place.lat, place.lng) <= 12;
-    }).toList();
+    final nearbyToday =
+        today.where((post) {
+          final place = post.place;
+          if (place == null || userLat == null || userLng == null) return false;
+          return _distanceKm(userLat!, userLng!, place.lat, place.lng) <= 12;
+        }).toList();
 
     if (nearbyToday.isNotEmpty) {
       nearbyToday.sort((a, b) => _distanceFor(a).compareTo(_distanceFor(b)));
@@ -308,7 +326,8 @@ class HomeCommunitySection extends StatelessWidget {
 
   double _distanceFor(CommunityPost post) {
     final place = post.place;
-    if (place == null || userLat == null || userLng == null) return double.infinity;
+    if (place == null || userLat == null || userLng == null)
+      return double.infinity;
     return _distanceKm(userLat!, userLng!, place.lat, place.lng);
   }
 
@@ -336,10 +355,10 @@ class HomeCommunitySection extends StatelessWidget {
 
   String _timeLabel(CommunityPost post) {
     final created = post.createdAt?.toDate();
-    if (created == null) return 'Gan day';
+    if (created == null) return 'Gần đây';
     final diff = DateTime.now().difference(created);
-    if (diff.inDays <= 0) return 'Hom nay';
-    if (diff.inDays == 1) return 'Hom qua';
+    if (diff.inDays <= 0) return 'Hôm nay';
+    if (diff.inDays == 1) return 'Hôm qua';
     return '${diff.inDays} ngay truoc';
   }
 

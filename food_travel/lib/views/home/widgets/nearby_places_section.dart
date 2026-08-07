@@ -292,8 +292,9 @@ class _PlaceCard extends StatelessWidget {
                     child: FilledButton.icon(
                       onPressed: onDirections,
                       style: FilledButton.styleFrom(
-                        backgroundColor: accent,
-                        foregroundColor: Colors.white,
+                        backgroundColor: const Color(0xFFFFF1E4),
+                        foregroundColor: accent,
+                        side: const BorderSide(color: Color(0xFFFFD8B5)),
                         padding: const EdgeInsets.symmetric(
                           horizontal: 10,
                           vertical: 8,

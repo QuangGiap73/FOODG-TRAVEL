@@ -36,10 +36,12 @@ class HomeCommunityEatingSection extends StatelessWidget {
         final featured = _pickFeaturedPost(posts);
         if (featured == null) return const SizedBox.shrink();
 
-        final firstMedia = featured.media.isNotEmpty ? featured.media.first : null;
-        final imageUrl = firstMedia != null
-            ? firstMedia.previewUrl
-            : (featured.place?.photoUrl ?? '');
+        final firstMedia =
+            featured.media.isNotEmpty ? featured.media.first : null;
+        final imageUrl =
+            firstMedia != null
+                ? firstMedia.previewUrl
+                : (featured.place?.photoUrl ?? '');
         final hasVideo = firstMedia?.isVideo == true;
 
         return Column(
@@ -55,7 +57,7 @@ class HomeCommunityEatingSection extends StatelessWidget {
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
-                    'Cong dong dang an gi?',
+                    'Cộng đồng đang ăn gì?',
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w800,
                     ),
@@ -64,7 +66,9 @@ class HomeCommunityEatingSection extends StatelessWidget {
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const CommunityFeedPage()),
+                      MaterialPageRoute(
+                        builder: (_) => const CommunityFeedPage(),
+                      ),
                     );
                   },
                   style: TextButton.styleFrom(
@@ -74,7 +78,7 @@ class HomeCommunityEatingSection extends StatelessWidget {
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
                   child: const Text(
-                    'Xem cong dong',
+                    'Xem cộng đồng',
                     style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
                   ),
                 ),
@@ -88,7 +92,8 @@ class HomeCommunityEatingSection extends StatelessWidget {
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (_) => CommunityPostDetailPage(postId: featured.id),
+                      builder:
+                          (_) => CommunityPostDetailPage(postId: featured.id),
                     ),
                   );
                 },
@@ -97,13 +102,16 @@ class HomeCommunityEatingSection extends StatelessWidget {
                     color: isDark ? const Color(0xFF171B22) : Colors.white,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: isDark
-                          ? const Color(0xFF2A303A)
-                          : const Color(0xFFF4E5D6),
+                      color:
+                          isDark
+                              ? const Color(0xFF2A303A)
+                              : const Color(0xFFF4E5D6),
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: isDark ? 0.18 : 0.04),
+                        color: Colors.black.withValues(
+                          alpha: isDark ? 0.18 : 0.04,
+                        ),
                         blurRadius: 16,
                         offset: const Offset(0, 8),
                       ),
@@ -122,17 +130,20 @@ class HomeCommunityEatingSection extends StatelessWidget {
                                 children: [
                                   CircleAvatar(
                                     radius: 18,
-                                    backgroundImage: featured.authorPhoto.trim().isNotEmpty
-                                        ? NetworkImage(featured.authorPhoto)
-                                        : null,
-                                    child: featured.authorPhoto.trim().isEmpty
-                                        ? const Icon(Icons.person, size: 16)
-                                        : null,
+                                    backgroundImage:
+                                        featured.authorPhoto.trim().isNotEmpty
+                                            ? NetworkImage(featured.authorPhoto)
+                                            : null,
+                                    child:
+                                        featured.authorPhoto.trim().isEmpty
+                                            ? const Icon(Icons.person, size: 16)
+                                            : null,
                                   ),
                                   const SizedBox(width: 8),
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           featured.authorName.isNotEmpty
@@ -148,7 +159,8 @@ class HomeCommunityEatingSection extends StatelessWidget {
                                         ),
                                         const SizedBox(height: 2),
                                         Text(
-                                          featured.place?.name.isNotEmpty == true
+                                          featured.place?.name.isNotEmpty ==
+                                                  true
                                               ? featured.place!.name
                                               : 'Food Lover',
                                           maxLines: 1,
@@ -168,7 +180,7 @@ class HomeCommunityEatingSection extends StatelessWidget {
                               Text(
                                 featured.text.trim().isNotEmpty
                                     ? featured.text.trim()
-                                    : 'Hom nay cong dong dang chia se quan nay.',
+                                    : 'Hôm nay cộng đồng đang chia sẻ quán này.',
                                 maxLines: 3,
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
@@ -180,7 +192,8 @@ class HomeCommunityEatingSection extends StatelessWidget {
                               const SizedBox(height: 10),
                               Row(
                                 children: [
-                                  if (featured.place?.address.isNotEmpty == true)
+                                  if (featured.place?.address.isNotEmpty ==
+                                      true)
                                     Expanded(
                                       child: Text(
                                         featured.place!.address,
@@ -239,10 +252,11 @@ class HomeCommunityEatingSection extends StatelessWidget {
                               children: [
                                 imageUrl.isNotEmpty
                                     ? Image.network(
-                                        imageUrl,
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (_, __, ___) => _fallbackImage(),
-                                      )
+                                      imageUrl,
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (_, __, ___) => _fallbackImage(),
+                                    )
                                     : _fallbackImage(),
                                 if (hasVideo)
                                   const Center(
@@ -281,19 +295,21 @@ class HomeCommunityEatingSection extends StatelessWidget {
     if (posts.isEmpty) return null;
 
     final now = DateTime.now();
-    final todayPosts = posts.where((post) {
-      final created = post.createdAt?.toDate();
-      if (created == null) return false;
-      return created.year == now.year &&
-          created.month == now.month &&
-          created.day == now.day;
-    }).toList();
+    final todayPosts =
+        posts.where((post) {
+          final created = post.createdAt?.toDate();
+          if (created == null) return false;
+          return created.year == now.year &&
+              created.month == now.month &&
+              created.day == now.day;
+        }).toList();
 
-    final nearbyToday = todayPosts.where((post) {
-      final place = post.place;
-      if (place == null || userLat == null || userLng == null) return false;
-      return _distanceKm(userLat!, userLng!, place.lat, place.lng) <= 12;
-    }).toList();
+    final nearbyToday =
+        todayPosts.where((post) {
+          final place = post.place;
+          if (place == null || userLat == null || userLng == null) return false;
+          return _distanceKm(userLat!, userLng!, place.lat, place.lng) <= 12;
+        }).toList();
 
     if (nearbyToday.isNotEmpty) {
       nearbyToday.sort((a, b) {

@@ -12,13 +12,11 @@ class HomeDishSection extends StatefulWidget {
   const HomeDishSection({
     super.key,
     required this.dishes,
-    required this.crossAxisCount,
     required this.userLat,
     required this.userLng,
   });
 
   final List<DishModel> dishes;
-  final int crossAxisCount;
   final double? userLat;
   final double? userLng;
 
@@ -74,7 +72,7 @@ class _HomeDishSectionState extends State<HomeDishSection> {
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: widget.dishes.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: widget.crossAxisCount > 2 ? 2 : 1,
+                    crossAxisCount: 2,
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
                     mainAxisExtent: 330,

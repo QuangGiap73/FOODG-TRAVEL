@@ -32,10 +32,7 @@ import 'widgets/nearby_places_section.dart';
 import 'widgets/today_eat_section.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({
-    super.key,
-    this.allowInitialSurvey = true,
-  });
+  const HomeScreen({super.key, this.allowInitialSurvey = true});
 
   final bool allowInitialSurvey;
 
@@ -164,11 +161,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 leadingWidth: 64,
                 leading: Padding(
                   padding: const EdgeInsets.only(left: 14, top: 12, bottom: 12),
-                  child: CircleAvatar(
-                    radius: 18,
-                    backgroundImage:
-                        photoUrl != null ? NetworkImage(photoUrl) : null,
-                    child: photoUrl == null ? const Icon(Icons.person) : null,
+                  child: Material(
+                    color: Colors.transparent,
+                    shape: const CircleBorder(),
+                    child: InkWell(
+                      customBorder: const CircleBorder(),
+                      onTap: () => _selectTab(4),
+                      child: CircleAvatar(
+                        radius: 18,
+                        backgroundImage:
+                            photoUrl != null ? NetworkImage(photoUrl) : null,
+                        child:
+                            photoUrl == null ? const Icon(Icons.person) : null,
+                      ),
+                    ),
                   ),
                 ),
                 titleSpacing: 0,
@@ -582,14 +588,17 @@ class _HomeFeedState extends State<_HomeFeed> {
   }
 
   String _removeDiacritics(String input) {
-    const source = 'àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ';
-    const target = 'aaaaaaaaaaaaaaaaaeeeeeeeeeeeiiiiiooooooooooooooooouuuuuuuuuuuyyyyyd';
+    const source =
+        'àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ';
+    const target =
+        'aaaaaaaaaaaaaaaaaeeeeeeeeeeeiiiiiooooooooooooooooouuuuuuuuuuuyyyyyd';
     final lower = input.toLowerCase();
     final codeUnits = lower.split('');
-    final mapped = codeUnits.map((ch) {
-      final index = source.indexOf(ch);
-      return index == -1 ? ch : target[index];
-    }).join();
+    final mapped =
+        codeUnits.map((ch) {
+          final index = source.indexOf(ch);
+          return index == -1 ? ch : target[index];
+        }).join();
     return mapped.replaceAll(RegExp(r'[^a-z0-9]+'), ' ').trim();
   }
 
@@ -1083,8 +1092,6 @@ class _HomeFeedState extends State<_HomeFeed> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final t = AppLocalizations.of(context)!;
-    final width = MediaQuery.of(context).size.width;
-    final crossAxisCount = width >= 720 ? 3 : 2;
     // Tu dong lay thang hien tai de hien thi tieu de theo lich.
     final now = DateTime.now();
     final monthlyDestinationTitle = t.homeMonthlyDestinationTitle(now.month);
@@ -1155,13 +1162,7 @@ class _HomeFeedState extends State<_HomeFeed> {
                     _dishesCache.isNotEmpty) {
                   final cached = _filterDishes(_dishesCache);
                   if (cached.isNotEmpty) {
-                    return _buildDishList(
-                      context,
-                      theme,
-                      t,
-                      crossAxisCount,
-                      cached,
-                    );
+                    return _buildDishList(context, theme, t, cached);
                   }
                 }
                 return const Padding(
@@ -1193,13 +1194,7 @@ class _HomeFeedState extends State<_HomeFeed> {
                 return _buildEmpty(t.homeDishNotFound);
               }
 
-              return _buildDishList(
-                context,
-                theme,
-                t,
-                crossAxisCount,
-                filtered,
-              );
+              return _buildDishList(context, theme, t, filtered);
             },
           ),
       ],
@@ -1256,9 +1251,10 @@ class _HomeFeedState extends State<_HomeFeed> {
         orElse: () => bootCandidate,
       );
     } else {
-      target = (!_selectionInitialized && preferred != null)
-          ? preferred
-          : (selectedProvince ?? preferred ?? provinces.first);
+      target =
+          (!_selectionInitialized && preferred != null)
+              ? preferred
+              : (selectedProvince ?? preferred ?? provinces.first);
     }
 
     widget.onProvinceLabelChanged(target.name);
@@ -1274,9 +1270,12 @@ class _HomeFeedState extends State<_HomeFeed> {
       });
     }
 
-    final images = target.imageUrls.isNotEmpty
-        ? target.imageUrls
-        : (target.imageUrl.isNotEmpty ? [target.imageUrl] : const <String>[]);
+    final images =
+        target.imageUrls.isNotEmpty
+            ? target.imageUrls
+            : (target.imageUrl.isNotEmpty
+                ? [target.imageUrl]
+                : const <String>[]);
 
     if (_lastProvinceId != target.id) {
       _lastProvinceId = target.id;
@@ -1331,9 +1330,10 @@ class _HomeFeedState extends State<_HomeFeed> {
                         Navigator.pushNamed(
                           context,
                           RouteNames.provinceDetail,
-                          arguments: target.code.trim().isNotEmpty
-                              ? target.code
-                              : target.id,
+                          arguments:
+                              target.code.trim().isNotEmpty
+                                  ? target.code
+                                  : target.id,
                         );
                       },
                       child: _buildProvinceImageSlide(
@@ -1425,12 +1425,10 @@ class _HomeFeedState extends State<_HomeFeed> {
     BuildContext context,
     ThemeData theme,
     AppLocalizations t,
-    int crossAxisCount,
     List<DishModel> filtered,
   ) {
     return HomeDishSection(
       dishes: filtered,
-      crossAxisCount: crossAxisCount,
       userLat: _nearbyHomeController.userLatLng?.latitude,
       userLng: _nearbyHomeController.userLatLng?.longitude,
     );
@@ -1551,8 +1549,8 @@ class _HomeFeedState extends State<_HomeFeed> {
                       child: PageView.builder(
                         controller: _promoBannerController,
                         itemCount: _promoBanners.length,
-                        onPageChanged: (index) =>
-                            _promoBannerIndex.value = index,
+                        onPageChanged:
+                            (index) => _promoBannerIndex.value = index,
                         itemBuilder: (context, index) {
                           return Image.asset(
                             _promoBanners[index],

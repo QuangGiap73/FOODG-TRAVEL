@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../models/system_post.dart';
@@ -66,16 +66,22 @@ class HomeSystemPostsSection extends StatelessWidget {
               },
               child: Ink(
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF171B22) : Colors.white,
+                  color:
+                      isDark
+                          ? const Color(0xFF2A1C14)
+                          : const Color(0xFFFFF1E4),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: isDark
-                        ? const Color(0xFF2A303A)
-                        : const Color(0xFFF4E5D6),
+                    color:
+                        isDark
+                            ? const Color(0xFF55321D)
+                            : const Color(0xFFFFD8B5),
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: isDark ? 0.18 : 0.04),
+                      color: const Color(
+                        0xFFFF8A00,
+                      ).withValues(alpha: isDark ? 0.10 : 0.08),
                       blurRadius: 16,
                       offset: const Offset(0, 8),
                     ),
@@ -92,7 +98,10 @@ class HomeSystemPostsSection extends StatelessWidget {
                           children: [
                             if (category.trim().isNotEmpty)
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 5,
+                                ),
                                 decoration: BoxDecoration(
                                   color: const Color(0xFFFFF3E4),
                                   borderRadius: BorderRadius.circular(999),
@@ -117,7 +126,10 @@ class HomeSystemPostsSection extends StatelessWidget {
                                 fontSize: 15,
                                 fontWeight: FontWeight.w800,
                                 height: 1.35,
-                                color: isDark ? Colors.white : const Color(0xFF1F2937),
+                                color:
+                                    isDark
+                                        ? Colors.white
+                                        : const Color(0xFF1F2937),
                               ),
                             ),
                             const SizedBox(height: 8),
@@ -130,12 +142,18 @@ class HomeSystemPostsSection extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 12,
                                 height: 1.55,
-                                color: isDark ? Colors.white70 : const Color(0xFF4B5563),
+                                color:
+                                    isDark
+                                        ? Colors.white70
+                                        : const Color(0xFF4B5563),
                               ),
                             ),
                             const SizedBox(height: 10),
                             Text(
-                              (featured.provinceName34 ?? featured.regionCode ?? 'Xem chi tiết').toString(),
+                              (featured.provinceName34 ??
+                                      featured.regionCode ??
+                                      'Xem chi tiết')
+                                  .toString(),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
@@ -153,13 +171,15 @@ class HomeSystemPostsSection extends StatelessWidget {
                         child: SizedBox(
                           width: 118,
                           height: 82,
-                          child: featured.coverImage.trim().isNotEmpty
-                              ? Image.network(
-                                  featured.coverImage,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (_, __, ___) => _fallbackImage(),
-                                )
-                              : _fallbackImage(),
+                          child:
+                              featured.coverImage.trim().isNotEmpty
+                                  ? Image.network(
+                                    featured.coverImage,
+                                    fit: BoxFit.cover,
+                                    errorBuilder:
+                                        (_, __, ___) => _fallbackImage(),
+                                  )
+                                  : _fallbackImage(),
                         ),
                       ),
                     ],
