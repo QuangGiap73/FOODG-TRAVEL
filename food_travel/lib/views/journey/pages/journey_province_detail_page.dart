@@ -69,145 +69,152 @@ class JourneyProvinceDetailPage extends StatelessWidget {
                       ),
                       SliverToBoxAdapter(
                         child: Container(
-                            decoration: const BoxDecoration(
-                              color: Color(0xFFFFFBF6),
-                              borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(28),
-                              ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(16, 10, 16, 28),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const SizedBox(height: 10),
-                                  _SectionTitle(
-                                    title: t.journeyFeaturedDishesTitle,
-                                    trailing: featuredDishes.isEmpty
-                                        ? null
-                                        : _CountBadge(
-                                            value: featuredDishes.length,
-                                          ),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  _FeaturedDishCards(
-                                    userId: userId,
-                                    currentProvinceCode: provinceCode,
-                                    dishes: featuredDishes,
-                                  ),
-                                  const SizedBox(height: 20),
-                                  _SectionTitle(
-                                    title: t.journeyVisitedPlacesTitle,
-                                    trailing: TextButton(
-                                      onPressed: () {},
-                                      child: Text(t.commonViewAll),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  if (visitedPlaces.isEmpty)
-                                    _EmptyVisitedPlacesCard(
-                                      provinceName: provinceName,
-                                    )
-                                  else
-                                    SizedBox(
-                                      height: 212,
-                                      child: ListView.separated(
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount: visitedPlaces.length > 8
-                                            ? 8
-                                            : visitedPlaces.length,
-                                        separatorBuilder: (_, __) =>
-                                            const SizedBox(width: 12),
-                                        itemBuilder: (context, index) {
-                                          return _VisitedPlaceCard(
-                                            item: visitedPlaces[index],
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  const SizedBox(height: 20),
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: OutlinedButton.icon(
-                                          onPressed: () {},
-                                          icon: const Icon(
-                                            Icons.location_on_outlined,
-                                            size: 18,
-                                          ),
-                                          label: Text(
-                                            t.journeyFindNewPlaceInProvince(
-                                              provinceName,
-                                            ),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          style: OutlinedButton.styleFrom(
-                                            foregroundColor: const Color(
-                                              0xFFFF7A00,
-                                            ),
-                                            backgroundColor: Colors.white,
-                                            side: const BorderSide(
-                                              color: Color(0xFFFFC78B),
-                                            ),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(999),
-                                            ),
-                                            padding: const EdgeInsets.symmetric(
-                                              vertical: 14,
-                                              horizontal: 14,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 10),
-                                      Expanded(
-                                        child: ElevatedButton.icon(
-                                          onPressed: () {
-                                            Navigator.of(context).push(
-                                              MaterialPageRoute<void>(
-                                                builder: (_) =>
-                                                    JourneyCheckinHistoryPage(
-                                                  userId: userId,
-                                                  provinceCode: provinceCode,
-                                                  provinceName: provinceName,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                          icon: const Icon(
-                                            Icons.history_rounded,
-                                            size: 18,
-                                          ),
-                                          label: Text(
-                                            t.journeyViewCheckinHistory,
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          style: ElevatedButton.styleFrom(
-                                            elevation: 0,
-                                            backgroundColor: const Color(
-                                              0xFFFF7A00,
-                                            ),
-                                            foregroundColor: Colors.white,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(999),
-                                            ),
-                                            padding: const EdgeInsets.symmetric(
-                                              vertical: 14,
-                                              horizontal: 14,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                          decoration: const BoxDecoration(
+                            color: Color(0xFFFFFBF6),
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(28),
                             ),
                           ),
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 10, 16, 28),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 10),
+                                _SectionTitle(
+                                  title: t.journeyFeaturedDishesTitle,
+                                  trailing:
+                                      featuredDishes.isEmpty
+                                          ? null
+                                          : _CountBadge(
+                                            value: featuredDishes.length,
+                                          ),
+                                ),
+                                const SizedBox(height: 12),
+                                _FeaturedDishCards(
+                                  userId: userId,
+                                  currentProvinceCode: provinceCode,
+                                  dishes: featuredDishes,
+                                ),
+                                const SizedBox(height: 20),
+                                _SectionTitle(
+                                  title: t.journeyVisitedPlacesTitle,
+                                  trailing: TextButton(
+                                    onPressed: () {},
+                                    child: Text(t.commonViewAll),
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                                if (visitedPlaces.isEmpty)
+                                  _EmptyVisitedPlacesCard(
+                                    provinceName: provinceName,
+                                  )
+                                else
+                                  SizedBox(
+                                    height: 212,
+                                    child: ListView.separated(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount:
+                                          visitedPlaces.length > 8
+                                              ? 8
+                                              : visitedPlaces.length,
+                                      separatorBuilder:
+                                          (_, __) => const SizedBox(width: 12),
+                                      itemBuilder: (context, index) {
+                                        return _VisitedPlaceCard(
+                                          item: visitedPlaces[index],
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                const SizedBox(height: 20),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: OutlinedButton.icon(
+                                        onPressed: () {},
+                                        icon: const Icon(
+                                          Icons.location_on_outlined,
+                                          size: 18,
+                                        ),
+                                        label: Text(
+                                          t.journeyFindNewPlaceInProvince(
+                                            provinceName,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        style: OutlinedButton.styleFrom(
+                                          foregroundColor: const Color(
+                                            0xFFFF7A00,
+                                          ),
+                                          backgroundColor: Colors.white,
+                                          side: const BorderSide(
+                                            color: Color(0xFFFFC78B),
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              999,
+                                            ),
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 14,
+                                            horizontal: 14,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: ElevatedButton.icon(
+                                        onPressed: () {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute<void>(
+                                              builder:
+                                                  (_) =>
+                                                      JourneyCheckinHistoryPage(
+                                                        userId: userId,
+                                                        provinceCode:
+                                                            provinceCode,
+                                                        provinceName:
+                                                            provinceName,
+                                                      ),
+                                            ),
+                                          );
+                                        },
+                                        icon: const Icon(
+                                          Icons.history_rounded,
+                                          size: 18,
+                                        ),
+                                        label: Text(
+                                          t.journeyViewCheckinHistory,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          elevation: 0,
+                                          backgroundColor: const Color(
+                                            0xFFFF7A00,
+                                          ),
+                                          foregroundColor: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              999,
+                                            ),
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 14,
+                                            horizontal: 14,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   );
@@ -264,11 +271,14 @@ class JourneyProvinceDetailPage extends StatelessWidget {
         });
   }
 
-  List<_VisitedPlaceSummary> _buildVisitedPlaces(List<JourneyCheckin> checkins) {
+  List<_VisitedPlaceSummary> _buildVisitedPlaces(
+    List<JourneyCheckin> checkins,
+  ) {
     final grouped = <String, _VisitedPlaceSummary>{};
 
     for (final item in checkins) {
-      final key = item.placeId.trim().isNotEmpty ? item.placeId : item.placeName;
+      final key =
+          item.placeId.trim().isNotEmpty ? item.placeId : item.placeName;
       final existing = grouped[key];
 
       if (existing == null) {
@@ -290,29 +300,33 @@ class JourneyProvinceDetailPage extends StatelessWidget {
       grouped[key] = existing.copyWith(
         checkinCount: existing.checkinCount + 1,
         latestCheckinAt: item.createdAt ?? existing.latestCheckinAt,
-        placeAddress: existing.placeAddress.isEmpty
-            ? item.placeAddress
-            : existing.placeAddress,
+        placeAddress:
+            existing.placeAddress.isEmpty
+                ? item.placeAddress
+                : existing.placeAddress,
         placeLat: existing.placeLat == 0 ? item.placeLat : existing.placeLat,
         placeLng: existing.placeLng == 0 ? item.placeLng : existing.placeLng,
-        districtName: existing.districtName.isEmpty
-            ? (item.districtName ?? '')
-            : existing.districtName,
-        imageUrl: existing.imageUrl.isEmpty
-            ? (item.placeImageUrl ?? '')
-            : existing.imageUrl,
-        lastDistanceMeters: item.distanceMeters > 0
-            ? item.distanceMeters
-            : existing.lastDistanceMeters,
+        districtName:
+            existing.districtName.isEmpty
+                ? (item.districtName ?? '')
+                : existing.districtName,
+        imageUrl:
+            existing.imageUrl.isEmpty
+                ? (item.placeImageUrl ?? '')
+                : existing.imageUrl,
+        lastDistanceMeters:
+            item.distanceMeters > 0
+                ? item.distanceMeters
+                : existing.lastDistanceMeters,
       );
     }
 
-    final list = grouped.values.toList()
-      ..sort((a, b) {
-        final aMillis = a.latestCheckinAt?.millisecondsSinceEpoch ?? 0;
-        final bMillis = b.latestCheckinAt?.millisecondsSinceEpoch ?? 0;
-        return bMillis.compareTo(aMillis);
-      });
+    final list =
+        grouped.values.toList()..sort((a, b) {
+          final aMillis = a.latestCheckinAt?.millisecondsSinceEpoch ?? 0;
+          final bMillis = b.latestCheckinAt?.millisecondsSinceEpoch ?? 0;
+          return bMillis.compareTo(aMillis);
+        });
 
     return list;
   }
@@ -365,60 +379,60 @@ class _ProvinceHeroSection extends StatelessWidget {
             child: SizedBox(
               height: 250,
               child: Stack(
-            fit: StackFit.expand,
-            children: [
-              if (bannerAsset != null)
-                Image.asset(bannerAsset, fit: BoxFit.cover)
-              else
-                Container(color: const Color(0xFFFFE8CC)),
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.white.withValues(alpha: 0.42),
-                      Colors.transparent,
-                      Colors.black.withValues(alpha: 0.08),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned.fill(
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.black.withValues(alpha: 0.06),
-                        Colors.transparent,
-                        Colors.black.withValues(alpha: 0.18),
-                      ],
+                fit: StackFit.expand,
+                children: [
+                  if (bannerAsset != null)
+                    Image.asset(bannerAsset, fit: BoxFit.cover)
+                  else
+                    Container(color: const Color(0xFFFFE8CC)),
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.white.withValues(alpha: 0.42),
+                          Colors.transparent,
+                          Colors.black.withValues(alpha: 0.08),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ),
-              SafeArea(
-                bottom: false,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _HeroIconButton(
-                        icon: Icons.arrow_back_ios_new_rounded,
-                        onTap: () => Navigator.of(context).pop(),
+                  Positioned.fill(
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.black.withValues(alpha: 0.06),
+                            Colors.transparent,
+                            Colors.black.withValues(alpha: 0.18),
+                          ],
+                        ),
                       ),
-                      const Spacer(),
-                      _HeroIconButton(
-                        icon: Icons.share_outlined,
-                        onTap: () {},
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
+                  SafeArea(
+                    bottom: false,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _HeroIconButton(
+                            icon: Icons.arrow_back_ios_new_rounded,
+                            onTap: () => Navigator.of(context).pop(),
+                          ),
+                          const Spacer(),
+                          _HeroIconButton(
+                            icon: Icons.share_outlined,
+                            onTap: () {},
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                   Positioned(
                     left: 0,
                     right: 0,
@@ -426,32 +440,32 @@ class _ProvinceHeroSection extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 22),
                       child: Column(
-                    children: [
-                      Text(
-                        provinceName,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.w900,
-                          color: Color(0xFF1E2430),
-                          height: 1.08,
-                        ),
+                        children: [
+                          Text(
+                            provinceName,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.w900,
+                              color: Color(0xFF1E2430),
+                              height: 1.08,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            _buildSubtitle(context),
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF5E6470),
+                              height: 1.35,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        _buildSubtitle(context),
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF5E6470),
-                          height: 1.35,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
                 ],
               ),
             ),
@@ -470,44 +484,46 @@ class _ProvinceHeroSection extends StatelessWidget {
             left: 28,
             bottom: 126,
             child: Container(
-            width: 82,
-            height: 82,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.white, width: 4),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.14),
-                  blurRadius: 20,
-                  offset: const Offset(0, 10),
-                ),
-              ],
-            ),
-            child: ClipOval(
-              child: avatarAsset != null
-                  ? Image.asset(avatarAsset, fit: BoxFit.cover)
-                  : Container(
-                      color: const Color(0xFFFFF0DB),
-                      alignment: Alignment.center,
-                      child: const Icon(
-                        Icons.location_city_rounded,
-                        color: Color(0xFFFF7A00),
-                        size: 30,
-                      ),
-                    ),
+              width: 82,
+              height: 82,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 4),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.14),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: ClipOval(
+                child:
+                    avatarAsset != null
+                        ? Image.asset(avatarAsset, fit: BoxFit.cover)
+                        : Container(
+                          color: const Color(0xFFFFF0DB),
+                          alignment: Alignment.center,
+                          child: const Icon(
+                            Icons.location_city_rounded,
+                            color: Color(0xFFFF7A00),
+                            size: 30,
+                          ),
+                        ),
+              ),
             ),
           ),
-        ),
-      ],
+        ],
       ),
     );
   }
 
   String _buildSubtitle(BuildContext context) {
     if (progress.checkinCount > 0) {
-      return AppLocalizations.of(context)!
-          .journeyProvinceCheckinSubtitle(progress.checkinCount);
+      return AppLocalizations.of(
+        context,
+      )!.journeyProvinceCheckinSubtitle(progress.checkinCount);
     }
     return AppLocalizations.of(context)!.journeyProvinceEmptySubtitle;
   }
@@ -526,12 +542,12 @@ class _StatsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveVisitedPlaceCount = visitedPlaceCount > 0
-        ? visitedPlaceCount
-        : progress.uniquePlacesCount;
-    final effectiveVisitedDistrictCount = visitedDistrictCount > 0
-        ? visitedDistrictCount
-        : progress.districtsCount;
+    final effectiveVisitedPlaceCount =
+        visitedPlaceCount > 0 ? visitedPlaceCount : progress.uniquePlacesCount;
+    final effectiveVisitedDistrictCount =
+        visitedDistrictCount > 0
+            ? visitedDistrictCount
+            : progress.districtsCount;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
@@ -641,19 +657,12 @@ class _StatDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 1,
-      height: 64,
-      color: const Color(0xFFF0E8DE),
-    );
+    return Container(width: 1, height: 64, color: const Color(0xFFF0E8DE));
   }
 }
 
 class _SectionTitle extends StatelessWidget {
-  const _SectionTitle({
-    required this.title,
-    this.trailing,
-  });
+  const _SectionTitle({required this.title, this.trailing});
 
   final String title;
   final Widget? trailing;
@@ -737,7 +746,7 @@ class _FeaturedDishCards extends StatelessWidget {
     }
 
     return SizedBox(
-      height: 172,
+      height: 184,
       child: ListView.separated(
         padding: EdgeInsets.zero,
         scrollDirection: Axis.horizontal,
@@ -769,9 +778,10 @@ class _FeaturedDishCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dishName = dish.getName('vi').trim().isNotEmpty
-        ? dish.getName('vi').trim()
-        : dish.name;
+    final dishName =
+        dish.getName('vi').trim().isNotEmpty
+            ? dish.getName('vi').trim()
+            : dish.name;
     final legacyName = dish.effectiveLegacyProvinceName;
     final legacyCode = dish.legacyProvinceCode.trim();
     final hasLegacyTarget =
@@ -848,43 +858,44 @@ class _FeaturedDishCard extends StatelessWidget {
                       ),
                   ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        dishName,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w800,
-                          color: Color(0xFF212632),
-                          height: 1.2,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 5,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFFFF0DF),
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                        child: Text(
-                          AppLocalizations.of(context)!.commonViewDetail,
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          dishName,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
-                            fontSize: 11,
+                            fontSize: 14,
                             fontWeight: FontWeight.w800,
-                            color: Color(0xFFFF7A00),
+                            color: Color(0xFF212632),
+                            height: 1.2,
                           ),
                         ),
-                      ),
-                    ],
+                        const Spacer(),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 5,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFFF0DF),
+                            borderRadius: BorderRadius.circular(999),
+                          ),
+                          child: Text(
+                            AppLocalizations.of(context)!.commonViewDetail,
+                            style: const TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w800,
+                              color: Color(0xFFFF7A00),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -902,11 +913,12 @@ class _FeaturedDishCard extends StatelessWidget {
 
     Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (_) => JourneyProvinceDetailPage(
-          userId: userId,
-          provinceCode: legacyCode,
-          provinceName: legacyName,
-        ),
+        builder:
+            (_) => JourneyProvinceDetailPage(
+              userId: userId,
+              provinceCode: legacyCode,
+              provinceName: legacyName,
+            ),
       ),
     );
   }
@@ -1004,8 +1016,9 @@ class _VisitedPlaceCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(999),
                         ),
                         child: Text(
-                          AppLocalizations.of(context)!
-                              .journeyVisitCount(item.checkinCount),
+                          AppLocalizations.of(
+                            context,
+                          )!.journeyVisitCount(item.checkinCount),
                           style: const TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w800,
@@ -1110,10 +1123,7 @@ class _EmptyVisitedPlacesCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(
-                Icons.coffee_outlined,
-                color: Color(0xFFFF7A00),
-              ),
+              const Icon(Icons.coffee_outlined, color: Color(0xFFFF7A00)),
               const SizedBox(width: 8),
               Text(
                 AppLocalizations.of(context)!.journeyVisitedPlacesEmptyTitle,
@@ -1127,8 +1137,9 @@ class _EmptyVisitedPlacesCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            AppLocalizations.of(context)!
-                .journeyVisitedPlacesEmptyMessage(provinceName),
+            AppLocalizations.of(
+              context,
+            )!.journeyVisitedPlacesEmptyMessage(provinceName),
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
@@ -1152,7 +1163,8 @@ class _VisitedPlaceMetaRow extends StatelessWidget {
     return FutureBuilder<_VisitedPlaceMeta>(
       future: _loadMeta(),
       builder: (context, snapshot) {
-        final meta = snapshot.data ?? _VisitedPlaceMeta.empty(item.lastDistanceMeters);
+        final meta =
+            snapshot.data ?? _VisitedPlaceMeta.empty(item.lastDistanceMeters);
         final t = AppLocalizations.of(context)!;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1218,10 +1230,11 @@ class _VisitedPlaceMetaRow extends StatelessWidget {
     double? rating;
     try {
       if (item.placeId.trim().isNotEmpty) {
-        final doc = await FirebaseFirestore.instance
-            .collection('places')
-            .doc(item.placeId)
-            .get();
+        final doc =
+            await FirebaseFirestore.instance
+                .collection('places')
+                .doc(item.placeId)
+                .get();
         final data = doc.data();
         final value = data?['avg_rating'];
         if (value is num) {
@@ -1245,10 +1258,7 @@ class _VisitedPlaceMetaRow extends StatelessWidget {
       }
     } catch (_) {}
 
-    return _VisitedPlaceMeta(
-      rating: rating,
-      distanceMeters: distanceMeters,
-    );
+    return _VisitedPlaceMeta(rating: rating, distanceMeters: distanceMeters);
   }
 }
 
@@ -1294,10 +1304,7 @@ class _PlaceImage extends StatelessWidget {
 }
 
 class _HeroIconButton extends StatelessWidget {
-  const _HeroIconButton({
-    required this.icon,
-    required this.onTap,
-  });
+  const _HeroIconButton({required this.icon, required this.onTap});
 
   final IconData icon;
   final VoidCallback onTap;
@@ -1373,10 +1380,7 @@ class _VisitedPlaceSummary {
 }
 
 class _VisitedPlaceMeta {
-  const _VisitedPlaceMeta({
-    required this.rating,
-    required this.distanceMeters,
-  });
+  const _VisitedPlaceMeta({required this.rating, required this.distanceMeters});
 
   final double? rating;
   final double distanceMeters;

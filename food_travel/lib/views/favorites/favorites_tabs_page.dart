@@ -1,4 +1,4 @@
-﻿import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_travel/l10n/app_localizations.dart';
 
@@ -33,11 +33,7 @@ class _FavoritesTabsPageState extends State<FavoritesTabsPage> {
     final user = FirebaseAuth.instance.currentUser;
 
     if (user == null) {
-      return Scaffold(
-        body: Center(
-          child: Text(t.favoritesLoginRequired),
-        ),
-      );
+      return Scaffold(body: Center(child: Text(t.favoritesLoginRequired)));
     }
 
     final theme = Theme.of(context);
@@ -66,6 +62,7 @@ class _FavoritesTabsPageState extends State<FavoritesTabsPage> {
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(0, 0, 0, 12),
                         child: _HeroHeader(
+                          showBackButton: Navigator.of(context).canPop(),
                           title: t.favoritesTitle,
                           subtitle: t.favoritesSubtitle,
                           dishLabel: t.favoritesTabDishes,
@@ -80,7 +77,8 @@ class _FavoritesTabsPageState extends State<FavoritesTabsPage> {
                           searchHint: t.favoritesSearchHint,
                           savedDishesLabel: t.favoritesStatSavedDishes,
                           savedPlacesLabel: t.favoritesStatSavedPlaces,
-                          todaySuggestionsLabel: t.favoritesStatTodaySuggestions,
+                          todaySuggestionsLabel:
+                              t.favoritesStatTodaySuggestions,
                           searchController: _searchController,
                           onSearchChanged: (value) {
                             setState(() => _query = value.trim());
@@ -91,17 +89,18 @@ class _FavoritesTabsPageState extends State<FavoritesTabsPage> {
                     SliverPadding(
                       padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
                       sliver: SliverToBoxAdapter(
-                        child: _tabIndex == 0
-                            ? FavoriteDishesTab(
-                                key: const ValueKey('dish-tab'),
-                                uid: user.uid,
-                                query: _query,
-                              )
-                            : FavoritePlacesTab(
-                                key: const ValueKey('place-tab'),
-                                uid: user.uid,
-                                query: _query,
-                              ),
+                        child:
+                            _tabIndex == 0
+                                ? FavoriteDishesTab(
+                                  key: const ValueKey('dish-tab'),
+                                  uid: user.uid,
+                                  query: _query,
+                                )
+                                : FavoritePlacesTab(
+                                  key: const ValueKey('place-tab'),
+                                  uid: user.uid,
+                                  query: _query,
+                                ),
                       ),
                     ),
                   ],
@@ -117,6 +116,7 @@ class _FavoritesTabsPageState extends State<FavoritesTabsPage> {
 
 class _HeroHeader extends StatelessWidget {
   const _HeroHeader({
+    required this.showBackButton,
     required this.title,
     required this.subtitle,
     required this.dishLabel,
@@ -133,6 +133,7 @@ class _HeroHeader extends StatelessWidget {
     required this.onSearchChanged,
   });
 
+  final bool showBackButton;
   final String title;
   final String subtitle;
   final String dishLabel;
@@ -158,32 +159,34 @@ class _HeroHeader extends StatelessWidget {
       children: [
         Container(
           decoration: BoxDecoration(
-            gradient: isDark
-                ? const LinearGradient(
-                    colors: [
-                      Color(0xFF3A2414),
-                      Color(0xFF1C2330),
-                      Color(0xFF0D1218),
-                    ],
-                    stops: [0.0, 0.56, 1.0],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  )
-                : const LinearGradient(
-                    colors: [
-                      Color(0xFFFFD8AD),
-                      Color(0xFFFFECDD),
-                      Color(0xFFFFFFFF),
-                    ],
-                    stops: [0.0, 0.46, 1.0],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
+            gradient:
+                isDark
+                    ? const LinearGradient(
+                      colors: [
+                        Color(0xFF3A2414),
+                        Color(0xFF1C2330),
+                        Color(0xFF0D1218),
+                      ],
+                      stops: [0.0, 0.56, 1.0],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    )
+                    : const LinearGradient(
+                      colors: [
+                        Color(0xFFFFD8AD),
+                        Color(0xFFFFECDD),
+                        Color(0xFFFFFFFF),
+                      ],
+                      stops: [0.0, 0.46, 1.0],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
             boxShadow: [
               BoxShadow(
-                color: isDark
-                    ? Colors.black.withOpacity(0.28)
-                    : const Color(0xFFFF8A2A).withOpacity(0.10),
+                color:
+                    isDark
+                        ? Colors.black.withOpacity(0.28)
+                        : const Color(0xFFFF8A2A).withOpacity(0.10),
                 blurRadius: 24,
                 offset: const Offset(0, 12),
               ),
@@ -202,7 +205,9 @@ class _HeroHeader extends StatelessWidget {
                       shape: BoxShape.circle,
                       gradient: RadialGradient(
                         colors: [
-                          const Color(0xFFFF9F43).withOpacity(isDark ? 0.18 : 0.30),
+                          const Color(
+                            0xFFFF9F43,
+                          ).withOpacity(isDark ? 0.18 : 0.30),
                           const Color(0xFFFF9F43).withOpacity(0.0),
                         ],
                       ),
@@ -217,6 +222,24 @@ class _HeroHeader extends StatelessWidget {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        if (showBackButton) ...[
+                          Material(
+                            color:
+                                isDark
+                                    ? Colors.white.withValues(alpha: 0.12)
+                                    : Colors.white.withValues(alpha: 0.88),
+                            shape: const CircleBorder(),
+                            child: InkWell(
+                              customBorder: const CircleBorder(),
+                              onTap: () => Navigator.of(context).maybePop(),
+                              child: const Padding(
+                                padding: EdgeInsets.all(10),
+                                child: Icon(Icons.arrow_back_rounded, size: 22),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                        ],
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -229,7 +252,10 @@ class _HeroHeader extends StatelessWidget {
                                   fontWeight: FontWeight.w900,
                                   height: 1.06,
                                   letterSpacing: -0.4,
-                                  color: isDark ? Colors.white : const Color(0xFF0F172A),
+                                  color:
+                                      isDark
+                                          ? Colors.white
+                                          : const Color(0xFF0F172A),
                                 ),
                               ),
                               const SizedBox(height: 8),
@@ -240,7 +266,10 @@ class _HeroHeader extends StatelessWidget {
                                 style: theme.textTheme.bodyMedium?.copyWith(
                                   height: 1.25,
                                   fontWeight: FontWeight.w500,
-                                  color: isDark ? const Color(0xFFCBD5E1) : const Color(0xFF64748B),
+                                  color:
+                                      isDark
+                                          ? const Color(0xFFCBD5E1)
+                                          : const Color(0xFF64748B),
                                 ),
                               ),
                             ],
@@ -320,7 +349,10 @@ class _MascotImage extends StatelessWidget {
                 width: 88,
                 height: 88,
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF1F2937) : const Color(0xFFFFF3EA),
+                  color:
+                      isDark
+                          ? const Color(0xFF1F2937)
+                          : const Color(0xFFFFF3EA),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -355,14 +387,20 @@ class _SearchBarCard extends StatelessWidget {
     return Container(
       height: 54,
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF111827).withOpacity(0.92) : Colors.white.withOpacity(0.96),
+        color:
+            isDark
+                ? const Color(0xFF111827).withOpacity(0.92)
+                : Colors.white.withOpacity(0.96),
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
           color: isDark ? const Color(0xFF293141) : const Color(0xFFFFE1C5),
         ),
         boxShadow: [
           BoxShadow(
-            color: isDark ? Colors.black.withOpacity(0.18) : const Color(0xFFFF8A2A).withOpacity(0.08),
+            color:
+                isDark
+                    ? Colors.black.withOpacity(0.18)
+                    : const Color(0xFFFF8A2A).withOpacity(0.08),
             blurRadius: 16,
             offset: const Offset(0, 8),
           ),
@@ -371,30 +409,30 @@ class _SearchBarCard extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(14, 0, 8, 0),
       child: Row(
         children: [
-          const Icon(
-            Icons.search_rounded,
-            color: Color(0xFFF97316),
-            size: 24,
-          ),
+          const Icon(Icons.search_rounded, color: Color(0xFFF97316), size: 24),
           const SizedBox(width: 10),
           Expanded(
             child: TextField(
               controller: controller,
               onChanged: onChanged,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                    color: isDark ? const Color(0xFFE2E8F0) : const Color(0xFF334155),
-                  ),
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+                color:
+                    isDark ? const Color(0xFFE2E8F0) : const Color(0xFF334155),
+              ),
               decoration: InputDecoration(
                 hintText: hint,
                 border: InputBorder.none,
                 isDense: true,
                 hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                      color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF7A8699),
-                    ),
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  color:
+                      isDark
+                          ? const Color(0xFF94A3B8)
+                          : const Color(0xFF7A8699),
+                ),
               ),
             ),
           ),
@@ -438,7 +476,10 @@ class _TabSwitcher extends StatelessWidget {
     return Container(
       height: 58,
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1A1F28).withOpacity(0.92) : const Color(0xFFF2F4F7).withOpacity(0.92),
+        color:
+            isDark
+                ? const Color(0xFF1A1F28).withOpacity(0.92)
+                : const Color(0xFFF2F4F7).withOpacity(0.92),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: isDark ? const Color(0xFF293141) : const Color(0xFFEDEFF3),
@@ -488,9 +529,10 @@ class _TabPill extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final activeBg = isDark ? const Color(0xFF2A3344) : Colors.white;
-    final textColor = active
-        ? const Color(0xFFF97316)
-        : (isDark ? const Color(0xFFB6C2D2) : const Color(0xFF64748B));
+    final textColor =
+        active
+            ? const Color(0xFFF97316)
+            : (isDark ? const Color(0xFFB6C2D2) : const Color(0xFF64748B));
 
     return Material(
       color: Colors.transparent,
@@ -506,15 +548,19 @@ class _TabPill extends StatelessWidget {
             border: Border.all(
               color: active ? const Color(0xFFFFD7B5) : Colors.transparent,
             ),
-            boxShadow: active
-                ? [
-                    BoxShadow(
-                      color: isDark ? Colors.black.withOpacity(0.16) : const Color(0xFFFF8A2A).withOpacity(0.08),
-                      blurRadius: 12,
-                      offset: const Offset(0, 6),
-                    ),
-                  ]
-                : null,
+            boxShadow:
+                active
+                    ? [
+                      BoxShadow(
+                        color:
+                            isDark
+                                ? Colors.black.withOpacity(0.16)
+                                : const Color(0xFFFF8A2A).withOpacity(0.08),
+                        blurRadius: 12,
+                        offset: const Offset(0, 6),
+                      ),
+                    ]
+                    : null,
           ),
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           child: Row(
@@ -563,14 +609,20 @@ class _StatsStrip extends StatelessWidget {
     return Container(
       height: 76,
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF111827).withOpacity(0.94) : Colors.white.withOpacity(0.95),
+        color:
+            isDark
+                ? const Color(0xFF111827).withOpacity(0.94)
+                : Colors.white.withOpacity(0.95),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: isDark ? const Color(0xFF293141) : const Color(0xFFFFE7D3),
         ),
         boxShadow: [
           BoxShadow(
-            color: isDark ? Colors.black.withOpacity(0.14) : const Color(0xFFFF8A2A).withOpacity(0.06),
+            color:
+                isDark
+                    ? Colors.black.withOpacity(0.14)
+                    : const Color(0xFFFF8A2A).withOpacity(0.06),
             blurRadius: 14,
             offset: const Offset(0, 7),
           ),
@@ -650,14 +702,13 @@ class _StatBlock extends StatelessWidget {
           width: 38,
           height: 38,
           decoration: BoxDecoration(
-            color: effectiveDark ? const Color(0xFF1F2937) : const Color(0xFFFFF3EA),
+            color:
+                effectiveDark
+                    ? const Color(0xFF1F2937)
+                    : const Color(0xFFFFF3EA),
             borderRadius: BorderRadius.circular(13),
           ),
-          child: Icon(
-            icon,
-            color: const Color(0xFFF97316),
-            size: 20,
-          ),
+          child: Icon(icon, color: const Color(0xFFF97316), size: 20),
         ),
         const SizedBox(width: 7),
         Flexible(
@@ -684,7 +735,10 @@ class _StatBlock extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 9.5,
                   fontWeight: FontWeight.w500,
-                  color: effectiveDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                  color:
+                      effectiveDark
+                          ? const Color(0xFF94A3B8)
+                          : const Color(0xFF64748B),
                 ),
               ),
             ],

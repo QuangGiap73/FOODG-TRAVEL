@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -48,12 +48,14 @@ class SerpApiPlacesService {
       return const [];
     }
   }
+
   Future<List<GoongNearbyPlace>> searchNearby({
     required double lat,
     required double lng,
     required String query,
     int radius = 3000,
     int limit = 12,
+    bool enrichDetails = true,
   }) async {
     // chuan hoa input
     final trimmedQuery = query.trim();
@@ -86,21 +88,23 @@ class SerpApiPlacesService {
       final dedup = <String, GoongNearbyPlace>{};
       for (final item in items) {
         if (item is! Map) continue;
-        final place =
-            GoongNearbyPlace.fromSerpApi(Map<String, dynamic>.from(item));
+        final place = GoongNearbyPlace.fromSerpApi(
+          Map<String, dynamic>.from(item),
+        );
         if (place.name.isEmpty || place.lat == 0 || place.lng == 0) {
           continue;
         }
-        final key = place.id.isNotEmpty
-            ? place.id
-            : '${place.name}-${place.lat}-${place.lng}';
+        final key =
+            place.id.isNotEmpty
+                ? place.id
+                : '${place.name}-${place.lat}-${place.lng}';
         if (dedup.containsKey(key)) continue;
         dedup[key] = place;
         if (dedup.length >= limit) break;
       }
       final base = dedup.values.toList();
-      final enriched = await _enrichTopPlacesWithDetailPhoto(base);
-      return enriched;
+      if (!enrichDetails) return base;
+      return _enrichTopPlacesWithDetailPhoto(base);
     } catch (e) {
       debugPrint('SerpAPI error: $e');
       return [];
@@ -157,8 +161,9 @@ class SerpApiPlacesService {
     for (var i = 0; i < count; i++) {
       futures.add(() async {
         try {
-          final enriched = await _enrichWithDetailPrimaryPhoto(output[i])
-              .timeout(const Duration(seconds: 4));
+          final enriched = await _enrichWithDetailPrimaryPhoto(
+            output[i],
+          ).timeout(const Duration(seconds: 4));
           output[i] = enriched;
         } catch (_) {
           // Loi/timeout thi giu nguyen item goc.
@@ -202,14 +207,16 @@ class SerpApiPlacesService {
       final dedup = <String, GoongNearbyPlace>{};
       for (final item in items) {
         if (item is! Map) continue;
-        final place =
-            GoongNearbyPlace.fromSerpApi(Map<String, dynamic>.from(item));
+        final place = GoongNearbyPlace.fromSerpApi(
+          Map<String, dynamic>.from(item),
+        );
         if (place.name.isEmpty || place.lat == 0 || place.lng == 0) {
           continue;
         }
-        final key = place.id.isNotEmpty
-            ? place.id
-            : '${place.name}-${place.lat}-${place.lng}';
+        final key =
+            place.id.isNotEmpty
+                ? place.id
+                : '${place.name}-${place.lat}-${place.lng}';
         if (dedup.containsKey(key)) continue;
         dedup[key] = place;
         if (dedup.length >= limit) break;
@@ -268,8 +275,9 @@ class SerpApiPlacesService {
 
       final first = items.first;
       if (first is! Map) return seed;
-      final detail =
-          GoongNearbyPlace.fromSerpApi(Map<String, dynamic>.from(first));
+      final detail = GoongNearbyPlace.fromSerpApi(
+        Map<String, dynamic>.from(first),
+      );
       return _mergePlace(seed, detail);
     } catch (e) {
       debugPrint('SerpAPI detail error: $e');
@@ -278,23 +286,24 @@ class SerpApiPlacesService {
   }
 
   GoongNearbyPlace _mergePlace(GoongNearbyPlace seed, GoongNearbyPlace detail) {
-    final mergedPhotos = detail.photoUrls.isNotEmpty
-        ? detail.photoUrls
-        : seed.photoUrls;
-    final mainPhoto = detail.photoUrl.isNotEmpty
-        ? detail.photoUrl
-        : (mergedPhotos.isNotEmpty ? mergedPhotos.first : seed.photoUrl);
+    final mergedPhotos =
+        detail.photoUrls.isNotEmpty ? detail.photoUrls : seed.photoUrls;
+    final mainPhoto =
+        detail.photoUrl.isNotEmpty
+            ? detail.photoUrl
+            : (mergedPhotos.isNotEmpty ? mergedPhotos.first : seed.photoUrl);
     final mergedHours =
-        detail.openingHours.isNotEmpty ? detail.openingHours : seed.openingHours;
+        detail.openingHours.isNotEmpty
+            ? detail.openingHours
+            : seed.openingHours;
     final mergedAmenities =
         detail.amenities.isNotEmpty ? detail.amenities : seed.amenities;
 
     return GoongNearbyPlace(
       // Giu place id goc (seed) de khong bi lech Firestore review path
       id: seed.id.isNotEmpty ? seed.id : detail.id,
-      serpDataId: detail.serpDataId.isNotEmpty
-          ? detail.serpDataId
-          : seed.serpDataId,
+      serpDataId:
+          detail.serpDataId.isNotEmpty ? detail.serpDataId : seed.serpDataId,
       name: detail.name.isNotEmpty ? detail.name : seed.name,
       address: detail.address.isNotEmpty ? detail.address : seed.address,
       district: detail.district.isNotEmpty ? detail.district : seed.district,
@@ -311,9 +320,10 @@ class SerpApiPlacesService {
       closingTime: detail.closingTime ?? seed.closingTime,
       openingHours: mergedHours,
       amenities: mergedAmenities,
-      mustTryItems: seed.mustTryItems.isNotEmpty
-          ? seed.mustTryItems
-          : detail.mustTryItems,
+      mustTryItems:
+          seed.mustTryItems.isNotEmpty
+              ? seed.mustTryItems
+              : detail.mustTryItems,
     );
   }
 }
@@ -338,17 +348,19 @@ class SerpApiReview {
     String userName = '';
     String avatarUrl = '';
     if (userObj is Map) {
-      userName = (userObj['name'] ??
-              userObj['username'] ??
-              userObj['author_name'] ??
-              '')
-          .toString();
-      avatarUrl = (userObj['thumbnail'] ??
-              userObj['photo'] ??
-              userObj['image'] ??
-              userObj['profile_photo_url'] ??
-              '')
-          .toString();
+      userName =
+          (userObj['name'] ??
+                  userObj['username'] ??
+                  userObj['author_name'] ??
+                  '')
+              .toString();
+      avatarUrl =
+          (userObj['thumbnail'] ??
+                  userObj['photo'] ??
+                  userObj['image'] ??
+                  userObj['profile_photo_url'] ??
+                  '')
+              .toString();
     } else if (userObj is String) {
       userName = userObj;
     }
@@ -357,9 +369,10 @@ class SerpApiReview {
     }
 
     final ratingRaw = json['rating'];
-    final rating = ratingRaw is num
-        ? ratingRaw.toDouble()
-        : double.tryParse(ratingRaw?.toString() ?? '') ?? 0;
+    final rating =
+        ratingRaw is num
+            ? ratingRaw.toDouble()
+            : double.tryParse(ratingRaw?.toString() ?? '') ?? 0;
     String text = '';
     final snippet = json['snippet'];
     if (snippet is Map) {
@@ -368,18 +381,17 @@ class SerpApiReview {
       text = (snippet ?? '').toString();
     }
     if (text.isEmpty) {
-      text = (json['text'] ??
-              json['review_text'] ??
-              json['content'] ??
-              json['description'] ??
-              '')
-          .toString();
+      text =
+          (json['text'] ??
+                  json['review_text'] ??
+                  json['content'] ??
+                  json['description'] ??
+                  '')
+              .toString();
     }
-    final dateText = (json['date'] ??
-            json['relative_date'] ??
-            json['published_time'] ??
-            '')
-        .toString();
+    final dateText =
+        (json['date'] ?? json['relative_date'] ?? json['published_time'] ?? '')
+            .toString();
     return SerpApiReview(
       userName: userName,
       avatarUrl: avatarUrl,

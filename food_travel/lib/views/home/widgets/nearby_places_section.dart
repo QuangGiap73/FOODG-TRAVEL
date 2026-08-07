@@ -29,7 +29,7 @@ class NearbyPlacesSection extends StatelessWidget {
       builder: (context, _) {
         final status = controller.status;
         // Giới hạn số card để Home gọn và nhanh.
-        final places = controller.places.take(8).toList();
+        final places = controller.places.take(12).toList();
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,

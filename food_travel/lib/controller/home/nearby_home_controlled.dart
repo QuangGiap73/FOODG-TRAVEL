@@ -29,9 +29,10 @@ class NearbyHomeController extends ChangeNotifier {
   final Random _random = Random();
 
   static const Duration _cacheTtl = Duration(minutes: 8);
-  static const int _radius = 8000;
   static const List<int> _radiusSteps = [6000, 10000, 15000];
   static const int _limit = 12;
+  static const int _targetPlaceCount = 18;
+  static const int _queriesPerRadius = 3;
 
   final Map<String, _NearbyCacheEntry> _cache = {};
   final List<GoongNearbyPlace> _places = [];
@@ -93,7 +94,7 @@ class NearbyHomeController extends ChangeNotifier {
     try {
       // Thu nhieu query theo khung gio + mo rong ban kinh de tang ty le co ket qua.
       final queries = _queryCandidatesByHour(DateTime.now());
-      final places = await _searchFirstNonEmpty(
+      final places = await _searchAndMergeNearby(
         lat: pos.latitude,
         lng: pos.longitude,
         queries: queries,
@@ -210,32 +211,57 @@ class NearbyHomeController extends ChangeNotifier {
         .toList();
   }
 
-  Future<List<GoongNearbyPlace>> _searchFirstNonEmpty({
+  Future<List<GoongNearbyPlace>> _searchAndMergeNearby({
     required double lat,
     required double lng,
     required List<String> queries,
   }) async {
+    final selectedQueries = _pickDiverseQueries(queries);
+    final merged = <String, GoongNearbyPlace>{};
+
     for (final radius in _radiusSteps) {
-      for (final query in queries) {
+      for (final query in selectedQueries) {
         final result = await _placesService.searchNearby(
           lat: lat,
           lng: lng,
           query: query,
           radius: radius,
           limit: _limit,
+          enrichDetails: false,
         );
-        if (result.isNotEmpty) return result;
+        for (final place in result) {
+          merged.putIfAbsent(_placeDedupKey(place), () => place);
+        }
       }
+
+      // Chi mo rong ban kinh khi khu vuc hien tai chua du phong phu.
+      if (merged.length >= _targetPlaceCount) break;
     }
 
-    // Fallback cuoi cung.
-    return _placesService.searchNearby(
-      lat: lat,
-      lng: lng,
-      query: 'quan an',
-      radius: _radius,
-      limit: _limit,
-    );
+    return merged.values.toList();
+  }
+
+  List<String> _pickDiverseQueries(List<String> queries) {
+    if (queries.length <= _queriesPerRadius) return queries;
+
+    // Giu mot query rong, sau do chon ngau nhien cac nhom mon con lai.
+    final generic = queries.first;
+    final specific =
+        queries.skip(1).where((q) => q != generic).toList()..shuffle(_random);
+    return [generic, ...specific.take(_queriesPerRadius - 1)];
+  }
+
+  String _placeDedupKey(GoongNearbyPlace place) {
+    final stableId =
+        place.serpDataId.trim().isNotEmpty
+            ? place.serpDataId.trim()
+            : place.id.trim();
+    if (stableId.isNotEmpty) return 'id:$stableId';
+
+    final normalizedName = place.name.trim().toLowerCase();
+    final lat = (place.lat * 10000).round();
+    final lng = (place.lng * 10000).round();
+    return 'place:$normalizedName:$lat:$lng';
   }
 
   List<GoongNearbyPlace> _sortPlaces(
