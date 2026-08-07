@@ -14,9 +14,13 @@ class AuthGate extends StatefulWidget {
   const AuthGate({
     super.key,
     this.showLoginSuccessAnimation = false,
+    this.onResolved,
+    this.allowInitialSurvey = true,
   });
 
   final bool showLoginSuccessAnimation;
+  final VoidCallback? onResolved;
+  final bool allowInitialSurvey;
 
   @override
   State<AuthGate> createState() => _AuthGateState();
@@ -24,6 +28,7 @@ class AuthGate extends StatefulWidget {
 
 class _AuthGateState extends State<AuthGate> {
   late bool _showLoginSuccessAnimation;
+  bool _reportedResolved = false;
 
   @override
   void initState() {
@@ -34,6 +39,14 @@ class _AuthGateState extends State<AuthGate> {
   void _finishLoginAnimation() {
     if (!mounted || !_showLoginSuccessAnimation) return;
     setState(() => _showLoginSuccessAnimation = false);
+  }
+
+  void _reportResolved() {
+    if (_reportedResolved || widget.onResolved == null) return;
+    _reportedResolved = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) widget.onResolved?.call();
+    });
   }
 
   @override
@@ -56,9 +69,11 @@ class _AuthGateState extends State<AuthGate> {
           );
         }
 
+        _reportResolved();
+
         if (snapshot.hasData) {
           if (!widget.showLoginSuccessAnimation) {
-            return const HomeScreen();
+            return HomeScreen(allowInitialSurvey: widget.allowInitialSurvey);
           }
 
           return PopScope(
@@ -66,15 +81,12 @@ class _AuthGateState extends State<AuthGate> {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                HomeScreen(
-                  allowInitialSurvey: !_showLoginSuccessAnimation,
-                ),
+                HomeScreen(allowInitialSurvey: !_showLoginSuccessAnimation),
                 if (_showLoginSuccessAnimation)
                   SplashGate(
                     hasSeenOnboarding: true,
-                    finalLogoAsset: 'assets/logo.jpg',
-                    duration: const Duration(milliseconds: 3600),
                     navigateOnComplete: false,
+                    animateToBottomNavigation: true,
                     onCompleted: _finishLoginAnimation,
                   ),
               ],

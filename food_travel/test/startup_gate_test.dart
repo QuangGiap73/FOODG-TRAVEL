@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:food_travel/router/route_names.dart';
-import 'package:food_travel/views/splash/splash_gate.dart';
+import 'package:food_travel/views/splash/app_startup_gate.dart';
+import 'package:food_travel/views/splash/foods_splash_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -15,18 +15,20 @@ void main() {
 
     await tester.pumpWidget(
       MaterialApp(
-        home: const AppStartupGate(),
-        routes: {
-          RouteNames.authGate: (_) => const _RouteMarker('auth-gate'),
-          RouteNames.onboarding: (_) => const _RouteMarker('onboarding'),
-        },
+        home: AppStartupGate(
+          onboardingDestination: const _RouteMarker('onboarding'),
+          authenticatedBuilder: (onResolved, allowInitialSurvey) {
+            WidgetsBinding.instance.addPostFrameCallback((_) => onResolved());
+            return const _RouteMarker('auth-gate');
+          },
+        ),
       ),
     );
 
-    // Resolve SharedPreferences, play the splash animation, then process the
-    // replacement route scheduled by its animation status listener.
+    // Resolve startup/auth below the overlay, then finish the splash.
     await tester.pump();
-    await tester.pump(const Duration(seconds: 3));
+    await tester.pump(FoodsSplashConstants.duration);
+    await tester.pump(const Duration(seconds: 1));
     await tester.pumpAndSettle();
   }
 

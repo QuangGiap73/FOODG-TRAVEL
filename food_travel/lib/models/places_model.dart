@@ -87,16 +87,10 @@ class GoongNearbyPlace {
   factory GoongNearbyPlace.fromSerpApi(Map<String, dynamic> json) {
     final coords = json['gps_coordinates'] as Map<String, dynamic>? ?? const {};
     final lat = _parseDouble(
-      coords['latitude'] ??
-          coords['lat'] ??
-          json['latitude'] ??
-          json['lat'],
+      coords['latitude'] ?? coords['lat'] ?? json['latitude'] ?? json['lat'],
     );
     final lng = _parseDouble(
-      coords['longitude'] ??
-          coords['lng'] ??
-          json['longitude'] ??
-          json['lng'],
+      coords['longitude'] ?? coords['lng'] ?? json['longitude'] ?? json['lng'],
     );
 
     final photos = _serpPhotoUrlsFromJson(json);
@@ -165,8 +159,7 @@ List<String> _photoUrlsFromJson(Map<String, dynamic> json) {
 }
 
 String _serpIdFromJson(Map<String, dynamic> json) {
-  final raw =
-      json['place_id'] ?? json['data_id'] ?? json['cid'] ?? json['id'];
+  final raw = json['place_id'] ?? json['data_id'] ?? json['cid'] ?? json['id'];
   return raw == null ? '' : raw.toString();
 }
 
@@ -184,7 +177,10 @@ String? _stringOrNull(dynamic value) {
 
 String _serpPhotoUrlFromJson(Map<String, dynamic> json) {
   final direct =
-      json['thumbnail'] ?? json['thumbnail_url'] ?? json['image'] ?? json['photo'];
+      json['thumbnail'] ??
+      json['thumbnail_url'] ??
+      json['image'] ??
+      json['photo'];
   if (direct is String) return direct;
 
   final photos = json['photos'];
@@ -264,22 +260,37 @@ List<String> _serpPhotoUrlsFromJson(Map<String, dynamic> json) {
 
 List<String> _openingHoursFromJson(Map<String, dynamic> json) {
   try {
+    final operatingHours = json['operating_hours'];
+    if (operatingHours is Map) {
+      final lines =
+          operatingHours.entries
+              .map(
+                (entry) =>
+                    '${entry.key.toString().trim()}: ${entry.value.toString().trim()}',
+              )
+              .where((line) => !line.trim().endsWith(':'))
+              .toList();
+      if (lines.isNotEmpty) return lines;
+    }
+
     final hours = json['hours'];
     if (hours is Map) {
       final weekdays = hours['weekdays'];
       if (weekdays is List) {
-        final lines = weekdays
-            .map((e) => _cleanOpenHourText(e.toString()))
-            .where((e) => e.isNotEmpty)
-            .toList();
+        final lines =
+            weekdays
+                .map((e) => _cleanOpenHourText(e.toString()))
+                .where((e) => e.isNotEmpty)
+                .toList();
         if (lines.isNotEmpty) return lines;
       }
       final text = hours['opening_hours'] ?? hours['open_hours'];
       if (text is List) {
-        final lines = text
-            .map((e) => _cleanOpenHourText(e.toString()))
-            .where((e) => e.isNotEmpty)
-            .toList();
+        final lines =
+            text
+                .map((e) => _cleanOpenHourText(e.toString()))
+                .where((e) => e.isNotEmpty)
+                .toList();
         if (lines.isNotEmpty) return lines;
       }
       if (text is String && text.trim().isNotEmpty) {
@@ -370,12 +381,39 @@ bool? _openFromJson(Map<String, dynamic> json) {
   if (hours is Map && hours['open_now'] is bool) {
     return hours['open_now'] as bool;
   }
-  final raw = json['open_state'] ?? json['open_now'] ?? json['is_open'];
+  final raw =
+      json['open_state'] ??
+      json['open_now'] ??
+      json['is_open'] ??
+      (hours is String ? hours : null);
   if (raw is bool) return raw;
   if (raw is String) {
-    final lower = raw.toLowerCase();
-    if (lower.contains('open')) return true;
-    if (lower.contains('close')) return false;
+    final lower = raw.toLowerCase().trim();
+
+    // Check phrases describing the current state, not later text such as
+    // "Đóng cửa vào 20:30" or "Closes at 10 PM".
+    const currentlyOpen = [
+      'đang mở cửa',
+      'mở cả ngày',
+      'mở cửa cả ngày',
+      'mở cửa 24 giờ',
+      'sắp đóng cửa',
+      'open',
+      'open 24 hours',
+      'closing soon',
+    ];
+    const currentlyClosed = [
+      'đã đóng cửa',
+      'sắp mở cửa',
+      'tạm thời đóng cửa',
+      'đóng cửa vĩnh viễn',
+      'closed',
+      'opens soon',
+      'temporarily closed',
+      'permanently closed',
+    ];
+    if (currentlyClosed.any(lower.startsWith)) return false;
+    if (currentlyOpen.any(lower.startsWith)) return true;
   }
   return null;
 }
@@ -388,7 +426,16 @@ String? _closingTimeFromJson(Map<String, dynamic> json) {
     final text = _stringOrNull(raw);
     if (text != null) return text;
   }
-  return _stringOrNull(json['closing_time'] ?? json['closes_at']);
+  final direct = _stringOrNull(json['closing_time'] ?? json['closes_at']);
+  if (direct != null) return direct;
+
+  final status = _stringOrNull(json['open_state'] ?? json['hours']);
+  if (status == null) return null;
+  final match = RegExp(
+    r'(?:đóng cửa vào|đóng cửa lúc|closes(?: at)?|open until)\s+([^·,]+)',
+    caseSensitive: false,
+  ).firstMatch(status);
+  return match?.group(1)?.trim();
 }
 
 String _stringValue(dynamic value) {
@@ -465,9 +512,7 @@ extension GoongNearbyApi on GoongPlacesService {
       final data = jsonDecode(res.body) as Map<String, dynamic>;
       final status = (data['status'] ?? '').toString();
       final items = (data['results'] as List?) ?? const [];
-      debugPrint(
-        'Goong NearbySearch status=$status results=${items.length}',
-      );
+      debugPrint('Goong NearbySearch status=$status results=${items.length}');
       if (status == 'ZERO_RESULTS') {
         debugPrint('Goong NearbySearch ZERO_RESULTS');
         return [];
@@ -478,10 +523,11 @@ extension GoongNearbyApi on GoongPlacesService {
         return [];
       }
 
-      final list = items
-          .map((e) => GoongNearbyPlace.fromJson(e as Map<String, dynamic>))
-          .where((e) => e.name.isNotEmpty && e.lat != 0 && e.lng != 0)
-          .toList();
+      final list =
+          items
+              .map((e) => GoongNearbyPlace.fromJson(e as Map<String, dynamic>))
+              .where((e) => e.name.isNotEmpty && e.lat != 0 && e.lng != 0)
+              .toList();
 
       // Giu duy nhat theo place_id.
       final dedup = <String, GoongNearbyPlace>{};
@@ -516,18 +562,14 @@ extension GoongNearbyApi on GoongPlacesService {
     try {
       final res = await http.get(uri).timeout(const Duration(seconds: 8));
       if (res.statusCode != 200) {
-        debugPrint(
-          'Goong TextSearch http=${res.statusCode} body=${res.body}',
-        );
+        debugPrint('Goong TextSearch http=${res.statusCode} body=${res.body}');
         return [];
       }
 
       final data = jsonDecode(res.body) as Map<String, dynamic>;
       final status = (data['status'] ?? '').toString();
       final items = (data['results'] as List?) ?? const [];
-      debugPrint(
-        'Goong TextSearch status=$status results=${items.length}',
-      );
+      debugPrint('Goong TextSearch status=$status results=${items.length}');
       if (status == 'ZERO_RESULTS') {
         debugPrint('Goong TextSearch ZERO_RESULTS');
         return [];
@@ -538,10 +580,11 @@ extension GoongNearbyApi on GoongPlacesService {
         return [];
       }
 
-      final list = items
-          .map((e) => GoongNearbyPlace.fromJson(e as Map<String, dynamic>))
-          .where((e) => e.name.isNotEmpty && e.lat != 0 && e.lng != 0)
-          .toList();
+      final list =
+          items
+              .map((e) => GoongNearbyPlace.fromJson(e as Map<String, dynamic>))
+              .where((e) => e.name.isNotEmpty && e.lat != 0 && e.lng != 0)
+              .toList();
 
       // Giu duy nhat theo place_id.
       final dedup = <String, GoongNearbyPlace>{};
@@ -556,4 +599,3 @@ extension GoongNearbyApi on GoongPlacesService {
     }
   }
 }
-

@@ -59,7 +59,7 @@ class NearbyPlacesSection extends StatelessWidget {
               _buildMessage(t.homeNearbyEmpty),
             if (status == NearbyHomeStatus.success && places.isNotEmpty)
               SizedBox(
-                height: 220,
+                height: 236,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: places.length,
@@ -72,6 +72,7 @@ class NearbyPlacesSection extends StatelessWidget {
                         place: place,
                         userLocation: controller.userLatLng,
                         onTap: () => onTapPlace(place),
+                        onDirections: onTapMap,
                       ),
                     );
                   },
@@ -100,11 +101,13 @@ class _PlaceCard extends StatelessWidget {
     required this.place,
     required this.userLocation,
     required this.onTap,
+    required this.onDirections,
   });
 
   final GoongNearbyPlace place;
   final LatLng? userLocation;
   final VoidCallback onTap;
+  final VoidCallback onDirections;
 
   @override
   Widget build(BuildContext context) {
@@ -115,8 +118,7 @@ class _PlaceCard extends StatelessWidget {
     final cardBg = isDark ? const Color(0xFF08122A) : Colors.white;
     final titleColor = isDark ? Colors.white : const Color(0xFF111827);
     final infoColor = isDark ? Colors.white70 : const Color(0xFF6B7280);
-    final distanceColor =
-        isDark ? const Color(0xFF8AB4F8) : const Color(0xFF2563EB);
+    const accent = Color(0xFFFF5A1F);
     final borderColor =
         isDark ? const Color(0x1AFFFFFF) : const Color(0x1A000000);
     final shadowColor =
@@ -124,9 +126,8 @@ class _PlaceCard extends StatelessWidget {
             ? Colors.black.withValues(alpha: 0.30)
             : Colors.black.withValues(alpha: 0.08);
 
-    return InkWell(
-      borderRadius: BorderRadius.circular(16),
-      onTap: onTap,
+    return Material(
+      color: Colors.transparent,
       child: Ink(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
@@ -143,99 +144,171 @@ class _PlaceCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ClipRRect(
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(16),
-              ),
-              child: SizedBox(
-                height: 132,
-                width: double.infinity,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    if (place.photoUrl.trim().isNotEmpty)
-                      Image.network(
-                        place.photoUrl,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) {
-                          return Container(
-                            color:
-                                isDark
-                                    ? const Color(0xFF1A2233)
-                                    : const Color(0xFFE5E7EB),
-                          );
-                        },
-                      )
-                    else
-                      Container(
-                        color:
-                            isDark
-                                ? const Color(0xFF1A2233)
-                                : const Color(0xFFE5E7EB),
+            InkWell(
+              onTap: onTap,
+              child: ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(16),
+                ),
+                child: SizedBox(
+                  height: 118,
+                  width: double.infinity,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      if (place.photoUrl.trim().isNotEmpty)
+                        Image.network(
+                          place.photoUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) {
+                            return Container(
+                              color:
+                                  isDark
+                                      ? const Color(0xFF1A2233)
+                                      : const Color(0xFFE5E7EB),
+                            );
+                          },
+                        )
+                      else
+                        Container(
+                          color:
+                              isDark
+                                  ? const Color(0xFF1A2233)
+                                  : const Color(0xFFE5E7EB),
+                        ),
+                      Positioned(
+                        left: 10,
+                        top: 10,
+                        child: _OpenBadge(isOpen: place.isOpen),
                       ),
-                    Positioned(
-                      left: 10,
-                      top: 10,
-                      child: _OpenBadge(isOpen: place.isOpen),
-                    ),
-                    Positioned(
-                      right: 10,
-                      top: 10,
-                      child: _FavoriteHeart(place: place),
-                    ),
-                    if (place.rating != null)
                       Positioned(
                         right: 10,
-                        bottom: 10,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF233B6B),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            place.rating!.toStringAsFixed(1),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
+                        top: 10,
+                        child: _FavoriteHeart(place: place),
+                      ),
+                      if (place.rating != null)
+                        Positioned(
+                          right: 10,
+                          bottom: 10,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 7,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF233B6B),
+                              borderRadius: BorderRadius.circular(9),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(
+                                  Icons.star_rounded,
+                                  size: 14,
+                                  color: Color(0xFFFFC107),
+                                ),
+                                const SizedBox(width: 3),
+                                Text(
+                                  place.rating!.toStringAsFixed(1),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            InkWell(
+              onTap: onTap,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 7, 10, 3),
+                child: Text(
+                  place.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: titleColor,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 15,
+                  ),
                 ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 4),
-              child: Text(
-                place.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: titleColor,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 20,
-                ),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: _InfoRow(
+                icon: Icons.location_on_outlined,
+                text: AppLocalizations.of(context)!.placeDistanceAway(distance),
+                color: infoColor,
               ),
             ),
+            const SizedBox(height: 2),
             Padding(
-              padding: const EdgeInsets.fromLTRB(10, 2, 10, 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: _InfoRow(
+                icon: Icons.restaurant_outlined,
+                text: '${_categoryText(place.category)}  ·  $priceText',
+                color: infoColor,
+              ),
+            ),
+            const Spacer(),
+            Divider(height: 1, indent: 12, endIndent: 12, color: borderColor),
+            SizedBox(
+              height: 43,
               child: Row(
                 children: [
-                  Text(
-                    distance,
-                    style: TextStyle(color: distanceColor, fontSize: 16),
+                  Expanded(
+                    child: TextButton(
+                      onPressed: onTap,
+                      style: TextButton.styleFrom(
+                        foregroundColor: accent,
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.only(left: 9),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.commonViewDetail,
+                            style: const TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const Icon(Icons.chevron_right_rounded, size: 15),
+                        ],
+                      ),
+                    ),
                   ),
-                  const SizedBox(width: 6),
-                  Icon(Icons.circle, size: 4, color: infoColor),
-                  const SizedBox(width: 6),
-                  Text(
-                    priceText,
-                    style: TextStyle(color: infoColor, fontSize: 16),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: FilledButton.icon(
+                      onPressed: onDirections,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: accent,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 8,
+                        ),
+                        shape: const StadiumBorder(),
+                      ),
+                      icon: const Icon(Icons.navigation_rounded, size: 15),
+                      label: Text(
+                        AppLocalizations.of(context)!.mapDirections,
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -269,6 +342,37 @@ class _PlaceCard extends StatelessWidget {
     if (numeric == 3) return r'$$$';
     return r'$$$$';
   }
+
+  String _categoryText(String? value) {
+    final category = value?.trim();
+    return category == null || category.isEmpty ? 'Ẩm thực' : category;
+  }
+}
+
+class _InfoRow extends StatelessWidget {
+  const _InfoRow({required this.icon, required this.text, required this.color});
+
+  final IconData icon;
+  final String text;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(icon, size: 14, color: const Color(0xFFFF5A1F)),
+        const SizedBox(width: 5),
+        Expanded(
+          child: Text(
+            text,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(color: color, fontSize: 11),
+          ),
+        ),
+      ],
+    );
+  }
 }
 
 class _OpenBadge extends StatelessWidget {
@@ -280,19 +384,43 @@ class _OpenBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
     final open = isOpen == true;
+    final unknown = isOpen == null;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
       decoration: BoxDecoration(
-        color: open ? const Color(0xFF2DBE60) : const Color(0xFF9CA3AF),
+        color:
+            open
+                ? const Color(0xFF2DBE60)
+                : unknown
+                ? const Color(0xFF64748B)
+                : const Color(0xFF9CA3AF),
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Text(
-        open ? t.homeOpenNow : t.homeClosed,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 12,
-          fontWeight: FontWeight.w700,
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 6,
+            height: 6,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: 5),
+          Text(
+            open
+                ? t.homeOpenNow
+                : unknown
+                ? t.placeOpenHoursUpdating
+                : t.homeClosed,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -308,7 +436,7 @@ class _FavoriteHeart extends StatelessWidget {
     final fav = context.watch<PlaceFavoriteController>();
     final isFavorite = fav.isFavorite(place);
     return Material(
-      color: const Color(0x66000000),
+      color: Colors.white,
       shape: const CircleBorder(),
       child: InkWell(
         customBorder: const CircleBorder(),
@@ -316,11 +444,11 @@ class _FavoriteHeart extends StatelessWidget {
           context.read<PlaceFavoriteController>().toggle(place);
         },
         child: Padding(
-          padding: const EdgeInsets.all(6),
+          padding: const EdgeInsets.all(7),
           child: Icon(
             isFavorite ? Icons.favorite : Icons.favorite_border,
-            size: 16,
-            color: isFavorite ? Colors.red : Colors.white,
+            size: 17,
+            color: const Color(0xFFFF5A1F),
           ),
         ),
       ),
