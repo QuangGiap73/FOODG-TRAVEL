@@ -2,16 +2,15 @@ class RecommendationTextUtils {
   const RecommendationTextUtils._();
 
   static String normalizeToken(String value) {
-    return normalizeText(value)
-        .replaceAll(RegExp(r'[\s-]+'), '_')
-        .replaceAll(RegExp(r'[^a-z0-9_]+'), '');
+    return normalizeText(
+      value,
+    ).replaceAll(RegExp(r'[\s-]+'), '_').replaceAll(RegExp(r'[^a-z0-9_]+'), '');
   }
 
   static String normalizeText(String value) {
-    return removeVietnameseDiacritics(value)
-        .trim()
-        .toLowerCase()
-        .replaceAll(RegExp(r'\s+'), ' ');
+    return removeVietnameseDiacritics(
+      value,
+    ).trim().toLowerCase().replaceAll(RegExp(r'\s+'), ' ');
   }
 
   static String removeVietnameseDiacritics(String value) {

@@ -9,10 +9,7 @@ import '../../journey/pages/food_journey_page.dart';
 import '../../journey/pages/mission_detail_page.dart';
 
 class HomeJourneySection extends StatelessWidget {
-  const HomeJourneySection({
-    super.key,
-    required this.userId,
-  });
+  const HomeJourneySection({super.key, required this.userId});
 
   final String? userId;
 
@@ -29,7 +26,7 @@ class HomeJourneySection extends StatelessWidget {
         IntrinsicHeight(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
+            children: [
               Expanded(
                 child: _JourneyOverviewCard(
                   userId: uid,
@@ -54,10 +51,7 @@ class HomeJourneySection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 14),
-        _HomeBadgesRow(
-          userId: uid,
-          onTapAll: () => _openJourneyPage(context),
-        ),
+        _HomeBadgesRow(userId: uid, onTapAll: () => _openJourneyPage(context)),
       ],
     );
   }
@@ -70,10 +64,7 @@ class HomeJourneySection extends StatelessWidget {
 }
 
 class _JourneyOverviewCard extends StatelessWidget {
-  const _JourneyOverviewCard({
-    required this.userId,
-    required this.onTap,
-  });
+  const _JourneyOverviewCard({required this.userId, required this.onTap});
 
   final String userId;
   final VoidCallback onTap;
@@ -222,7 +213,9 @@ class _JourneyOverviewCard extends StatelessWidget {
                       value: currentProgress / 100,
                       minHeight: 5,
                       backgroundColor: Colors.white.withValues(alpha: 0.28),
-                      valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                      valueColor: const AlwaysStoppedAnimation<Color>(
+                        Colors.white,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -476,10 +469,7 @@ class _HomeMissionCard extends StatelessWidget {
 }
 
 class _MissionRow extends StatelessWidget {
-  const _MissionRow({
-    required this.mission,
-    required this.onTap,
-  });
+  const _MissionRow({required this.mission, required this.onTap});
 
   final JourneyMission mission;
   final VoidCallback onTap;
@@ -575,10 +565,7 @@ class _MissionRow extends StatelessWidget {
 }
 
 class _HomeBadgesRow extends StatelessWidget {
-  const _HomeBadgesRow({
-    required this.userId,
-    required this.onTapAll,
-  });
+  const _HomeBadgesRow({required this.userId, required this.onTapAll});
 
   final String userId;
   final VoidCallback onTapAll;
@@ -586,6 +573,7 @@ class _HomeBadgesRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return StreamBuilder<List<JourneyBadge>>(
       stream: _badgeStream(),
@@ -607,10 +595,10 @@ class _HomeBadgesRow extends StatelessWidget {
                 Expanded(
                   child: Text(
                     t.homeBadgesTitle,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFF1F2937),
+                      color: isDark ? Colors.white : const Color(0xFF1F2937),
                     ),
                   ),
                 ),
@@ -683,7 +671,10 @@ class _HomeBadgesRow extends StatelessWidget {
       final unlocked = badge?.isUnlocked == true;
       return _HomeBadgeUi(
         label: visual.label,
-        assetPath: unlocked ? visual.assetPath : 'assets/journey/badges/locked_badge.png',
+        assetPath:
+            unlocked
+                ? visual.assetPath
+                : 'assets/journey/badges/locked_badge.png',
         dimmed: !unlocked,
       );
     }).toList();
@@ -716,6 +707,7 @@ class _BadgeItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
       children: [
         SizedBox(
@@ -735,7 +727,12 @@ class _BadgeItem extends StatelessWidget {
           style: TextStyle(
             fontSize: 9,
             fontWeight: FontWeight.w700,
-            color: dimmed ? const Color(0xFFA0A0A0) : const Color(0xFF303030),
+            color:
+                isDark
+                    ? (dimmed ? Colors.white54 : Colors.white)
+                    : (dimmed
+                        ? const Color(0xFFA0A0A0)
+                        : const Color(0xFF303030)),
           ),
         ),
       ],

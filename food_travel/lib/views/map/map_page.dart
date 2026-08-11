@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
@@ -333,35 +334,42 @@ class _MapPageState extends State<MapPage> {
     }
   }
   Future<void> _openGoogleMapsDirections(GoongNearbyPlace place) async {
-  final lat = place.lat;
-  final lng = place.lng;
-
-  // Thử mở app Google Maps trước
-  final appUri = Uri.parse(
-    'comgooglemaps://?daddr=$lat,$lng&directionsmode=driving',
-  );
-
-  // Fallback: mở web Google Maps
-  final webUri = Uri.parse(
-    'https://www.google.com/maps/dir/?api=1&destination=$lat,$lng&travelmode=driving',
-  );
-
-  try {
-    if (await canLaunchUrl(appUri)) {
-      await launchUrl(appUri, mode: LaunchMode.externalApplication);
+    final lat = place.lat;
+    final lng = place.lng;
+    if (!lat.isFinite || !lng.isFinite || (lat == 0 && lng == 0)) {
+      _showSnack('Tọa độ quán ăn không hợp lệ');
       return;
     }
 
-    if (await canLaunchUrl(webUri)) {
-      await launchUrl(webUri, mode: LaunchMode.externalApplication);
-      return;
-    }
+    // Android dùng google.navigation; iOS dùng scheme comgooglemaps.
+    final appUri = defaultTargetPlatform == TargetPlatform.iOS
+        ? Uri.parse(
+          'comgooglemaps://?daddr=$lat,$lng&directionsmode=driving',
+        )
+        : Uri.parse('google.navigation:q=$lat,$lng&mode=d');
+    final webUri = Uri.https('www.google.com', '/maps/dir/', {
+      'api': '1',
+      'destination': '$lat,$lng',
+      'travelmode': 'driving',
+    });
 
-    _showSnack('Không thể mở Google Maps trên thiết bị này');
-  } catch (_) {
-    _showSnack('Có lỗi khi mở Google Maps');
+    try {
+      if (await canLaunchUrl(appUri) &&
+          await launchUrl(appUri, mode: LaunchMode.externalApplication)) {
+        return;
+      }
+
+      // Nếu chưa cài Google Maps thì mở trang chỉ đường trong trình duyệt.
+      if (await launchUrl(webUri, mode: LaunchMode.externalApplication)) {
+        return;
+      }
+
+      _showSnack('Không thể mở Google Maps trên thiết bị này');
+    } catch (error) {
+      debugPrint('Lỗi mở Google Maps: $error');
+      _showSnack('Có lỗi khi mở Google Maps');
+    }
   }
-}
 
   Future<void> _startDirectionsInternal(GoongNearbyPlace place) async {
     final ok = await _navController.startNavigation(

@@ -52,13 +52,13 @@ class _SplashGateState extends State<SplashGate>
     super.didChangeDependencies();
     if (_started) return;
     _started = true;
-    final disableAnimations =
-        MediaQuery.maybeOf(context)?.disableAnimations ?? false;
-    if (disableAnimations) {
-      _controller.duration = FoodsSplashConstants.reducedMotionDuration;
-      _controller.value = 2450 / 2900;
-    }
-    _runAnimation();
+
+    // Để Flutter vẽ ít nhất một frame nền trống trước khi ticker bắt đầu.
+    // Không nhảy tiến trình khi thiết bị tắt hiệu ứng hệ thống, vì điều đó làm
+    // cold start chỉ hiện nền đỏ rồi xuất hiện ngay logo hoàn chỉnh.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _runAnimation();
+    });
   }
 
   Future<void> _runAnimation() async {

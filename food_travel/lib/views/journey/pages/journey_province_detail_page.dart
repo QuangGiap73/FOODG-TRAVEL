@@ -28,8 +28,10 @@ class JourneyProvinceDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFBF6),
+      backgroundColor:
+          isDark ? const Color(0xFF0D1218) : const Color(0xFFFFFBF6),
       body: StreamBuilder<JourneyProvinceProgress?>(
         stream: _watchProvinceProgress(),
         builder: (context, progressSnapshot) {
@@ -69,9 +71,12 @@ class JourneyProvinceDetailPage extends StatelessWidget {
                       ),
                       SliverToBoxAdapter(
                         child: Container(
-                          decoration: const BoxDecoration(
-                            color: Color(0xFFFFFBF6),
-                            borderRadius: BorderRadius.vertical(
+                          decoration: BoxDecoration(
+                            color:
+                                isDark
+                                    ? const Color(0xFF0D1218)
+                                    : const Color(0xFFFFFBF6),
+                            borderRadius: const BorderRadius.vertical(
                               top: Radius.circular(28),
                             ),
                           ),
@@ -148,7 +153,10 @@ class JourneyProvinceDetailPage extends StatelessWidget {
                                           foregroundColor: const Color(
                                             0xFFFF7A00,
                                           ),
-                                          backgroundColor: Colors.white,
+                                          backgroundColor:
+                                              isDark
+                                                  ? const Color(0xFF211B17)
+                                                  : Colors.white,
                                           side: const BorderSide(
                                             color: Color(0xFFFFC78B),
                                           ),
@@ -358,6 +366,7 @@ class _ProvinceHeroSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final bannerAsset = provinceJourneyBannerAssetFor(
       provinceCode: provinceCode,
       provinceName: provinceName,
@@ -444,10 +453,13 @@ class _ProvinceHeroSection extends StatelessWidget {
                           Text(
                             provinceName,
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 32,
                               fontWeight: FontWeight.w900,
-                              color: Color(0xFF1E2430),
+                              color:
+                                  isDark
+                                      ? Colors.white
+                                      : const Color(0xFF1E2430),
                               height: 1.08,
                             ),
                           ),
@@ -455,10 +467,13 @@ class _ProvinceHeroSection extends StatelessWidget {
                           Text(
                             _buildSubtitle(context),
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
-                              color: Color(0xFF5E6470),
+                              color:
+                                  isDark
+                                      ? Colors.white70
+                                      : const Color(0xFF5E6470),
                               height: 1.35,
                             ),
                           ),
@@ -542,6 +557,7 @@ class _StatsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final effectiveVisitedPlaceCount =
         visitedPlaceCount > 0 ? visitedPlaceCount : progress.uniquePlacesCount;
     final effectiveVisitedDistrictCount =
@@ -552,7 +568,7 @@ class _StatsCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF171D25) : Colors.white,
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
@@ -612,6 +628,7 @@ class _StatItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Column(
@@ -628,10 +645,10 @@ class _StatItem extends StatelessWidget {
           const SizedBox(height: 5),
           Text(
             '$value',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w900,
-              color: Color(0xFF202531),
+              color: isDark ? Colors.white : const Color(0xFF202531),
               height: 1,
             ),
           ),
@@ -639,10 +656,10 @@ class _StatItem extends StatelessWidget {
           Text(
             label,
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF6D7280),
+              color: isDark ? Colors.white70 : const Color(0xFF6D7280),
               height: 1.05,
             ),
           ),
@@ -657,7 +674,12 @@ class _StatDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(width: 1, height: 64, color: const Color(0xFFF0E8DE));
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Container(
+      width: 1,
+      height: 64,
+      color: isDark ? const Color(0xFF303844) : const Color(0xFFF0E8DE),
+    );
   }
 }
 
@@ -669,15 +691,16 @@ class _SectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Row(
       children: [
         Expanded(
           child: Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 21,
               fontWeight: FontWeight.w900,
-              color: Color(0xFF202531),
+              color: isDark ? Colors.white : const Color(0xFF202531),
             ),
           ),
         ),
@@ -725,21 +748,24 @@ class _FeaturedDishCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     if (dishes.isEmpty) {
       return Container(
         width: double.infinity,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? const Color(0xFF171D25) : Colors.white,
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: const Color(0xFFF2E5D6)),
+          border: Border.all(
+            color: isDark ? const Color(0xFF303844) : const Color(0xFFF2E5D6),
+          ),
         ),
         child: Text(
           AppLocalizations.of(context)!.journeyFeaturedDishesEmpty,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: Color(0xFF707680),
+            color: isDark ? Colors.white70 : const Color(0xFF707680),
           ),
         ),
       );
@@ -778,6 +804,7 @@ class _FeaturedDishCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final dishName =
         dish.getName('vi').trim().isNotEmpty
             ? dish.getName('vi').trim()
@@ -792,7 +819,7 @@ class _FeaturedDishCard extends StatelessWidget {
     return SizedBox(
       width: 156,
       child: Material(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF171D25) : Colors.white,
         borderRadius: BorderRadius.circular(20),
         child: InkWell(
           borderRadius: BorderRadius.circular(20),
@@ -805,7 +832,7 @@ class _FeaturedDishCard extends StatelessWidget {
           },
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: isDark ? const Color(0xFF171D25) : Colors.white,
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
@@ -847,7 +874,7 @@ class _FeaturedDishCard extends StatelessWidget {
                             ),
                             child: Text(
                               dish.legacyOriginBadge,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.w800,
                                 color: Color(0xFFFF7A00),
@@ -868,10 +895,11 @@ class _FeaturedDishCard extends StatelessWidget {
                           dishName,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w800,
-                            color: Color(0xFF212632),
+                            color:
+                                isDark ? Colors.white : const Color(0xFF212632),
                             height: 1.2,
                           ),
                         ),
@@ -972,17 +1000,18 @@ class _VisitedPlaceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return SizedBox(
       width: 168,
       child: Material(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF171D25) : Colors.white,
         borderRadius: BorderRadius.circular(20),
         child: InkWell(
           borderRadius: BorderRadius.circular(20),
           onTap: () => _openPlaceDetail(context),
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: isDark ? const Color(0xFF171D25) : Colors.white,
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
@@ -1019,7 +1048,7 @@ class _VisitedPlaceCard extends StatelessWidget {
                           AppLocalizations.of(
                             context,
                           )!.journeyVisitCount(item.checkinCount),
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w800,
                             color: Colors.white,
@@ -1039,10 +1068,11 @@ class _VisitedPlaceCard extends StatelessWidget {
                           item.placeName,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w800,
-                            color: Color(0xFF212632),
+                            color:
+                                isDark ? Colors.white : const Color(0xFF212632),
                             height: 1.2,
                           ),
                         ),
@@ -1061,10 +1091,13 @@ class _VisitedPlaceCard extends StatelessWidget {
                                   item.districtName,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w600,
-                                    color: Color(0xFF757B86),
+                                    color:
+                                        isDark
+                                            ? Colors.white70
+                                            : const Color(0xFF757B86),
                                   ),
                                 ),
                               ),
@@ -1110,13 +1143,16 @@ class _EmptyVisitedPlacesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF171D25) : Colors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFF2E6D8)),
+        border: Border.all(
+          color: isDark ? const Color(0xFF303844) : const Color(0xFFF2E6D8),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1127,10 +1163,10 @@ class _EmptyVisitedPlacesCard extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 AppLocalizations.of(context)!.journeyVisitedPlacesEmptyTitle,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF202531),
+                  color: isDark ? Colors.white : const Color(0xFF202531),
                 ),
               ),
             ],
@@ -1140,10 +1176,10 @@ class _EmptyVisitedPlacesCard extends StatelessWidget {
             AppLocalizations.of(
               context,
             )!.journeyVisitedPlacesEmptyMessage(provinceName),
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF737884),
+              color: isDark ? Colors.white70 : const Color(0xFF737884),
               height: 1.45,
             ),
           ),
@@ -1160,6 +1196,7 @@ class _VisitedPlaceMetaRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return FutureBuilder<_VisitedPlaceMeta>(
       future: _loadMeta(),
       builder: (context, snapshot) {
@@ -1185,10 +1222,13 @@ class _VisitedPlaceMetaRow extends StatelessWidget {
                           meta.ratingText(t),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
-                            color: Color(0xFF4B5563),
+                            color:
+                                isDark
+                                    ? Colors.white70
+                                    : const Color(0xFF4B5563),
                           ),
                         ),
                       ),
@@ -1199,10 +1239,10 @@ class _VisitedPlaceMetaRow extends StatelessWidget {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.near_me_outlined,
                       size: 13,
-                      color: Color(0xFF6B7280),
+                      color: isDark ? Colors.white60 : const Color(0xFF6B7280),
                     ),
                     const SizedBox(width: 4),
                     Text(
@@ -1210,10 +1250,11 @@ class _VisitedPlaceMetaRow extends StatelessWidget {
                       maxLines: 1,
                       textAlign: TextAlign.right,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF6B7280),
+                        color:
+                            isDark ? Colors.white60 : const Color(0xFF6B7280),
                       ),
                     ),
                   ],

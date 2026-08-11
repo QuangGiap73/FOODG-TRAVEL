@@ -23,6 +23,7 @@ class DishRecommendationEngine {
     required UserPreferences? preferences,
     required DateTime now,
     int limit = 12,
+    String languageCode = 'vi',
   }) {
     if (dishes.isEmpty) return const [];
     final context = RecommendationContext.fromDateTime(now);
@@ -34,24 +35,29 @@ class DishRecommendationEngine {
             (dish) => RecommendedDish(
               dish: dish,
               score: 0,
-              explanation: 'Goi y mac dinh khi chua co ho so nguoi dung.',
+              explanation:
+                  languageCode.toLowerCase().startsWith('en')
+                      ? 'A discovery pick for you today.'
+                      : 'Gợi ý khám phá dành cho bạn hôm nay.',
             ),
           )
           .toList();
     }
 
     final profile = RecommendationProfile.fromPreferences(preferences);
-    final scores = dishes
-        .map(
-          (dish) => scoringEngine.score(
-            dish: dish,
-            profile: profile,
-            context: context,
-          ),
-        )
-        .where((score) => !score.blocked)
-        .toList()
-      ..sort(_compareScores);
+    final scores =
+        dishes
+            .map(
+              (dish) => scoringEngine.score(
+                dish: dish,
+                profile: profile,
+                context: context,
+                languageCode: languageCode,
+              ),
+            )
+            .where((score) => !score.blocked)
+            .toList()
+          ..sort(_compareScores);
 
     return scores
         .take(limit)
@@ -59,7 +65,11 @@ class DishRecommendationEngine {
           (score) => RecommendedDish(
             dish: score.dish,
             score: score.value,
-            explanation: explainer.explain(score, context),
+            explanation: explainer.explain(
+              score,
+              context,
+              languageCode: languageCode,
+            ),
           ),
         )
         .toList();
@@ -70,12 +80,14 @@ class DishRecommendationEngine {
     required UserPreferences? preferences,
     required DateTime now,
     int limit = 12,
+    String languageCode = 'vi',
   }) {
     return recommendTodayWithReasons(
       dishes: dishes,
       preferences: preferences,
       now: now,
       limit: limit,
+      languageCode: languageCode,
     ).map((item) => item.dish).toList();
   }
 

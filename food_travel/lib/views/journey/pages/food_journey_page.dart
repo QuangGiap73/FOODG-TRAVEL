@@ -17,21 +17,24 @@ class FoodJourneyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
     final user = FirebaseAuth.instance.currentUser;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFBF3),
+      backgroundColor:
+          isDark ? const Color(0xFF0D1218) : const Color(0xFFFFFBF3),
       appBar: AppBar(
-        backgroundColor: const Color(0xFFFFFBF3),
+        backgroundColor:
+            isDark ? const Color(0xFF0D1218) : const Color(0xFFFFFBF3),
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
         toolbarHeight: 72,
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back_ios_new_rounded,
             size: 20,
-            color: Color(0xFF111111),
+            color: isDark ? Colors.white : const Color(0xFF111111),
           ),
         ),
         title: Column(
@@ -39,16 +42,19 @@ class FoodJourneyPage extends StatelessWidget {
           children: [
             Text(
               t.homeJourneyTitle,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF111111),
+                color: isDark ? Colors.white : const Color(0xFF111111),
               ),
             ),
             const SizedBox(height: 2),
             Text(
               t.journeySubtitle,
-              style: const TextStyle(fontSize: 12, color: Color(0xFF6B7280)),
+              style: TextStyle(
+                fontSize: 12,
+                color: isDark ? Colors.white70 : const Color(0xFF6B7280),
+              ),
             ),
           ],
         ),
@@ -464,8 +470,9 @@ class _JourneyProgressBlock extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            AppLocalizations.of(context)!
-                .homeJourneyNeedPoints(pointsToNextLevel, level + 1),
+            AppLocalizations.of(
+              context,
+            )!.homeJourneyNeedPoints(pointsToNextLevel, level + 1),
             style: const TextStyle(
               color: Color(0xFF6C3B00),
               fontSize: 12,
@@ -595,6 +602,7 @@ class JourneyBadgesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return StreamBuilder<List<JourneyBadge>>(
       stream: _badgeStream(),
       builder: (context, snapshot) {
@@ -604,9 +612,11 @@ class JourneyBadgesSection extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: 16),
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 18),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: isDark ? const Color(0xFF171D25) : Colors.white,
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: const Color(0xFFF4E5D6)),
+            border: Border.all(
+              color: isDark ? const Color(0xFF303844) : const Color(0xFFF4E5D6),
+            ),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.04),
@@ -625,7 +635,7 @@ class JourneyBadgesSection extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w800,
-                        color: Color(0xFF1F2937),
+                        color: isDark ? Colors.white : const Color(0xFF1F2937),
                       ),
                     ),
                   ),
@@ -685,11 +695,12 @@ class JourneyBadgesSection extends StatelessWidget {
       context: context,
       backgroundColor: Colors.transparent,
       builder: (context) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
         return Container(
           padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-          decoration: const BoxDecoration(
-            color: Color(0xFFFFFCF8),
-            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF171D25) : const Color(0xFFFFFCF8),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -713,20 +724,20 @@ class JourneyBadgesSection extends StatelessWidget {
               Text(
                 visual.title,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF1F2937),
+                  color: isDark ? Colors.white : const Color(0xFF1F2937),
                 ),
               ),
               const SizedBox(height: 6),
               Text(
                 visual.description,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   height: 1.45,
-                  color: Color(0xFF6B7280),
+                  color: isDark ? Colors.white70 : const Color(0xFF6B7280),
                 ),
               ),
               const SizedBox(height: 16),
@@ -736,7 +747,7 @@ class JourneyBadgesSection extends StatelessWidget {
                   vertical: 12,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: isDark ? const Color(0xFF222A34) : Colors.white,
                   borderRadius: BorderRadius.circular(18),
                   border: Border.all(color: const Color(0xFFF0E1D1)),
                 ),
@@ -746,12 +757,14 @@ class JourneyBadgesSection extends StatelessWidget {
                       child: Text(
                         badge.isUnlocked
                             ? AppLocalizations.of(context)!.journeyUnlocked
-                            : AppLocalizations.of(context)!
-                                .journeyCurrentProgress(progressText),
-                        style: const TextStyle(
+                            : AppLocalizations.of(
+                              context,
+                            )!.journeyCurrentProgress(progressText),
+                        style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF374151),
+                          color:
+                              isDark ? Colors.white70 : const Color(0xFF374151),
                         ),
                       ),
                     ),
@@ -792,6 +805,7 @@ class _JourneyBadgeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final isUnlocked = badge.isUnlocked;
     final progress =
         badge.targetValue <= 0
@@ -805,11 +819,15 @@ class _JourneyBadgeCard extends StatelessWidget {
         width: 108,
         padding: const EdgeInsets.fromLTRB(10, 12, 10, 10),
         decoration: BoxDecoration(
-          color: const Color(0xFFFFFEFC),
+          color: isDark ? const Color(0xFF222A34) : const Color(0xFFFFFEFC),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color:
-                isUnlocked ? const Color(0xFFF3D4A7) : const Color(0xFFE8E1D8),
+                isDark
+                    ? const Color(0xFF3B4654)
+                    : (isUnlocked
+                        ? const Color(0xFFF3D4A7)
+                        : const Color(0xFFE8E1D8)),
           ),
           boxShadow: [
             BoxShadow(
@@ -838,9 +856,11 @@ class _JourneyBadgeCard extends StatelessWidget {
                 height: 1.2,
                 fontWeight: FontWeight.w800,
                 color:
-                    isUnlocked
-                        ? const Color(0xFF243041)
-                        : const Color(0xFF9AA3AF),
+                    isDark
+                        ? (isUnlocked ? Colors.white : Colors.white54)
+                        : (isUnlocked
+                            ? const Color(0xFF243041)
+                            : const Color(0xFF9AA3AF)),
               ),
             ),
             const SizedBox(height: 8),
@@ -849,7 +869,8 @@ class _JourneyBadgeCard extends StatelessWidget {
               child: LinearProgressIndicator(
                 value: isUnlocked ? 1 : progress,
                 minHeight: 5,
-                backgroundColor: const Color(0xFFF0ECE6),
+                backgroundColor:
+                    isDark ? const Color(0xFF3B4654) : const Color(0xFFF0ECE6),
                 valueColor: AlwaysStoppedAnimation<Color>(
                   isUnlocked
                       ? const Color(0xFFFFB347)

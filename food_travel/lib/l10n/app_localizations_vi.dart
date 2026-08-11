@@ -260,6 +260,20 @@ class AppLocalizationsVi extends AppLocalizations {
   String get homeNearbyEmpty => 'Chưa tìm thấy quán phù hợp.';
 
   @override
+  String get homeCommunityEatingTitle => 'Cộng đồng đang ăn gì?';
+
+  @override
+  String get homeCommunityView => 'Xem cộng đồng';
+
+  @override
+  String get homeCommunityEatingFallback =>
+      'Hôm nay cộng đồng đang chia sẻ quán này.';
+
+  @override
+  String get homeCommunitySharingFallback =>
+      'Cộng đồng đang chia sẻ trải nghiệm ăn uống mới.';
+
+  @override
   String get homeOpenNow => 'Đang mở';
 
   @override

@@ -32,10 +32,11 @@ class RecommendationProfile {
         ...preferences.allergies,
         ...preferences.dislikedIngredients,
       ]),
-      favoriteTokens: preferences.favoriteTags
-          .map(RecommendationTextUtils.normalizeText)
-          .where((value) => value.isNotEmpty)
-          .toList(),
+      favoriteTokens:
+          preferences.favoriteTags
+              .map(RecommendationTextUtils.normalizeText)
+              .where((value) => value.isNotEmpty)
+              .toList(),
     );
   }
 

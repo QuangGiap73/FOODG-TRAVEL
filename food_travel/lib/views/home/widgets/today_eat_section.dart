@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../../models/dish_model.dart';
+import '../../../services/recommendation/recommended_dish.dart';
 
 class TodayEatSection extends StatefulWidget {
   const TodayEatSection({
     super.key,
-    required this.dishes,
+    required this.recommendations,
     this.onTapDish,
   });
 
-  final List<DishModel> dishes;
+  final List<RecommendedDish> recommendations;
   final ValueChanged<DishModel>? onTapDish;
 
   @override
@@ -25,7 +26,7 @@ class _TodayEatSectionState extends State<TodayEatSection> {
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
     final picks = _pickThreeDishes(
-      dishes: widget.dishes,
+      recommendations: widget.recommendations,
       refreshVersion: _refreshVersion,
     );
 
@@ -33,7 +34,8 @@ class _TodayEatSectionState extends State<TodayEatSection> {
 
     // Clamp để không vượt quá index hợp lệ
     final selected = _selectedIndex.clamp(0, picks.length - 1);
-    final activeDish = picks[selected];
+    final activeRecommendation = picks[selected];
+    final activeDish = activeRecommendation.dish;
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(18),
@@ -126,11 +128,13 @@ class _TodayEatSectionState extends State<TodayEatSection> {
                     ),
                   ),
                   const SizedBox(height: 8),
+                  _RecommendationReason(text: activeRecommendation.explanation),
+                  const SizedBox(height: 8),
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
                     children: List.generate(picks.length, (index) {
-                      final dish = picks[index];
+                      final dish = picks[index].dish;
                       final lang = Localizations.localeOf(context).languageCode;
                       return _DishTabChip(
                         label: _twoWordLabel(dish.getName(lang), t),
@@ -174,6 +178,92 @@ class _TodayEatSectionState extends State<TodayEatSection> {
           ),
         );
       },
+    );
+  }
+}
+
+class _RecommendationReason extends StatefulWidget {
+  const _RecommendationReason({required this.text});
+
+  final String text;
+
+  @override
+  State<_RecommendationReason> createState() => _RecommendationReasonState();
+}
+
+class _RecommendationReasonState extends State<_RecommendationReason>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 7),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isEnglish = Localizations.localeOf(context).languageCode == 'en';
+    final displayText =
+        isEnglish
+            ? '✨ Suggested because: ${widget.text}'
+            : '✨ Gợi ý vì: ${widget.text}';
+    const style = TextStyle(
+      color: Colors.white,
+      fontSize: 12,
+      fontWeight: FontWeight.w600,
+    );
+
+    return Container(
+      height: 30,
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+        color: const Color(0x99000000),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color(0x33FFFFFF)),
+      ),
+      alignment: Alignment.centerLeft,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final painter = TextPainter(
+            text: TextSpan(text: displayText, style: style),
+            maxLines: 1,
+            textDirection: Directionality.of(context),
+          )..layout();
+          final overflow = painter.width - constraints.maxWidth;
+
+          if (overflow <= 0) {
+            return Text(displayText, maxLines: 1, style: style);
+          }
+
+          return ClipRect(
+            child: OverflowBox(
+              alignment: Alignment.centerLeft,
+              minWidth: painter.width,
+              maxWidth: painter.width,
+              child: AnimatedBuilder(
+                animation: _controller,
+                child: Text(displayText, maxLines: 1, style: style),
+                builder: (context, child) {
+                  return Transform.translate(
+                    offset: Offset(-overflow * _controller.value, 0),
+                    child: child,
+                  );
+                },
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }
@@ -236,7 +326,11 @@ class _RefreshButton extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.autorenew_rounded, size: 16, color: Colors.white),
+              const Icon(
+                Icons.autorenew_rounded,
+                size: 16,
+                color: Colors.white,
+              ),
               const SizedBox(width: 6),
               Text(
                 label,
@@ -262,19 +356,21 @@ String _twoWordLabel(String name, AppLocalizations t) {
   return '${words[0]} ${words[1]}';
 }
 
-List<DishModel> _pickThreeDishes({
-  required List<DishModel> dishes,
+List<RecommendedDish> _pickThreeDishes({
+  required List<RecommendedDish> recommendations,
   required int refreshVersion,
 }) {
-  if (dishes.isEmpty) return const [];
-  if (dishes.length <= 3) return List<DishModel>.from(dishes);
+  if (recommendations.isEmpty) return const [];
+  if (recommendations.length <= 3) {
+    return List<RecommendedDish>.from(recommendations);
+  }
 
   // Danh sach dau vao da duoc recommendation service xep hang.
   // Moi lan doi goi y se lay nhom 3 mon tiep theo, khong random lai top score.
-  final start = (refreshVersion * 3) % dishes.length;
-  final picks = <DishModel>[];
+  final start = (refreshVersion * 3) % recommendations.length;
+  final picks = <RecommendedDish>[];
   for (var i = 0; i < 3; i++) {
-    picks.add(dishes[(start + i) % dishes.length]);
+    picks.add(recommendations[(start + i) % recommendations.length]);
   }
   return picks;
 }

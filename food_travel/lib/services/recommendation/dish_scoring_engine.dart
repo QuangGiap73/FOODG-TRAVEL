@@ -14,6 +14,7 @@ class DishScoringEngine {
     required DishModel dish,
     required RecommendationProfile profile,
     required RecommendationContext context,
+    String languageCode = 'vi',
   }) {
     var score = 0;
     final reasons = <String>[];
@@ -25,7 +26,13 @@ class DishScoringEngine {
       return DishScore(
         dish: dish,
         value: -10000,
-        reasons: const ['Trung nguyen lieu can tranh'],
+        reasons: [
+          _localized(
+            languageCode,
+            vi: 'Trùng nguyên liệu cần tránh',
+            en: 'Contains an ingredient you avoid',
+          ),
+        ],
         blocked: true,
       );
     }
@@ -37,33 +44,85 @@ class DishScoringEngine {
       return DishScore(
         dish: dish,
         value: -10000,
-        reasons: const ['Khong dung kieu mon da chon'],
+        reasons: [
+          _localized(
+            languageCode,
+            vi: 'Không đúng kiểu món đã chọn',
+            en: 'Does not match your preferred dish type',
+          ),
+        ],
         blocked: true,
       );
     }
 
-    final spiceScore = max(0, 5 - (dish.spicyLevel - profile.spicyLevel).abs()) * 8;
+    final spiceScore =
+        max(0, 5 - (dish.spicyLevel - profile.spicyLevel).abs()) * 8;
     score += spiceScore;
-    if (spiceScore >= 32) reasons.add('Do cay phu hop');
+    if (spiceScore >= 32) {
+      reasons.add(
+        _localized(
+          languageCode,
+          vi: 'Độ cay phù hợp',
+          en: 'Matches your spice preference',
+        ),
+      );
+    }
 
     final satietyScore =
         max(0, 5 - (dish.satietyLevel - profile.satietyLevel).abs()) * 7;
     score += satietyScore;
-    if (satietyScore >= 28) reasons.add('Do no phu hop');
+    if (satietyScore >= 28) {
+      reasons.add(
+        _localized(
+          languageCode,
+          vi: 'Độ no phù hợp',
+          en: 'Matches your preferred portion',
+        ),
+      );
+    }
 
-    final dishTypeScore = _overlapScore(dishTypes, profile.preferredDishTypes, 28);
+    final dishTypeScore = _overlapScore(
+      dishTypes,
+      profile.preferredDishTypes,
+      28,
+    );
     score += dishTypeScore;
-    if (dishTypeScore > 0) reasons.add('Dung kieu mon yeu thich');
+    if (dishTypeScore > 0) {
+      reasons.add(
+        _localized(
+          languageCode,
+          vi: 'Đúng kiểu món yêu thích',
+          en: 'A dish type you enjoy',
+        ),
+      );
+    }
 
     final mealTimes = _normalizedSet(dish.mealTimeTags);
-    final mealPreferenceScore =
-        _overlapScore(mealTimes, profile.preferredMealTimes, 16);
+    final mealPreferenceScore = _overlapScore(
+      mealTimes,
+      profile.preferredMealTimes,
+      16,
+    );
     score += mealPreferenceScore;
-    if (mealPreferenceScore > 0) reasons.add('Dung thoi diem an da chon');
+    if (mealPreferenceScore > 0) {
+      reasons.add(
+        _localized(
+          languageCode,
+          vi: 'Đúng thời điểm ăn đã chọn',
+          en: 'Matches your preferred mealtime',
+        ),
+      );
+    }
 
     if (mealTimes.contains(context.mealTime)) {
       score += 34;
-      reasons.add('Phu hop thoi diem hien tai');
+      reasons.add(
+        _localized(
+          languageCode,
+          vi: 'Phù hợp thời điểm hiện tại',
+          en: 'Perfect for this time of day',
+        ),
+      );
     } else if (mealTimes.isNotEmpty) {
       score -= 60;
     }
@@ -71,16 +130,35 @@ class DishScoringEngine {
     final seasons = _normalizedSet(dish.suitableForSeason);
     if (seasons.contains('all_season')) {
       score += 12;
-      reasons.add('Phu hop quanh nam');
+      reasons.add(
+        _localized(
+          languageCode,
+          vi: 'Phù hợp quanh năm',
+          en: 'Great all year round',
+        ),
+      );
     } else if (seasons.contains(context.season)) {
       score += 22;
-      reasons.add('Hop mua hien tai');
+      reasons.add(
+        _localized(languageCode, vi: 'Hợp mùa hiện tại', en: 'In season now'),
+      );
     }
 
-    final seasonPreferenceScore =
-        _overlapScore(seasons, profile.preferredSeasons, 14);
+    final seasonPreferenceScore = _overlapScore(
+      seasons,
+      profile.preferredSeasons,
+      14,
+    );
     score += seasonPreferenceScore;
-    if (seasonPreferenceScore > 0) reasons.add('Dung mua nguoi dung chon');
+    if (seasonPreferenceScore > 0) {
+      reasons.add(
+        _localized(
+          languageCode,
+          vi: 'Đúng mùa bạn đã chọn',
+          en: 'Matches your preferred season',
+        ),
+      );
+    }
 
     if (profile.preferredSeasons.isNotEmpty &&
         seasons.isNotEmpty &&
@@ -101,14 +179,24 @@ class DishScoringEngine {
     for (final token in profile.favoriteTokens) {
       if (token.isNotEmpty && searchable.contains(token)) {
         score += 10;
-        reasons.add('Gan voi tu khoa yeu thich');
+        reasons.add(
+          _localized(
+            languageCode,
+            vi: 'Gần với từ khóa yêu thích',
+            en: 'Matches your favorite keywords',
+          ),
+        );
       }
     }
 
     return DishScore(dish: dish, value: score, reasons: reasons);
   }
 
-  int _overlapScore(Set<String> dishValues, Set<String> profileValues, int weight) {
+  int _overlapScore(
+    Set<String> dishValues,
+    Set<String> profileValues,
+    int weight,
+  ) {
     if (profileValues.isEmpty) return 0;
     return dishValues.intersection(profileValues).length * weight;
   }
@@ -118,5 +206,13 @@ class DishScoringEngine {
         .map(RecommendationTextUtils.normalizeToken)
         .where((value) => value.isNotEmpty)
         .toSet();
+  }
+
+  String _localized(
+    String languageCode, {
+    required String vi,
+    required String en,
+  }) {
+    return languageCode.toLowerCase().startsWith('en') ? en : vi;
   }
 }

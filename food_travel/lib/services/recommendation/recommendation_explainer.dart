@@ -4,9 +4,15 @@ import 'recommendation_context.dart';
 class RecommendationExplainer {
   const RecommendationExplainer();
 
-  String explain(DishScore score, RecommendationContext context) {
+  String explain(
+    DishScore score,
+    RecommendationContext context, {
+    String languageCode = 'vi',
+  }) {
     if (score.reasons.isEmpty) {
-      return 'Món ăn phù hợp tổng thể với thời điểm ${context.mealTime}.';
+      return languageCode.toLowerCase().startsWith('en')
+          ? 'A good match for your preferences and the current time.'
+          : 'Phù hợp với sở thích và thời điểm hiện tại.';
     }
     return score.reasons.take(3).join(', ');
   }

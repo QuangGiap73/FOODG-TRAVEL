@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../../models/community/community_post.dart';
 import '../../../services/community/community_service.dart';
@@ -20,6 +21,7 @@ class HomeCommunitySection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final t = AppLocalizations.of(context)!;
     final isDark = theme.brightness == Brightness.dark;
 
     return StreamBuilder<List<CommunityPost>>(
@@ -50,7 +52,7 @@ class HomeCommunitySection extends StatelessWidget {
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
-                    'Cộng đồng đang ăn gì?',
+                    t.homeCommunityEatingTitle,
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w800,
                     ),
@@ -70,9 +72,12 @@ class HomeCommunitySection extends StatelessWidget {
                     minimumSize: Size.zero,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
-                  child: const Text(
-                    'Xem cộng đồng',
-                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
+                  child: Text(
+                    t.homeCommunityView,
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ],
@@ -174,7 +179,7 @@ class HomeCommunitySection extends StatelessWidget {
                               Text(
                                 featured.text.trim().isNotEmpty
                                     ? featured.text.trim()
-                                    : 'Cộng đồng đang chia sẻ trải nghiệm ăn uống mới.',
+                                    : t.homeCommunitySharingFallback,
                                 maxLines: 3,
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(

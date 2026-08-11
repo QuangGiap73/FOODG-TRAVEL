@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 import 'dart:ui' as ui;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -26,14 +26,17 @@ class _VietnamJourneyMapCardState extends State<VietnamJourneyMapCard> {
   @override
   Widget build(BuildContext context) {
     final hasUser = widget.userId != null && widget.userId!.trim().isNotEmpty;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF171D25) : Colors.white,
         borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: const Color(0xFFF4E5D6)),
+        border: Border.all(
+          color: isDark ? const Color(0xFF303844) : const Color(0xFFF4E5D6),
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -65,7 +68,8 @@ class _VietnamJourneyMapCardState extends State<VietnamJourneyMapCard> {
                       return _JourneyMapContent(
                         data: data,
                         onShowAll: () => _showProvinceListSheet(context, data),
-                        onProvinceTap: (item) => _openProvinceDetail(context, item),
+                        onProvinceTap:
+                            (item) => _openProvinceDetail(context, item),
                       );
                     },
                   );
@@ -98,9 +102,8 @@ class _VietnamJourneyMapCardState extends State<VietnamJourneyMapCard> {
     final legacyCollection = root.collection(JourneyCollections.provinces);
 
     return canonicalCollection.snapshots().asyncMap((snapshot) async {
-      final effectiveSnapshot = snapshot.docs.isNotEmpty
-          ? snapshot
-          : await legacyCollection.get();
+      final effectiveSnapshot =
+          snapshot.docs.isNotEmpty ? snapshot : await legacyCollection.get();
       final progressByKey = <String, JourneyProvinceProgress>{};
 
       for (final doc in effectiveSnapshot.docs) {
@@ -147,15 +150,18 @@ class _VietnamJourneyMapCardState extends State<VietnamJourneyMapCard> {
 
     Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (_) => JourneyProvinceDetailPage(
-          userId: userId,
-          provinceCode: item.progress.provinceCode.trim().isNotEmpty
-              ? item.progress.provinceCode
-              : item.feature.key,
-          provinceName: item.progress.provinceName.trim().isNotEmpty
-              ? item.progress.provinceName
-              : item.displayName,
-        ),
+        builder:
+            (_) => JourneyProvinceDetailPage(
+              userId: userId,
+              provinceCode:
+                  item.progress.provinceCode.trim().isNotEmpty
+                      ? item.progress.provinceCode
+                      : item.feature.key,
+              provinceName:
+                  item.progress.provinceName.trim().isNotEmpty
+                      ? item.progress.provinceName
+                      : item.displayName,
+            ),
       ),
     );
   }
@@ -169,10 +175,11 @@ class _VietnamJourneyMapCardState extends State<VietnamJourneyMapCard> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (context) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
         return Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF171D25) : Colors.white,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
           ),
           padding: const EdgeInsets.fromLTRB(20, 14, 20, 20),
           child: SafeArea(
@@ -197,7 +204,7 @@ class _VietnamJourneyMapCardState extends State<VietnamJourneyMapCard> {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w900,
-                    color: Color(0xFF111827),
+                    color: isDark ? Colors.white : const Color(0xFF111827),
                   ),
                 ),
                 const SizedBox(height: 6),
@@ -206,9 +213,9 @@ class _VietnamJourneyMapCardState extends State<VietnamJourneyMapCard> {
                     data.discoveredCount,
                     data.items.length,
                   ),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
-                    color: Color(0xFF6B7280),
+                    color: isDark ? Colors.white70 : const Color(0xFF6B7280),
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -240,20 +247,21 @@ class _VietnamJourneyMapCardState extends State<VietnamJourneyMapCard> {
                         ),
                         title: Text(
                           item.displayName,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
-                            color: Color(0xFF1F2937),
+                            color:
+                                isDark ? Colors.white : const Color(0xFF1F2937),
                           ),
                         ),
                         trailing: Text(
                           item.isDiscovered
-                              ? AppLocalizations.of(context)!
-                                  .journeyCheckinCount(
-                                    item.progress.checkinCount,
-                                  )
-                              : AppLocalizations.of(context)!
-                                  .journeyNotDiscovered,
+                              ? AppLocalizations.of(
+                                context,
+                              )!.journeyCheckinCount(item.progress.checkinCount)
+                              : AppLocalizations.of(
+                                context,
+                              )!.journeyNotDiscovered,
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
@@ -365,6 +373,7 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Row(
       children: [
         Expanded(
@@ -373,7 +382,7 @@ class _Header extends StatelessWidget {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w900,
-              color: Color(0xFF1F2937),
+              color: isDark ? Colors.white : const Color(0xFF1F2937),
             ),
           ),
         ),
@@ -394,7 +403,7 @@ class _Header extends StatelessWidget {
   }
 }
 
-class _JourneyMapPanel extends StatelessWidget {
+class _JourneyMapPanel extends StatefulWidget {
   const _JourneyMapPanel({required this.data, required this.onProvinceTap});
 
   static const double _mapPanelHeight = 300;
@@ -403,51 +412,245 @@ class _JourneyMapPanel extends StatelessWidget {
   final ValueChanged<_ProvinceMapItem> onProvinceTap;
 
   @override
+  State<_JourneyMapPanel> createState() => _JourneyMapPanelState();
+}
+
+class _JourneyMapPanelState extends State<_JourneyMapPanel> {
+  static const double _minScale = 1;
+  static const double _maxScale = 4.5;
+
+  // TransformationController giữ ma trận phóng to và vị trí kéo hiện tại.
+  // Nhờ có controller, nút đặt lại có thể đưa bản đồ về trạng thái ban đầu.
+  final TransformationController _transformationController =
+      TransformationController();
+  bool _isZoomed = false;
+  bool _isInteractionActive = false;
+
+  @override
+  void dispose() {
+    _transformationController.dispose();
+    super.dispose();
+  }
+
+  void _handleInteractionUpdate(ScaleUpdateDetails _) {
+    final scale = _transformationController.value.getMaxScaleOnAxis();
+    final isZoomed = scale > _minScale + 0.01;
+    // Chỉ rebuild khi đi qua ngưỡng zoom, không rebuild theo từng chuyển động
+    // của ngón tay; nhờ đó CustomPainter vẫn hoạt động mượt.
+    if (isZoomed == _isZoomed) return;
+    setState(() => _isZoomed = isZoomed);
+  }
+
+  void _resetMap() {
+    _transformationController.value = Matrix4.identity();
+    setState(() => _isZoomed = false);
+  }
+
+  void _activateMap() {
+    if (_isInteractionActive) return;
+    setState(() => _isInteractionActive = true);
+  }
+
+  void _zoomBy(Size viewportSize, double amount) {
+    _activateMap();
+    final currentScale =
+        _transformationController.value.getMaxScaleOnAxis();
+    final targetScale =
+        (currentScale + amount).clamp(_minScale, _maxScale).toDouble();
+    if ((targetScale - currentScale).abs() < 0.001) return;
+
+    if (targetScale <= _minScale + 0.001) {
+      _resetMap();
+      return;
+    }
+
+    // Giữ nguyên điểm đang nằm giữa khung nhìn khi bấm +/-. Nếu chỉ scale
+    // quanh góc trên trái, bản đồ sẽ bị nhảy khỏi khu vực người dùng đang xem.
+    final viewportCenter = viewportSize.center(Offset.zero);
+    final sceneCenter = _transformationController.toScene(viewportCenter);
+    final matrix = Matrix4.identity();
+    matrix.storage[0] = targetScale;
+    matrix.storage[5] = targetScale;
+    matrix.storage[12] = viewportCenter.dx - sceneCenter.dx * targetScale;
+    matrix.storage[13] = viewportCenter.dy - sceneCenter.dy * targetScale;
+    _transformationController.value = matrix;
+
+    if (!_isZoomed) setState(() => _isZoomed = true);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return SizedBox(
-      height: _mapPanelHeight,
+      height: _JourneyMapPanel._mapPanelHeight,
       child: LayoutBuilder(
         builder: (context, constraints) {
           final geometry = _GeoMapLayout.build(
-            items: data.items,
-            size: Size(constraints.maxWidth, _mapPanelHeight),
+            items: widget.data.items,
+            size: Size(
+              constraints.maxWidth,
+              _JourneyMapPanel._mapPanelHeight,
+            ),
           );
-// báº¥m vÃ o 1 tá»‰nh 
-          return DecoratedBox(
+
+          return AnimatedContainer(
+            duration: const Duration(milliseconds: 220),
+            curve: Curves.easeOut,
             decoration: BoxDecoration(
-              color: const Color(0xFFFFFBF7),
+              color: isDark ? const Color(0xFF222A34) : const Color(0xFFFFFBF7),
               borderRadius: BorderRadius.circular(26),
-              border: Border.all(color: const Color(0xFFF6E7D8)),
+              border: Border.all(
+                color:
+                    _isInteractionActive
+                        ? const Color(0xFFFF7A00)
+                        : isDark
+                        ? const Color(0xFF3B4654)
+                        : const Color(0xFFF6E7D8),
+                width: _isInteractionActive ? 2.2 : 1,
+              ),
+              boxShadow:
+                  _isInteractionActive
+                      ? [
+                        BoxShadow(
+                          color: const Color(
+                            0xFFFF7A00,
+                          ).withValues(alpha: 0.24),
+                          blurRadius: 16,
+                          spreadRadius: 2,
+                        ),
+                      ]
+                      : const [],
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(26),
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTapDown: (details) {
-                  final tapped = geometry.hitTest(details.localPosition);
-                  if (tapped != null) {
-                    onProvinceTap(tapped);
-                  }
-                },
-                child: Stack(
-                  children: [
-                    Positioned.fill(
-                      child: RepaintBoundary(
-                        child: CustomPaint(
-                          painter: _VietnamGeoJsonPainter(geometry: geometry),
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: InteractiveViewer(
+                      transformationController: _transformationController,
+                      minScale: _minScale,
+                      maxScale: _maxScale,
+                      // Luôn nhận pan để bộ nhận diện của bản đồ giữ được cử
+                      // chỉ ngay từ ngón tay đầu tiên; nhờ đó thao tác chụm hai
+                      // ngón không bị danh sách bên ngoài giành mất.
+                      panEnabled: true,
+                      scaleEnabled: true,
+                      boundaryMargin: const EdgeInsets.all(100),
+                      clipBehavior: Clip.hardEdge,
+                      onInteractionUpdate: _handleInteractionUpdate,
+                      child: SizedBox(
+                        width: constraints.maxWidth,
+                        height: _JourneyMapPanel._mapPanelHeight,
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          // GestureDetector nằm trong vùng được transform nên
+                          // localPosition đã được Flutter đổi về tọa độ bản đồ.
+                          onTapUp: (details) {
+                            final tapped = geometry.hitTest(
+                              details.localPosition,
+                            );
+                            if (tapped != null) {
+                              widget.onProvinceTap(tapped);
+                            }
+                          },
+                          child: RepaintBoundary(
+                            child: CustomPaint(
+                              size: Size(
+                                constraints.maxWidth,
+                                _JourneyMapPanel._mapPanelHeight,
+                              ),
+                              painter: _VietnamGeoJsonPainter(
+                                geometry: geometry,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                    Positioned(
-                      left: 12,
-                      top: 70,
-                      child: _DiscoverySummaryCard(
-                        discoveredCount: data.discoveredCount,
-                        totalCount: data.items.length,
+                  ),
+                  if (!_isInteractionActive)
+                    Positioned.fill(
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        // Lần chạm đầu chỉ kích hoạt vùng bản đồ. Từ lần thao
+                        // tác tiếp theo, lớp này biến mất để map nhận gesture.
+                        onTap: _activateMap,
+                        child: const SizedBox.expand(),
                       ),
                     ),
-                  ],
-                ),
+                  Positioned(
+                    left: 12,
+                    top: 70,
+                    child: IgnorePointer(
+                      child: _DiscoverySummaryCard(
+                        discoveredCount: widget.data.discoveredCount,
+                        totalCount: widget.data.items.length,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    right: 12,
+                    top: 12,
+                    child: _MapZoomControls(
+                      isDark: isDark,
+                      canReset: _isZoomed,
+                      onZoomIn:
+                          () => _zoomBy(
+                            Size(
+                              constraints.maxWidth,
+                              _JourneyMapPanel._mapPanelHeight,
+                            ),
+                            0.75,
+                          ),
+                      onZoomOut:
+                          () => _zoomBy(
+                            Size(
+                              constraints.maxWidth,
+                              _JourneyMapPanel._mapPanelHeight,
+                            ),
+                            -0.75,
+                          ),
+                      onReset: _resetMap,
+                    ),
+                  ),
+                  Positioned(
+                    right: 14,
+                    bottom: 12,
+                    child: IgnorePointer(
+                      child: AnimatedOpacity(
+                        duration: const Duration(milliseconds: 180),
+                        opacity: _isZoomed ? 0 : 1,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 9,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color:
+                                isDark
+                                    ? const Color(0xCC2A3440)
+                                    : const Color(0xEFFFFFFF),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.pinch_rounded, size: 15),
+                              SizedBox(width: 5),
+                              Text(
+                                'Chụm hai ngón tay để phóng to',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           );
@@ -457,11 +660,87 @@ class _JourneyMapPanel extends StatelessWidget {
   }
 }
 
+class _MapZoomControls extends StatelessWidget {
+  const _MapZoomControls({
+    required this.isDark,
+    required this.canReset,
+    required this.onZoomIn,
+    required this.onZoomOut,
+    required this.onReset,
+  });
+
+  final bool isDark;
+  final bool canReset;
+  final VoidCallback onZoomIn;
+  final VoidCallback onZoomOut;
+  final VoidCallback onReset;
+
+  @override
+  Widget build(BuildContext context) {
+    final dividerColor =
+        isDark ? const Color(0x33FFFFFF) : const Color(0x14000000);
+    return Material(
+      color: isDark ? const Color(0xE62A3440) : const Color(0xF2FFFFFF),
+      borderRadius: BorderRadius.circular(16),
+      elevation: 3,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _ZoomButton(
+            icon: Icons.add_rounded,
+            tooltip: 'Phóng to bản đồ',
+            onPressed: onZoomIn,
+          ),
+          SizedBox(width: 30, child: Divider(height: 1, color: dividerColor)),
+          _ZoomButton(
+            icon: Icons.remove_rounded,
+            tooltip: 'Thu nhỏ bản đồ',
+            onPressed: onZoomOut,
+          ),
+          if (canReset) ...[
+            SizedBox(width: 30, child: Divider(height: 1, color: dividerColor)),
+            _ZoomButton(
+              icon: Icons.center_focus_strong_rounded,
+              tooltip: 'Đặt lại bản đồ',
+              onPressed: onReset,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _ZoomButton extends StatelessWidget {
+  const _ZoomButton({
+    required this.icon,
+    required this.tooltip,
+    required this.onPressed,
+  });
+
+  final IconData icon;
+  final String tooltip;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: onPressed,
+      tooltip: tooltip,
+      constraints: const BoxConstraints.tightFor(width: 40, height: 40),
+      padding: EdgeInsets.zero,
+      visualDensity: VisualDensity.compact,
+      color: const Color(0xFFFF7A00),
+      icon: Icon(icon, size: 22),
+    );
+  }
+}
+
 class _VietnamGeoJsonPainter extends CustomPainter {
   const _VietnamGeoJsonPainter({required this.geometry});
 
   final _GeoMapLayout geometry;
-// váº½ báº£n Ä‘á»“ 
+  // váº½ báº£n Ä‘á»“
   @override
   void paint(Canvas canvas, Size size) {
     final undiscoveredPaint =
@@ -515,8 +794,8 @@ class _DiscoverySummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 88,
-      padding: const EdgeInsets.fromLTRB(12, 12, 12, 10),
+      width: 80,
+      padding: const EdgeInsets.fromLTRB(9, 10, 9, 9),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.95),
         borderRadius: BorderRadius.circular(16),
@@ -534,7 +813,7 @@ class _DiscoverySummaryCard extends StatelessWidget {
           Text(
             AppLocalizations.of(context)!.journeyDiscovered,
             style: TextStyle(
-              fontSize: 11,
+              fontSize: 10,
               color: Color(0xFF6B7280),
               fontWeight: FontWeight.w700,
             ),
@@ -546,7 +825,7 @@ class _DiscoverySummaryCard extends StatelessWidget {
                 TextSpan(
                   text: '$discoveredCount',
                   style: const TextStyle(
-                    fontSize: 28,
+                    fontSize: 25,
                     height: 1,
                     fontWeight: FontWeight.w900,
                     color: Color(0xFFFF8A00),
@@ -555,7 +834,7 @@ class _DiscoverySummaryCard extends StatelessWidget {
                 TextSpan(
                   text: '/$totalCount',
                   style: const TextStyle(
-                    fontSize: 17,
+                    fontSize: 15,
                     height: 1.1,
                     fontWeight: FontWeight.w800,
                     color: Color(0xFF374151),
@@ -568,7 +847,7 @@ class _DiscoverySummaryCard extends StatelessWidget {
           Text(
             AppLocalizations.of(context)!.journeyProvinceUnit,
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 11,
               color: Color(0xFF374151),
               fontWeight: FontWeight.w800,
             ),
@@ -686,9 +965,9 @@ class _MapErrorState extends StatelessWidget {
       message:
           details == null || details.isEmpty
               ? AppLocalizations.of(context)!.journeyMapAssetLoadError
-              : AppLocalizations.of(context)!.journeyMapGeoJsonLoadError(
-                  details,
-                ),
+              : AppLocalizations.of(
+                context,
+              )!.journeyMapGeoJsonLoadError(details),
     );
   }
 }
@@ -731,9 +1010,7 @@ class _ProvinceMapItem {
           ? progress.provinceName.trim()
           : feature.displayName;
 
-  bool get isDiscovered =>
-      progress.isDiscovered ||
-      progress.checkinCount > 0;
+  bool get isDiscovered => progress.isDiscovered || progress.checkinCount > 0;
 }
 
 class _GeoProvinceFeature {
@@ -746,12 +1023,11 @@ class _GeoProvinceFeature {
 
   factory _GeoProvinceFeature.fromCompactJson(Map<String, dynamic> json) {
     final name = json['name']?.toString().trim() ?? '';
-    final polygons =
-        (json['polygons'] as List<dynamic>? ?? const [])
-            .whereType<List<dynamic>>()
-            .map(_parsePolygonRings)
-            .where((rings) => rings.isNotEmpty)
-            .toList(growable: false);
+    final polygons = (json['polygons'] as List<dynamic>? ?? const [])
+        .whereType<List<dynamic>>()
+        .map(_parsePolygonRings)
+        .where((rings) => rings.isNotEmpty)
+        .toList(growable: false);
 
     final bounds = _computeBounds(polygons);
     return _GeoProvinceFeature(
@@ -853,7 +1129,7 @@ class _GeoMapLayout {
     final maxY = featureBounds
         .map((e) => e.bottom)
         .reduce((a, b) => a > b ? a : b);
-// váº½ báº£n Ä‘á»“ 
+    // váº½ báº£n Ä‘á»“
     final geoBounds = Rect.fromLTRB(minX, minY, maxX, maxY);
     const leftPanelWidth = 92.0;
     const horizontalPadding = 8.0;
@@ -872,8 +1148,7 @@ class _GeoMapLayout {
         horizontalPadding +
         (availableWidth - drawnWidth) / 2 +
         8;
-    final offsetY =
-        verticalPadding + (availableHeight - drawnHeight) / 2 - 6;
+    final offsetY = verticalPadding + (availableHeight - drawnHeight) / 2 - 6;
 
     final shapes =
         items.map((item) {

@@ -19,12 +19,14 @@ class DishRecommendationService {
     required UserPreferences? preferences,
     required DateTime now,
     int limit = 12,
+    String languageCode = 'vi',
   }) {
     return engine.recommendToday(
       dishes: dishes,
       preferences: preferences,
       now: now,
       limit: limit,
+      languageCode: languageCode,
     );
   }
 
@@ -33,12 +35,14 @@ class DishRecommendationService {
     required UserPreferences? preferences,
     required DateTime now,
     int limit = 12,
+    String languageCode = 'vi',
   }) {
     return engine.recommendTodayWithReasons(
       dishes: dishes,
       preferences: preferences,
       now: now,
       limit: limit,
+      languageCode: languageCode,
     );
   }
 }

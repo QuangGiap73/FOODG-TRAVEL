@@ -50,6 +50,7 @@ class _DailyMissionSectionState extends State<DailyMissionSection> {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return StreamBuilder<List<JourneyMission>>(
       stream: _missionStream(),
       builder: (context, snapshot) {
@@ -62,9 +63,11 @@ class _DailyMissionSectionState extends State<DailyMissionSection> {
           margin: const EdgeInsets.symmetric(horizontal: 16),
           padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: isDark ? const Color(0xFF171D25) : Colors.white,
             borderRadius: BorderRadius.circular(22),
-            border: Border.all(color: const Color(0xFFF4E5D6)),
+            border: Border.all(
+              color: isDark ? const Color(0xFF303844) : const Color(0xFFF4E5D6),
+            ),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.05),
@@ -247,6 +250,7 @@ class _SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Row(
       children: [
         Expanded(
@@ -255,7 +259,7 @@ class _SectionHeader extends StatelessWidget {
             style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w800,
-              color: Color(0xFF1F2937),
+              color: isDark ? Colors.white : const Color(0xFF1F2937),
             ),
           ),
         ),
@@ -304,6 +308,7 @@ class _MissionItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final completed = mission.isCompleted || mission.progress >= 1.0;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final mainColor =
         completed ? const Color(0xFF70B62C) : const Color(0xFFFF8A00);
 
@@ -314,9 +319,11 @@ class _MissionItemCard extends StatelessWidget {
         constraints: const BoxConstraints(minHeight: 74),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: const Color(0xFFFFFEFC),
+          color: isDark ? const Color(0xFF222A34) : const Color(0xFFFFFEFC),
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: const Color(0xFFF1E5DA)),
+          border: Border.all(
+            color: isDark ? const Color(0xFF3B4654) : const Color(0xFFF1E5DA),
+          ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.035),
@@ -337,10 +344,10 @@ class _MissionItemCard extends StatelessWidget {
                     title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFF1F2937),
+                      color: isDark ? Colors.white : const Color(0xFF1F2937),
                     ),
                   ),
                   const SizedBox(height: 9),
@@ -352,7 +359,10 @@ class _MissionItemCard extends StatelessWidget {
                           child: LinearProgressIndicator(
                             value: mission.progress,
                             minHeight: 6,
-                            backgroundColor: const Color(0xFFF1EEE9),
+                            backgroundColor:
+                                isDark
+                                    ? const Color(0xFF3B4654)
+                                    : const Color(0xFFF1EEE9),
                             valueColor: AlwaysStoppedAnimation<Color>(
                               mainColor,
                             ),
@@ -362,10 +372,11 @@ class _MissionItemCard extends StatelessWidget {
                       const SizedBox(width: 10),
                       Text(
                         '${mission.currentCount}/${mission.targetCount}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF374151),
+                          color:
+                              isDark ? Colors.white70 : const Color(0xFF374151),
                         ),
                       ),
                     ],

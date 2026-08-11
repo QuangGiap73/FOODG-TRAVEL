@@ -11,6 +11,7 @@ class RecentCheckinSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final uid = userId?.trim();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     if (uid == null || uid.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -31,9 +32,11 @@ class RecentCheckinSection extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: 16),
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: isDark ? const Color(0xFF171D25) : Colors.white,
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: const Color(0xFFF4E5D6)),
+            border: Border.all(
+              color: isDark ? const Color(0xFF303844) : const Color(0xFFF4E5D6),
+            ),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.04),
@@ -82,17 +85,22 @@ class _RecentHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Row(
-      children: const [
-        Icon(Icons.location_on_outlined, size: 18, color: Color(0xFFFF9A00)),
-        SizedBox(width: 6),
+      children: [
+        const Icon(
+          Icons.location_on_outlined,
+          size: 18,
+          color: Color(0xFFFF9A00),
+        ),
+        const SizedBox(width: 6),
         Expanded(
           child: Text(
             'Check-in gần đây',
             style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w800,
-              color: Color(0xFF1F2937),
+              color: isDark ? Colors.white : const Color(0xFF1F2937),
             ),
           ),
         ),
@@ -108,6 +116,7 @@ class _RecentCheckinTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Row(
       children: [
         ClipRRect(
@@ -123,10 +132,10 @@ class _RecentCheckinTile extends StatelessWidget {
                 item.placeName,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF202531),
+                  color: isDark ? Colors.white : const Color(0xFF202531),
                 ),
               ),
               const SizedBox(height: 5),
@@ -149,10 +158,10 @@ class _RecentCheckinTile extends StatelessWidget {
           children: [
             Text(
               _timeLabel(item.createdAt),
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF8A909B),
+                color: isDark ? Colors.white60 : const Color(0xFF8A909B),
               ),
             ),
             const SizedBox(height: 6),

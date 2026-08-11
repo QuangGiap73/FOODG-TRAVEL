@@ -560,6 +560,30 @@ abstract class AppLocalizations {
   /// **'No matching places found.'**
   String get homeNearbyEmpty;
 
+  /// No description provided for @homeCommunityEatingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What is the community eating?'**
+  String get homeCommunityEatingTitle;
+
+  /// No description provided for @homeCommunityView.
+  ///
+  /// In en, this message translates to:
+  /// **'View community'**
+  String get homeCommunityView;
+
+  /// No description provided for @homeCommunityEatingFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'The community is sharing this place today.'**
+  String get homeCommunityEatingFallback;
+
+  /// No description provided for @homeCommunitySharingFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'The community is sharing a new dining experience.'**
+  String get homeCommunitySharingFallback;
+
   /// No description provided for @homeOpenNow.
   ///
   /// In en, this message translates to:

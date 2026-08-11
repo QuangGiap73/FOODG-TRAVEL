@@ -262,6 +262,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeNearbyEmpty => 'No matching places found.';
 
   @override
+  String get homeCommunityEatingTitle => 'What is the community eating?';
+
+  @override
+  String get homeCommunityView => 'View community';
+
+  @override
+  String get homeCommunityEatingFallback =>
+      'The community is sharing this place today.';
+
+  @override
+  String get homeCommunitySharingFallback =>
+      'The community is sharing a new dining experience.';
+
+  @override
   String get homeOpenNow => 'Open';
 
   @override

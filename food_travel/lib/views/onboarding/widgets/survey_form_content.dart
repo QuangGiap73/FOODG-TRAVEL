@@ -135,11 +135,12 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
         .where((value) => value.isNotEmpty);
     if (pending.isEmpty) return;
 
-    final items = source.text
-        .split(RegExp(r'[\n,]+'))
-        .map((value) => value.trim())
-        .where((value) => value.isNotEmpty)
-        .toList();
+    final items =
+        source.text
+            .split(RegExp(r'[\n,]+'))
+            .map((value) => value.trim())
+            .where((value) => value.isNotEmpty)
+            .toList();
     for (final item in pending) {
       if (!items.contains(item)) items.add(item);
     }
@@ -154,9 +155,9 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
     final isDark = theme.brightness == Brightness.dark;
     final bg = isDark ? const Color(0xFF0E131A) : const Color(0xFFFFFAF3);
     final surface = isDark ? const Color(0xFF171E28) : Colors.white;
-    final border = isDark ? const Color(0xFF283142) : const Color(0xFFF1E6D8);
+    final border = isDark ? const Color(0xFF3A4658) : const Color(0xFFF1E6D8);
     final text = isDark ? Colors.white : const Color(0xFF1F2937);
-    final sub = isDark ? const Color(0xFFAAB4C3) : const Color(0xFF6B7280);
+    final sub = isDark ? const Color(0xFFC5CEDA) : const Color(0xFF6B7280);
     const accent = Color(0xFFF97316);
 
     final content = Form(
@@ -172,9 +173,10 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
           if (!widget.compact) ...[
             _HeroCard(
               title: _isVi ? 'Khảo sát khẩu vị món ăn' : 'Taste profile survey',
-              subtitle: _isVi
-                  ? 'Điền nhanh để ứng dụng hiểu khẩu vị, vùng miền, ngân sách và ngữ cảnh ăn uống của bạn.'
-                  : 'Complete a short survey so the app understands your taste, region, budget, and dining context.',
+              subtitle:
+                  _isVi
+                      ? 'Điền nhanh để ứng dụng hiểu khẩu vị, vùng miền, ngân sách và ngữ cảnh ăn uống của bạn.'
+                      : 'Complete a short survey so the app understands your taste, region, budget, and dining context.',
               loadingProfile: widget.loadingProfile,
               accent: accent,
               textColor: text,
@@ -192,9 +194,10 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
                 _SectionHeader(
                   icon: Icons.location_city_rounded,
                   title: t.surveyProvinceLabel,
-                  subtitle: _isVi
-                      ? 'Chọn tỉnh/thành hiện tại để gợi ý món, quán và bài viết gần bạn hơn.'
-                      : 'Select your current province to localize dish and place suggestions.',
+                  subtitle:
+                      _isVi
+                          ? 'Chọn tỉnh/thành hiện tại để gợi ý món, quán và bài viết gần bạn hơn.'
+                          : 'Select your current province to localize dish and place suggestions.',
                   accent: accent,
                   textColor: text,
                   subColor: sub,
@@ -206,9 +209,10 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
                   requiredText: t.surveyProvinceRequired,
                   textColor: text,
                   border: border,
-                  surface: isDark
-                      ? const Color(0xFF121821)
-                      : const Color(0xFFFFFCF8),
+                  surface:
+                      isDark
+                          ? const Color(0xFF121821)
+                          : const Color(0xFFFFFCF8),
                 ),
               ],
             ),
@@ -223,9 +227,10 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
                 _SectionHeader(
                   icon: Icons.local_fire_department_rounded,
                   title: _isVi ? 'Mức ăn cay' : 'Spice tolerance',
-                  subtitle: _isVi
-                      ? 'Dùng để tránh gợi ý món quá cay hoặc quá nhạt.'
-                      : 'Used to avoid dishes that are too spicy or too mild.',
+                  subtitle:
+                      _isVi
+                          ? 'Dùng để tránh gợi ý món quá cay hoặc quá nhạt.'
+                          : 'Used to avoid dishes that are too spicy or too mild.',
                   accent: accent,
                   textColor: text,
                   subColor: sub,
@@ -244,6 +249,10 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
                   divisions: 5,
                   value: widget.controller.spicyLevel.toDouble(),
                   activeColor: accent,
+                  inactiveColor:
+                      isDark
+                          ? const Color(0xFF566274)
+                          : const Color(0xFFD1D5DB),
                   onChanged: widget.controller.setSpicyLevel,
                 ),
               ],
@@ -256,15 +265,17 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
             child: _ChoiceSection(
               icon: Icons.ramen_dining_rounded,
               title: _isVi ? 'Kiểu món bạn thích' : 'Preferred dish styles',
-              subtitle: _isVi
-                  ? 'Chọn các nhóm món bạn hay ăn nhất.'
-                  : 'Pick the dish types you enjoy most.',
+              subtitle:
+                  _isVi
+                      ? 'Chọn các nhóm món bạn hay ăn nhất.'
+                      : 'Pick the dish types you enjoy most.',
               choices: _dishTypes,
               selected: widget.controller.preferredDishTypes,
-              onToggle: (value) => widget.controller.toggleSetValue(
-                widget.controller.preferredDishTypes,
-                value,
-              ),
+              onToggle:
+                  (value) => widget.controller.toggleSetValue(
+                    widget.controller.preferredDishTypes,
+                    value,
+                  ),
               labelBuilder: _label,
               accent: accent,
               textColor: text,
@@ -278,15 +289,17 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
             child: _ChoiceSection(
               icon: Icons.tungsten_rounded,
               title: _isVi ? 'Hương vị yêu thích' : 'Flavor preferences',
-              subtitle: _isVi
-                  ? 'Dữ liệu này rất hữu ích để AI đối chiếu với metadata món ăn.'
-                  : 'This is useful for matching dish metadata later.',
+              subtitle:
+                  _isVi
+                      ? 'Dữ liệu này rất hữu ích để AI đối chiếu với metadata món ăn.'
+                      : 'This is useful for matching dish metadata later.',
               choices: _flavors,
               selected: widget.controller.flavorPreferences,
-              onToggle: (value) => widget.controller.toggleSetValue(
-                widget.controller.flavorPreferences,
-                value,
-              ),
+              onToggle:
+                  (value) => widget.controller.toggleSetValue(
+                    widget.controller.flavorPreferences,
+                    value,
+                  ),
               labelBuilder: _label,
               accent: accent,
               textColor: text,
@@ -303,15 +316,33 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
                 _SectionHeader(
                   icon: Icons.lunch_dining_rounded,
                   title: _isVi ? 'Mức no mong muốn' : 'Satiety preference',
-                  subtitle: _isVi
-                      ? 'Giúp ưu tiên món ăn nhẹ hoặc món no bụng.'
-                      : 'Helps prioritize lighter or more filling meals.',
+                  subtitle:
+                      _isVi
+                          ? 'Giúp ưu tiên món ăn nhẹ hoặc món no bụng.'
+                          : 'Helps prioritize lighter or more filling meals.',
                   accent: accent,
                   textColor: text,
                   subColor: sub,
                 ),
                 const SizedBox(height: 14),
                 SegmentedButton<int>(
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.resolveWith((states) {
+                      if (states.contains(WidgetState.selected)) {
+                        return isDark
+                            ? const Color(0xFF7C2D12)
+                            : const Color(0xFFFFE8D5);
+                      }
+                      return isDark ? const Color(0xFF202936) : Colors.white;
+                    }),
+                    foregroundColor: WidgetStateProperty.resolveWith((states) {
+                      if (isDark) return Colors.white;
+                      return states.contains(WidgetState.selected)
+                          ? const Color(0xFF9A3412)
+                          : const Color(0xFF374151);
+                    }),
+                    side: WidgetStatePropertyAll(BorderSide(color: border)),
+                  ),
                   segments: [
                     ButtonSegment(
                       value: 0,
@@ -334,16 +365,19 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
                 const SizedBox(height: 18),
                 _ChoiceSection(
                   icon: Icons.schedule_rounded,
-                  title: _isVi ? 'Thời điểm ăn thường xuyên' : 'Meal time context',
-                  subtitle: _isVi
-                      ? 'Giúp gợi ý món đúng thời điểm như sáng, trưa, tối hoặc ăn vặt.'
-                      : 'Helps recommend dishes for breakfast, lunch, dinner, or snack time.',
+                  title:
+                      _isVi ? 'Thời điểm ăn thường xuyên' : 'Meal time context',
+                  subtitle:
+                      _isVi
+                          ? 'Giúp gợi ý món đúng thời điểm như sáng, trưa, tối hoặc ăn vặt.'
+                          : 'Helps recommend dishes for breakfast, lunch, dinner, or snack time.',
                   choices: _mealTimes,
                   selected: widget.controller.preferredMealTimes,
-                  onToggle: (value) => widget.controller.toggleSetValue(
-                    widget.controller.preferredMealTimes,
-                    value,
-                  ),
+                  onToggle:
+                      (value) => widget.controller.toggleSetValue(
+                        widget.controller.preferredMealTimes,
+                        value,
+                      ),
                   labelBuilder: _label,
                   accent: accent,
                   textColor: text,
@@ -359,15 +393,17 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
             child: _ChoiceSection(
               icon: Icons.public_rounded,
               title: _isVi ? 'Vùng miền muốn khám phá' : 'Preferred regions',
-              subtitle: _isVi
-                  ? 'Chọn vùng miền bạn muốn ứng dụng ưu tiên khi tìm món.'
-                  : 'Choose the regions you want the app to prioritize.',
+              subtitle:
+                  _isVi
+                      ? 'Chọn vùng miền bạn muốn ứng dụng ưu tiên khi tìm món.'
+                      : 'Choose the regions you want the app to prioritize.',
               choices: _regions,
               selected: widget.controller.preferredRegions,
-              onToggle: (value) => widget.controller.toggleSetValue(
-                widget.controller.preferredRegions,
-                value,
-              ),
+              onToggle:
+                  (value) => widget.controller.toggleSetValue(
+                    widget.controller.preferredRegions,
+                    value,
+                  ),
               labelBuilder: _label,
               accent: accent,
               textColor: text,
@@ -383,52 +419,62 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
               children: [
                 _TagEditor(
                   icon: Icons.health_and_safety_rounded,
-                  title: _isVi ? 'Dị ứng và kiêng kỵ' : 'Allergies and restrictions',
-                  subtitle: _isVi
-                      ? 'Những thông tin này rất quan trọng để loại trừ món không phù hợp.'
-                      : 'This is critical for filtering out unsuitable dishes.',
+                  title:
+                      _isVi
+                          ? 'Dị ứng và kiêng kỵ'
+                          : 'Allergies and restrictions',
+                  subtitle:
+                      _isVi
+                          ? 'Những thông tin này rất quan trọng để loại trừ món không phù hợp.'
+                          : 'This is critical for filtering out unsuitable dishes.',
                   inputController: _allergyInput,
                   sourceController: widget.controller.allergiesController,
                   accent: accent,
                   textColor: text,
                   subColor: sub,
-                  chipBg: isDark
-                      ? const Color(0xFF332126)
-                      : const Color(0xFFFEE2E2),
+                  chipBg:
+                      isDark
+                          ? const Color(0xFF332126)
+                          : const Color(0xFFFEE2E2),
                   border: border,
                 ),
                 const SizedBox(height: 16),
                 _TagEditor(
                   icon: Icons.block_rounded,
-                  title: _isVi
-                      ? 'Nguyên liệu không thích'
-                      : 'Disliked ingredients',
-                  subtitle: _isVi
-                      ? 'Ví dụ: rau mùi, mắm tôm, nội tạng...'
-                      : 'Example: coriander, fermented shrimp paste, organ meat...',
+                  title:
+                      _isVi
+                          ? 'Nguyên liệu không thích'
+                          : 'Disliked ingredients',
+                  subtitle:
+                      _isVi
+                          ? 'Ví dụ: rau mùi, mắm tôm, nội tạng...'
+                          : 'Example: coriander, fermented shrimp paste, organ meat...',
                   inputController: _dislikeInput,
                   sourceController: widget.controller.dislikesController,
                   accent: const Color(0xFF64748B),
                   textColor: text,
                   subColor: sub,
-                  chipBg: isDark
-                      ? const Color(0xFF26303C)
-                      : const Color(0xFFF3F4F6),
+                  chipBg:
+                      isDark
+                          ? const Color(0xFF26303C)
+                          : const Color(0xFFF3F4F6),
                   border: border,
                 ),
                 const SizedBox(height: 16),
                 _ChoiceSection(
                   icon: Icons.spa_rounded,
                   title: _isVi ? 'Chế độ ăn hiện tại' : 'Diet preferences',
-                  subtitle: _isVi
-                      ? 'Cho biết nếu bạn đang ăn chay, low-carb hoặc eat clean.'
-                      : 'Tell us if you are vegetarian, low-carb, or eating clean.',
+                  subtitle:
+                      _isVi
+                          ? 'Cho biết nếu bạn đang ăn chay, low-carb hoặc eat clean.'
+                          : 'Tell us if you are vegetarian, low-carb, or eating clean.',
                   choices: _diets,
                   selected: widget.controller.dietPreferences,
-                  onToggle: (value) => widget.controller.toggleSetValue(
-                    widget.controller.dietPreferences,
-                    value,
-                  ),
+                  onToggle:
+                      (value) => widget.controller.toggleSetValue(
+                        widget.controller.dietPreferences,
+                        value,
+                      ),
                   labelBuilder: _label,
                   accent: accent,
                   textColor: text,
@@ -447,9 +493,10 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
                 _SectionHeader(
                   icon: Icons.payments_rounded,
                   title: _isVi ? 'Ngân sách thường chọn' : 'Budget preference',
-                  subtitle: _isVi
-                      ? 'Dùng để lọc bớt món quá rẻ hoặc quá cao so với thói quen của bạn.'
-                      : 'Used to avoid dishes that are too cheap or too expensive for your habits.',
+                  subtitle:
+                      _isVi
+                          ? 'Dùng để lọc bớt món quá rẻ hoặc quá cao so với thói quen của bạn.'
+                          : 'Used to avoid dishes that are too cheap or too expensive for your habits.',
                   accent: accent,
                   textColor: text,
                   subColor: sub,
@@ -460,37 +507,36 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
                   runSpacing: 8,
                   children: [
                     _BudgetChip(
-                      active: widget.controller.budgetMin == 0 &&
+                      active:
+                          widget.controller.budgetMin == 0 &&
                           widget.controller.budgetMax == 30000,
                       label: _isVi ? 'Dưới 30k' : 'Under 30k',
                       onTap: () => widget.controller.setBudgetRange(0, 30000),
                     ),
                     _BudgetChip(
-                      active: widget.controller.budgetMin == 30000 &&
+                      active:
+                          widget.controller.budgetMin == 30000 &&
                           widget.controller.budgetMax == 60000,
                       label: '30k - 60k',
-                      onTap: () => widget.controller.setBudgetRange(
-                        30000,
-                        60000,
-                      ),
+                      onTap:
+                          () => widget.controller.setBudgetRange(30000, 60000),
                     ),
                     _BudgetChip(
-                      active: widget.controller.budgetMin == 60000 &&
+                      active:
+                          widget.controller.budgetMin == 60000 &&
                           widget.controller.budgetMax == 100000,
                       label: '60k - 100k',
-                      onTap: () => widget.controller.setBudgetRange(
-                        60000,
-                        100000,
-                      ),
+                      onTap:
+                          () => widget.controller.setBudgetRange(60000, 100000),
                     ),
                     _BudgetChip(
-                      active: widget.controller.budgetMin == 100000 &&
+                      active:
+                          widget.controller.budgetMin == 100000 &&
                           widget.controller.budgetMax == 300000,
                       label: _isVi ? 'Trên 100k' : 'Over 100k',
-                      onTap: () => widget.controller.setBudgetRange(
-                        100000,
-                        300000,
-                      ),
+                      onTap:
+                          () =>
+                              widget.controller.setBudgetRange(100000, 300000),
                     ),
                   ],
                 ),
@@ -498,9 +544,10 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
                 _SectionHeader(
                   icon: Icons.explore_rounded,
                   title: _isVi ? 'Mức thích thử món mới' : 'Discovery level',
-                  subtitle: _isVi
-                      ? '1 là rất an toàn, 5 là rất thích thử món lạ.'
-                      : '1 means safe choices, 5 means adventurous eater.',
+                  subtitle:
+                      _isVi
+                          ? '1 là rất an toàn, 5 là rất thích thử món lạ.'
+                          : '1 means safe choices, 5 means adventurous eater.',
                   accent: accent,
                   textColor: text,
                   subColor: sub,
@@ -511,6 +558,10 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
                   divisions: 4,
                   value: widget.controller.discoveryLevel.toDouble(),
                   activeColor: accent,
+                  inactiveColor:
+                      isDark
+                          ? const Color(0xFF566274)
+                          : const Color(0xFFD1D5DB),
                   onChanged: widget.controller.setDiscoveryLevel,
                 ),
                 const SizedBox(height: 18),
@@ -533,11 +584,7 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
                     _isVi
                         ? 'Bật tùy chọn này nếu bạn muốn ứng dụng ưu tiên món hợp thời tiết và mùa vụ.'
                         : 'Turn this on if you want the app to prioritize seasonally suitable dishes.',
-                    style: TextStyle(
-                      fontSize: 13,
-                      height: 1.4,
-                      color: sub,
-                    ),
+                    style: TextStyle(fontSize: 13, height: 1.4, color: sub),
                   ),
                 ),
               ],
@@ -553,15 +600,17 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
                 _ChoiceSection(
                   icon: Icons.eco_rounded,
                   title: _isVi ? 'Mùa món ăn phù hợp' : 'Preferred seasons',
-                  subtitle: _isVi
-                      ? 'Chọn mùa để đối chiếu với suitableForSeason của món ăn.'
-                      : 'Choose seasons to match dish suitableForSeason metadata.',
+                  subtitle:
+                      _isVi
+                          ? 'Chọn mùa để đối chiếu với suitableForSeason của món ăn.'
+                          : 'Choose seasons to match dish suitableForSeason metadata.',
                   choices: _seasons,
                   selected: widget.controller.preferredSeasons,
-                  onToggle: (value) => widget.controller.toggleSetValue(
-                    widget.controller.preferredSeasons,
-                    value,
-                  ),
+                  onToggle:
+                      (value) => widget.controller.toggleSetValue(
+                        widget.controller.preferredSeasons,
+                        value,
+                      ),
                   labelBuilder: _label,
                   accent: accent,
                   textColor: text,
@@ -571,15 +620,17 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
                 _ChoiceSection(
                   icon: Icons.groups_rounded,
                   title: _isVi ? 'Bạn thường đi ăn với ai?' : 'Dining context',
-                  subtitle: _isVi
-                      ? 'Ngữ cảnh ăn uống giúp gợi ý đúng kiểu món và quán.'
-                      : 'Dining context helps tailor dish and place suggestions.',
+                  subtitle:
+                      _isVi
+                          ? 'Ngữ cảnh ăn uống giúp gợi ý đúng kiểu món và quán.'
+                          : 'Dining context helps tailor dish and place suggestions.',
                   choices: _contexts,
                   selected: widget.controller.diningContexts,
-                  onToggle: (value) => widget.controller.toggleSetValue(
-                    widget.controller.diningContexts,
-                    value,
-                  ),
+                  onToggle:
+                      (value) => widget.controller.toggleSetValue(
+                        widget.controller.diningContexts,
+                        value,
+                      ),
                   labelBuilder: _label,
                   accent: accent,
                   textColor: text,
@@ -588,16 +639,19 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
                 const SizedBox(height: 16),
                 _ChoiceSection(
                   icon: Icons.flag_rounded,
-                  title: _isVi ? 'Mục tiêu khi tìm món' : 'Recommendation goals',
-                  subtitle: _isVi
-                      ? 'Ưu tiên món no bụng, check-in đẹp, hoặc đặc sản nổi bật.'
-                      : 'Prioritize filling meals, photo spots, or famous specialties.',
+                  title:
+                      _isVi ? 'Mục tiêu khi tìm món' : 'Recommendation goals',
+                  subtitle:
+                      _isVi
+                          ? 'Ưu tiên món no bụng, check-in đẹp, hoặc đặc sản nổi bật.'
+                          : 'Prioritize filling meals, photo spots, or famous specialties.',
                   choices: _goals,
                   selected: widget.controller.recommendationGoals,
-                  onToggle: (value) => widget.controller.toggleSetValue(
-                    widget.controller.recommendationGoals,
-                    value,
-                  ),
+                  onToggle:
+                      (value) => widget.controller.toggleSetValue(
+                        widget.controller.recommendationGoals,
+                        value,
+                      ),
                   labelBuilder: _label,
                   accent: accent,
                   textColor: text,
@@ -613,17 +667,17 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
             child: _TagEditor(
               icon: Icons.favorite_rounded,
               title: _isVi ? 'Món / từ khóa yêu thích' : 'Favorite food tags',
-              subtitle: _isVi
-                  ? 'Ví dụ: phở, bún bò, bánh mì, cà phê trứng...'
-                  : 'Example: pho, bun bo, banh mi, egg coffee...',
+              subtitle:
+                  _isVi
+                      ? 'Ví dụ: phở, bún bò, bánh mì, cà phê trứng...'
+                      : 'Example: pho, bun bo, banh mi, egg coffee...',
               inputController: _favoriteInput,
               sourceController: widget.controller.favoritesController,
               accent: accent,
               textColor: text,
               subColor: sub,
-              chipBg: isDark
-                  ? const Color(0xFF2A3342)
-                  : const Color(0xFFFFEDD5),
+              chipBg:
+                  isDark ? const Color(0xFF2A3342) : const Color(0xFFFFEDD5),
               border: border,
             ),
           ),
@@ -639,22 +693,25 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
                   borderRadius: BorderRadius.circular(18),
                 ),
               ),
-              child: widget.controller.isLoading
-                  ? const SizedBox(
-                      width: 22,
-                      height: 22,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              child:
+                  widget.controller.isLoading
+                      ? const SizedBox(
+                        width: 22,
+                        height: 22,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
+                        ),
+                      )
+                      : Text(
+                        _isVi ? 'Lưu khảo sát khẩu vị' : 'Save taste profile',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
-                    )
-                  : Text(
-                      _isVi ? 'Lưu khảo sát khẩu vị' : 'Save taste profile',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
             ),
           ),
         ],
@@ -665,10 +722,7 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
       return Material(color: bg, child: content);
     }
 
-    return Scaffold(
-      backgroundColor: bg,
-      body: SafeArea(child: content),
-    );
+    return Scaffold(backgroundColor: bg, body: SafeArea(child: content));
   }
 }
 
@@ -701,17 +755,24 @@ class _HeroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
             Material(
-              color: Colors.white.withValues(alpha: 0.72),
+              color:
+                  isDark
+                      ? const Color(0xFF202936)
+                      : Colors.white.withValues(alpha: 0.82),
               borderRadius: BorderRadius.circular(18),
               child: IconButton(
                 onPressed: onClose ?? () => Navigator.pop(context),
-                icon: const Icon(Icons.arrow_back_rounded),
+                icon: Icon(
+                  Icons.arrow_back_rounded,
+                  color: isDark ? Colors.white : const Color(0xFF374151),
+                ),
               ),
             ),
             const Spacer(),
@@ -730,8 +791,11 @@ class _HeroCard extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(22),
           decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFFFFF0DD), Color(0xFFFFE0BD)],
+            gradient: LinearGradient(
+              colors:
+                  isDark
+                      ? const [Color(0xFF4A2618), Color(0xFF2D1D19)]
+                      : const [Color(0xFFFFF0DD), Color(0xFFFFE0BD)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -744,7 +808,7 @@ class _HeroCard extends StatelessWidget {
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: isDark ? const Color(0xFFFFE9D5) : Colors.white,
                   borderRadius: BorderRadius.circular(18),
                 ),
                 child: const Icon(
@@ -765,11 +829,7 @@ class _HeroCard extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 subtitle,
-                style: TextStyle(
-                  fontSize: 14,
-                  height: 1.45,
-                  color: subColor,
-                ),
+                style: TextStyle(fontSize: 14, height: 1.45, color: subColor),
               ),
             ],
           ),
@@ -858,11 +918,7 @@ class _SectionHeader extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 subtitle,
-                style: TextStyle(
-                  fontSize: 13,
-                  height: 1.4,
-                  color: subColor,
-                ),
+                style: TextStyle(fontSize: 13, height: 1.4, color: subColor),
               ),
             ],
           ),
@@ -899,6 +955,7 @@ class _ChoiceSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -914,13 +971,40 @@ class _ChoiceSection extends StatelessWidget {
         Wrap(
           spacing: 10,
           runSpacing: 10,
-          children: choices.map((item) {
-            return FilterChip(
-              label: Text(labelBuilder(item)),
-              selected: selected.contains(item.value),
-              onSelected: (_) => onToggle(item.value),
-            );
-          }).toList(),
+          children:
+              choices.map((item) {
+                final isSelected = selected.contains(item.value);
+                return FilterChip(
+                  label: Text(
+                    labelBuilder(item),
+                    style: TextStyle(
+                      color:
+                          isDark
+                              ? Colors.white
+                              : (isSelected
+                                  ? const Color(0xFF9A3412)
+                                  : textColor),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  selected: isSelected,
+                  backgroundColor: isDark ? const Color(0xFF202936) : null,
+                  selectedColor:
+                      isDark
+                          ? const Color(0xFF7C2D12)
+                          : const Color(0xFFFFE8D5),
+                  checkmarkColor: isDark ? Colors.white : accent,
+                  side: BorderSide(
+                    color:
+                        isSelected
+                            ? accent.withValues(alpha: 0.75)
+                            : (isDark
+                                ? const Color(0xFF465365)
+                                : const Color(0xFFE5E7EB)),
+                  ),
+                  onSelected: (_) => onToggle(item.value),
+                );
+              }).toList(),
         ),
       ],
     );
@@ -960,8 +1044,7 @@ class _ProvinceField extends StatelessWidget {
       onSelected: (selection) {
         controller.text = selection;
       },
-      fieldViewBuilder:
-          (context, textController, focusNode, onFieldSubmitted) {
+      fieldViewBuilder: (context, textController, focusNode, onFieldSubmitted) {
         if (textController.text.isEmpty && controller.text.isNotEmpty) {
           textController.text = controller.text;
         }
@@ -1028,19 +1111,10 @@ class _InfoPill extends StatelessWidget {
         children: [
           Text(
             left,
-            style: TextStyle(
-              fontWeight: FontWeight.w800,
-              color: textColor,
-            ),
+            style: TextStyle(fontWeight: FontWeight.w800, color: textColor),
           ),
           const Spacer(),
-          Text(
-            right,
-            style: TextStyle(
-              fontSize: 12,
-              color: subColor,
-            ),
-          ),
+          Text(right, style: TextStyle(fontSize: 12, color: subColor)),
         ],
       ),
     );
@@ -1077,11 +1151,12 @@ class _TagEditor extends StatefulWidget {
 }
 
 class _TagEditorState extends State<_TagEditor> {
-  List<String> get _items => widget.sourceController.text
-      .split(RegExp(r'[\n,]+'))
-      .map((e) => e.trim())
-      .where((e) => e.isNotEmpty)
-      .toList();
+  List<String> get _items =>
+      widget.sourceController.text
+          .split(RegExp(r'[\n,]+'))
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .toList();
 
   void _sync(List<String> items) {
     widget.sourceController.text = items.join(', ');
@@ -1170,9 +1245,30 @@ class _BudgetChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return ChoiceChip(
-      label: Text(label),
+      label: Text(
+        label,
+        style: TextStyle(
+          color:
+              isDark
+                  ? Colors.white
+                  : (active
+                      ? const Color(0xFF9A3412)
+                      : const Color(0xFF374151)),
+          fontWeight: FontWeight.w600,
+        ),
+      ),
       selected: active,
+      backgroundColor: isDark ? const Color(0xFF202936) : Colors.white,
+      selectedColor: isDark ? const Color(0xFF7C2D12) : const Color(0xFFFFE8D5),
+      side: BorderSide(
+        color:
+            active
+                ? const Color(0xFFF97316)
+                : (isDark ? const Color(0xFF465365) : const Color(0xFFE5E7EB)),
+      ),
+      checkmarkColor: isDark ? Colors.white : const Color(0xFFF97316),
       onSelected: (_) => onTap(),
     );
   }

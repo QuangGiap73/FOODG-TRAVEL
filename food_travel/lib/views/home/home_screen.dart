@@ -1362,6 +1362,7 @@ class _HomeFeedState extends State<_HomeFeed> {
 
   Widget _buildTodaySuggestionBlock() {
     final t = AppLocalizations.of(context)!;
+    final languageCode = Localizations.localeOf(context).languageCode;
     if (_dishesError != null) {
       return _buildEmpty(t.homeTodaySuggestionError);
     }
@@ -1370,16 +1371,30 @@ class _HomeFeedState extends State<_HomeFeed> {
         _provinceDishes.isNotEmpty ? _provinceDishes : _todayDishesCache;
     if (dishes.isEmpty) return const SizedBox.shrink();
 
-    late final List<DishModel> recommendedDishes;
+    late final List<RecommendedDish> recommendedDishes;
     try {
-      recommendedDishes = _recommendationService.recommendToday(
+      recommendedDishes = _recommendationService.recommendTodayWithReasons(
         dishes: dishes,
         preferences: _userPreferences,
         now: DateTime.now(),
+        languageCode: languageCode,
       );
     } catch (error) {
       debugPrint('[Home] recommendation failed: $error');
-      recommendedDishes = dishes.take(12).toList();
+      recommendedDishes =
+          dishes
+              .take(12)
+              .map(
+                (dish) => RecommendedDish(
+                  dish: dish,
+                  score: 0,
+                  explanation:
+                      languageCode == 'en'
+                          ? 'A discovery pick for you today.'
+                          : 'Gợi ý khám phá dành cho bạn hôm nay.',
+                ),
+              )
+              .toList();
     }
     if (recommendedDishes.isEmpty) return const SizedBox.shrink();
 
@@ -1388,7 +1403,7 @@ class _HomeFeedState extends State<_HomeFeed> {
       child: Column(
         children: [
           TodayEatSection(
-            dishes: recommendedDishes,
+            recommendations: recommendedDishes,
             onTapDish: (dish) {
               Navigator.pushNamed(
                 context,
