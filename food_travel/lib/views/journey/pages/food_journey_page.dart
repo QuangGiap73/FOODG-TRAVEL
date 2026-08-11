@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../models/journey/badge_model.dart';
 import '../../../models/journey/journey_stats.dart';
+import '../../../views/journey/journey_l10n_helpers.dart';
 import '../../../views/journey/pages/mission_detail_page.dart';
 import '../../../views/journey/widgets/daily_mission_section.dart';
 import '../../../views/journey/widgets/recent_checkin_section.dart';
@@ -190,15 +191,23 @@ class _JourneyHeroBanner extends StatelessWidget {
                 ),
               ),
             ),
-            Positioned(
-              left: 16,
-              right: 16,
-              bottom: 14,
+            Positioned.fill(
               child: StreamBuilder<JourneyStats>(
                 stream: _statsStream(),
                 builder: (context, snapshot) {
                   final stats = snapshot.data ?? const JourneyStats();
-                  return _JourneyStatsLayout(stats: stats);
+                  final systemScale = MediaQuery.textScalerOf(context).scale(1);
+                  return MediaQuery(
+                    // Banner có chiều cao cố định theo ảnh. Giới hạn riêng cỡ
+                    // chữ tại đây để font hệ thống lớn không làm các dòng đè
+                    // lên nhau; phần còn lại của ứng dụng vẫn giữ font hệ thống.
+                    data: MediaQuery.of(context).copyWith(
+                      textScaler: TextScaler.linear(
+                        systemScale.clamp(1, 1.15).toDouble(),
+                      ),
+                    ),
+                    child: _JourneyStatsLayout(stats: stats),
+                  );
                 },
               ),
             ),
@@ -222,48 +231,143 @@ class _JourneyStatsLayout extends StatelessWidget {
     final pointsToNextLevel = (nextLevelTarget - totalPoints).clamp(0, 999999);
     final progress = ((totalPoints % 100) / 100).clamp(0.0, 1.0);
 
-    return SizedBox(
-      height: 130,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Positioned(
-            left: 130,
-            top: 20,
-            child: _JourneyBadgeChip(
-              icon: Icons.emoji_events_rounded,
-              label: AppLocalizations.of(context)!.journeyExplorer,
+    return Row(
+      children: [
+        // Ảnh nhân vật nằm ở khoảng 43% bên trái của banner.
+        const Expanded(flex: 43, child: SizedBox.expand()),
+        Expanded(
+          flex: 57,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(4, 4, 10, 4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: _JourneyBadgeChip(
+                    icon: Icons.emoji_events_rounded,
+                    label: AppLocalizations.of(context)!.journeyExplorer,
+                  ),
+                ),
+                const Spacer(),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      'Lv.$level',
+                      style: const TextStyle(
+                        color: Color(0xFF7A3E00),
+                        fontSize: 19,
+                        height: 1,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                    const Spacer(),
+                    _JourneyCompactStat(
+                      icon: Icons.stars_rounded,
+                      value: '$totalPoints',
+                      label:
+                          AppLocalizations.of(
+                            context,
+                          )!.homeJourneyPointsLabel,
+                    ),
+                    const SizedBox(width: 6),
+                    _JourneyCompactStat(
+                      icon: Icons.local_fire_department_rounded,
+                      value: '${stats.currentStreak}',
+                      label:
+                          Localizations.localeOf(context).languageCode == 'vi'
+                              ? 'ngày'
+                              : 'day',
+                    ),
+                  ],
+                ),
+                const Spacer(),
+                Text(
+                  AppLocalizations.of(
+                    context,
+                  )!.homeJourneyNeedPoints(pointsToNextLevel, level + 1),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Color(0xFF6C3B00),
+                    fontSize: 9,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(999),
+                  child: LinearProgressIndicator(
+                    value: progress,
+                    minHeight: 5,
+                    backgroundColor: const Color(
+                      0xFFE7C98F,
+                    ).withValues(alpha: 0.55),
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                      Color(0xFFEB8A00),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    '$totalPoints / $nextLevelTarget',
+                    style: const TextStyle(
+                      color: Color(0xFF6C3B00),
+                      fontSize: 8,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          Positioned(
-            left: 140,
-            top: 50,
-            child: _JourneyLevelBlock(level: level),
+        ),
+      ],
+    );
+  }
+}
+
+class _JourneyCompactStat extends StatelessWidget {
+  const _JourneyCompactStat({
+    required this.icon,
+    required this.value,
+    required this.label,
+  });
+
+  final IconData icon;
+  final String value;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Icon(icon, size: 12, color: const Color(0xFF9B4D00)),
+        const SizedBox(width: 2),
+        Text(
+          value,
+          style: const TextStyle(
+            color: Color(0xFF7A3E00),
+            fontSize: 14,
+            height: 1,
+            fontWeight: FontWeight.w900,
           ),
-          Positioned(
-            right: 35,
-            top: 40,
-            child: _JourneyPointsBlock(points: totalPoints),
+        ),
+        const SizedBox(width: 2),
+        Text(
+          label,
+          style: const TextStyle(
+            color: Color(0xFF8A4300),
+            fontSize: 8,
+            fontWeight: FontWeight.w700,
           ),
-          Positioned(
-            right: 8,
-            top: 60,
-            child: _JourneyStreakBlock(days: stats.currentStreak),
-          ),
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: _JourneyProgressBlock(
-              pointsToNextLevel: pointsToNextLevel,
-              totalPoints: totalPoints,
-              nextLevelTarget: nextLevelTarget,
-              progress: progress,
-              level: level,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -277,7 +381,7 @@ class _JourneyBadgeChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.40),
         borderRadius: BorderRadius.circular(999),
@@ -288,13 +392,13 @@ class _JourneyBadgeChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: const Color(0xFFB75C00)),
-          const SizedBox(width: 6),
+          Icon(icon, size: 12, color: const Color(0xFFB75C00)),
+          const SizedBox(width: 4),
           Text(
             label,
             style: const TextStyle(
               color: Color(0xFF8A4300),
-              fontSize: 12,
+              fontSize: 10,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -696,6 +800,17 @@ class JourneyBadgesSection extends StatelessWidget {
       backgroundColor: Colors.transparent,
       builder: (context) {
         final isDark = Theme.of(context).brightness == Brightness.dark;
+        final languageCode = Localizations.localeOf(context).languageCode;
+        final localizedTitle = journeyBadgeTitle(
+          languageCode,
+          badge.badgeId,
+          fallback: visual.title,
+        );
+        final localizedDescription = journeyBadgeDescription(
+          languageCode,
+          badge.badgeId,
+          fallback: visual.description,
+        );
         return Container(
           padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
           decoration: BoxDecoration(
@@ -722,7 +837,7 @@ class JourneyBadgesSection extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               Text(
-                visual.title,
+                localizedTitle,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 20,
@@ -732,7 +847,7 @@ class JourneyBadgesSection extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               Text(
-                visual.description,
+                localizedDescription,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14,
@@ -807,6 +922,11 @@ class _JourneyBadgeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final isUnlocked = badge.isUnlocked;
+    final localizedTitle = journeyBadgeTitle(
+      Localizations.localeOf(context).languageCode,
+      badge.badgeId,
+      fallback: visual.title,
+    );
     final progress =
         badge.targetValue <= 0
             ? 0.0
@@ -847,7 +967,7 @@ class _JourneyBadgeCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              visual.title,
+              localizedTitle,
               maxLines: 2,
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,

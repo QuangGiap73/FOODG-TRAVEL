@@ -374,13 +374,20 @@ class _Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final systemScale = MediaQuery.textScalerOf(context).scale(1);
+    final headerTextScaler = TextScaler.linear(
+      systemScale.clamp(1, 1.15).toDouble(),
+    );
     return Row(
       children: [
         Expanded(
           child: Text(
             AppLocalizations.of(context)!.journeyMapTitle,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            textScaler: headerTextScaler,
             style: TextStyle(
-              fontSize: 18,
+              fontSize: 16,
               fontWeight: FontWeight.w900,
               color: isDark ? Colors.white : const Color(0xFF1F2937),
             ),
@@ -391,12 +398,17 @@ class _Header extends StatelessWidget {
             onPressed: onShowAll,
             style: TextButton.styleFrom(
               foregroundColor: const Color(0xFF6B7280),
+              minimumSize: const Size(0, 36),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               textStyle: const TextStyle(
-                fontSize: 12,
+                fontSize: 11,
                 fontWeight: FontWeight.w700,
               ),
             ),
-            child: Text(AppLocalizations.of(context)!.commonViewAll),
+            child: Text(
+              AppLocalizations.of(context)!.commonViewAll,
+              textScaler: headerTextScaler,
+            ),
           ),
       ],
     );

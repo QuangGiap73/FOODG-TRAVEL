@@ -168,14 +168,22 @@ class HomeSystemPostsSection extends StatelessWidget {
                       const SizedBox(width: 12),
                       ClipRRect(
                         borderRadius: BorderRadius.circular(16),
-                        child: SizedBox(
+                        child: Container(
                           width: 118,
                           height: 82,
+                          color:
+                              isDark
+                                  ? const Color(0xFF211A16)
+                                  : const Color(0xFFFFE9D4),
                           child:
                               featured.coverImage.trim().isNotEmpty
                                   ? Image.network(
                                     featured.coverImage,
-                                    fit: BoxFit.cover,
+                                    // Ảnh cẩm nang có thể không cùng tỷ lệ với
+                                    // thumbnail. contain giữ lại toàn bộ banner
+                                    // thay vì cắt mất hai cạnh như BoxFit.cover.
+                                    fit: BoxFit.contain,
+                                    alignment: Alignment.center,
                                     errorBuilder:
                                         (_, __, ___) => _fallbackImage(),
                                   )

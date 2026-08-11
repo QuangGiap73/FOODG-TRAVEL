@@ -84,10 +84,20 @@ class SystemPostDetailPage extends StatelessWidget {
                         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
                         child: AspectRatio(
                           aspectRatio: 16 / 9,
-                          child: Image.network(
-                            post.coverImage,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => _fallbackImage(isDark),
+                          child: ColoredBox(
+                            color:
+                                isDark
+                                    ? const Color(0xFF211A16)
+                                    : const Color(0xFFFFE9D4),
+                            child: Image.network(
+                              post.coverImage,
+                              // Hiển thị trọn banner do quản trị viên tải lên,
+                              // kể cả khi ảnh không đúng tỷ lệ 16:9.
+                              fit: BoxFit.contain,
+                              alignment: Alignment.center,
+                              errorBuilder:
+                                  (_, __, ___) => _fallbackImage(isDark),
+                            ),
                           ),
                         ),
                       )
