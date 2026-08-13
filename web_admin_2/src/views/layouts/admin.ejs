@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title><%= pageTitle %> | <%= appName %></title>
   <link rel="stylesheet" href="/public/css/app.css" />
+  <% if (typeof pageStyles !== 'undefined') { pageStyles.forEach(function (href) { %>
+    <link rel="stylesheet" href="<%= href %>" />
+  <% }) } %>
 </head>
 <body class="admin-body">
   <div class="admin-overlay" data-sidebar-overlay></div>
@@ -22,5 +25,8 @@
     </div>
   </div>
   <script src="/public/js/core/app.js"></script>
+  <% if (typeof pageScripts !== 'undefined') { pageScripts.forEach(function (src) { %>
+    <script src="<%= src %>"></script>
+  <% }) } %>
 </body>
 </html>

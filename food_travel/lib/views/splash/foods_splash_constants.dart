@@ -6,8 +6,8 @@ abstract final class FoodsSplashConstants {
   static const duration = Duration(milliseconds: 4200);
   static const reducedMotionDuration = Duration(milliseconds: 400);
   static const designSize = Size.square(1254);
-  static const backgroundColor = Color(0xFFFF5700);
-  static const logoColor = Colors.white;
+  static const backgroundColor = Colors.white;
+  static const logoColor = Color(0xFFE53935);
   static const logoWidthFactor = 0.76;
   static const logoHeightFactor = 0.48;
   static const bottomNavigationItemCount = 5;

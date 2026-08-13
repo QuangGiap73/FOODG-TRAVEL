@@ -184,7 +184,9 @@ class _SplashGateState extends State<SplashGate>
                           child: Text(
                             'Không thể khởi tạo ứng dụng. Vui lòng mở lại ứng dụng.',
                             textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(
+                              color: FoodsSplashConstants.logoColor,
+                            ),
                           ),
                         ),
                       ),

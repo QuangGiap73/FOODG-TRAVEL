@@ -8,6 +8,7 @@ import '../../models/user_model.dart';
 import '../../router/route_names.dart';
 import '../../services/auth_service.dart';
 import '../../services/user_service.dart';
+import 'widgets/auth_error_banner.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -31,8 +32,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   bool _agree = false;
+  String? _formError;
 
-  Future<void> _ensureUserProfile(User user, String fallbackEmail, String fullName, String phone) async {
+  bool get _isVi => Localizations.localeOf(context).languageCode == 'vi';
+
+  Future<void> _ensureUserProfile(
+    User user,
+    String fallbackEmail,
+    String fullName,
+    String phone,
+  ) async {
     final existing = await _userService.getUserById(user.uid);
     if (existing == null) {
       await _userService.createUser(
@@ -61,6 +70,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
         return t.authPasswordTooWeak;
       case 'invalid-email':
         return t.authEmailInvalid;
+      case 'operation-not-allowed':
+        return _isVi
+            ? 'Đăng ký bằng email hiện chưa được hỗ trợ.'
+            : 'Email registration is currently unavailable.';
+      case 'too-many-requests':
+        return _isVi
+            ? 'Bạn đã thử quá nhiều lần. Vui lòng đợi một lúc rồi thử lại.'
+            : 'Too many attempts. Please wait and try again.';
+      case 'network-request-failed':
+        return _isVi
+            ? 'Không có kết nối mạng. Vui lòng kiểm tra Internet.'
+            : 'No network connection. Please check your Internet.';
       default:
         return t.authRegisterFailed;
     }
@@ -68,7 +89,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> _handleRegister() async {
     final t = AppLocalizations.of(context)!;
-    if (!_formKey.currentState!.validate()) return;
+    setState(() => _formError = null);
+    if (!_formKey.currentState!.validate()) {
+      setState(
+        () =>
+            _formError =
+                _isVi
+                    ? 'Vui lòng kiểm tra lại các thông tin được đánh dấu.'
+                    : 'Please check the highlighted information.',
+      );
+      return;
+    }
 
     final fullName = _nameController.text.trim();
     final email = _emailController.text.trim();
@@ -77,16 +108,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final confirm = _confirmPasswordController.text.trim();
 
     if (!_agree) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Vui lòng đồng ý điều khoản.')),
+      setState(
+        () =>
+            _formError =
+                _isVi
+                    ? 'Bạn cần đồng ý với Điều khoản và Chính sách bảo mật.'
+                    : 'You must agree to the Terms and Privacy Policy.',
       );
       return;
     }
 
     if (password != confirm) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(t.authPasswordMismatch)),
-      );
+      setState(() => _formError = t.authPasswordMismatch);
       return;
     }
 
@@ -102,34 +135,43 @@ class _RegisterScreenState extends State<RegisterScreen> {
       }
 
       unawaited(
-        _ensureUserProfile(user, email, fullName, phone)
-            .timeout(const Duration(seconds: 12))
-            .catchError((error, _) {
+        _ensureUserProfile(
+          user,
+          email,
+          fullName,
+          phone,
+        ).timeout(const Duration(seconds: 12)).catchError((error, _) {
           debugPrint('ensureUserProfile failed: $error');
         }),
       );
 
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(t.authRegisterSuccess)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(t.authRegisterSuccess)));
       await _authService.logout();
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, RouteNames.login);
     } on TimeoutException {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(t.authError('Đăng ký quá lâu. Kiểm tra mạng.'))),
+      setState(
+        () =>
+            _formError =
+                _isVi
+                    ? 'Kết nối mất quá nhiều thời gian. Vui lòng kiểm tra mạng.'
+                    : 'The connection timed out. Please check your network.',
       );
     } on FirebaseAuthException catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(_mapRegisterError(t, e))),
-      );
+      setState(() => _formError = _mapRegisterError(t, e));
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(t.authError(e.toString()))),
+      setState(
+        () =>
+            _formError =
+                _isVi
+                    ? 'Không thể tạo tài khoản lúc này. Vui lòng thử lại.'
+                    : 'Unable to create an account right now. Please try again.',
       );
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -155,7 +197,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final cardBg = isDark ? const Color(0xFF171B22) : Colors.white;
     final textPrimary = isDark ? Colors.white : const Color(0xFF0F172A);
     final textSecondary = isDark ? Colors.white70 : const Color(0xFF64748B);
-    final borderColor = isDark ? const Color(0xFF2A303A) : const Color(0xFFE9E5DF);
+    final borderColor =
+        isDark ? const Color(0xFF2A303A) : const Color(0xFFE9E5DF);
     final accent = const Color(0xFFF97316);
 
     return Scaffold(
@@ -183,10 +226,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       left: 16,
                       top: MediaQuery.of(context).padding.top + 8,
                       child: InkWell(
-                        onTap: () => Navigator.pushReplacementNamed(
-                          context,
-                          RouteNames.login,
-                        ),
+                        onTap:
+                            () => Navigator.pushReplacementNamed(
+                              context,
+                              RouteNames.login,
+                            ),
                         borderRadius: BorderRadius.circular(30),
                         child: Container(
                           width: 42,
@@ -224,15 +268,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       color: cardBg,
                       borderRadius: BorderRadius.circular(26),
                       border: Border.all(color: borderColor),
-                      boxShadow: isDark
-                          ? null
-                          : const [
-                              BoxShadow(
-                                color: Color(0x12000000),
-                                blurRadius: 18,
-                                offset: Offset(0, 8),
-                              ),
-                            ],
+                      boxShadow:
+                          isDark
+                              ? null
+                              : const [
+                                BoxShadow(
+                                  color: Color(0x12000000),
+                                  blurRadius: 18,
+                                  offset: Offset(0, 8),
+                                ),
+                              ],
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -265,12 +310,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 hintText: t.authFullNameLabel,
                                 icon: Icons.person_outline,
                                 controller: _nameController,
-                                fillColor: isDark ? const Color(0xFF1E2633) : const Color(0xFFF8FAFC),
+                                fillColor:
+                                    isDark
+                                        ? const Color(0xFF1E2633)
+                                        : const Color(0xFFF8FAFC),
                                 textColor: textPrimary,
                                 hintColor: textSecondary,
                                 borderColor: borderColor,
                                 focusedColor: accent,
-                                validator: (v) => v == null || v.trim().isEmpty ? t.authFullNameRequired : null,
+                                validator:
+                                    (v) =>
+                                        v == null || v.trim().isEmpty
+                                            ? t.authFullNameRequired
+                                            : null,
                               ),
                               const SizedBox(height: 12),
                               _AuthField(
@@ -279,14 +331,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 icon: Icons.email_outlined,
                                 controller: _emailController,
                                 keyboardType: TextInputType.emailAddress,
-                                fillColor: isDark ? const Color(0xFF1E2633) : const Color(0xFFF8FAFC),
+                                fillColor:
+                                    isDark
+                                        ? const Color(0xFF1E2633)
+                                        : const Color(0xFFF8FAFC),
                                 textColor: textPrimary,
                                 hintColor: textSecondary,
                                 borderColor: borderColor,
                                 focusedColor: accent,
                                 validator: (v) {
-                                  if (v == null || v.trim().isEmpty) return t.authEmailRequired;
-                                  if (!v.contains('@')) return t.authEmailInvalid;
+                                  if (v == null || v.trim().isEmpty) {
+                                    return t.authEmailRequired;
+                                  }
+                                  if (!RegExp(
+                                    r'^[^\s@]+@[^\s@]+\.[^\s@]+$',
+                                  ).hasMatch(v.trim())) {
+                                    return t.authEmailInvalid;
+                                  }
                                   return null;
                                 },
                               ),
@@ -297,11 +358,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 icon: Icons.phone_outlined,
                                 controller: _phoneController,
                                 keyboardType: TextInputType.phone,
-                                fillColor: isDark ? const Color(0xFF1E2633) : const Color(0xFFF8FAFC),
+                                fillColor:
+                                    isDark
+                                        ? const Color(0xFF1E2633)
+                                        : const Color(0xFFF8FAFC),
                                 textColor: textPrimary,
                                 hintColor: textSecondary,
                                 borderColor: borderColor,
                                 focusedColor: accent,
+                                validator: (v) {
+                                  final phone = v?.trim() ?? '';
+                                  if (phone.isEmpty) {
+                                    return null;
+                                  }
+                                  final normalized = phone.replaceAll(
+                                    RegExp(r'[\s.()-]'),
+                                    '',
+                                  );
+                                  if (!RegExp(
+                                    r'^\+?[0-9]{9,15}$',
+                                  ).hasMatch(normalized)) {
+                                    return _isVi
+                                        ? 'Số điện thoại không hợp lệ'
+                                        : 'Invalid phone number';
+                                  }
+                                  return null;
+                                },
                               ),
                               const SizedBox(height: 12),
                               _AuthField(
@@ -310,15 +392,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 icon: Icons.lock_outline,
                                 controller: _passwordController,
                                 obscure: _obscurePassword,
-                                onToggle: () => setState(() => _obscurePassword = !_obscurePassword),
-                                fillColor: isDark ? const Color(0xFF1E2633) : const Color(0xFFF8FAFC),
+                                onToggle:
+                                    () => setState(
+                                      () =>
+                                          _obscurePassword = !_obscurePassword,
+                                    ),
+                                fillColor:
+                                    isDark
+                                        ? const Color(0xFF1E2633)
+                                        : const Color(0xFFF8FAFC),
                                 textColor: textPrimary,
                                 hintColor: textSecondary,
                                 borderColor: borderColor,
                                 focusedColor: accent,
                                 validator: (v) {
-                                  if (v == null || v.trim().isEmpty) return t.authPasswordRequired;
-                                  if (v.trim().length < 6) return t.authPasswordTooShort;
+                                  if (v == null || v.trim().isEmpty) {
+                                    return t.authPasswordRequired;
+                                  }
+                                  if (v.trim().length < 6) {
+                                    return t.authPasswordTooShort;
+                                  }
                                   return null;
                                 },
                               ),
@@ -329,15 +422,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 icon: Icons.lock_outline,
                                 controller: _confirmPasswordController,
                                 obscure: _obscureConfirmPassword,
-                                onToggle: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
-                                fillColor: isDark ? const Color(0xFF1E2633) : const Color(0xFFF8FAFC),
+                                onToggle:
+                                    () => setState(
+                                      () =>
+                                          _obscureConfirmPassword =
+                                              !_obscureConfirmPassword,
+                                    ),
+                                fillColor:
+                                    isDark
+                                        ? const Color(0xFF1E2633)
+                                        : const Color(0xFFF8FAFC),
                                 textColor: textPrimary,
                                 hintColor: textSecondary,
                                 borderColor: borderColor,
                                 focusedColor: accent,
                                 validator: (v) {
-                                  if (v == null || v.trim().isEmpty) return t.authConfirmPasswordRequired;
-                                  if (v.trim() != _passwordController.text.trim()) return t.authPasswordMismatch;
+                                  if (v == null || v.trim().isEmpty) {
+                                    return t.authConfirmPasswordRequired;
+                                  }
+                                  if (v.trim() !=
+                                      _passwordController.text.trim()) {
+                                    return t.authPasswordMismatch;
+                                  }
                                   return null;
                                 },
                               ),
@@ -346,12 +452,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 children: [
                                   Checkbox(
                                     value: _agree,
-                                    onChanged: (value) => setState(() => _agree = value ?? false),
+                                    onChanged:
+                                        (value) => setState(
+                                          () => _agree = value ?? false,
+                                        ),
                                     activeColor: accent,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(4),
                                     ),
-                                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    materialTapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
                                   ),
                                   Expanded(
                                     child: Text(
@@ -369,6 +479,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         ),
                         const SizedBox(height: 18),
+                        if (_formError != null) ...[
+                          AuthErrorBanner(
+                            message: _formError!,
+                            onDismiss: () => setState(() => _formError = null),
+                          ),
+                          const SizedBox(height: 12),
+                        ],
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
@@ -382,22 +499,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 borderRadius: BorderRadius.circular(18),
                               ),
                             ),
-                            child: _isLoading
-                                ? const SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      color: Colors.white,
+                            child:
+                                _isLoading
+                                    ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                    : Text(
+                                      t.authRegisterAction,
+                                      style: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w800,
+                                      ),
                                     ),
-                                  )
-                                : Text(
-                                    t.authRegisterAction,
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w800,
-                                    ),
-                                  ),
                           ),
                         ),
                         const SizedBox(height: 18),
@@ -405,7 +523,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           children: [
                             Expanded(child: Divider(color: borderColor)),
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                              ),
                               child: Text(
                                 '${t.authOr} ${t.authRegisterAction.toLowerCase()}',
                                 style: TextStyle(
@@ -425,7 +545,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             onPressed: null,
                             style: OutlinedButton.styleFrom(
                               side: BorderSide(color: borderColor),
-                              backgroundColor: isDark ? const Color(0xFF171B22) : Colors.white,
+                              backgroundColor:
+                                  isDark
+                                      ? const Color(0xFF171B22)
+                                      : Colors.white,
                               minimumSize: const Size.fromHeight(52),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(18),
@@ -468,8 +591,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         const SizedBox(height: 16),
                         Center(
-                        child: GestureDetector(
-                            onTap: () => Navigator.pushReplacementNamed(context, RouteNames.login),
+                          child: GestureDetector(
+                            onTap:
+                                () => Navigator.pushReplacementNamed(
+                                  context,
+                                  RouteNames.login,
+                                ),
                             child: RichText(
                               text: TextSpan(
                                 style: TextStyle(
@@ -559,18 +686,24 @@ class _AuthField extends StatelessWidget {
             hintText: hintText,
             hintStyle: TextStyle(color: hintColor),
             prefixIcon: Icon(icon, color: hintColor),
-            suffixIcon: onToggle == null
-                ? null
-                : IconButton(
-                    icon: Icon(
-                      obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-                      color: hintColor,
+            suffixIcon:
+                onToggle == null
+                    ? null
+                    : IconButton(
+                      icon: Icon(
+                        obscure
+                            ? Icons.visibility_off_outlined
+                            : Icons.visibility_outlined,
+                        color: hintColor,
+                      ),
+                      onPressed: onToggle,
                     ),
-                    onPressed: onToggle,
-                  ),
             filled: true,
             fillColor: fillColor,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 16,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
               borderSide: BorderSide(color: borderColor),

@@ -1,40 +1,136 @@
-<%- include('../../partials/page-header', {
-  eyebrow: 'Tong quan',
-  title: 'Dashboard',
-  description: 'Khung dashboard moi de migrate dan toan bo admin cu sang cau truc module.',
-}) %>
+<div class="dashboard" data-dashboard
+  data-chart='<%- JSON.stringify(overview.weeklyPosts).replace(/</g, "\\u003c") %>'
+  data-map='<%- JSON.stringify(overview.mapPoints).replace(/</g, "\\u003c") %>'>
+  <header class="dashboard-hero">
+    <div>
+      <p class="dashboard-kicker"><span></span> Trung tâm điều hành</p>
+      <h2>Chào ngày mới, <%= user?.displayName || 'Quản trị viên' %></h2>
+      <p>Theo dõi sức khỏe cộng đồng và nội dung ẩm thực trên toàn quốc.</p>
+    </div>
+    <div class="dashboard-hero__actions">
+      <span class="dashboard-sync"><i></i>Cập nhật <%= overview.generatedAt %></span>
+      <a class="dashboard-primary-action" href="/admin/system-posts/add">+ Tạo nội dung</a>
+    </div>
+  </header>
 
-<section class="stats-grid">
-  <% overview.stats.forEach(function (item) { %>
-    <article class="stat-card">
-      <p><%= item.label %></p>
-      <h3><%= item.value %></h3>
-      <span><%= item.hint %></span>
+  <section class="dashboard-stats" aria-label="Chỉ số tổng quan">
+    <% overview.stats.forEach(function (item) { %>
+      <a class="dashboard-stat dashboard-stat--<%= item.key %>" href="<%= item.href %>">
+        <div class="dashboard-stat__top">
+          <span class="dashboard-stat__icon" aria-hidden="true">
+            <% if (item.key === 'users') { %>◎<% } %>
+            <% if (item.key === 'dishes') { %>♨<% } %>
+            <% if (item.key === 'posts') { %>▤<% } %>
+            <% if (item.key === 'pending') { %>◷<% } %>
+          </span>
+          <span class="dashboard-stat__arrow">↗</span>
+        </div>
+        <strong><%= item.value %></strong>
+        <span class="dashboard-stat__label"><%= item.label %></span>
+        <small><%= item.hint %></small>
+      </a>
+    <% }) %>
+  </section>
+
+  <section class="dashboard-main-grid">
+    <article class="dashboard-card dashboard-chart-card">
+      <div class="dashboard-card__head">
+        <div>
+          <span class="dashboard-card__eyebrow">Tương tác nội dung</span>
+          <h3>Bài viết trong 7 ngày</h3>
+        </div>
+        <a href="/admin/posts">Xem chi tiết →</a>
+      </div>
+      <div class="dashboard-chart-summary">
+        <strong><%= overview.weeklyPosts.reduce((sum, item) => sum + item.value, 0) %></strong>
+        <span>bài viết mới tuần này</span>
+      </div>
+      <div class="dashboard-chart" data-dashboard-chart role="img" aria-label="Biểu đồ bài viết 7 ngày"></div>
     </article>
-  <% }) %>
-</section>
 
-<section class="panel-grid">
-  <article class="panel-card">
-    <div class="panel-card__header">
-      <h3>Huong migrate</h3>
-    </div>
-    <ul class="task-list">
-      <% overview.tasks.forEach(function (task) { %>
-        <li><%= task %></li>
-      <% }) %>
-    </ul>
-  </article>
+    <article class="dashboard-card dashboard-activity-card">
+      <div class="dashboard-card__head">
+        <div>
+          <span class="dashboard-card__eyebrow">Live feed</span>
+          <h3>Hoạt động gần đây</h3>
+        </div>
+        <span class="dashboard-live"><i></i> Trực tiếp</span>
+      </div>
+      <% if (overview.recentActivity.length) { %>
+        <div class="dashboard-activity-list">
+          <% overview.recentActivity.forEach(function (item) { %>
+            <a href="<%= item.href %>" class="dashboard-activity">
+              <span class="dashboard-activity__icon dashboard-activity__icon--<%= item.type %>"><%= item.type === 'user' ? 'N' : item.type === 'post' ? 'B' : 'H' %></span>
+              <span class="dashboard-activity__copy">
+                <strong><%= item.title %></strong>
+                <small><%= item.description %></small>
+              </span>
+              <time><%= item.time %></time>
+            </a>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <div class="dashboard-empty">Chưa có hoạt động gần đây.</div>
+      <% } %>
+    </article>
+  </section>
 
-  <article class="panel-card panel-card--accent">
-    <div class="panel-card__header">
-      <h3>Nguyen tac kien truc</h3>
-    </div>
-    <ul class="task-list">
-      <li>Route mo ta endpoint, khong chua nghiep vu.</li>
-      <li>Controller mong, service xu ly logic.</li>
-      <li>Repository lam viec voi Firestore va upload.</li>
-      <li>View va JS duoc tach thanh primitive dung lai.</li>
-    </ul>
-  </article>
-</section>
+  <section class="dashboard-map-grid">
+    <article class="dashboard-card dashboard-map-card">
+      <div class="dashboard-card__head">
+        <div>
+          <span class="dashboard-card__eyebrow">Phủ sóng toàn quốc</span>
+          <h3>Bản đồ nội dung ẩm thực</h3>
+        </div>
+        <div class="dashboard-map-scale" aria-label="Chú thích mật độ nội dung">
+          <span>Ít nội dung</span><i></i><span>Nhiều nội dung</span>
+        </div>
+      </div>
+      <div class="dashboard-map-wrap">
+        <div class="dashboard-map-state" data-map-state><span></span>Đang tải dữ liệu bản đồ...</div>
+        <svg class="dashboard-map" data-dashboard-map preserveAspectRatio="xMidYMid meet" role="img" aria-label="Bản đồ địa lý Việt Nam">
+          <g class="dashboard-map__province-layer" data-map-provinces></g>
+          <g class="dashboard-map__island-layer" data-map-islands></g>
+        </svg>
+        <div class="dashboard-map-tooltip" data-map-tooltip hidden></div>
+        <% if (!overview.mapPoints.length) { %><div class="dashboard-map-empty">Thêm tọa độ trung tâm tỉnh để hiển thị điểm dữ liệu.</div><% } %>
+      </div>
+      <div class="dashboard-coverage">
+        <div><strong><%= overview.coverage.provinces %></strong><span>Tỉnh thành</span></div>
+        <div><strong><%= overview.coverage.mapped %></strong><span>Có tọa độ</span></div>
+        <div><strong><%= overview.coverage.active %></strong><span>Có nội dung</span></div>
+      </div>
+    </article>
+
+    <article class="dashboard-card dashboard-ranking-card">
+      <div class="dashboard-card__head">
+        <div>
+          <span class="dashboard-card__eyebrow">Điểm nổi bật</span>
+          <h3>Khu vực giàu nội dung</h3>
+        </div>
+        <a href="/admin/provinces">Quản lý →</a>
+      </div>
+      <% if (overview.topProvinces.length) { %>
+        <div class="dashboard-ranking">
+          <% const maxTotal = overview.topProvinces[0].total || 1; %>
+          <% overview.topProvinces.forEach(function (province, index) { %>
+            <div class="dashboard-rank-item">
+              <span class="dashboard-rank-item__number"><%= String(index + 1).padStart(2, '0') %></span>
+              <div class="dashboard-rank-item__body">
+                <div><strong><%= province.name %></strong><span><%= province.total %> nội dung</span></div>
+                <div class="dashboard-progress"><i style="width:<%= Math.max(8, Math.round(province.total / maxTotal * 100)) %>%"></i></div>
+                <small><%= province.dishes %> món ăn · <%= province.posts %> bài viết</small>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <div class="dashboard-empty">Chưa có dữ liệu phân bố theo tỉnh.</div>
+      <% } %>
+      <div class="dashboard-quick-actions">
+        <a href="/admin/dishes/add"><span>＋</span><div><strong>Thêm món ăn</strong><small>Mở rộng kho dữ liệu</small></div></a>
+        <a href="/admin/provinces"><span>⌖</span><div><strong>Cập nhật tỉnh</strong><small>Thông tin và tọa độ</small></div></a>
+      </div>
+    </article>
+  </section>
+</div>

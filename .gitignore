@@ -149,6 +149,15 @@ web_admin/serviceAccountKey.json
 web_admin/firebase/config.js
 web_admin/config/cloudinary.js
 
+# web_admin_2 local configuration and secrets
+web_admin_2/.env
+web_admin_2/.env.*
+!web_admin_2/.env.example
+web_admin_2/serviceAccountKey.json
+web_admin_2/firebase-adminsdk*.json
+web_admin_2/*.pem
+web_admin_2/*.key
+
 food_travel/android/app/google-services.json
 food_travel/lib/firebase_options.dart
 

@@ -69,7 +69,10 @@ class FoodsLogoPainter extends CustomPainter {
     if (progress.sFill > 0) {
       canvas.drawPath(
         FoodsLogoPaths.sFinalShapePath,
-        Paint()..color = Colors.white.withValues(alpha: progress.sFill),
+        Paint()
+          ..color = FoodsSplashConstants.logoColor.withValues(
+            alpha: progress.sFill,
+          ),
       );
     }
     final point = PathAnimationUtils.getPathPosition(
@@ -94,7 +97,10 @@ class FoodsLogoPainter extends CustomPainter {
       final bodyProgress = ((progress.bowl - 0.35) / 0.65).clamp(0.0, 1.0);
       canvas.drawPath(
         FoodsLogoPaths.bowlBodyPath,
-        Paint()..color = Colors.white.withValues(alpha: bodyProgress),
+        Paint()
+          ..color = FoodsSplashConstants.logoColor.withValues(
+            alpha: bodyProgress,
+          ),
       );
       canvas.drawPath(
         PathAnimationUtils.extractPathByProgress(
@@ -126,7 +132,9 @@ class FoodsLogoPainter extends CustomPainter {
         canvas.drawPath(
           entry.$1,
           Paint()
-            ..color = Colors.white.withValues(alpha: (entry.$2 - 0.72) / 0.28),
+            ..color = FoodsSplashConstants.logoColor.withValues(
+              alpha: (entry.$2 - 0.72) / 0.28,
+            ),
         );
       }
       canvas.restore();
@@ -165,7 +173,7 @@ class FoodsLogoPainter extends CustomPainter {
     canvas.drawPath(
       FoodsLogoPaths.locationPinPath,
       Paint()
-        ..color = Colors.white.withValues(
+        ..color = FoodsSplashConstants.logoColor.withValues(
           alpha: progress.locationPin.clamp(0.0, 1.0),
         ),
     );

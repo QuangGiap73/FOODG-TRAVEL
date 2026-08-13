@@ -69,11 +69,12 @@ class _AuthGateState extends State<AuthGate> {
           );
         }
 
-        _reportResolved();
-
         if (snapshot.hasData) {
           if (!widget.showLoginSuccessAnimation) {
-            return HomeScreen(allowInitialSurvey: widget.allowInitialSurvey);
+            return HomeScreen(
+              allowInitialSurvey: widget.allowInitialSurvey,
+              onStartupReady: _reportResolved,
+            );
           }
 
           return PopScope(
@@ -81,7 +82,10 @@ class _AuthGateState extends State<AuthGate> {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                HomeScreen(allowInitialSurvey: !_showLoginSuccessAnimation),
+                HomeScreen(
+                  allowInitialSurvey: !_showLoginSuccessAnimation,
+                  onStartupReady: _reportResolved,
+                ),
                 if (_showLoginSuccessAnimation)
                   SplashGate(
                     hasSeenOnboarding: true,
@@ -94,6 +98,8 @@ class _AuthGateState extends State<AuthGate> {
           );
         }
 
+        // Màn đăng nhập không có dữ liệu Home cần chờ.
+        _reportResolved();
         return const WelcomeScreen();
       },
     );

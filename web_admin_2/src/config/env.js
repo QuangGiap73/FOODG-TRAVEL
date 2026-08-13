@@ -2,10 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const dotenv = require('dotenv');
 
-const envPaths = [
-  path.join(__dirname, '../../.env'),
-  path.join(__dirname, '../../../.env'),
-];
+const envPaths = [path.join(__dirname, '../../.env')];
 
 envPaths.forEach((envPath) => {
   if (fs.existsSync(envPath)) {

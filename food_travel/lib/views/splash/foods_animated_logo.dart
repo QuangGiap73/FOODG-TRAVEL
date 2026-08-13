@@ -31,7 +31,13 @@ class FoodsAnimatedLogo extends StatelessWidget {
           if (progress.finalLogo > 0)
             Opacity(
               opacity: progress.finalLogo,
-              child: SvgPicture.asset(referenceAsset, fit: BoxFit.contain),
+              child: ColorFiltered(
+                colorFilter: const ColorFilter.mode(
+                  FoodsSplashConstants.logoColor,
+                  BlendMode.srcIn,
+                ),
+                child: SvgPicture.asset(referenceAsset, fit: BoxFit.contain),
+              ),
             ),
         ],
       ),

@@ -8,10 +8,7 @@ function readServiceAccount() {
     return JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
   }
 
-  const localCandidates = [
-    path.join(__dirname, '../../serviceAccountKey.json'),
-    path.join(__dirname, '../../../web_admin/serviceAccountKey.json'),
-  ];
+  const localCandidates = [path.join(__dirname, '../../serviceAccountKey.json')];
 
   for (const candidate of localCandidates) {
     if (fs.existsSync(candidate)) {

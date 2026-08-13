@@ -33,9 +33,14 @@ import 'widgets/nearby_places_section.dart';
 import 'widgets/today_eat_section.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, this.allowInitialSurvey = true});
+  const HomeScreen({
+    super.key,
+    this.allowInitialSurvey = true,
+    this.onStartupReady,
+  });
 
   final bool allowInitialSurvey;
+  final VoidCallback? onStartupReady;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -44,7 +49,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
   bool _checkedSurvey = false;
-  bool _checkingInitialSurvey = false;
   late final List<Widget?> _pages;
   final ValueNotifier<bool> _homeTabActive = ValueNotifier<bool>(true);
   // Ten tinh dang hien thi tren app bar (duoc HomeFeed cap nhat theo GPS/khao sat).
@@ -57,6 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case 0:
         return _HomeFeed(
           isActive: _homeTabActive,
+          onStartupReady: widget.onStartupReady,
           onProvinceLabelChanged: (value) {
             if (!mounted || value == _appBarProvinceText) return;
             // Tranh setState trung luc cay widget dang build.
@@ -96,7 +101,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _checkingInitialSurvey = widget.allowInitialSurvey;
     _pages = List<Widget?>.filled(5, null);
     _pages[0] = _createPage(0);
     if (widget.allowInitialSurvey) {
@@ -110,7 +114,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void didUpdateWidget(covariant HomeScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (!oldWidget.allowInitialSurvey && widget.allowInitialSurvey) {
-      _checkingInitialSurvey = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _maybeShowSurvey();
       });
@@ -122,10 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _checkedSurvey = true;
 
     final user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      if (mounted) setState(() => _checkingInitialSurvey = false);
-      return;
-    }
+    if (user == null) return;
 
     UserModel? profile;
     try {
@@ -135,17 +135,13 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     if (!mounted) return;
 
-    if (profile?.onboardingCompleted == true) {
-      setState(() => _checkingInitialSurvey = false);
-      return;
-    }
+    if (profile?.onboardingCompleted == true) return;
 
     await Navigator.of(context).push<bool>(
       MaterialPageRoute<bool>(
         builder: (_) => const SurveyPage(requiredCompletion: true),
       ),
     );
-    if (mounted) setState(() => _checkingInitialSurvey = false);
   }
 
   @override
@@ -156,10 +152,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_checkingInitialSurvey) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
-
     final t = AppLocalizations.of(context)!;
     final photoUrl = FirebaseAuth.instance.currentUser?.photoURL;
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -307,11 +299,13 @@ class _HomeFeed extends StatefulWidget {
   const _HomeFeed({
     super.key,
     required this.isActive,
+    this.onStartupReady,
     required this.onProvinceLabelChanged,
     required this.onProvincePickerReady,
   });
 
   final ValueListenable<bool> isActive;
+  final VoidCallback? onStartupReady;
   // HomeFeed gui ten tinh hien tai cho app bar o HomeScreen.
   final ValueChanged<String> onProvinceLabelChanged;
   // HomeFeed gui callback de app bar mo bottom sheet chon tinh.
@@ -368,6 +362,8 @@ class _HomeFeedState extends State<_HomeFeed> {
   bool _bootResolved = false;
   String? _bootTargetProvinceId;
   Timer? _bootTimer;
+  bool _startupReported = false;
+  bool _receivedDishResult = false;
   bool _selectionInitialized = false;
   String? _preferredProvinceCode;
   String? _preferredProvinceName;
@@ -389,7 +385,10 @@ class _HomeFeedState extends State<_HomeFeed> {
     super.initState();
     widget.isActive.addListener(_onHomeTabVisibilityChanged);
     // Tai san du lieu quan gan day ngay khi vao Home.
-    _nearbyHomeController = NearbyHomeController()..load();
+    _nearbyHomeController =
+        NearbyHomeController()
+          ..addListener(_checkStartupReady)
+          ..load();
     _startProvinceListener();
     _startProfileListener();
     _bootTimer = Timer(const Duration(milliseconds: 1200), () {
@@ -397,7 +396,10 @@ class _HomeFeedState extends State<_HomeFeed> {
       setState(() {
         _bootResolved = true;
       });
+      _checkStartupReady();
     });
+    // Không để splash bị kẹt nếu GPS hoặc một nguồn mạng gặp sự cố.
+    Timer(const Duration(seconds: 10), _reportStartupReady);
 
     // Doc trang thai GPS da luu (bat/tat).
     _locationPrefs.load();
@@ -430,7 +432,9 @@ class _HomeFeedState extends State<_HomeFeed> {
     _pageController.dispose();
     _promoBannerController.dispose();
     _searchController.dispose();
-    _nearbyHomeController.dispose();
+    _nearbyHomeController
+      ..removeListener(_checkStartupReady)
+      ..dispose();
     super.dispose();
   }
 
@@ -495,6 +499,7 @@ class _HomeFeedState extends State<_HomeFeed> {
           _provincesLoading = false;
           _provincesError = null;
         });
+        _checkStartupReady();
       },
       onError: (error) {
         _provinceLoadTimer?.cancel();
@@ -504,6 +509,7 @@ class _HomeFeedState extends State<_HomeFeed> {
           _provincesLoading = false;
           _provincesError = error;
         });
+        _checkStartupReady();
       },
     );
   }
@@ -558,6 +564,7 @@ class _HomeFeedState extends State<_HomeFeed> {
     _dishesSub = stream.listen(
       (dishes) {
         if (!mounted) return;
+        _receivedDishResult = true;
         setState(() {
           _provinceDishes = dishes;
           _dishesError = null;
@@ -567,15 +574,35 @@ class _HomeFeedState extends State<_HomeFeed> {
             _todayDishesCache = dishes;
           }
         });
+        _checkStartupReady();
       },
       onError: (error) {
         if (!mounted) return;
+        _receivedDishResult = true;
         setState(() {
           _dishesError = error;
         });
+        _checkStartupReady();
       },
     );
     _imageIndex.value = 0;
+  }
+
+  void _checkStartupReady() {
+    if (!mounted || _startupReported) return;
+    final nearbySettled =
+        _nearbyHomeController.status != NearbyHomeStatus.idle &&
+        _nearbyHomeController.status != NearbyHomeStatus.loading;
+    final provinceSettled = !_provincesLoading;
+    if (provinceSettled && _receivedDishResult && nearbySettled) {
+      _reportStartupReady();
+    }
+  }
+
+  void _reportStartupReady() {
+    if (!mounted || _startupReported) return;
+    _startupReported = true;
+    widget.onStartupReady?.call();
   }
 
   List<String> _provinceQueryKeys(ProvinceModel province) {
