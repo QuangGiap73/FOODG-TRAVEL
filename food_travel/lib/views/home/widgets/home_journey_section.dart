@@ -7,6 +7,7 @@ import '../../../models/journey/journey_stats.dart';
 import '../../../models/journey/mission_model.dart';
 import '../../journey/pages/food_journey_page.dart';
 import '../../journey/pages/mission_detail_page.dart';
+import '../../journey/journey_l10n_helpers.dart';
 
 class HomeJourneySection extends StatelessWidget {
   const HomeJourneySection({super.key, required this.userId});
@@ -477,11 +478,7 @@ class _MissionRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
-    final title = switch (mission.id) {
-      'checkin_new_place' => t.homeMissionCheckinNewPlace,
-      'try_vietnamese_food' => t.homeMissionTryVietnameseFood,
-      _ => mission.title,
-    };
+    final title = journeyMissionTitle(t, mission);
 
     return InkWell(
       onTap: onTap,

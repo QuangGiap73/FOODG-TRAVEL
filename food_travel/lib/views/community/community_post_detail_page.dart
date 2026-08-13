@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:food_travel/l10n/app_localizations.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../controller/community/post_like_controller.dart';
 import '../../models/community/community_post.dart';
@@ -10,6 +9,7 @@ import '../../models/places_model.dart';
 import '../../services/community/community_service.dart';
 import '../favorites/place_detail_page.dart';
 import 'post_comments_sheet.dart';
+import 'community_video_player_page.dart';
 
 class CommunityPostDetailPage extends StatefulWidget {
   const CommunityPostDetailPage({
@@ -408,7 +408,9 @@ class _MediaHeroState extends State<_MediaHero> {
                           return Container(
                             color: _imageFallbackBg(context),
                             child: Icon(
-                              item.isVideo ? Icons.videocam_rounded : Icons.image,
+                              item.isVideo
+                                  ? Icons.videocam_rounded
+                                  : Icons.image,
                               size: 32,
                             ),
                           );
@@ -519,9 +521,12 @@ class _MediaHeroState extends State<_MediaHero> {
   }
 
   Future<void> _openVideo(String url) async {
-    final uri = Uri.tryParse(url);
-    if (uri == null) return;
-    await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!mounted || url.trim().isEmpty) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => CommunityVideoPlayerPage(videoUrl: url),
+      ),
+    );
   }
 }
 

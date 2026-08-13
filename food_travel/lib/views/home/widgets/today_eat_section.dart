@@ -37,118 +37,138 @@ class _TodayEatSectionState extends State<TodayEatSection> {
     final activeRecommendation = picks[selected];
     final activeDish = activeRecommendation.dish;
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(18),
-      child: AspectRatio(
-        aspectRatio: 16 / 9.8,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            // ========= BACKGROUND: image + tap + swipe =========
-            Positioned.fill(
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
+    // Nội dung phủ trên ảnh cần ổn định khi thiết bị đặt cỡ chữ lớn.
+    // Vẫn cho phép tăng chữ nhẹ nhưng giới hạn để không che kín món ăn.
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(
+        textScaler: MediaQuery.textScalerOf(
+          context,
+        ).clamp(minScaleFactor: 1, maxScaleFactor: 1.1),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(18),
+        child: AspectRatio(
+          // Tăng nhẹ chiều cao card để tiêu đề, lý do và ba món không chồng nhau.
+          aspectRatio: 1.42,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              // ========= BACKGROUND: image + tap + swipe =========
+              Positioned.fill(
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
 
-                // Tap vào nền (không phải chip/nút) -> mở chi tiết món
-                onTap: () => widget.onTapDish?.call(activeDish),
+                  // Tap vào nền (không phải chip/nút) -> mở chi tiết món
+                  onTap: () => widget.onTapDish?.call(activeDish),
 
-                // Vuốt ngang để đổi món
-                onHorizontalDragEnd: (details) {
-                  final v = details.primaryVelocity ?? 0;
-                  if (v == 0) return;
+                  // Vuốt ngang để đổi món
+                  onHorizontalDragEnd: (details) {
+                    final v = details.primaryVelocity ?? 0;
+                    if (v == 0) return;
 
-                  setState(() {
-                    if (v < 0) {
-                      // Vuốt sang trái -> next
-                      _selectedIndex = (_selectedIndex + 1).clamp(
-                        0,
-                        picks.length - 1,
-                      );
-                    } else {
-                      // Vuốt sang phải -> prev
-                      _selectedIndex = (_selectedIndex - 1).clamp(
-                        0,
-                        picks.length - 1,
-                      );
-                    }
-                  });
-                },
+                    setState(() {
+                      if (v < 0) {
+                        // Vuốt sang trái -> next
+                        _selectedIndex = (_selectedIndex + 1).clamp(
+                          0,
+                          picks.length - 1,
+                        );
+                      } else {
+                        // Vuốt sang phải -> prev
+                        _selectedIndex = (_selectedIndex - 1).clamp(
+                          0,
+                          picks.length - 1,
+                        );
+                      }
+                    });
+                  },
 
-                child: _buildImage(activeDish.imageUrl),
+                  child: _buildImage(activeDish.imageUrl),
+                ),
               ),
-            ),
 
-            // ========= GRADIENT OVERLAY =========
-            const IgnorePointer(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Color(0x33000000),
-                      Color(0x55000000),
-                      Color(0xCC000000),
-                    ],
+              // ========= GRADIENT OVERLAY =========
+              const IgnorePointer(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Color(0x33000000),
+                        Color(0x55000000),
+                        Color(0xCC000000),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
 
-            // ========= REFRESH BUTTON =========
-            Positioned(
-              top: 12,
-              right: 12,
-              child: _RefreshButton(
-                label: t.homeTodayRefresh,
-                onTap: () {
-                  setState(() {
-                    // Nhan "Doi goi y" => random 3 mon moi
-                    _refreshVersion++;
-                    _selectedIndex = 0;
-                  });
-                },
+              // ========= REFRESH BUTTON =========
+              Positioned(
+                top: 12,
+                right: 12,
+                child: _RefreshButton(
+                  label: t.homeTodayRefresh,
+                  onTap: () {
+                    setState(() {
+                      // Nhan "Doi goi y" => random 3 mon moi
+                      _refreshVersion++;
+                      _selectedIndex = 0;
+                    });
+                  },
+                ),
               ),
-            ),
 
-            // ========= TITLE + CHIPS =========
-            Positioned(
-              left: 14,
-              right: 14,
-              bottom: 12,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    t.homeTodayEatTitle,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.w800,
+              // ========= TITLE + CHIPS =========
+              Positioned(
+                left: 14,
+                right: 14,
+                bottom: 12,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      t.homeTodayEatTitle,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w800,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  _RecommendationReason(text: activeRecommendation.explanation),
-                  const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: List.generate(picks.length, (index) {
-                      final dish = picks[index].dish;
-                      final lang = Localizations.localeOf(context).languageCode;
-                      return _DishTabChip(
-                        label: _twoWordLabel(dish.getName(lang), t),
-                        isActive: selected == index,
-                        onTap: () {
-                          setState(() => _selectedIndex = index);
-                        },
-                      );
-                    }),
-                  ),
-                ],
+                    const SizedBox(height: 6),
+                    _RecommendationReason(
+                      text: activeRecommendation.explanation,
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: List.generate(picks.length, (index) {
+                        final dish = picks[index].dish;
+                        final lang =
+                            Localizations.localeOf(context).languageCode;
+                        return Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                              right: index == picks.length - 1 ? 0 : 6,
+                            ),
+                            child: _DishTabChip(
+                              label: _twoWordLabel(dish.getName(lang), t),
+                              isActive: selected == index,
+                              onTap: () {
+                                setState(() => _selectedIndex = index);
+                              },
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -292,9 +312,12 @@ class _DishTabChip extends StatelessWidget {
         ),
         child: Text(
           label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 14,
+            fontSize: 13,
             fontWeight: FontWeight.w700,
           ),
         ),

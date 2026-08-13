@@ -8,13 +8,14 @@ import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../models/dish_model.dart';
 import '../../models/province_model.dart';
+import '../../models/user_model.dart';
 import '../../models/user_preferences.dart';
 import '../../services/dish_recommendation_service.dart';
 import '../../services/food_service.dart';
 import '../../services/user_service.dart';
 import '../../router/route_names.dart';
 import '../../controller/home/nearby_home_controlled.dart';
-import '../onboarding/survey_sheet.dart';
+import '../onboarding/survey_page.dart';
 import '../community/community_feed_page.dart';
 import '../favorites/favorites_tabs_page.dart';
 import '../journey/pages/food_journey_page.dart';
@@ -43,6 +44,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
   bool _checkedSurvey = false;
+  bool _checkingInitialSurvey = false;
   late final List<Widget?> _pages;
   final ValueNotifier<bool> _homeTabActive = ValueNotifier<bool>(true);
   // Ten tinh dang hien thi tren app bar (duoc HomeFeed cap nhat theo GPS/khao sat).
@@ -94,6 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _checkingInitialSurvey = widget.allowInitialSurvey;
     _pages = List<Widget?>.filled(5, null);
     _pages[0] = _createPage(0);
     if (widget.allowInitialSurvey) {
@@ -107,6 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void didUpdateWidget(covariant HomeScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (!oldWidget.allowInitialSurvey && widget.allowInitialSurvey) {
+      _checkingInitialSurvey = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _maybeShowSurvey();
       });
@@ -118,14 +122,30 @@ class _HomeScreenState extends State<HomeScreen> {
     _checkedSurvey = true;
 
     final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return;
+    if (user == null) {
+      if (mounted) setState(() => _checkingInitialSurvey = false);
+      return;
+    }
 
-    final profile = await UserService().getUserById(user.uid);
+    UserModel? profile;
+    try {
+      profile = await UserService().getUserById(user.uid);
+    } catch (error) {
+      debugPrint('Không kiểm tra được trạng thái khảo sát: $error');
+    }
     if (!mounted) return;
 
-    if (profile?.onboardingCompleted == true) return;
+    if (profile?.onboardingCompleted == true) {
+      setState(() => _checkingInitialSurvey = false);
+      return;
+    }
 
-    await showSurveySheet(context);
+    await Navigator.of(context).push<bool>(
+      MaterialPageRoute<bool>(
+        builder: (_) => const SurveyPage(requiredCompletion: true),
+      ),
+    );
+    if (mounted) setState(() => _checkingInitialSurvey = false);
   }
 
   @override
@@ -136,6 +156,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (_checkingInitialSurvey) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
     final t = AppLocalizations.of(context)!;
     final photoUrl = FirebaseAuth.instance.currentUser?.photoURL;
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -1617,14 +1641,24 @@ class _HomeFeedState extends State<_HomeFeed> {
                             ),
                           ),
                           const SizedBox(height: 6),
-                          Text(
-                            item.label,
-                            style: theme.textTheme.labelMedium?.copyWith(
-                              fontWeight: FontWeight.w700,
-                              color:
-                                  isDark
-                                      ? Colors.white70
-                                      : const Color(0xFF5F5B57),
+                          SizedBox(
+                            height: 20,
+                            width: double.infinity,
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.center,
+                              child: Text(
+                                item.label,
+                                maxLines: 1,
+                                softWrap: false,
+                                style: theme.textTheme.labelMedium?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  color:
+                                      isDark
+                                          ? Colors.white70
+                                          : const Color(0xFF5F5B57),
+                                ),
+                              ),
                             ),
                           ),
                         ],

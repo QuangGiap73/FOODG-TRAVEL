@@ -1,4 +1,4 @@
-﻿import 'dart:math';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:food_travel/l10n/app_localizations.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../controller/community/post_like_controller.dart';
 import '../../models/community/community_post.dart';
@@ -19,6 +18,7 @@ import '../../services/notifications/notification_service.dart';
 import '../../router/route_names.dart';
 import '../../widgets/app_notice_dialog.dart';
 import 'community_create_post_page.dart';
+import 'community_video_player_page.dart';
 import 'post_comments_sheet.dart';
 import 'widgets/community_banner_header.dart';
 import 'widgets/community_quick_composer_card.dart';
@@ -207,8 +207,7 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
             shape: const CircleBorder(),
             child: const Icon(Icons.add_rounded, size: 28),
           ),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.endFloat,
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           body: SafeArea(
             top: false,
             bottom: false,
@@ -244,8 +243,9 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
                             right: 0,
                             top: bannerHeight - composerOverlap,
                             child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
                               child: CommunityQuickComposerCard(
                                 avatarUrl:
                                     FirebaseAuth.instance.currentUser?.photoURL,
@@ -450,7 +450,9 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
         else
           ...List.generate(posts.length, (index) {
             return Padding(
-              padding: EdgeInsets.only(bottom: index == posts.length - 1 ? 0 : 12),
+              padding: EdgeInsets.only(
+                bottom: index == posts.length - 1 ? 0 : 12,
+              ),
               child: _PostCard(post: posts[index]),
             );
           }),
@@ -609,10 +611,7 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
 }
 
 class _PinnedHeaderDelegate extends SliverPersistentHeaderDelegate {
-  _PinnedHeaderDelegate({
-    required this.height,
-    required this.child,
-  });
+  _PinnedHeaderDelegate({required this.height, required this.child});
 
   final double height;
   final Widget child;
@@ -624,7 +623,11 @@ class _PinnedHeaderDelegate extends SliverPersistentHeaderDelegate {
   double get maxExtent => height;
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
     return child;
   }
 
@@ -989,7 +992,9 @@ class _MediaHeroState extends State<_MediaHero> {
                           return Container(
                             color: _imageFallbackBg(context),
                             child: Icon(
-                              item.isVideo ? Icons.videocam_rounded : Icons.image,
+                              item.isVideo
+                                  ? Icons.videocam_rounded
+                                  : Icons.image,
                               size: 32,
                             ),
                           );
@@ -1103,9 +1108,12 @@ class _MediaHeroState extends State<_MediaHero> {
   }
 
   Future<void> _openVideo(String url) async {
-    final uri = Uri.tryParse(url);
-    if (uri == null) return;
-    await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!mounted || url.trim().isEmpty) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => CommunityVideoPlayerPage(videoUrl: url),
+      ),
+    );
   }
 }
 

@@ -6,9 +6,12 @@ import '../../controller/onboarding/survey_controller.dart';
 import '../../router/route_names.dart';
 import '../../services/user_service.dart';
 import 'widgets/survey_form_content.dart';
+import 'widgets/survey_wizard_content.dart';
 
 class SurveyPage extends StatefulWidget {
-  const SurveyPage({super.key});
+  const SurveyPage({super.key, this.requiredCompletion = false});
+
+  final bool requiredCompletion;
 
   @override
   State<SurveyPage> createState() => _SurveyPageState();
@@ -35,10 +38,14 @@ class _SurveyPageState extends State<SurveyPage> {
       return;
     }
 
-    final profile = await _userService.getUserById(user.uid);
-    final prefs = profile?.preferences;
-    if (prefs != null) {
-      _controller.loadFromPreferences(prefs);
+    try {
+      final profile = await _userService.getUserById(user.uid);
+      final prefs = profile?.preferences;
+      if (prefs != null) {
+        _controller.loadFromPreferences(prefs);
+      }
+    } catch (error) {
+      debugPrint('Không tải được hồ sơ khảo sát: $error');
     }
 
     if (!mounted) return;
@@ -52,6 +59,7 @@ class _SurveyPageState extends State<SurveyPage> {
   }
 
   Future<void> _submit() async {
+    if (_loadingProfile) return;
     final ok = await _controller.submit();
     if (!mounted) return;
 
@@ -67,24 +75,37 @@ class _SurveyPageState extends State<SurveyPage> {
       }
     } else {
       final t = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(t.surveySaveFailed)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(t.surveySaveFailed)));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, _) {
-        return SurveyFormContent(
-          controller: _controller,
-          onSubmit: _submit,
-          loadingProfile: _loadingProfile,
-          onClose: () => Navigator.pop(context),
-        );
-      },
+    return PopScope(
+      // Người dùng có thể bỏ qua khảo sát; trạng thái chưa hoàn tất vẫn được
+      // giữ lại để ứng dụng hỏi lại ở lần mở sau.
+      canPop: true,
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, _) {
+          if (widget.requiredCompletion) {
+            return SurveyWizardContent(
+              controller: _controller,
+              onSubmit: _submit,
+              loadingProfile: _loadingProfile,
+              onClose: () => Navigator.pop(context, false),
+            );
+          }
+          return SurveyFormContent(
+            controller: _controller,
+            onSubmit: _submit,
+            loadingProfile: _loadingProfile,
+            onClose: () => Navigator.pop(context),
+          );
+        },
+      ),
     );
   }
 }

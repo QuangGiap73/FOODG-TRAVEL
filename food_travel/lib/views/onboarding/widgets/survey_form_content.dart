@@ -179,8 +179,6 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
                       : 'Complete a short survey so the app understands your taste, region, budget, and dining context.',
               loadingProfile: widget.loadingProfile,
               accent: accent,
-              textColor: text,
-              subColor: sub,
               onClose: widget.onClose,
             ),
             const SizedBox(height: 16),
@@ -193,6 +191,7 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
               children: [
                 _SectionHeader(
                   icon: Icons.location_city_rounded,
+                  imageAsset: 'assets/survey/generated/province.png',
                   title: t.surveyProvinceLabel,
                   subtitle:
                       _isVi
@@ -226,6 +225,7 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
               children: [
                 _SectionHeader(
                   icon: Icons.local_fire_department_rounded,
+                  imageAsset: 'assets/survey/generated/spice.png',
                   title: _isVi ? 'Mức ăn cay' : 'Spice tolerance',
                   subtitle:
                       _isVi
@@ -264,6 +264,7 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
             border: border,
             child: _ChoiceSection(
               icon: Icons.ramen_dining_rounded,
+              imageAsset: 'assets/survey/generated/dish_type.png',
               title: _isVi ? 'Kiểu món bạn thích' : 'Preferred dish styles',
               subtitle:
                   _isVi
@@ -315,6 +316,7 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
               children: [
                 _SectionHeader(
                   icon: Icons.lunch_dining_rounded,
+                  imageAsset: 'assets/survey/generated/satiety.png',
                   title: _isVi ? 'Mức no mong muốn' : 'Satiety preference',
                   subtitle:
                       _isVi
@@ -392,6 +394,7 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
             border: border,
             child: _ChoiceSection(
               icon: Icons.public_rounded,
+              imageAsset: 'assets/survey/generated/preferred_region.png',
               title: _isVi ? 'Vùng miền muốn khám phá' : 'Preferred regions',
               subtitle:
                   _isVi
@@ -419,6 +422,7 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
               children: [
                 _TagEditor(
                   icon: Icons.health_and_safety_rounded,
+                  imageAsset: 'assets/survey/generated/allergy.png',
                   title:
                       _isVi
                           ? 'Dị ứng và kiêng kỵ'
@@ -441,6 +445,7 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
                 const SizedBox(height: 16),
                 _TagEditor(
                   icon: Icons.block_rounded,
+                  imageAsset: 'assets/survey/generated/disliked_ingredient.png',
                   title:
                       _isVi
                           ? 'Nguyên liệu không thích'
@@ -599,6 +604,7 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
               children: [
                 _ChoiceSection(
                   icon: Icons.eco_rounded,
+                  imageAsset: 'assets/survey/generated/seasonal.png',
                   title: _isVi ? 'Mùa món ăn phù hợp' : 'Preferred seasons',
                   subtitle:
                       _isVi
@@ -666,6 +672,7 @@ class _SurveyFormContentState extends State<SurveyFormContent> {
             border: border,
             child: _TagEditor(
               icon: Icons.favorite_rounded,
+              imageAsset: 'assets/survey/generated/favorite_keyword.png',
               title: _isVi ? 'Món / từ khóa yêu thích' : 'Favorite food tags',
               subtitle:
                   _isVi
@@ -740,8 +747,6 @@ class _HeroCard extends StatelessWidget {
     required this.subtitle,
     required this.loadingProfile,
     required this.accent,
-    required this.textColor,
-    required this.subColor,
     this.onClose,
   });
 
@@ -749,8 +754,6 @@ class _HeroCard extends StatelessWidget {
   final String subtitle;
   final bool loadingProfile;
   final Color accent;
-  final Color textColor;
-  final Color subColor;
   final VoidCallback? onClose;
 
   @override
@@ -761,20 +764,25 @@ class _HeroCard extends StatelessWidget {
       children: [
         Row(
           children: [
-            Material(
-              color:
-                  isDark
-                      ? const Color(0xFF202936)
-                      : Colors.white.withValues(alpha: 0.82),
-              borderRadius: BorderRadius.circular(18),
-              child: IconButton(
-                onPressed: onClose ?? () => Navigator.pop(context),
-                icon: Icon(
-                  Icons.arrow_back_rounded,
-                  color: isDark ? Colors.white : const Color(0xFF374151),
+            if (onClose != null)
+              Material(
+                color:
+                    isDark
+                        ? const Color(0xFF202936)
+                        : Colors.white.withValues(alpha: 0.82),
+                borderRadius: BorderRadius.circular(18),
+                child: IconButton(
+                  onPressed: onClose,
+                  tooltip:
+                      Localizations.localeOf(context).languageCode == 'vi'
+                          ? 'Để sau'
+                          : 'Do it later',
+                  icon: Icon(
+                    Icons.close_rounded,
+                    color: isDark ? Colors.white : const Color(0xFF374151),
+                  ),
                 ),
               ),
-            ),
             const Spacer(),
             if (loadingProfile)
               SizedBox(
@@ -788,50 +796,33 @@ class _HeroCard extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 20),
-        Container(
-          padding: const EdgeInsets.all(22),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors:
-                  isDark
-                      ? const [Color(0xFF4A2618), Color(0xFF2D1D19)]
-                      : const [Color(0xFFFFF0DD), Color(0xFFFFE0BD)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+        Semantics(
+          label: '$title. $subtitle',
+          image: true,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(24),
+            child: AspectRatio(
+              aspectRatio: 2,
+              child: Image.asset(
+                'assets/person/banenr-khao-sat.png',
+                width: double.infinity,
+                fit: BoxFit.cover,
+                alignment: Alignment.center,
+                errorBuilder:
+                    (context, error, stackTrace) => Container(
+                      color:
+                          isDark
+                              ? const Color(0xFF4A2618)
+                              : const Color(0xFFFFE0BD),
+                      alignment: Alignment.center,
+                      child: Icon(
+                        Icons.assignment_rounded,
+                        size: 48,
+                        color: accent,
+                      ),
+                    ),
+              ),
             ),
-            borderRadius: BorderRadius.circular(28),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFFFFE9D5) : Colors.white,
-                  borderRadius: BorderRadius.circular(18),
-                ),
-                child: const Icon(
-                  Icons.assignment_rounded,
-                  size: 28,
-                  color: Color(0xFFF97316),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w800,
-                  color: textColor,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                subtitle,
-                style: TextStyle(fontSize: 14, height: 1.45, color: subColor),
-              ),
-            ],
           ),
         ),
       ],
@@ -874,6 +865,7 @@ class _Card extends StatelessWidget {
 class _SectionHeader extends StatelessWidget {
   const _SectionHeader({
     required this.icon,
+    this.imageAsset,
     required this.title,
     required this.subtitle,
     required this.accent,
@@ -882,6 +874,7 @@ class _SectionHeader extends StatelessWidget {
   });
 
   final IconData icon;
+  final String? imageAsset;
   final String title;
   final String subtitle;
   final Color accent;
@@ -900,7 +893,18 @@ class _SectionHeader extends StatelessWidget {
             color: accent.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(14),
           ),
-          child: Icon(icon, color: accent),
+          child:
+              imageAsset == null
+                  ? Icon(icon, color: accent)
+                  : Padding(
+                    padding: const EdgeInsets.all(5),
+                    child: Image.asset(
+                      imageAsset!,
+                      fit: BoxFit.contain,
+                      filterQuality: FilterQuality.high,
+                      errorBuilder: (_, __, ___) => Icon(icon, color: accent),
+                    ),
+                  ),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -931,6 +935,7 @@ class _SectionHeader extends StatelessWidget {
 class _ChoiceSection extends StatelessWidget {
   const _ChoiceSection({
     required this.icon,
+    this.imageAsset,
     required this.title,
     required this.subtitle,
     required this.choices,
@@ -943,6 +948,7 @@ class _ChoiceSection extends StatelessWidget {
   });
 
   final IconData icon;
+  final String? imageAsset;
   final String title;
   final String subtitle;
   final List<_Choice> choices;
@@ -961,6 +967,7 @@ class _ChoiceSection extends StatelessWidget {
       children: [
         _SectionHeader(
           icon: icon,
+          imageAsset: imageAsset,
           title: title,
           subtitle: subtitle,
           accent: accent,
@@ -1124,6 +1131,7 @@ class _InfoPill extends StatelessWidget {
 class _TagEditor extends StatefulWidget {
   const _TagEditor({
     required this.icon,
+    this.imageAsset,
     required this.title,
     required this.subtitle,
     required this.inputController,
@@ -1136,6 +1144,7 @@ class _TagEditor extends StatefulWidget {
   });
 
   final IconData icon;
+  final String? imageAsset;
   final String title;
   final String subtitle;
   final TextEditingController inputController;
@@ -1173,6 +1182,7 @@ class _TagEditorState extends State<_TagEditor> {
       children: [
         _SectionHeader(
           icon: widget.icon,
+          imageAsset: widget.imageAsset,
           title: widget.title,
           subtitle: widget.subtitle,
           accent: widget.accent,

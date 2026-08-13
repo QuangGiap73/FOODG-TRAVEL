@@ -151,6 +151,7 @@ class SurveyController extends ChangeNotifier {
     if (_isLoading) return false;
     final user = _auth.currentUser;
     if (user == null) return false;
+    if (provinceController.text.trim().isEmpty) return false;
 
     _isLoading = true;
     notifyListeners();
