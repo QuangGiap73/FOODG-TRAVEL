@@ -148,7 +148,7 @@
 
 <div class="province-modal-backdrop" id="province-modal-backdrop"></div>
 
-<section class="province-modal" id="province-modal" aria-hidden="true">
+<section class="province-modal" id="province-modal" role="dialog" aria-modal="true" aria-labelledby="province-modal-title" aria-hidden="true" tabindex="-1">
   <div class="province-modal__header">
     <div>
       <h4 id="province-modal-title">Thêm tỉnh thành</h4>
@@ -242,10 +242,10 @@
   </form>
 </section>
 
-<aside class="province-drawer" id="province-drawer" aria-hidden="true">
+<aside class="province-drawer" id="province-drawer" role="dialog" aria-modal="true" aria-labelledby="province-drawer-title" aria-hidden="true" tabindex="-1">
   <div class="province-drawer__header">
     <div>
-      <h4>Chi tiết tỉnh thành</h4>
+      <h4 id="province-drawer-title">Chi tiết tỉnh thành</h4>
       <p class="provinces-muted">Xem nhanh thông tin đang lưu trên hệ thống.</p>
     </div>
     <button class="icon-action" type="button" id="province-drawer-close">Đóng</button>

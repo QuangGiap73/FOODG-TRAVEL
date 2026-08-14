@@ -78,27 +78,12 @@
   let currentEditingCode = '';
   let selectedFiles = [];
   let provincePlaces = [];
+  let overlayTrigger = null;
   const objectUrls = new Set();
-  let toastTimer = null;
   const placePreviewUrls = new WeakMap();
 
   function notify(type, message) {
-    const toast = document.createElement('div');
-    toast.className = `provinces-toast provinces-toast--${type}`;
-    toast.textContent = message;
-    document.body.appendChild(toast);
-
-    requestAnimationFrame(() => {
-      toast.classList.add('is-visible');
-    });
-
-    clearTimeout(toastTimer);
-    toastTimer = window.setTimeout(() => {
-      toast.classList.remove('is-visible');
-      window.setTimeout(() => {
-        toast.remove();
-      }, 220);
-    }, 2000);
+    window.FoodsNotify?.show({ type, message });
   }
 
   function setError(node, message) {
@@ -268,19 +253,39 @@
     return parseImageUrls([...manualUrls, ...uploadedUrls].join('\n'));
   }
 
+  function syncOverlayState() {
+    const hasOpenModal = Boolean(regionModal?.classList.contains('is-open') || provinceModal?.classList.contains('is-open'));
+    const hasOpenDrawer = Boolean(drawer?.classList.contains('is-open'));
+    document.body.classList.toggle('provinces-overlay-open', hasOpenModal || hasOpenDrawer);
+  }
+
+  function restoreOverlayFocus() {
+    if (regionModal?.classList.contains('is-open') || provinceModal?.classList.contains('is-open') || drawer?.classList.contains('is-open')) return;
+    overlayTrigger?.focus?.();
+    overlayTrigger = null;
+  }
+
   function openModal(modal) {
     if (!modal) return;
+    const trigger = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     closeDrawer();
+    overlayTrigger = trigger;
     modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden', 'false');
     modalBackdrop?.classList.add('is-visible');
+    syncOverlayState();
+    window.setTimeout(() => modal.querySelector('input, select, textarea, button')?.focus(), 0);
   }
 
   function closeModal(modal) {
     if (!modal) return;
     modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden', 'true');
     if (!regionModal?.classList.contains('is-open') && !provinceModal?.classList.contains('is-open')) {
       modalBackdrop?.classList.remove('is-visible');
     }
+    syncOverlayState();
+    restoreOverlayFocus();
   }
 
   function closeAllModals() {
@@ -289,6 +294,7 @@
   }
 
   function renderImagePreview(urls, files) {
+    if (!provinceImagePreview) return;
     clearObjectUrls();
     provinceImagePreview.innerHTML = '';
 
@@ -555,6 +561,7 @@
   }
 
   function openDrawer(province) {
+    if (!drawer || !drawerBackdrop) return;
     const images = normalizeProvinceImages(province);
 
     drawerName.textContent = province.name || '-';
@@ -594,14 +601,22 @@
       drawerImageWrap.classList.remove('has-image');
     }
 
+    const trigger = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     closeAllModals();
+    overlayTrigger = trigger;
     drawer.classList.add('is-open');
+    drawer.setAttribute('aria-hidden', 'false');
     drawerBackdrop.classList.add('is-visible');
+    syncOverlayState();
+    window.setTimeout(() => drawerClose?.focus(), 0);
   }
 
   function closeDrawer() {
-    drawer.classList.remove('is-open');
-    drawerBackdrop.classList.remove('is-visible');
+    drawer?.classList.remove('is-open');
+    drawer?.setAttribute('aria-hidden', 'true');
+    drawerBackdrop?.classList.remove('is-visible');
+    syncOverlayState();
+    restoreOverlayFocus();
   }
 
   regionForm?.addEventListener('submit', async (event) => {
@@ -840,6 +855,35 @@
     if (event.key === 'Escape') {
       closeAllModals();
       closeDrawer();
+      return;
+    }
+
+    if (event.key === 'Tab') {
+      const activeOverlay = provinceModal?.classList.contains('is-open')
+        ? provinceModal
+        : regionModal?.classList.contains('is-open')
+          ? regionModal
+          : drawer?.classList.contains('is-open')
+            ? drawer
+            : null;
+      if (!activeOverlay) return;
+      const focusable = Array.from(activeOverlay.querySelectorAll(
+        'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])',
+      )).filter((node) => !node.hidden && node.getClientRects().length);
+      if (!focusable.length) {
+        event.preventDefault();
+        activeOverlay.focus();
+        return;
+      }
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     }
   });
 

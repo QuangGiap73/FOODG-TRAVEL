@@ -49,6 +49,7 @@
         item.checked = sourceCheckbox.checked;
       });
       renderSelectionState();
+      window.FoodsNotify?.success(`Đã xóa ${ids.length} bài viết.`);
     });
   }
 
@@ -180,9 +181,11 @@
           updateRowStatus(row, moderationStatus);
         });
         renderSelectionState();
+        window.FoodsNotify?.success(`Đã cập nhật ${ids.length} bài viết sang trạng thái "${label}".`);
       } catch (error) {
         window.alert(error.message || 'Không thể cập nhật trạng thái');
         renderSelectionState();
+        window.FoodsNotify?.success('Đã xóa bài viết.');
       }
     });
   });
@@ -223,6 +226,7 @@
           document.querySelector(`tr[data-post-id="${CSS.escape(postId)}"]`),
           nextStatus,
         );
+        window.FoodsNotify?.success(nextStatus === 'hidden' ? 'Đã ẩn bài viết.' : 'Đã hiển thị bài viết.');
       } catch (error) {
         window.alert(error.message || 'Không thể cập nhật trạng thái bài viết');
       } finally {
@@ -244,6 +248,7 @@
           document.querySelector(`tr[data-post-id="${CSS.escape(postId)}"]`),
           moderationStatus,
         );
+        window.FoodsNotify?.success(`Đã chuyển bài viết sang trạng thái "${label}".`);
       } catch (error) {
         window.alert(error.message || 'Không thể cập nhật trạng thái bài viết');
       } finally {

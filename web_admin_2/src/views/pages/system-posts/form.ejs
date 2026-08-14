@@ -9,8 +9,8 @@
 </section>
 
 <section class="panel-card">
-  <% if (successMessage) { %><p style="color:#1f7a1f;"><%= successMessage %></p><% } %>
-  <% if (errorMessage) { %><p class="form-error"><%= errorMessage %></p><% } %>
+  <% if (successMessage) { %><p data-notification="success"><%= successMessage %></p><% } %>
+  <% if (errorMessage) { %><p class="form-error" data-notification="error"><%= errorMessage %></p><% } %>
 
   <form class="user-form-grid" id="system-post-form" method="post" action="<%= submitAction %>">
     <label>

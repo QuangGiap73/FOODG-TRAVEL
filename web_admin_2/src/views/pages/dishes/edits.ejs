@@ -31,11 +31,11 @@
   </div>
 
   <% if (successMessage) { %>
-    <div class="dish-create-notice dish-create-notice--success"><%= successMessage %></div>
+    <div class="dish-create-notice dish-create-notice--success" data-notification="success"><%= successMessage %></div>
   <% } %>
 
   <% if (errorMessage) { %>
-    <div class="dish-create-notice dish-create-notice--error"><%= errorMessage %></div>
+    <div class="dish-create-notice dish-create-notice--error" data-notification="error"><%= errorMessage %></div>
   <% } %>
 
   <div class="dish-create-layout">

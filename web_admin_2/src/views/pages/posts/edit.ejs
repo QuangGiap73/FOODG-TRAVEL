@@ -21,7 +21,7 @@
   </div>
 
   <% if (errorMessage) { %>
-    <div class="post-edit-notice post-edit-notice--error"><%= errorMessage %></div>
+    <div class="post-edit-notice post-edit-notice--error" data-notification="error"><%= errorMessage %></div>
   <% } %>
 
   <form id="post-edit-form" class="post-edit-layout" method="post" action="/admin/posts/<%= post.id %>/edit">

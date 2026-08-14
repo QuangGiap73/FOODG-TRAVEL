@@ -5,10 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title><%= pageTitle %> | <%= appName %></title>
   <link rel="stylesheet" href="/public/css/app.css" />
+  <link rel="stylesheet" href="/public/css/components/notifications.css" />
 </head>
 <body class="auth-body">
   <main class="auth-shell">
     <%- body %>
   </main>
+  <%- include('../partials/notifications') %>
+  <script src="/public/js/core/notifications.js"></script>
 </body>
 </html>

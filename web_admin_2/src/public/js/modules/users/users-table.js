@@ -105,6 +105,7 @@
       await deleteUsers([userId]);
       deleteButton.closest('tr')?.remove();
       renderSelectedCount();
+      window.FoodsNotify?.success('Đã xóa người dùng thành công.');
     } catch (error) {
       window.alert(error.message || 'Không thể xóa người dùng');
       deleteButton.disabled = false;
@@ -133,6 +134,7 @@
         checkAll.indeterminate = false;
       }
       renderSelectedCount();
+      window.FoodsNotify?.success(`Đã xóa ${ids.length} người dùng.`);
     } catch (error) {
       window.alert(error.message || 'Không thể xóa người dùng');
       renderSelectedCount();
