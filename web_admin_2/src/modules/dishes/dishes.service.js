@@ -4,6 +4,8 @@ const { createUploadService } = require('../uploads/upload.service');
 const {
   listAllDishesWithSearchFromRepository,
   listAllDishesFromRepository,
+  countDishesFromRepository,
+  listDishesPageFastFromRepository,
   getDishByIdFromRepository,
   getNextDishSttFromRepository,
   createDishInRepository,
@@ -12,6 +14,7 @@ const {
 } = require('./dishes.repository');
 const { toDishViewModel, toDishDetailViewModel } = require('./dishes.mapper');
 const { validateDishListQuery, validateDishCreatePayload } = require('./dishes.validator');
+const { remember, forget } = require('../../core/cache/memory-cache');
 
 function normalizeText(value = '') {
   return String(value || '').trim();
@@ -126,7 +129,34 @@ function buildDishDocument(payload) {
 
 async function getDishListPage(payload = {}) {
   const query = validateDishListQuery(payload);
+  const cacheKey = `dishes:list:${JSON.stringify(query)}`;
+  return remember(cacheKey, 30 * 1000, () => buildDishListPage(query));
+}
+
+async function buildDishListPage(query) {
   const hasSearch = Boolean(query.search);
+
+  if (!hasSearch && !query.provinceCode34 && ['stt_asc', 'stt_desc'].includes(query.sortBy)) {
+    try {
+      const [dishes, total] = await Promise.all([
+        listDishesPageFastFromRepository(query),
+        countDishesFromRepository({ spicyLevel: query.spicyLevel }),
+      ]);
+      const start = (query.page - 1) * query.pageSize;
+      return {
+        items: dishes.map(toDishViewModel),
+        meta: {
+          page: query.page, pageSize: query.pageSize, total,
+          totalPages: Math.max(1, Math.ceil(total / query.pageSize)),
+          hasNextPage: start + query.pageSize < total, hasPrevPage: query.page > 1,
+          search: query.search, provinceCode34: query.provinceCode34,
+          spicyLevel: query.spicyLevel, sortBy: query.sortBy,
+        },
+      };
+    } catch (error) {
+      console.warn('[dishes] Fast pagination unavailable, using compatible query:', error.message);
+    }
+  }
 
   if (hasSearch) {
     const dishes = await listAllDishesWithSearchFromRepository({
@@ -275,6 +305,10 @@ async function createDish(payload) {
 
   const document = buildDishDocument(data);
   await createDishInRepository(data.id, document);
+  forget('dishes:');
+  forget('provinces:stats');
+  forget('provinces:list:');
+  forget('dashboard:');
 
   return {
     id: data.id,
@@ -299,6 +333,10 @@ async function deleteDish(id) {
   }
 
   await deleteDishFromRepository(id);
+  forget('dishes:');
+  forget('provinces:stats');
+  forget('provinces:list:');
+  forget('dashboard:');
   return { id };
 }
 //hàm đổ dữ liệu cũ vaog fomt edit
@@ -411,6 +449,10 @@ async function updateDish(id, payload) {
   });
 
   await updateDishInRepository(id, document);
+  forget('dishes:');
+  forget('provinces:stats');
+  forget('provinces:list:');
+  forget('dashboard:');
 
   return { id };
 }

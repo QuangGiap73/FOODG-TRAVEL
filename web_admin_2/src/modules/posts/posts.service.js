@@ -4,6 +4,7 @@ const {
   normalizePostIds,
   normalizeModerationStatusInput,
 } = require('./posts.validator');
+const { remember, forget } = require('../../core/cache/memory-cache');
 const {
   getPostsFilteredDocsFromRepository,
   getPostDetailFromRepository,
@@ -98,6 +99,11 @@ function sortPostsInMemory(items, sortBy) {
 
 async function getPostsListPage(query = {}) {
   const filters = normalizePostListQuery(query);
+
+  return remember(`posts:list:${JSON.stringify(filters)}`, 30 * 1000, () => buildPostsListPage(filters));
+}
+
+async function buildPostsListPage(filters) {
 
   const docs = await getPostsFilteredDocsFromRepository(filters);
 
@@ -241,6 +247,8 @@ async function updatePost(id, payload) {
       name: data.placeName,
     },
   });
+  forget('posts:');
+  forget('dashboard:');
 
   return { id };
 }
@@ -257,6 +265,8 @@ async function deletePost(id) {
   }
 
   await softDeletePostInRepository(id);
+  forget('posts:');
+  forget('dashboard:');
   return { id };
 }
 
@@ -333,6 +343,8 @@ async function deletePosts(ids = []) {
 
   if (foundIds.length) {
     await softDeletePostsInRepository(foundIds);
+    forget('posts:');
+    forget('dashboard:');
   }
 
   return {
@@ -353,6 +365,8 @@ async function updatePostModerationStatus(id, moderationStatus) {
   }
 
   await updatePostModerationStatusInRepository(id, normalizedStatus);
+  forget('posts:');
+  forget('dashboard:');
   await pushModerationNotificationIfNeeded(postDoc, normalizedStatus);
   return {
     id,
@@ -380,6 +394,8 @@ async function updatePostsModerationStatus(ids = [], moderationStatus) {
 
   if (foundIds.length) {
     await updatePostsModerationStatusInRepository(foundIds, normalizedStatus);
+    forget('posts:');
+    forget('dashboard:');
     // Gửi thông báo theo từng bài để app của đúng user nhận được cập nhật.
     await Promise.all(
       docs.map((doc) => {

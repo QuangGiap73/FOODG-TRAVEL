@@ -1,6 +1,7 @@
 ﻿const { AppError } = require('../../core/errors/app-error');
 const { createUploadService } = require('../uploads/upload.service');
-const { listProvinces } = require('../provinces/provinces.service');
+const { remember, forget } = require('../../core/cache/memory-cache');
+const { listProvinceOptions } = require('../provinces/provinces.service');
 const { toSystemPostViewModel } = require('./system-posts.mapper');
 const {
   listSystemPostsFromRepository,
@@ -18,7 +19,14 @@ const {
 
 async function getSystemPostsPageData(query = {}) {
   const filters = validateSystemPostListQuery(query);
-  let items = (await listSystemPostsFromRepository()).map(toSystemPostViewModel);
+  let items = (await remember('system-posts:list', 30 * 1000, listSystemPostsFromRepository)).map(toSystemPostViewModel);
+
+  const stats = items.reduce((result, item) => {
+    result.total += 1;
+    if (Object.prototype.hasOwnProperty.call(result, item.status)) result[item.status] += 1;
+    if (item.featured) result.featured += 1;
+    return result;
+  }, { total: 0, published: 0, draft: 0, hidden: 0, featured: 0 });
 
   if (filters.search) {
     const keyword = filters.search.toLowerCase();
@@ -39,6 +47,7 @@ async function getSystemPostsPageData(query = {}) {
 
   return {
     items: items.slice(start, start + filters.pageSize),
+    stats,
     meta: {
       page: filters.page,
       pageSize: filters.pageSize,
@@ -52,7 +61,7 @@ async function getSystemPostsPageData(query = {}) {
 
 async function getSystemPostFormData() {
   return {
-    provinces: await listProvinces(),
+    provinces: await listProvinceOptions(),
     statuses: ALLOWED_STATUS.map((status) => ({
       value: status,
       label: status === 'draft'
@@ -158,6 +167,8 @@ async function createSystemPost(payload) {
   if (!data.contentVi) throw new AppError('Nội dung tiếng Việt là trường bắt buộc', 400);
   if (await getSystemPostByIdFromRepository(id)) throw new AppError('ID bài viết hệ thống đã tồn tại', 400);
   await createSystemPostInRepository(id, buildSystemPostDocument(data, id));
+  forget('system-posts:');
+  forget('dashboard:');
   return { id };
 }
 
@@ -169,12 +180,16 @@ async function updateSystemPost(id, payload) {
   if (!data.slug) throw new AppError('Slug là trường bắt buộc', 400);
   if (!data.contentVi) throw new AppError('Nội dung tiếng Việt là trường bắt buộc', 400);
   await updateSystemPostInRepository(id, buildSystemPostDocument(data, id));
+  forget('system-posts:');
+  forget('dashboard:');
   return { id };
 }
 
 async function deleteSystemPost(id) {
   if (!id) throw new AppError('Thiếu mã bài viết hệ thống', 400);
   await softDeleteSystemPostInRepository(id);
+  forget('system-posts:');
+  forget('dashboard:');
   return { id };
 }
 

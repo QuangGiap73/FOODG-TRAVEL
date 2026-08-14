@@ -1,6 +1,7 @@
 const { getDashboardCollections } = require('./dashboard.repository');
 const canonicalProvinces = require('./data/canonical-provinces-34.json');
 const provinceMergeMap = require('./data/province-merge-map.json');
+const { remember } = require('../../core/cache/memory-cache');
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -144,7 +145,7 @@ function buildRecentActivity(users, posts, systemPosts) {
     }));
 }
 
-async function getDashboardOverview() {
+async function buildDashboardOverview() {
   const data = await getDashboardCollections();
   const now = new Date();
   const pendingPosts = data.posts.filter((post) => ['pending', 'review', 'waiting'].includes(String(post.moderationStatus || '').toLowerCase()));
@@ -169,6 +170,10 @@ async function getDashboardOverview() {
       active: mapPoints.filter((item) => item.total > 0).length,
     },
   };
+}
+
+async function getDashboardOverview() {
+  return remember('dashboard:overview', 45 * 1000, buildDashboardOverview);
 }
 
 module.exports = { getDashboardOverview };

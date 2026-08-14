@@ -17,7 +17,10 @@ async function getSystemPostsPage(req, res) {
   res.render('pages/system-posts/index', {
     pageTitle: 'Bài viết hệ thống',
     posts: pageData.items,
+    stats: pageData.stats,
     pagination: pageData.meta,
+    pageStyles: ['/public/css/pages/system-posts.css'],
+    pageScripts: ['/public/js/modules/system-posts/index.js'],
   });
 }
 
@@ -25,6 +28,7 @@ async function getSystemPostDetailPage(req, res) {
   const detailData = await getSystemPostDetailData(req.params.id);
   res.render('pages/system-posts/detail', {
     pageTitle: 'Chi tiết bài viết hệ thống',
+    pageStyles: ['/public/css/pages/system-posts.css'],
     ...detailData,
   });
 }
@@ -38,6 +42,8 @@ async function renderFormPage(res, options = {}) {
     formValues: options.formValues || buildSystemPostDefaults(),
     submitAction: options.submitAction || '/admin/system-posts/add',
     mode: options.mode || 'create',
+    pageStyles: ['/public/css/pages/system-posts.css'],
+    pageScripts: ['/public/js/modules/system-posts/form.js'],
   });
 }
 

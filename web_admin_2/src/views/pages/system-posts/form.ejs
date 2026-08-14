@@ -1,280 +1,102 @@
-﻿<%
+<%
   const values = formValues || {};
   const provinces = formData.provinces || [];
   const statuses = formData.statuses || [];
+  const isEdit = mode === 'edit';
 %>
 
-<section class="page-header page-header--compact">
-  <p class="page-header__description">Hỗ trợ song ngữ, upload ảnh cover từ máy và gắn tỉnh/thành cho nội dung chính thống.</p>
-</section>
+<section class="system-post-editor">
+  <header class="system-post-editor__topbar">
+    <div class="system-post-editor__heading">
+      <a href="/admin/system-posts" aria-label="Quay lại danh sách">←</a>
+      <div><span>Trung tâm nội dung</span><h2><%= isEdit ? 'Chỉnh sửa bài viết' : 'Tạo bài viết mới' %></h2></div>
+    </div>
+    <div class="system-post-editor__top-actions">
+      <span class="system-post-editor__save-state" id="system-post-save-state">Chưa có thay đổi</span>
+      <% if (isEdit && values.id) { %><a class="secondary-button" href="/admin/system-posts/<%= values.id %>">Xem bài viết</a><% } %>
+      <button class="primary-button" type="submit" form="system-post-form" id="system-post-submit-button">Lưu bài viết</button>
+    </div>
+  </header>
 
-<section class="panel-card">
   <% if (successMessage) { %><p data-notification="success"><%= successMessage %></p><% } %>
   <% if (errorMessage) { %><p class="form-error" data-notification="error"><%= errorMessage %></p><% } %>
 
-  <form class="user-form-grid" id="system-post-form" method="post" action="<%= submitAction %>">
-    <label>
-      <span>ID</span>
-      <input type="text" name="id" value="<%= values.id || '' %>" <%= mode === 'edit' ? 'readonly' : '' %> />
-    </label>
+  <form id="system-post-form" method="post" action="<%= submitAction %>" class="system-post-editor__layout">
+    <main class="system-post-editor__main">
+      <section class="system-post-editor-card system-post-editor-card--content">
+        <div class="system-post-editor-card__head">
+          <div><span class="system-posts-eyebrow">Nội dung bài viết</span><h3>Thông tin biên tập</h3></div>
+          <div class="system-post-language-tabs" role="tablist" aria-label="Ngôn ngữ">
+            <button type="button" class="is-active" role="tab" aria-selected="true" data-editor-language="vi">Tiếng Việt <i></i></button>
+            <button type="button" role="tab" aria-selected="false" data-editor-language="en">English <i></i></button>
+          </div>
+        </div>
 
-    <label>
-      <span>Slug *</span>
-      <div style="display:flex;gap:8px;">
-        <input type="text" id="system-post-slug" name="slug" value="<%= values.slug || '' %>" required />
-        <button class="secondary-button" id="system-post-generate-slug" type="button">Tạo</button>
-      </div>
-    </label>
+        <div class="system-post-language-panel" data-language-panel="vi">
+          <label class="system-post-field"><span>Tiêu đề bài viết <b>*</b></span><input type="text" id="system-post-title-vi" name="titleVi" value="<%= values.titleVi || '' %>" placeholder="Nhập tiêu đề rõ ràng, hấp dẫn" required /></label>
+          <label class="system-post-field"><span>Danh mục</span><input type="text" name="categoryVi" value="<%= values.categoryVi || '' %>" placeholder="Ví dụ: Cẩm nang ẩm thực" /></label>
+          <label class="system-post-field"><span>Tóm tắt</span><textarea name="summaryVi" rows="4" maxlength="300" placeholder="Mô tả ngắn nội dung bài viết"><%= values.summaryVi || '' %></textarea><small><span data-count-for="summaryVi">0</span>/300 ký tự</small></label>
+          <label class="system-post-field"><span>Nội dung <b>*</b></span><textarea name="contentVi" rows="15" placeholder="Soạn nội dung bài viết tại đây..." required><%= values.contentVi || '' %></textarea><small><span data-count-for="contentVi">0</span> ký tự</small></label>
+        </div>
 
-    <label>
-      <span>Tiêu đề (VI) *</span>
-      <input type="text" id="system-post-title-vi" name="titleVi" value="<%= values.titleVi || '' %>" required />
-    </label>
+        <div class="system-post-language-panel" data-language-panel="en" hidden>
+          <label class="system-post-field"><span>Article title</span><input type="text" name="titleEn" value="<%= values.titleEn || '' %>" placeholder="Enter the English title" /></label>
+          <label class="system-post-field"><span>Category</span><input type="text" name="categoryEn" value="<%= values.categoryEn || '' %>" placeholder="For example: Food guide" /></label>
+          <label class="system-post-field"><span>Summary</span><textarea name="summaryEn" rows="4" maxlength="300" placeholder="Brief English description"><%= values.summaryEn || '' %></textarea><small><span data-count-for="summaryEn">0</span>/300 characters</small></label>
+          <label class="system-post-field"><span>Content</span><textarea name="contentEn" rows="15" placeholder="Write the English content here..."><%= values.contentEn || '' %></textarea><small><span data-count-for="contentEn">0</span> characters</small></label>
+        </div>
+      </section>
 
-    <label>
-      <span>Tiêu đề (EN)</span>
-      <input type="text" name="titleEn" value="<%= values.titleEn || '' %>" />
-    </label>
+      <section class="system-post-editor-card">
+        <div class="system-post-editor-card__head"><div><span class="system-posts-eyebrow">Tìm kiếm</span><h3>Tối ưu SEO</h3></div><span class="system-post-editor-card__hint">Không bắt buộc</span></div>
+        <div class="system-post-seo-grid">
+          <label class="system-post-field"><span>SEO title</span><input type="text" name="seoTitle" maxlength="70" value="<%= values.seoTitle || '' %>" placeholder="Tiêu đề trên công cụ tìm kiếm" /><small><span data-count-for="seoTitle">0</span>/70 ký tự</small></label>
+          <label class="system-post-field"><span>SEO description</span><textarea name="seoDescription" maxlength="160" rows="3" placeholder="Mô tả hiển thị trên kết quả tìm kiếm"><%= values.seoDescription || '' %></textarea><small><span data-count-for="seoDescription">0</span>/160 ký tự</small></label>
+        </div>
+        <div class="system-post-seo-preview"><span>foodtravel.vn</span><strong id="system-post-seo-preview-title"><%= values.seoTitle || values.titleVi || 'Tiêu đề bài viết' %></strong><p id="system-post-seo-preview-description"><%= values.seoDescription || values.summaryVi || 'Mô tả bài viết sẽ xuất hiện tại đây.' %></p></div>
+      </section>
+    </main>
 
-    <label>
-      <span>Danh mục (VI)</span>
-      <input type="text" name="categoryVi" value="<%= values.categoryVi || '' %>" />
-    </label>
+    <aside class="system-post-editor__sidebar">
+      <section class="system-post-editor-card">
+        <div class="system-post-editor-card__head"><div><span class="system-posts-eyebrow">Phân phối</span><h3>Xuất bản</h3></div></div>
+        <label class="system-post-field"><span>Trạng thái</span><select name="status"><% statuses.forEach(function(item) { %><option value="<%= item.value %>" <%= values.status === item.value ? 'selected' : '' %>><%= item.label %></option><% }) %></select></label>
+        <label class="system-post-field"><span>Đường dẫn (slug) <b>*</b></span><div class="system-post-slug"><input type="text" id="system-post-slug" name="slug" value="<%= values.slug || '' %>" required /><button type="button" id="system-post-generate-slug">Tạo</button></div></label>
+        <label class="system-post-field"><span>Tỉnh / thành</span><select name="provinceCode34"><option value="">Toàn quốc</option><% provinces.forEach(function(item) { %><option value="<%= item.code %>" <%= values.provinceCode34 === item.code ? 'selected' : '' %> data-name="<%= item.name %>" data-region="<%= item.regionCode %>"><%= item.name %></option><% }) %></select></label>
+        <input type="hidden" name="provinceName34" value="<%= values.provinceName34 || '' %>" /><input type="hidden" name="regionCode" value="<%= values.regionCode || '' %>" />
+        <div class="system-post-switches">
+          <label><span><strong>Nội dung nổi bật</strong><small>Ưu tiên hiển thị trên ứng dụng</small></span><input type="checkbox" name="featured" value="true" <%= values.featured ? 'checked' : '' %> /><i></i></label>
+          <label><span><strong>Ghim bài viết</strong><small>Giữ bài viết ở vị trí ưu tiên</small></span><input type="checkbox" name="pinned" value="true" <%= values.pinned ? 'checked' : '' %> /><i></i></label>
+        </div>
+      </section>
 
-    <label>
-      <span>Danh mục (EN)</span>
-      <input type="text" name="categoryEn" value="<%= values.categoryEn || '' %>" />
-    </label>
-
-    <label>
-      <span>Trạng thái</span>
-      <select name="status">
-        <% statuses.forEach(function(item) { %>
-          <option value="<%= item.value %>" <%= values.status === item.value ? 'selected' : '' %>><%= item.label %></option>
-        <% }) %>
-      </select>
-    </label>
-
-    <label>
-      <span>Tỉnh / thành</span>
-      <select name="provinceCode34">
-        <option value="">Chọn tỉnh / thành</option>
-        <% provinces.forEach(function(item) { %>
-          <option
-            value="<%= item.code %>"
-            <%= values.provinceCode34 === item.code ? 'selected' : '' %>
-            data-name="<%= item.name %>"
-            data-region="<%= item.regionCode %>"
-          ><%= item.name %></option>
-        <% }) %>
-      </select>
-      <input type="hidden" name="provinceName34" value="<%= values.provinceName34 || '' %>" />
-      <input type="hidden" name="regionCode" value="<%= values.regionCode || '' %>" />
-    </label>
-
-    <label class="user-form-grid__full">
-      <span>Tóm tắt (VI)</span>
-      <textarea name="summaryVi" rows="3"><%= values.summaryVi || '' %></textarea>
-    </label>
-
-    <label class="user-form-grid__full">
-      <span>Tóm tắt (EN)</span>
-      <textarea name="summaryEn" rows="3"><%= values.summaryEn || '' %></textarea>
-    </label>
-
-    <label class="user-form-grid__full">
-      <span>Nội dung (VI) *</span>
-      <textarea name="contentVi" rows="9" required><%= values.contentVi || '' %></textarea>
-    </label>
-
-    <label class="user-form-grid__full">
-      <span>Nội dung (EN)</span>
-      <textarea name="contentEn" rows="9"><%= values.contentEn || '' %></textarea>
-    </label>
-
-    <label class="user-form-grid__full">
-      <span>Ảnh cover</span>
-      <div style="display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;">
-        <input type="url" id="system-post-cover-image" name="coverImage" value="<%= values.coverImage || '' %>" placeholder="https://..." />
+      <section class="system-post-editor-card">
+        <div class="system-post-editor-card__head"><div><span class="system-posts-eyebrow">Hình ảnh</span><h3>Ảnh bìa</h3></div></div>
+        <div class="system-post-cover <%= values.coverImage ? 'has-image' : '' %>" id="system-post-cover-preview">
+          <img id="system-post-cover-preview-image" src="<%= values.coverImage || '' %>" alt="Xem trước ảnh bìa" />
+          <div class="system-post-cover__placeholder"><span aria-hidden="true">▧</span><strong>Chọn ảnh bìa</strong><small>PNG, JPG hoặc WebP</small></div>
+          <button type="button" id="system-post-upload-trigger">Thay đổi ảnh</button>
+        </div>
         <input type="file" id="system-post-cover-file" accept="image/png,image/jpeg,image/webp" hidden />
-        <button class="secondary-button" id="system-post-upload-trigger" type="button">Chọn ảnh</button>
-      </div>
-      <small id="system-post-upload-status">Bạn có thể dán URL hoặc tải ảnh từ máy. Sau khi chọn ảnh, hệ thống sẽ tự tải lên trước khi lưu.</small>
-      <div id="system-post-cover-preview" style="margin-top:10px;<%= values.coverImage ? '' : 'display:none;' %>">
-        <img
-          id="system-post-cover-preview-image"
-          src="<%= values.coverImage || '' %>"
-          alt="Preview cover"
-          style="width:220px;height:132px;object-fit:cover;border-radius:14px;border:1px solid #eadbc8;display:block;"
-        />
-      </div>
-    </label>
+        <label class="system-post-field system-post-cover-url"><span>Hoặc sử dụng URL</span><input type="url" id="system-post-cover-image" name="coverImage" value="<%= values.coverImage || '' %>" placeholder="https://..." /></label>
+        <small class="system-post-upload-status" id="system-post-upload-status">Ảnh ngang tỷ lệ 16:9 cho kết quả tốt nhất.</small>
+      </section>
 
-    <label class="user-form-grid__full">
-      <span>Tags</span>
-      <input type="text" name="tags" value="<%= values.tags || '' %>" placeholder="banner, cẩm nang, nổi bật" />
-    </label>
+      <section class="system-post-editor-card">
+        <div class="system-post-editor-card__head"><div><span class="system-posts-eyebrow">Phân loại</span><h3>Thẻ nội dung</h3></div></div>
+        <label class="system-post-field"><span>Tags</span><input type="text" name="tags" value="<%= values.tags || '' %>" placeholder="cẩm nang, nổi bật, đặc sản" /><small>Phân tách mỗi thẻ bằng dấu phẩy.</small></label>
+        <% if (values.id) { %><label class="system-post-field"><span>ID bài viết</span><input type="text" name="id" value="<%= values.id %>" readonly /></label><% } else { %><input type="hidden" name="id" value="" /><% } %>
+      </section>
 
-    <label>
-      <span>SEO title</span>
-      <input type="text" name="seoTitle" value="<%= values.seoTitle || '' %>" />
-    </label>
+      <section class="system-post-editor-card system-post-checklist">
+        <div class="system-post-editor-card__head"><div><span class="system-posts-eyebrow">Kiểm tra</span><h3>Mức độ hoàn thiện</h3></div><strong id="system-post-progress">0%</strong></div>
+        <div class="system-post-progress"><i id="system-post-progress-bar"></i></div>
+        <ul><li data-check="title">Tiêu đề tiếng Việt</li><li data-check="content">Nội dung tiếng Việt</li><li data-check="cover">Ảnh bìa</li><li data-check="summary">Tóm tắt bài viết</li><li data-check="seo">Thông tin SEO</li></ul>
+      </section>
+    </aside>
 
-    <label>
-      <span>SEO description</span>
-      <input type="text" name="seoDescription" value="<%= values.seoDescription || '' %>" />
-    </label>
-
-    <label>
-      <span><input type="checkbox" name="featured" value="true" <%= values.featured ? 'checked' : '' %> /> Nổi bật</span>
-    </label>
-
-    <label>
-      <span><input type="checkbox" name="pinned" value="true" <%= values.pinned ? 'checked' : '' %> /> Ghim</span>
-    </label>
-
-    <input type="hidden" name="title" value="<%= values.titleVi || '' %>" />
-    <input type="hidden" name="summary" value="<%= values.summaryVi || '' %>" />
-    <input type="hidden" name="content" value="<%= values.contentVi || '' %>" />
-    <input type="hidden" name="category" value="<%= values.categoryVi || '' %>" />
-
-    <div class="user-form-actions user-form-grid__full">
-      <a class="secondary-button" href="/admin/system-posts">Quay lại</a>
-      <button class="primary-button" id="system-post-submit-button" type="submit">Lưu bài viết hệ thống</button>
-    </div>
+    <input type="hidden" name="title" value="<%= values.titleVi || '' %>" /><input type="hidden" name="summary" value="<%= values.summaryVi || '' %>" /><input type="hidden" name="content" value="<%= values.contentVi || '' %>" /><input type="hidden" name="category" value="<%= values.categoryVi || '' %>" />
   </form>
+
+  <div class="system-post-editor__mobile-actions"><a class="secondary-button" href="/admin/system-posts">Hủy</a><button class="primary-button" type="submit" form="system-post-form">Lưu bài viết</button></div>
 </section>
-
-<script>
-  (function () {
-    const form = document.getElementById('system-post-form');
-    const provinceSelect = document.querySelector('select[name="provinceCode34"]');
-    const provinceNameInput = document.querySelector('input[name="provinceName34"]');
-    const regionCodeInput = document.querySelector('input[name="regionCode"]');
-    const titleViInput = document.getElementById('system-post-title-vi');
-    const slugInput = document.getElementById('system-post-slug');
-    const generateSlugButton = document.getElementById('system-post-generate-slug');
-    const coverImageInput = document.getElementById('system-post-cover-image');
-    const coverFileInput = document.getElementById('system-post-cover-file');
-    const uploadTrigger = document.getElementById('system-post-upload-trigger');
-    const uploadStatus = document.getElementById('system-post-upload-status');
-    const submitButton = document.getElementById('system-post-submit-button');
-    const previewWrap = document.getElementById('system-post-cover-preview');
-    const previewImage = document.getElementById('system-post-cover-preview-image');
-    let uploadPromise = null;
-    let isUploading = false;
-
-    if (!form) return;
-
-    function slugify(value) {
-      return String(value || '')
-        .trim()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/\u0111/g, 'd')
-        .replace(/\u0110/g, 'd')
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-+|-+$/g, '');
-    }
-
-    function syncProvinceMeta() {
-      const option = provinceSelect?.selectedOptions?.[0];
-      if (!option) return;
-      provinceNameInput.value = option.dataset.name || '';
-      regionCodeInput.value = option.dataset.region || '';
-    }
-
-    function syncSlug() {
-      if (!slugInput || slugInput.dataset.userTouched) return;
-      slugInput.value = slugify(titleViInput?.value || '');
-    }
-
-    function setUploadingState(nextUploading, message) {
-      isUploading = nextUploading;
-      if (submitButton) {
-        submitButton.disabled = nextUploading;
-        submitButton.textContent = nextUploading ? 'Đang tải ảnh...' : 'Lưu bài viết hệ thống';
-      }
-      if (uploadStatus && message) {
-        uploadStatus.textContent = message;
-      }
-    }
-
-    function syncPreview(url) {
-      const nextUrl = String(url || '').trim();
-      if (!previewWrap || !previewImage) return;
-      if (!nextUrl) {
-        previewWrap.style.display = 'none';
-        previewImage.src = '';
-        return;
-      }
-      previewWrap.style.display = 'block';
-      previewImage.src = nextUrl;
-    }
-
-    async function uploadCover(file) {
-      if (!file) return '';
-      const formData = new FormData();
-      formData.append('image', file);
-      setUploadingState(true, 'Đang tải ảnh lên...');
-      try {
-        const response = await fetch('/admin/system-posts/api/upload-image', {
-          method: 'POST',
-          body: formData,
-        });
-        const body = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(body.message || 'Tải ảnh thất bại');
-        const imageUrl = body.data?.url || '';
-        if (!imageUrl) throw new Error('Không nhận được URL ảnh');
-        coverImageInput.value = imageUrl;
-        syncPreview(imageUrl);
-        setUploadingState(false, 'Tải ảnh thành công. Ảnh đã sẵn sàng để lưu.');
-        return imageUrl;
-      } catch (error) {
-        setUploadingState(false, error.message || 'Tải ảnh thất bại');
-        throw error;
-      } finally {
-        if (coverFileInput) coverFileInput.value = '';
-      }
-    }
-
-    provinceSelect?.addEventListener('change', syncProvinceMeta);
-    titleViInput?.addEventListener('input', syncSlug);
-    slugInput?.addEventListener('input', () => {
-      slugInput.dataset.userTouched = '1';
-    });
-    generateSlugButton?.addEventListener('click', () => {
-      slugInput.dataset.userTouched = '';
-      syncSlug();
-    });
-    uploadTrigger?.addEventListener('click', () => coverFileInput?.click());
-    coverFileInput?.addEventListener('change', () => {
-      const file = coverFileInput.files?.[0];
-      if (!file) return;
-      uploadPromise = uploadCover(file)
-        .catch(() => null)
-        .finally(() => {
-          uploadPromise = null;
-        });
-    });
-    coverImageInput?.addEventListener('input', () => syncPreview(coverImageInput.value));
-
-    form.addEventListener('submit', async (event) => {
-      if (isUploading && uploadPromise) {
-        event.preventDefault();
-        try {
-          await uploadPromise;
-          form.requestSubmit();
-        } catch (_error) {
-        }
-      }
-    });
-
-    syncProvinceMeta();
-    syncSlug();
-    syncPreview(coverImageInput?.value || '');
-  })();
-</script>
-
-

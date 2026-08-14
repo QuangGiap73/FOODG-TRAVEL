@@ -60,8 +60,21 @@ async function getUserDetailByIdFromRepository(id) {
 }
 
 async function listUsersFromRepository() {
-  const snap = await getDb().collection(COLLECTIONS.USERS).get();
-  return Promise.all(snap.docs.map(hydrateUserWithJourney));
+  const db = getDb();
+  const snap = await db.collection(COLLECTIONS.USERS).get();
+  const summaryRefs = snap.docs.map((doc) => doc.ref.collection('journey').doc('summary'));
+  const summaries = [];
+
+  // Firestore getAll gộp nhiều document vào một lượt RPC; chia lô để tránh request quá lớn.
+  for (let index = 0; index < summaryRefs.length; index += 100) {
+    summaries.push(...await db.getAll(...summaryRefs.slice(index, index + 100)));
+  }
+
+  return snap.docs.map((doc, index) => ({
+    id: doc.id,
+    ...doc.data(),
+    journeySummary: summaries[index]?.exists ? summaries[index].data() : null,
+  }));
 }
 
 async function getUserByIdFromRepository(id) {

@@ -88,6 +88,16 @@ async function countDishesFromRepository(filters = {}) {
   return Number(snapshot.data()?.count || 0);
 }
 
+async function listDishesPageFastFromRepository({ page = 1, pageSize = 50, spicyLevel = '', sortBy = 'stt_asc' } = {}) {
+  const safePage = Math.max(1, Number(page) || 1);
+  const safePageSize = Math.max(1, Number(pageSize) || 50);
+  let ref = applyDishFilters(getDb().collection(COLLECTIONS.DISHES), { spicyLevel });
+  const direction = sortBy === 'stt_desc' ? 'desc' : 'asc';
+  ref = ref.orderBy('STT', direction).offset((safePage - 1) * safePageSize).limit(safePageSize);
+  const snapshot = await ref.get();
+  return snapshot.docs.map(normalizeDishViewModel);
+}
+
 async function listDishesFromRepository({
   page = 1,
   pageSize = 50,
@@ -277,6 +287,7 @@ async function updateDishInRepository(id, payload) {
 
 module.exports = {
   countDishesFromRepository,
+  listDishesPageFastFromRepository,
   listDishesFromRepository,
   listAllDishesFromRepository,
   listAllDishesWithSearchFromRepository,

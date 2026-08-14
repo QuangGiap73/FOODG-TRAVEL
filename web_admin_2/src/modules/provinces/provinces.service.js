@@ -1,5 +1,6 @@
 const { AppError } = require('../../core/errors/app-error');
 const { createUploadService } = require('../uploads/upload.service');
+const { remember, forget } = require('../../core/cache/memory-cache');
 const {
   listRegionsFromRepository,
   listProvincesFromRepository,
@@ -24,17 +25,21 @@ const {
 } = require('./provinces.mapper');
 
 async function listRegions() {
-  const items = await listRegionsFromRepository();
-  return items.map(toRegionViewModel);
+  return remember('provinces:regions', 5 * 60 * 1000, async () => {
+    const items = await listRegionsFromRepository();
+    return items.map(toRegionViewModel);
+  });
 }
 
 async function listProvinces(regionCode) {
-  const [items, statsMap] = await Promise.all([
-    listProvincesFromRepository(regionCode),
-    buildProvinceStatsMapFromRepository(),
-  ]);
+  const cacheKey = `provinces:list:${String(regionCode || 'all')}`;
+  return remember(cacheKey, 2 * 60 * 1000, async () => {
+    const [items, statsMap] = await Promise.all([
+      listProvincesFromRepository(regionCode),
+      remember('provinces:stats', 2 * 60 * 1000, buildProvinceStatsMapFromRepository),
+    ]);
 
-  return items.map((item) => {
+    return items.map((item) => {
     const normalizedCode = normalizeProvinceKey(item.code || item.id);
     const normalizedName = normalizeProvinceKey(item.name);
     const stats =
@@ -47,6 +52,15 @@ async function listProvinces(regionCode) {
       dishesCount: stats.dishesCount,
       checkinsCount: stats.checkinsCount,
     });
+    });
+  });
+}
+
+async function listProvinceOptions(regionCode = '') {
+  const cacheKey = `provinces:options:${String(regionCode || 'all')}`;
+  return remember(cacheKey, 5 * 60 * 1000, async () => {
+    const items = await listProvincesFromRepository(regionCode);
+    return items.map(toProvinceViewModel);
   });
 }
 
@@ -78,6 +92,7 @@ async function createRegion(payload) {
     macro_region: macroRegion,
     number,
   });
+  forget('provinces:');
 
   return {
     code: data.code,
@@ -96,6 +111,7 @@ async function removeRegion(code) {
   }
 
   await deleteRegionInRepository(code);
+  forget('provinces:');
   return { code };
 }
 
@@ -117,6 +133,8 @@ async function createProvince(payload) {
   }
 
   await createProvinceInRepository(data);
+  forget('provinces:');
+  forget('dashboard:');
 
   return {
     code: data.code,
@@ -150,6 +168,8 @@ async function updateProvince(code, payload) {
   }
 
   await updateProvinceInRepository(data.code, data);
+  forget('provinces:');
+  forget('dashboard:');
 
   return {
     code: data.code,
@@ -174,6 +194,8 @@ async function removeProvince(code) {
   }
 
   await deleteProvinceInRepository(code);
+  forget('provinces:');
+  forget('dashboard:');
   return { code };
 }
 
@@ -191,6 +213,7 @@ async function uploadProvinceImage(file) {
 module.exports = {
   listRegions,
   listProvinces,
+  listProvinceOptions,
   createRegion,
   removeRegion,
   createProvince,

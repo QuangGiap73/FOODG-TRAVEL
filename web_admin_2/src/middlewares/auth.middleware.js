@@ -1,5 +1,9 @@
 const { env } = require('../config/env');
 const { getFirebaseAdmin } = require('../config/firebase-admin');
+const crypto = require('crypto');
+const { getCached, setCached } = require('../core/cache/memory-cache');
+
+const AUTH_CACHE_TTL_MS = 2 * 60 * 1000;
 
 function parseCookieHeader(header = '') {
   return header.split(';').reduce((acc, part) => {
@@ -50,10 +54,17 @@ async function verifyRequestToken(req, res) {
 
   try {
     let decoded = null;
-    try {
-      decoded = await admin.auth().verifySessionCookie(token, true);
-    } catch (_sessionError) {
-      decoded = await admin.auth().verifyIdToken(token);
+    const cacheKey = `auth:${crypto.createHash('sha256').update(token).digest('hex')}`;
+    decoded = getCached(cacheKey);
+    if (!decoded) {
+      try {
+        decoded = await admin.auth().verifySessionCookie(token, true);
+      } catch (_sessionError) {
+        decoded = await admin.auth().verifyIdToken(token);
+      }
+
+      const expiresInMs = decoded.exp ? Math.max(1, decoded.exp * 1000 - Date.now()) : AUTH_CACHE_TTL_MS;
+      setCached(cacheKey, decoded, Math.min(AUTH_CACHE_TTL_MS, expiresInMs));
     }
     req.user = decoded;
     res.locals.user = {

@@ -1,57 +1,103 @@
-﻿<section class="page-header page-header--compact">
-  <p class="page-header__description">Quản lý bài viết chính thức do admin tạo để hiển thị trên app.</p>
-</section>
+<%
+  const status = pagination.status || '';
+  const queryFor = function(overrides) {
+    const params = new URLSearchParams();
+    const next = Object.assign({ search: pagination.search || '', status, page: 1 }, overrides || {});
+    if (next.search) params.set('search', next.search);
+    if (next.status) params.set('status', next.status);
+    if (next.page && Number(next.page) > 1) params.set('page', next.page);
+    const value = params.toString();
+    return '/admin/system-posts' + (value ? '?' + value : '');
+  };
+  const statusLabels = { published: 'Đã xuất bản', draft: 'Bản nháp', hidden: 'Đang ẩn' };
+%>
 
-<section class="panel-card">
-  <div class="section-toolbar">
-    <form method="get" class="toolbar-actions">
-      <input class="search-input" type="search" name="search" placeholder="Tìm theo tiêu đề hoặc slug" value="<%= pagination.search || '' %>" />
-      <select class="search-input" name="status">
+<section class="system-posts-page">
+  <header class="system-posts-heading">
+    <div>
+      <span class="system-posts-eyebrow">Trung tâm nội dung</span>
+      <h2>Bài viết hệ thống</h2>
+      <p>Biên tập và quản lý nội dung chính thức hiển thị trên ứng dụng.</p>
+    </div>
+    <a class="primary-button system-posts-create" href="/admin/system-posts/add"><span aria-hidden="true">＋</span> Tạo bài viết</a>
+  </header>
+
+  <div class="system-posts-stats" aria-label="Thống kê bài viết">
+    <article class="system-posts-stat system-posts-stat--all"><span>Tổng bài viết</span><strong><%= stats.total %></strong><small>Toàn bộ nội dung</small></article>
+    <article class="system-posts-stat system-posts-stat--published"><span>Đã xuất bản</span><strong><%= stats.published %></strong><small>Đang hiển thị</small></article>
+    <article class="system-posts-stat system-posts-stat--draft"><span>Bản nháp</span><strong><%= stats.draft %></strong><small>Đang biên tập</small></article>
+    <article class="system-posts-stat system-posts-stat--hidden"><span>Đang ẩn</span><strong><%= stats.hidden %></strong><small>Tạm ngừng hiển thị</small></article>
+  </div>
+
+  <section class="panel-card system-posts-library">
+    <nav class="system-posts-tabs" aria-label="Lọc trạng thái">
+      <a class="<%= !status ? 'is-active' : '' %>" href="<%= queryFor({ status: '', page: 1 }) %>">Tất cả <span><%= stats.total %></span></a>
+      <a class="<%= status === 'published' ? 'is-active' : '' %>" href="<%= queryFor({ status: 'published', page: 1 }) %>">Đã xuất bản <span><%= stats.published %></span></a>
+      <a class="<%= status === 'draft' ? 'is-active' : '' %>" href="<%= queryFor({ status: 'draft', page: 1 }) %>">Bản nháp <span><%= stats.draft %></span></a>
+      <a class="<%= status === 'hidden' ? 'is-active' : '' %>" href="<%= queryFor({ status: 'hidden', page: 1 }) %>">Đang ẩn <span><%= stats.hidden %></span></a>
+    </nav>
+
+    <form method="get" class="system-posts-filter">
+      <label class="system-posts-search">
+        <span aria-hidden="true">⌕</span>
+        <input type="search" name="search" placeholder="Tìm tiêu đề, slug hoặc nội dung..." value="<%= pagination.search || '' %>" />
+      </label>
+      <select name="status" aria-label="Trạng thái">
         <option value="">Tất cả trạng thái</option>
-        <option value="draft" <%= pagination.status === 'draft' ? 'selected' : '' %>>Nháp</option>
-        <option value="published" <%= pagination.status === 'published' ? 'selected' : '' %>>Đã xuất bản</option>
-        <option value="hidden" <%= pagination.status === 'hidden' ? 'selected' : '' %>>Đã ẩn</option>
+        <option value="draft" <%= status === 'draft' ? 'selected' : '' %>>Bản nháp</option>
+        <option value="published" <%= status === 'published' ? 'selected' : '' %>>Đã xuất bản</option>
+        <option value="hidden" <%= status === 'hidden' ? 'selected' : '' %>>Đang ẩn</option>
       </select>
-      <button class="secondary-button" type="submit">Lọc</button>
+      <button class="secondary-button" type="submit">Áp dụng</button>
+      <% if (pagination.search || status) { %><a class="system-posts-clear" href="/admin/system-posts">Xóa lọc</a><% } %>
     </form>
-    <a class="primary-button" href="/admin/system-posts/add">+ Tạo bài viết hệ thống</a>
-  </div>
 
-  <div class="table-shell">
-    <table class="data-table">
-      <thead>
-        <tr>
-          <th>Tiêu đề</th>
-          <th>Slug</th>
-          <th>Trạng thái</th>
-          <th>Khu vực</th>
-          <th>Cập nhật</th>
-          <th class="table-actions">Hành động</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% if (!posts.length) { %>
-          <tr><td colspan="6">Chưa có bài viết hệ thống nào.</td></tr>
-        <% } %>
-        <% posts.forEach(function(post) { %>
-          <tr>
-            <td>
-              <a href="/admin/system-posts/<%= post.id %>" class="system-post-link"><strong><%= post.titleVi || post.title || '-' %></strong></a>
-              <div><small><%= post.categoryVi || post.category || 'Chưa phân loại' %></small></div>
-            </td>
-            <td><%= post.slug || '-' %></td>
-            <td><span class="table-badge"><%= post.status %></span></td>
-            <td><%= post.provinceName34 || post.regionCode || '-' %></td>
-            <td><%= post.updatedAtDate ? post.updatedAtDate.toLocaleDateString('vi-VN') : '-' %></td>
-            <td class="table-actions">
-              <a class="icon-action" href="/admin/system-posts/<%= post.id %>">Xem</a>
-              <a class="icon-action" href="/admin/system-posts/<%= post.id %>/edit">Sửa</a>
-            </td>
-          </tr>
+    <% if (!posts.length) { %>
+      <div class="system-posts-empty">
+        <div aria-hidden="true">✦</div>
+        <h3>Chưa tìm thấy bài viết</h3>
+        <p>Thử thay đổi bộ lọc hoặc tạo nội dung chính thức đầu tiên.</p>
+        <a class="primary-button" href="/admin/system-posts/add">Tạo bài viết</a>
+      </div>
+    <% } else { %>
+      <div class="system-posts-list">
+        <% posts.forEach(function(post) { const label = statusLabels[post.status] || 'Bản nháp'; %>
+          <article class="system-post-row">
+            <a class="system-post-row__cover" href="/admin/system-posts/<%= post.id %>" aria-label="Xem <%= post.titleVi || post.title || 'bài viết' %>">
+              <% if (post.coverImage) { %><img src="<%= post.coverImage %>" alt="" loading="lazy" /><% } else { %><span aria-hidden="true">FT</span><% } %>
+            </a>
+            <div class="system-post-row__main">
+              <div class="system-post-row__badges">
+                <span class="system-post-status system-post-status--<%= post.status %>"><i></i><%= label %></span>
+                <% if (post.featured) { %><span class="system-post-chip">Nổi bật</span><% } %>
+                <% if (post.pinned) { %><span class="system-post-chip">Ghim</span><% } %>
+              </div>
+              <a class="system-post-row__title" href="/admin/system-posts/<%= post.id %>"><%= post.titleVi || post.title || 'Chưa có tiêu đề' %></a>
+              <p><%= post.summaryVi || 'Bài viết chưa có phần tóm tắt.' %></p>
+              <div class="system-post-row__meta">
+                <span><%= post.categoryVi || post.category || 'Chưa phân loại' %></span>
+                <span><%= post.provinceName34 || post.regionCode || 'Toàn quốc' %></span>
+                <span>Cập nhật <%= post.updatedAtDate ? post.updatedAtDate.toLocaleDateString('vi-VN') : 'chưa xác định' %></span>
+              </div>
+            </div>
+            <div class="system-post-row__language" title="Mức độ hoàn thiện ngôn ngữ">
+              <span class="is-ready">VI</span><span class="<%= post.titleEn && post.contentEn ? 'is-ready' : '' %>">EN</span>
+            </div>
+            <div class="system-post-row__actions">
+              <a href="/admin/system-posts/<%= post.id %>">Xem</a>
+              <a class="primary-button" href="/admin/system-posts/<%= post.id %>/edit">Chỉnh sửa</a>
+            </div>
+          </article>
         <% }) %>
-      </tbody>
-    </table>
-  </div>
+      </div>
+    <% } %>
+
+    <% if (pagination.totalPages > 1) { %>
+      <nav class="system-posts-pagination" aria-label="Phân trang">
+        <a class="<%= pagination.page <= 1 ? 'is-disabled' : '' %>" href="<%= queryFor({ page: Math.max(1, pagination.page - 1) }) %>">← Trước</a>
+        <span>Trang <strong><%= pagination.page %></strong> / <%= pagination.totalPages %></span>
+        <a class="<%= pagination.page >= pagination.totalPages ? 'is-disabled' : '' %>" href="<%= queryFor({ page: Math.min(pagination.totalPages, pagination.page + 1) }) %>">Sau →</a>
+      </nav>
+    <% } %>
+  </section>
 </section>
-
-

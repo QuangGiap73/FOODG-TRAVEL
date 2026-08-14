@@ -11,6 +11,7 @@ const {
 const { validateUserPayload } = require('./users.validator');
 const { toUserViewModel } = require('./users.mapper');
 const { createUploadService } = require('../uploads/upload.service');
+const { remember, forget } = require('../../core/cache/memory-cache');
 
 function getTime(val) {
   if (!val) return 0;
@@ -48,7 +49,7 @@ function sortUsers(items, sort = '') {
 }
 
 async function listUsers(options = {}) {
-  const items = await listUsersFromRepository();
+  const items = await remember('users:list', 60 * 1000, listUsersFromRepository);
   return sortUsers(items.map(toUserViewModel), options.sort);
 }
 
@@ -63,6 +64,8 @@ async function createUser(payload) {
 
   try {
     const id = await createUserInRepository(data);
+    forget('users:');
+    forget('dashboard:');
     return { id };
   } catch (error) {
     const badRequestCodes = ['auth/email-already-exists', 'auth/invalid-password', 'auth/invalid-email'];
@@ -92,6 +95,8 @@ async function updateUser(id, payload) {
   try {
     const updated = await updateUserInRepository(id, data);
     if (!updated) throw new AppError('User not found', 404);
+    forget('users:');
+    forget('dashboard:');
     return { id, authUpdated: updated.authUpdated };
   } catch (error) {
     const badCodes = ['auth/email-already-exists', 'auth/invalid-email', 'auth/invalid-password'];
@@ -106,6 +111,8 @@ async function deleteUser(id) {
   if (!id) throw new AppError('Missing id', 400);
   const deleted = await deleteUserInRepository(id);
   if (!deleted) throw new AppError('User not found', 404);
+  forget('users:');
+  forget('dashboard:');
   return { id };
 }
 
@@ -123,6 +130,8 @@ async function deleteUsers(ids = []) {
     const deleted = await deleteUserInRepository(id);
     results.push({ id, deleted: Boolean(deleted) });
   }
+  forget('users:');
+  forget('dashboard:');
 
   return {
     deleted: results.filter((item) => item.deleted).map((item) => item.id),
@@ -142,6 +151,8 @@ async function uploadUserAvatar(id, file) {
 
   const updated = await updateUserAvatarInRepository(id, uploaded.url);
   if (!updated) throw new AppError('User not found', 404);
+  forget('users:');
+  forget('dashboard:');
   return updated;
 }
 
