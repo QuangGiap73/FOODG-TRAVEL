@@ -8,7 +8,7 @@ import '../../../services/community/community_service.dart';
 import '../../community/community_feed_page.dart';
 import '../../community/community_post_detail_page.dart';
 
-class HomeCommunityEatingSection extends StatelessWidget {
+class HomeCommunityEatingSection extends StatefulWidget {
   const HomeCommunityEatingSection({
     super.key,
     required this.userLat,
@@ -19,13 +19,28 @@ class HomeCommunityEatingSection extends StatelessWidget {
   final double? userLng;
 
   @override
+  State<HomeCommunityEatingSection> createState() =>
+      _HomeCommunityEatingSectionState();
+}
+
+class _HomeCommunityEatingSectionState
+    extends State<HomeCommunityEatingSection> {
+  late final Stream<List<CommunityPost>> _postsStream;
+
+  @override
+  void initState() {
+    super.initState();
+    _postsStream = CommunityService().watchLatestPosts(limit: 20);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final t = AppLocalizations.of(context)!;
     final isDark = theme.brightness == Brightness.dark;
 
     return StreamBuilder<List<CommunityPost>>(
-      stream: CommunityService().watchLatestPosts(limit: 20),
+      stream: _postsStream,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const SizedBox.shrink();
@@ -312,8 +327,18 @@ class HomeCommunityEatingSection extends StatelessWidget {
     final nearbyToday =
         todayPosts.where((post) {
           final place = post.place;
-          if (place == null || userLat == null || userLng == null) return false;
-          return _distanceKm(userLat!, userLng!, place.lat, place.lng) <= 12;
+          if (place == null ||
+              widget.userLat == null ||
+              widget.userLng == null) {
+            return false;
+          }
+          return _distanceKm(
+                widget.userLat!,
+                widget.userLng!,
+                place.lat,
+                place.lng,
+              ) <=
+              12;
         }).toList();
 
     if (nearbyToday.isNotEmpty) {
@@ -342,10 +367,10 @@ class HomeCommunityEatingSection extends StatelessWidget {
 
   double _distanceForPost(CommunityPost post) {
     final place = post.place;
-    if (place == null || userLat == null || userLng == null) {
+    if (place == null || widget.userLat == null || widget.userLng == null) {
       return double.infinity;
     }
-    return _distanceKm(userLat!, userLng!, place.lat, place.lng);
+    return _distanceKm(widget.userLat!, widget.userLng!, place.lat, place.lng);
   }
 
   double _distanceKm(double lat1, double lng1, double lat2, double lng2) {

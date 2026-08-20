@@ -22,7 +22,7 @@ class DishRecommendationEngine {
     required List<DishModel> dishes,
     required UserPreferences? preferences,
     required DateTime now,
-    int limit = 12,
+    int limit = 21,
     String languageCode = 'vi',
   }) {
     if (dishes.isEmpty) return const [];
@@ -79,7 +79,7 @@ class DishRecommendationEngine {
     required List<DishModel> dishes,
     required UserPreferences? preferences,
     required DateTime now,
-    int limit = 12,
+    int limit = 21,
     String languageCode = 'vi',
   }) {
     return recommendTodayWithReasons(

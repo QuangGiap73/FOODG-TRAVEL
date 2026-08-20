@@ -832,6 +832,8 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
 
   Widget _buildSmallDishCard(DishModel dish, ThemeData theme) {
     final imageUrl = dish.imageUrl.trim();
+    final lang = Localizations.localeOf(context).languageCode;
+    final dishName = dish.getName(lang).trim();
     return InkWell(
       borderRadius: BorderRadius.circular(18),
       onTap: () {
@@ -863,7 +865,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
             ),
             const SizedBox(height: 8),
             Text(
-              dish.name,
+              dishName.isNotEmpty ? dishName : dish.name,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: theme.textTheme.bodyMedium?.copyWith(
@@ -1195,6 +1197,10 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
 
   Widget _buildDishCard(DishModel dish, ThemeData theme) {
     final imageUrl = dish.imageUrl;
+    final lang = Localizations.localeOf(context).languageCode;
+    final dishName = dish.getName(lang).trim();
+    final category = dish.getCategory(lang).trim();
+    final t = AppLocalizations.of(context)!;
     final legacyText = dish.effectiveLegacyProvinceName.trim().isEmpty
         ? dish.effectiveProvinceName
         : '${dish.effectiveLegacyProvinceName} c\u0169';
@@ -1264,7 +1270,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      dish.name,
+                      dishName.isNotEmpty ? dishName : dish.name,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.titleMedium?.copyWith(
@@ -1274,7 +1280,7 @@ class _ProvinceDetailPageState extends State<ProvinceDetailPage> {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      dish.tag.isEmpty ? '\u0110\u1eb7c s\u1ea3n \u0111\u1ecba ph\u01b0\u01a1ng' : dish.tag,
+                      category.isEmpty ? t.dishSpecialtyFallback : category,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.bodyMedium?.copyWith(

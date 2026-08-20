@@ -10,7 +10,12 @@
   <div class="post-detail-top">
     <article class="post-detail-hero">
       <div class="post-detail-hero__media">
-        <% if (post.coverImage) { %>
+        <% if (post.primaryMedia && post.primaryMedia.type === 'video') { %>
+          <video controls playsinline preload="metadata" <% if (post.primaryMedia.thumbnailUrl) { %>poster="<%= post.primaryMedia.thumbnailUrl %>"<% } %>>
+            <source src="<%= post.primaryMedia.url %>" />
+            Trình duyệt không hỗ trợ phát video.
+          </video>
+        <% } else if (post.coverImage) { %>
           <img src="<%= post.coverImage %>" alt="" />
         <% } else { %>
           <div class="post-detail-hero__empty">Chưa có ảnh bài viết</div>
@@ -143,8 +148,16 @@
 
       <div class="post-detail-media-grid">
         <% post.media.forEach(function(item) { %>
-          <div class="post-detail-media-item">
-            <img src="<%= item.url %>" alt="" />
+          <div class="post-detail-media-item post-detail-media-item--<%= item.type %>">
+            <% if (item.type === 'video') { %>
+              <video controls playsinline preload="metadata" <% if (item.thumbnailUrl) { %>poster="<%= item.thumbnailUrl %>"<% } %>>
+                <source src="<%= item.url %>" />
+                Trình duyệt không hỗ trợ phát video.
+              </video>
+              <span class="post-detail-media-type">Video<% if (item.duration) { %> · <%= Math.round(item.duration) %> giây<% } %></span>
+            <% } else { %>
+              <img src="<%= item.url %>" alt="" loading="lazy" />
+            <% } %>
           </div>
         <% }) %>
       </div>

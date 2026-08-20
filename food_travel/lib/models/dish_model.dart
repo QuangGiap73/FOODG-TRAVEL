@@ -87,17 +87,46 @@ class DishModel {
   factory DishModel.fromDoc(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     final languageCode = WidgetsBinding.instance.platformDispatcher.locale.languageCode;
-    final nameI18n = _toI18n(data['Name'] ?? data['name'] ?? '');
-    final descriptionI18n = _toI18n(data['description'] ?? '');
-    final categoryI18n = _toI18n(data['category'] ?? '');
-    final ingredientsI18n = _toI18n(data['ingredients'] ?? '');
-    final instructionsI18n = _toI18n(data['instructions'] ?? '');
-    final originStoryI18n = _toI18n(data['origin_story'] ?? '');
-    final bestTimeI18n = _toI18n(data['Best_time'] ?? data['best_time'] ?? '');
-    final bestSeasonI18n =
-        _toI18n(data['Best_season'] ?? data['best_season'] ?? '');
-    final priceRangeI18n = _toI18n(data['price_range'] ?? '');
-    final tagsI18n = _toI18n(data['Tags'] ?? data['tags'] ?? '');
+    final nameI18n = _toI18nWithEnglish(
+      data['Name'] ?? data['name'] ?? '',
+      data['Name_en'] ?? data['name_en'] ?? data['nameEn'],
+    );
+    final descriptionI18n = _toI18nWithEnglish(
+      data['description'] ?? '',
+      data['description_en'] ?? data['descriptionEn'],
+    );
+    final categoryI18n = _toI18nWithEnglish(
+      data['category'] ?? '',
+      data['category_en'] ?? data['categoryEn'],
+    );
+    final ingredientsI18n = _toI18nWithEnglish(
+      data['ingredients'] ?? '',
+      data['ingredients_en'] ?? data['ingredientsEn'],
+    );
+    final instructionsI18n = _toI18nWithEnglish(
+      data['instructions'] ?? '',
+      data['instructions_en'] ?? data['instructionsEn'],
+    );
+    final originStoryI18n = _toI18nWithEnglish(
+      data['origin_story'] ?? '',
+      data['origin_story_en'] ?? data['originStoryEn'],
+    );
+    final bestTimeI18n = _toI18nWithEnglish(
+      data['Best_time'] ?? data['best_time'] ?? '',
+      data['Best_time_en'] ?? data['best_time_en'] ?? data['bestTimeEn'],
+    );
+    final bestSeasonI18n = _toI18nWithEnglish(
+      data['Best_season'] ?? data['best_season'] ?? '',
+      data['Best_season_en'] ?? data['best_season_en'] ?? data['bestSeasonEn'],
+    );
+    final priceRangeI18n = _toI18nWithEnglish(
+      data['price_range'] ?? '',
+      data['price_range_en'] ?? data['priceRangeEn'],
+    );
+    final tagsI18n = _toI18nWithEnglish(
+      data['Tags'] ?? data['tags'] ?? '',
+      data['Tags_en'] ?? data['tags_en'] ?? data['tagsEn'],
+    );
     final provinceCode34 = _asString(data['provinceCode34'] ?? '');
     final provinceName34 = _asString(data['provinceName34'] ?? '');
     final legacyProvinceCode = _asString(data['legacyProvinceCode'] ?? '');
@@ -232,6 +261,18 @@ class DishModel {
     }
     final text = _asString(value);
     return {'vi': text, 'en': ''};
+  }
+
+  static Map<String, String> _toI18nWithEnglish(
+    dynamic value,
+    dynamic separateEnglishValue,
+  ) {
+    final result = _toI18n(value);
+    final separateEnglish = _asString(separateEnglishValue);
+    if (result['en']!.trim().isEmpty && separateEnglish.isNotEmpty) {
+      result['en'] = separateEnglish;
+    }
+    return result;
   }
 
   static String _pickLang(Map<String, String> i18n, String languageCode) {

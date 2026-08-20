@@ -5,8 +5,21 @@ import '../../../models/system_post.dart';
 import '../../../services/system_posts/system_post_service.dart';
 import '../system_post_detail_page.dart';
 
-class HomeSystemPostsSection extends StatelessWidget {
+class HomeSystemPostsSection extends StatefulWidget {
   const HomeSystemPostsSection({super.key});
+
+  @override
+  State<HomeSystemPostsSection> createState() => _HomeSystemPostsSectionState();
+}
+
+class _HomeSystemPostsSectionState extends State<HomeSystemPostsSection> {
+  late final Stream<List<SystemPost>> _postsStream;
+
+  @override
+  void initState() {
+    super.initState();
+    _postsStream = SystemPostService().watchPublishedPosts(limit: 6);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +29,7 @@ class HomeSystemPostsSection extends StatelessWidget {
     final languageCode = Localizations.localeOf(context).languageCode;
 
     return StreamBuilder<List<SystemPost>>(
-      stream: SystemPostService().watchPublishedPosts(limit: 6),
+      stream: _postsStream,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const SizedBox.shrink();

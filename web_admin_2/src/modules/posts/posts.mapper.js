@@ -25,12 +25,27 @@ function toPostViewModel(doc) {
 
   const media = Array.isArray(data.media) ? data.media : [];
   const place = data.placeSnapshot || {};
-  const normalizedMedia = media.map((item) => ({
-    url: item?.url || '',
-    type: String(item?.type || 'image').toLowerCase(),
-    w: item?.w || null,
-    h: item?.h || null,
-  }));
+  const normalizedMedia = media
+    .map((item) => {
+      const url = String(item?.url || item?.secureUrl || '').trim();
+      const explicitType = String(item?.type || item?.resourceType || '').trim().toLowerCase();
+      const isVideoUrl = /\.(mp4|webm|ogg|mov)(?:$|[?#])/i.test(url)
+        || /\/video\/upload\//i.test(url);
+      const type = explicitType === 'video' || (!explicitType && isVideoUrl) ? 'video' : 'image';
+      const thumbnailUrl = String(item?.thumbnailUrl || item?.thumbnail || '').trim();
+      return {
+        url,
+        type,
+        thumbnailUrl,
+        previewUrl: type === 'video' && thumbnailUrl ? thumbnailUrl : url,
+        publicId: String(item?.publicId || '').trim(),
+        duration: Number.isFinite(Number(item?.duration)) ? Number(item.duration) : null,
+        w: item?.w || null,
+        h: item?.h || null,
+      };
+    })
+    .filter((item) => item.url);
+  const primaryMedia = normalizedMedia[0] || null;
 
   return {
     id: doc.id || data.id || '',
@@ -46,7 +61,8 @@ function toPostViewModel(doc) {
     hasMedia: Boolean(
       typeof data.hasMedia === 'boolean' ? data.hasMedia : normalizedMedia.length > 0,
     ),
-    coverImage: normalizedMedia[0]?.url || '',
+    primaryMedia,
+    coverImage: primaryMedia?.previewUrl || '',
     placeId: data.placeId || '',
     placeName: data.placeName || place.name || '',
     placeSnapshot: place,

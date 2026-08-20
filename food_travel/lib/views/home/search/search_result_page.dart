@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import '../../../models/dish_model.dart';
 import '../../../models/places_model.dart';
 import '../../../services/food_service.dart';
+import '../../../services/location_service.dart';
 import '../../../services/map/serpapi_places_service.dart';
 import '../../dishes/dish_detail_page.dart';
 import '../../favorites/place_detail_page.dart';
@@ -26,6 +27,13 @@ class SearchPageArgs {
   final double? userLng;
 }
 
+class _PlaceSearchCacheEntry {
+  const _PlaceSearchCacheEntry(this.createdAt, this.places);
+
+  final DateTime createdAt;
+  final List<GoongNearbyPlace> places;
+}
+
 class SearchResultPage extends StatefulWidget {
   const SearchResultPage({super.key, this.args});
 
@@ -41,10 +49,22 @@ class _SearchResultPageState extends State<SearchResultPage>
   late final TextEditingController _controller;
   final _foodService = FoodService();
   final _placesService = SerpApiPlacesService();
+  final _locationService = LocationService();
 
   Future<List<DishModel>>? _dishFuture;
   Future<List<GoongNearbyPlace>>? _placeFuture;
   Timer? _debounce;
+  double? _userLat;
+  double? _userLng;
+  int _searchVersion = 0;
+  bool _resolvingInitialLocation = false;
+  // Dùng chung trong phiên chạy app để đóng/mở lại trang không gọi lại API.
+  static final Map<String, _PlaceSearchCacheEntry> _placeCache = {};
+
+  static const double _maxPlaceDistanceMeters = 30000;
+  static const double _locationRefreshThresholdMeters = 500;
+  static const Duration _placeCacheTtl = Duration(minutes: 5);
+  static const Duration _searchDebounce = Duration(milliseconds: 650);
 
   String get _query => _controller.text.trim();
   String get _provinceLabel => widget.args?.provinceName?.trim() ?? '';
@@ -54,7 +74,12 @@ class _SearchResultPageState extends State<SearchResultPage>
     super.initState();
     _tab = TabController(length: 2, vsync: this);
     _controller = TextEditingController(text: widget.args?.initialQuery ?? '');
+    _userLat = widget.args?.userLat;
+    _userLng = widget.args?.userLng;
+    _resolvingInitialLocation = _userLat == null || _userLng == null;
     _runSearch(immediate: true);
+    // Làm mới GPS ngay cả khi Home đã truyền tọa độ để tránh dùng vị trí cũ.
+    _resolveUserLocation();
   }
 
   @override
@@ -67,6 +92,7 @@ class _SearchResultPageState extends State<SearchResultPage>
 
   void _runSearch({bool immediate = false}) {
     final q = _query;
+    final version = ++_searchVersion;
 
     void exec() {
       setState(() {
@@ -75,28 +101,9 @@ class _SearchResultPageState extends State<SearchResultPage>
           provinceCode: widget.args?.provinceCode,
         );
         _placeFuture =
-            q.isEmpty
+            q.length < 2 || _resolvingInitialLocation
                 ? Future.value(const <GoongNearbyPlace>[])
-                : _placesService.searchText(query: q, limit: 20).then((items) {
-                  final lat = widget.args?.userLat;
-                  final lng = widget.args?.userLng;
-                  if (lat == null || lng == null) return items;
-                  return items..sort((a, b) {
-                    final da = Geolocator.distanceBetween(
-                      lat,
-                      lng,
-                      a.lat,
-                      a.lng,
-                    );
-                    final db = Geolocator.distanceBetween(
-                      lat,
-                      lng,
-                      b.lat,
-                      b.lng,
-                    );
-                    return da.compareTo(db);
-                  });
-                });
+                : _searchPlaces(q, version);
       });
     }
 
@@ -104,7 +111,125 @@ class _SearchResultPageState extends State<SearchResultPage>
     if (immediate) {
       exec();
     } else {
-      _debounce = Timer(const Duration(milliseconds: 350), exec);
+      _debounce = Timer(_searchDebounce, exec);
+    }
+  }
+
+  Future<void> _resolveUserLocation() async {
+    final result = await _locationService.getCurrentLocation(
+      accuracy: LocationAccuracy.medium,
+      timeLimit: const Duration(seconds: 10),
+      useLastKnown: false,
+    );
+    if (!mounted) return;
+    final wasResolvingInitialLocation = _resolvingInitialLocation;
+    _resolvingInitialLocation = false;
+    if (!result.isSuccess || result.position == null) {
+      // GPS thất bại: lúc này mới dùng tìm kiếm theo tỉnh làm phương án dự phòng.
+      if (wasResolvingInitialLocation) _runSearch(immediate: true);
+      return;
+    }
+
+    final newLat = result.position!.latitude;
+    final newLng = result.position!.longitude;
+    final oldLat = _userLat;
+    final oldLng = _userLng;
+    final movedEnough =
+        oldLat == null ||
+        oldLng == null ||
+        Geolocator.distanceBetween(oldLat, oldLng, newLat, newLng) >=
+            _locationRefreshThresholdMeters;
+
+    _userLat = newLat;
+    _userLng = newLng;
+    if (!movedEnough && !wasResolvingInitialLocation) return;
+    _runSearch(immediate: true);
+  }
+
+  Future<List<GoongNearbyPlace>> _searchPlaces(
+    String query,
+    int version,
+  ) async {
+    final lat = _userLat;
+    final lng = _userLng;
+    final cacheKey = _placeCacheKey(query, lat: lat, lng: lng);
+    final cached = _placeCache[cacheKey];
+    if (cached != null &&
+        DateTime.now().difference(cached.createdAt) <= _placeCacheTtl) {
+      return List<GoongNearbyPlace>.from(cached.places);
+    }
+
+    // Có GPS: yêu cầu SerpAPI tìm trực tiếp quanh người dùng, sau đó lọc cứng
+    // để kết quả ngoài bán kính không lọt vào danh sách.
+    if (lat != null && lng != null) {
+      final items = await _placesService.searchNearby(
+        lat: lat,
+        lng: lng,
+        query: query,
+        radius: _maxPlaceDistanceMeters.round(),
+        limit: 20,
+        enrichDetails: false,
+      );
+      if (version != _searchVersion) return const [];
+
+      final nearby = items.where((place) {
+        final distance = Geolocator.distanceBetween(
+          lat,
+          lng,
+          place.lat,
+          place.lng,
+        );
+        return distance <= _maxPlaceDistanceMeters;
+      }).toList();
+      nearby.sort((a, b) {
+        final aDistance =
+            Geolocator.distanceBetween(lat, lng, a.lat, a.lng);
+        final bDistance =
+            Geolocator.distanceBetween(lat, lng, b.lat, b.lng);
+        return aDistance.compareTo(bDistance);
+      });
+      _savePlaceCache(cacheKey, nearby);
+      return nearby;
+    }
+
+    // Không lấy được GPS thì thu hẹp tìm kiếm bằng tỉnh người dùng đã chọn.
+    final province = _provinceLabel;
+    final localizedQuery = province.isEmpty ? query : '$query $province';
+    final items = await _placesService.searchText(
+      query: localizedQuery,
+      limit: 20,
+    );
+    if (version != _searchVersion) return const [];
+    _savePlaceCache(cacheKey, items);
+    return items;
+  }
+
+  String _placeCacheKey(String query, {double? lat, double? lng}) {
+    final normalizedQuery = query.trim().toLowerCase();
+    if (lat == null || lng == null) {
+      return 'text:$normalizedQuery:${_provinceLabel.toLowerCase()}';
+    }
+
+    // Làm tròn 3 chữ số thập phân (~100 m) để các dao động GPS nhỏ dùng
+    // chung cache nhưng vẫn phân biệt khi người dùng thực sự di chuyển.
+    final latBucket = (lat * 1000).round();
+    final lngBucket = (lng * 1000).round();
+    return 'nearby:$normalizedQuery:$latBucket:$lngBucket';
+  }
+
+  void _savePlaceCache(String key, List<GoongNearbyPlace> places) {
+    _placeCache[key] = _PlaceSearchCacheEntry(
+      DateTime.now(),
+      List<GoongNearbyPlace>.unmodifiable(places),
+    );
+
+    // Cache chỉ phục vụ phiên tìm kiếm hiện tại, giới hạn để tránh tăng RAM.
+    if (_placeCache.length > 30) {
+      final oldestKey = _placeCache.entries
+          .reduce((a, b) =>
+              a.value.createdAt.isBefore(b.value.createdAt) ? a : b)
+          .key;
+      _placeCache.remove(oldestKey);
     }
   }
 
@@ -189,8 +314,8 @@ class _SearchResultPageState extends State<SearchResultPage>
           ),
           _PlaceResultList(
             future: _placeFuture,
-            userLat: widget.args?.userLat,
-            userLng: widget.args?.userLng,
+            userLat: _userLat,
+            userLng: _userLng,
             query: _query,
           ),
         ],

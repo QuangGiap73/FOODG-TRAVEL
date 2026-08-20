@@ -71,6 +71,7 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             title: 'FoodG Travel',
             scaffoldMessengerKey: appScaffoldMessengerKey,
+            navigatorKey: appNavigatorKey,
             theme: ThemeData.light(),
             darkTheme: ThemeData.dark(),
             themeMode: themeController.themeMode,

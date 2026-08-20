@@ -1,5 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
+
 class DishDetailBottomCtaBar extends StatelessWidget {
   const DishDetailBottomCtaBar({
     required this.onFavTap,
@@ -59,9 +61,9 @@ class DishDetailBottomCtaBar extends StatelessWidget {
               child: ElevatedButton.icon(
                 onPressed: onFindNearbyTap,
                 icon: const Icon(Icons.place_outlined),
-                label: const Text(
-                  'Tìm quán gần đây',
-                  style: TextStyle(fontWeight: FontWeight.w800),
+                label: Text(
+                  AppLocalizations.of(context)!.dishFindNearby,
+                  style: const TextStyle(fontWeight: FontWeight.w800),
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.orange.shade700,

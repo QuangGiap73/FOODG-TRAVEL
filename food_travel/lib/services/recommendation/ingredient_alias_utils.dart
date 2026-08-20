@@ -283,6 +283,126 @@ class IngredientAliasUtils {
       'long_bo',
       'organ_meat',
     },
+    'de': {'de', 'thit_de', 'de_nui', 'goat', 'goat_meat'},
+    'trau': {'trau', 'thit_trau', 'buffalo', 'buffalo_meat'},
+    'cuu': {'cuu', 'thit_cuu', 'lamb', 'mutton'},
+    'tho': {'tho', 'thit_tho', 'rabbit'},
+    'chim': {
+      'chim',
+      'thit_chim',
+      'chim_cau',
+      'bo_cau',
+      'chim_cut',
+      'cut',
+      'pigeon',
+      'quail',
+    },
+    'ech': {'ech', 'thit_ech', 'frog'},
+    'luon': {'luon', 'thit_luon', 'eel'},
+    'chach': {'chach', 'ca_chach', 'loach'},
+    'ba_ba': {'ba_ba', 'thit_ba_ba', 'softshell_turtle'},
+    'ca_hoi': {'ca_hoi', 'salmon'},
+    'ca_ngu': {'ca_ngu', 'tuna'},
+    'ca_thu': {'ca_thu', 'mackerel'},
+    'ca_com': {'ca_com', 'anchovy'},
+    'ca_trich': {'ca_trich', 'herring'},
+    'ca_basa': {'ca_basa', 'ca_tra', 'pangasius'},
+    'ca_loc': {'ca_loc', 'ca_qua', 'snakehead_fish'},
+    'ca_ro': {'ca_ro', 'ca_ro_dong', 'perch'},
+    'ca_chep': {'ca_chep', 'carp'},
+    'ca_dieu_hong': {'ca_dieu_hong', 'ca_ro_phi', 'tilapia'},
+    'ca_keo': {'ca_keo', 'goby'},
+    'ghe': {'ghe', 'thit_ghe', 'blue_crab'},
+    'so_diep': {'so_diep', 'coi_so_diep', 'scallop'},
+    'hau': {'hau', 'hau_sua', 'oyster'},
+    'ngao_ngheu': {'ngao', 'ngheu', 'clam'},
+    'hen': {'hen', 'thit_hen', 'basket_clam'},
+    'bach_tuoc': {'bach_tuoc', 'octopus'},
+    'sua_dac': {
+      'sua_dac',
+      'sua_dac_co_duong',
+      'condensed_milk',
+    },
+    'sua_chua': {'sua_chua', 'yaourt', 'yogurt', 'yoghurt'},
+    'pho_mai': {'pho_mai', 'cheese'},
+    'bo_sua': {'bo_sua', 'butter'},
+    'kem_sua': {'kem_sua', 'whipping_cream', 'heavy_cream', 'cream'},
+    'hanh_nhan': {'hanh_nhan', 'almond'},
+    'oc_cho': {'hat_oc_cho', 'oc_cho', 'walnut'},
+    'hat_de': {'hat_de', 'chestnut'},
+    'hat_dac': {'hat_dac', 'palm_seed'},
+    'hat_sen': {'hat_sen', 'sen', 'lotus_seed'},
+    'hat_bi': {'hat_bi', 'pumpkin_seed'},
+    'hat_huong_duong': {'hat_huong_duong', 'sunflower_seed'},
+    'mac_ca': {'mac_ca', 'macca', 'macadamia'},
+    'ho_de_cuoi': {'ho_de_cuoi', 'pistachio'},
+    'dau_xanh': {'dau_xanh', 'do_xanh', 'mung_bean'},
+    'dau_den': {'dau_den', 'black_bean'},
+    'dau_do': {'dau_do', 'red_bean', 'adzuki_bean'},
+    'dau_trang': {'dau_trang', 'white_bean'},
+    'dau_ha_lan': {'dau_ha_lan', 'pea', 'green_pea'},
+    'dau_co_ve': {'dau_co_ve', 'dau_que', 'green_bean'},
+    'dau_bap': {'dau_bap', 'okra'},
+    'dau_lentil': {'dau_lentil', 'dau_lang', 'lentil'},
+    'lua_mi': {
+      'lua_mi',
+      'bot_mi',
+      'bot_lua_mi',
+      'wheat',
+      'wheat_flour',
+      'flour',
+    },
+    'yen_mach': {'yen_mach', 'oat', 'oats', 'oatmeal'},
+    'lua_mach': {'lua_mach', 'barley'},
+    'ngo': {'ngo', 'bap', 'bap_my', 'corn', 'maize'},
+    'nep': {'nep', 'gao_nep', 'xoi', 'sticky_rice', 'glutinous_rice'},
+    'bun': {'bun', 'bun_tuoi', 'bun_kho', 'rice_vermicelli'},
+    'pho': {'pho', 'banh_pho', 'pho_kho', 'rice_noodle'},
+    'hu_tieu': {'hu_tieu', 'banh_hu_tieu', 'rice_noodle'},
+    'banh_canh': {'banh_canh', 'bot_banh_canh', 'thick_noodle'},
+    'mi': {'mi', 'mi_soi', 'mi_trung', 'mi_vang', 'noodle', 'egg_noodle'},
+    'rau_ngot': {'rau_ngot', 'katuk'},
+    'rau_den': {'rau_den', 'amaranth'},
+    'mong_toi': {'mong_toi', 'malabar_spinach'},
+    'cai_ngot': {'cai_ngot', 'choy_sum'},
+    'cai_thia': {'cai_thia', 'bok_choy', 'pak_choi'},
+    'cai_xoong': {'cai_xoong', 'xa_lach_xoong', 'watercress'},
+    'xa_lach': {'xa_lach', 'salad', 'lettuce'},
+    'bi_do': {'bi_do', 'bi_ngo', 'pumpkin'},
+    'bi_dao': {'bi_dao', 'winter_melon'},
+    'muop': {'muop', 'muop_huong', 'luffa'},
+    'bau': {'bau', 'bau_qua', 'bottle_gourd'},
+    'kho_qua': {'kho_qua', 'muop_dang', 'bitter_melon'},
+    'ca_tim': {'ca_tim', 'eggplant', 'aubergine'},
+    'su_su': {'su_su', 'chayote'},
+    'cu_san': {'cu_san', 'cu_dau', 'jicama'},
+    'khoai_mon': {'khoai_mon', 'taro'},
+    'khoai_lang': {'khoai_lang', 'sweet_potato'},
+    'khoai_tay': {'khoai_tay', 'potato'},
+    'san': {'san', 'khoai_mi', 'cassava', 'tapioca'},
+    'sen': {'sen', 'cu_sen', 'ngo_sen', 'lotus_root'},
+    'bong_bi': {'bong_bi', 'hoa_bi', 'pumpkin_flower'},
+    'bong_thien_ly': {'bong_thien_ly', 'hoa_thien_ly', 'tonkin_jasmine'},
+    'chuoi': {'chuoi', 'banana'},
+    'xoai': {'xoai', 'mango'},
+    'dua_hau': {'dua_hau', 'watermelon'},
+    'thom': {'thom', 'khom', 'pineapple'},
+    'mit': {'mit', 'jackfruit'},
+    'sau_rieng': {'sau_rieng', 'durian'},
+    'bo_trai': {'qua_bo', 'trai_bo', 'avocado'},
+    'cam_quyt': {'cam', 'quyt', 'orange', 'mandarin'},
+    'buoi': {'buoi', 'pomelo', 'grapefruit'},
+    'vai_nhan': {'vai', 'nhan', 'lychee', 'longan'},
+    'mam_ruoc': {'mam_ruoc', 'ruoc_tom', 'fermented_shrimp_paste'},
+    'chao': {'chao', 'chao_do', 'chao_trang', 'fermented_tofu'},
+    'tuong_ban': {'tuong_ban', 'tuong_hat', 'fermented_soybean'},
+    'dau_hao': {'dau_hao', 'oyster_sauce'},
+    'dau_me': {'dau_me', 'dau_vung', 'sesame_oil'},
+    'mayonnaise': {'mayonnaise', 'sot_mayo', 'mayo'},
+    'ruou': {'ruou', 'ruou_trang', 'ruou_nep', 'alcohol', 'rice_wine'},
+    'bia': {'bia', 'beer'},
+    'ca_phe': {'ca_phe', 'coffee'},
+    'tra': {'tra', 'che_xanh', 'tea', 'green_tea'},
   };
 
   static Set<String> expand(Iterable<String> values) {
@@ -303,10 +423,40 @@ class IngredientAliasUtils {
     return result;
   }
 
-  static Set<String>? _findGroup(String value) {
-    for (final group in _groups.values) {
-      if (group.contains(value)) return group;
+  /// Quy nguyên liệu của món về mã nhóm cụ thể nhất. Khác với [expand], hàm
+  /// này không bung một nguyên liệu thành toàn bộ họ hàng của nó; nhờ vậy
+  /// "bún" không làm "cơm" bị nhận nhầm chỉ vì cùng thuộc nhóm gạo.
+  static Set<String> canonicalizeDishIngredients(Iterable<String> values) {
+    final result = <String>{};
+    for (final value in values) {
+      final normalized = RecommendationTextUtils.normalizeToken(value);
+      if (normalized.isEmpty) continue;
+      final entry = _findGroupEntry(normalized);
+      result.add(entry?.key ?? normalized);
     }
-    return null;
+    return result;
+  }
+
+  static Set<String>? _findGroup(String value) {
+    return _findGroupEntry(value)?.value;
+  }
+
+  static MapEntry<String, Set<String>>? _findGroupEntry(String value) {
+    // Ưu tiên nhóm có mã đúng bằng giá trị người dùng chọn. Ví dụ "cá" phải
+    // vào nhóm cá, không bị nhóm "hải sản" rộng hơn bắt trước.
+    final exactGroup = _groups[value];
+    if (exactGroup != null) return MapEntry(value, exactGroup);
+
+    // Một bí danh có thể nằm trong nhiều nhóm. Chọn nhóm cụ thể nhất (ít phần
+    // tử nhất); nhóm tổng quát vẫn hoạt động khi người dùng chọn đúng mã nhóm.
+    MapEntry<String, Set<String>>? bestMatch;
+    for (final entry in _groups.entries) {
+      final group = entry.value;
+      if (!group.contains(value)) continue;
+      if (bestMatch == null || group.length < bestMatch.value.length) {
+        bestMatch = entry;
+      }
+    }
+    return bestMatch;
   }
 }

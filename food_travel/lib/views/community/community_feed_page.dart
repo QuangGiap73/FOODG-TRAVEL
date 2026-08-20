@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -36,6 +37,10 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
   final _service = CommunityService();
   final _locationService = LocationService();
   final _foodService = FoodService();
+  StreamSubscription<List<CommunityPost>>? _postsSub;
+  List<CommunityPost> _posts = const <CommunityPost>[];
+  Object? _postsError;
+  bool _postsLoading = true;
 
   double? _userLat;
   double? _userLng;
@@ -46,7 +51,32 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    _postsSub = _service
+        .watchLatestPosts(limit: 150)
+        .listen(
+          (posts) {
+            if (!mounted) return;
+            setState(() {
+              _posts = posts;
+              _postsError = null;
+              _postsLoading = false;
+            });
+          },
+          onError: (Object error) {
+            if (!mounted) return;
+            setState(() {
+              _postsError = error;
+              _postsLoading = false;
+            });
+          },
+        );
     _resolveLocation();
+  }
+
+  @override
+  void dispose() {
+    _postsSub?.cancel();
+    super.dispose();
   }
 
   Future<void> _resolveLocation() async {
@@ -289,45 +319,22 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
 
   Widget _buildNewestTab() {
     final t = AppLocalizations.of(context)!;
-    return StreamBuilder<List<CommunityPost>>(
-      stream: _service.watchLatestPosts(limit: 50),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const _FeedSkeleton();
-        }
-        if (snapshot.hasError) {
-          return _buildEmpty(t.communityLoadError);
-        }
-        final posts = snapshot.data ?? const <CommunityPost>[];
-        return _buildPostsList(
-          posts,
-          emptyText: t.communityEmptyNewest,
-          includeSystemPosts: true,
-        );
-      },
+    if (_postsLoading) return const _FeedSkeleton();
+    if (_postsError != null) return _buildEmpty(t.communityLoadError);
+    return _buildPostsList(
+      _posts.take(50).toList(growable: false),
+      emptyText: t.communityEmptyNewest,
+      includeSystemPosts: true,
     );
   }
 
   Widget _buildTrendingTab() {
     final t = AppLocalizations.of(context)!;
-    return StreamBuilder<List<CommunityPost>>(
-      stream: _service.watchLatestPosts(limit: 120),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const _FeedSkeleton();
-        }
-        if (snapshot.hasError) {
-          return _buildEmpty(t.communityLoadError);
-        }
-        final raw = snapshot.data ?? const <CommunityPost>[];
-        final posts = [...raw];
-        // Sap xep theo diem noi bat (like + comment)
-        posts.sort(
-          (a, b) => _engagementScore(b).compareTo(_engagementScore(a)),
-        );
-        return _buildPostsList(posts, emptyText: t.communityEmptyTrending);
-      },
-    );
+    if (_postsLoading) return const _FeedSkeleton();
+    if (_postsError != null) return _buildEmpty(t.communityLoadError);
+    final posts = _posts.take(120).toList();
+    posts.sort((a, b) => _engagementScore(b).compareTo(_engagementScore(a)));
+    return _buildPostsList(posts, emptyText: t.communityEmptyTrending);
   }
 
   Widget _buildNearYouTab() {
@@ -353,27 +360,16 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
       );
     }
 
-    return StreamBuilder<List<CommunityPost>>(
-      stream: _service.watchLatestPosts(limit: 120),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const _FeedSkeleton();
-        }
-        if (snapshot.hasError) {
-          return _buildEmpty(t.communityLoadError);
-        }
-        final raw = snapshot.data ?? const <CommunityPost>[];
-        // Loc bai trong ban kinh 10km
-        final posts =
-            raw.where((p) {
-              final place = p.place;
-              if (place == null) return false;
-              final d = _distanceKm(_userLat!, _userLng!, place.lat, place.lng);
-              return d <= 10;
-            }).toList();
-        return _buildPostsList(posts, emptyText: t.communityEmptyNear);
-      },
-    );
+    if (_postsLoading) return const _FeedSkeleton();
+    if (_postsError != null) return _buildEmpty(t.communityLoadError);
+    final posts =
+        _posts.take(120).where((p) {
+          final place = p.place;
+          if (place == null) return false;
+          final d = _distanceKm(_userLat!, _userLng!, place.lat, place.lng);
+          return d <= 10;
+        }).toList();
+    return _buildPostsList(posts, emptyText: t.communityEmptyNear);
   }
 
   Widget _buildProvinceTab() {
@@ -404,25 +400,13 @@ class _CommunityFeedPageState extends State<CommunityFeedPage> {
           child:
               selected == null
                   ? _buildEmpty(t.communitySelectProvinceHint)
-                  : StreamBuilder<List<CommunityPost>>(
-                    stream: _service.watchLatestPosts(limit: 150),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const _FeedSkeleton();
-                      }
-                      if (snapshot.hasError) {
-                        return _buildEmpty(t.communityLoadError);
-                      }
-                      final raw = snapshot.data ?? const <CommunityPost>[];
-                      final posts =
-                          raw
-                              .where((p) => _matchProvince(p, selected))
-                              .toList();
-                      return _buildPostsList(
-                        posts,
-                        emptyText: t.communityEmptyProvince,
-                      );
-                    },
+                  : _postsLoading
+                  ? const _FeedSkeleton()
+                  : _postsError != null
+                  ? _buildEmpty(t.communityLoadError)
+                  : _buildPostsList(
+                    _posts.where((p) => _matchProvince(p, selected)).toList(),
+                    emptyText: t.communityEmptyProvince,
                   ),
         ),
       ],

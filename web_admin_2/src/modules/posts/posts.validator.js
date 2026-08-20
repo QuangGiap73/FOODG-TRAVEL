@@ -43,12 +43,20 @@ function normalizePostUpdatePayload(payload = {}) {
   }
 
   const normalizedMedia = media
-    .map((item) => ({
-      url: String(item?.url || '').trim(),
-      type: String(item?.type || 'image').trim().toLowerCase(),
-      w: item?.w ?? null,
-      h: item?.h ?? null,
-    }))
+    .map((item) => {
+      const url = String(item?.url || '').trim();
+      const explicitType = String(item?.type || item?.resourceType || '').trim().toLowerCase();
+      const inferredVideo = /\.(mp4|webm|ogg|mov)(?:$|[?#])/i.test(url) || /\/video\/upload\//i.test(url);
+      return {
+        url,
+        type: explicitType === 'video' || (!explicitType && inferredVideo) ? 'video' : 'image',
+        thumbnailUrl: String(item?.thumbnailUrl || item?.thumbnail || '').trim(),
+        publicId: String(item?.publicId || '').trim(),
+        duration: Number.isFinite(Number(item?.duration)) ? Number(item.duration) : null,
+        w: item?.w ?? null,
+        h: item?.h ?? null,
+      };
+    })
     .filter((item) => item.url);
 
   return {

@@ -58,7 +58,7 @@ class GoongPlacesService {
       params['radius'] = radius.toString();
     }
     final uri = Uri.https('rsapi.goong.io','/Place/AutoComplete', params);
-    final res = await http.get(uri);
+    final res = await http.get(uri).timeout(const Duration(seconds: 10));
     if(res.statusCode != 200) return [];
     // kiem tra status
     final data = jsonDecode(res.body) as Map<String,dynamic>;
@@ -77,7 +77,7 @@ class GoongPlacesService {
       'fields' : 'place_id,name,formatted_address,geometry,photos',
       'api_key': goongPlacesApiKey,
     });
-    final res = await http.get(uri);
+    final res = await http.get(uri).timeout(const Duration(seconds: 10));
     if (res.statusCode != 200) return null;
 
     final data = jsonDecode(res.body) as Map<String, dynamic>;

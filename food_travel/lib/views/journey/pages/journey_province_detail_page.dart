@@ -805,9 +805,10 @@ class _FeaturedDishCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final lang = Localizations.localeOf(context).languageCode;
     final dishName =
-        dish.getName('vi').trim().isNotEmpty
-            ? dish.getName('vi').trim()
+        dish.getName(lang).trim().isNotEmpty
+            ? dish.getName(lang).trim()
             : dish.name;
     final legacyName = dish.effectiveLegacyProvinceName;
     final legacyCode = dish.legacyProvinceCode.trim();

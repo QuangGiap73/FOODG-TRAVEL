@@ -1109,7 +1109,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get amenityFreeParking => 'Free parking';
 
   @override
-  String get mapSearchHint => 'Search place...';
+  String get mapSearchHint => 'Search nearby restaurants...';
 
   @override
   String get mapCategoryRestaurants => 'Restaurants';
@@ -1476,6 +1476,35 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authForgotPassword => 'Forgot password?';
 
   @override
+  String get authResetPasswordTitle => 'Reset password';
+
+  @override
+  String get authResetPasswordDescription =>
+      'Enter your email to receive a password reset link.';
+
+  @override
+  String get authResetPasswordSend => 'Send instructions';
+
+  @override
+  String get authResetPasswordCancel => 'Cancel';
+
+  @override
+  String get authResetPasswordSuccess =>
+      'If the email is registered, password reset instructions will be sent to that address.';
+
+  @override
+  String get authResetPasswordTooManyRequests =>
+      'Too many requests. Please wait a while and try again.';
+
+  @override
+  String get authResetPasswordNetworkError =>
+      'No network connection. Please check your Internet connection.';
+
+  @override
+  String get authResetPasswordFailed =>
+      'Unable to send instructions right now. Please try again later.';
+
+  @override
   String get authNoAccount => 'Don\'t have an account? ';
 
   @override
@@ -1592,6 +1621,51 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dishShareTodo => 'Share coming soon.';
+
+  @override
+  String get dishSpecialtyFallback => 'Local specialty';
+
+  @override
+  String get dishSpicyLabel => 'Spice level';
+
+  @override
+  String get dishSatietyLabel => 'Satiety level';
+
+  @override
+  String get dishBestSeasonTitle => 'Best season';
+
+  @override
+  String get dishBestTimeTitle => 'Best time to eat';
+
+  @override
+  String get dishNotUpdated => 'Not updated yet';
+
+  @override
+  String get dishIntroductionTitle => 'Introduction';
+
+  @override
+  String get dishNoDescription => 'No description is available for this dish.';
+
+  @override
+  String get dishReadMore => 'Read more';
+
+  @override
+  String get dishCollapse => 'Show less';
+
+  @override
+  String get dishIngredientsTitle => 'Ingredients';
+
+  @override
+  String get dishPreparationTitle => 'Preparation';
+
+  @override
+  String get dishNoInstructions => 'No preparation instructions are available.';
+
+  @override
+  String get dishPriceRangeTitle => 'Price range';
+
+  @override
+  String get dishFindNearby => 'Find nearby restaurants';
 
   @override
   String get routeMissingProvinceId => 'Missing province id';

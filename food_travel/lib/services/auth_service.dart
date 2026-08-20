@@ -111,7 +111,11 @@ class AuthService {
             );
         }
 
-        await _auth.sendPasswordResetEmail(email: email);
+        await sendPasswordResetEmail(email: email);
+    }
+
+    Future<void> sendPasswordResetEmail({required String email}) async {
+        await _auth.sendPasswordResetEmail(email: email.trim());
     }
 
 }

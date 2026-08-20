@@ -15,6 +15,7 @@ class MapSearchController extends ChangeNotifier {
   double? _biasLat;
   double? _biasLng;
   int _biasRadius = 5000;
+  int _requestVersion = 0;
 
   bool get loading => _loading;
 
@@ -30,6 +31,7 @@ class MapSearchController extends ChangeNotifier {
   void onQueryChanged(String input) {
     final query = input.trim();
     _debounce?.cancel();
+    final requestVersion = ++_requestVersion;
 
     if (query.length < 2) {
       clear();
@@ -40,31 +42,46 @@ class MapSearchController extends ChangeNotifier {
     notifyListeners();
 
     _debounce = Timer(const Duration(milliseconds: 350), () async {
-      final results = await _service.autocomplete(
-        query,
-        lat: _biasLat,
-        lng: _biasLng,
-        radius: _biasRadius,
-      );
-      _suggestions
-        ..clear()
-        ..addAll(results);
-      _loading = false;
-      notifyListeners();
+      try {
+        final results = await _service.autocomplete(
+          query,
+          lat: _biasLat,
+          lng: _biasLng,
+          radius: _biasRadius,
+        );
+        // Bỏ phản hồi cũ nếu người dùng đã nhập một từ khóa mới hơn.
+        if (requestVersion != _requestVersion) return;
+        _suggestions
+          ..clear()
+          ..addAll(results);
+      } catch (_) {
+        if (requestVersion != _requestVersion) return;
+        _suggestions.clear();
+      } finally {
+        if (requestVersion == _requestVersion) {
+          _loading = false;
+          notifyListeners();
+        }
+      }
     });
   }
 
   Future<GoongPlaceDetail?> fetchDetail(GoongPrediction prediction) async {
     _loading = true;
     notifyListeners();
-    final detail = await _service.placeDetail(prediction.placeId);
-    _loading = false;
-    notifyListeners();
-    return detail;
+    try {
+      return await _service.placeDetail(prediction.placeId);
+    } catch (_) {
+      return null;
+    } finally {
+      _loading = false;
+      notifyListeners();
+    }
   }
 
   void clear() {
     _debounce?.cancel();
+    _requestVersion++;
     _suggestions.clear();
     _loading = false;
     notifyListeners();

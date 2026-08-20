@@ -155,6 +155,12 @@ class NearbyPlacesSheet extends StatelessWidget {
     final meters = _distanceMeters(place);
     final distance = _formatDistance(meters);
     final eta = _formatEta(meters, t);
+    final rating = place.rating;
+    final reviewCount = place.reviewCount;
+    final hasRating = rating != null && rating > 0;
+    final ratingLabel = hasRating
+        ? '${rating!.toStringAsFixed(1)}${reviewCount != null && reviewCount > 0 ? ' ($reviewCount)' : ''}'
+        : t.placeNoRating;
     final address =
         place.address.trim().isEmpty ? t.placeAddressUpdating : place.address;
     final borderColor =
@@ -218,9 +224,16 @@ class NearbyPlacesSheet extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            t.placeNoRating,
+                            ratingLabel,
                             style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.hintColor,
+                              color:
+                                  hasRating
+                                      ? theme.colorScheme.onSurface
+                                      : theme.hintColor,
+                              fontWeight:
+                                  hasRating
+                                      ? FontWeight.w600
+                                      : FontWeight.normal,
                             ),
                           ),
                         ],

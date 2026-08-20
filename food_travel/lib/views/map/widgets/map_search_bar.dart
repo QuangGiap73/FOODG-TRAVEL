@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../../services/map/places_service.dart';
+import '../../../models/places_model.dart';
 
 class MapSearchBar extends StatelessWidget {
   const MapSearchBar({
@@ -12,6 +13,8 @@ class MapSearchBar extends StatelessWidget {
     required this.onQueryChanged,
     required this.onClear,
     required this.onSelect,
+    this.placeSuggestions = const [],
+    this.onSelectPlace,
   });
 
   final TextEditingController controller;
@@ -20,6 +23,8 @@ class MapSearchBar extends StatelessWidget {
   final ValueChanged<String> onQueryChanged;
   final VoidCallback onClear;
   final ValueChanged<GoongPrediction> onSelect;
+  final List<GoongNearbyPlace> placeSuggestions;
+  final ValueChanged<GoongNearbyPlace>? onSelectPlace;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +64,7 @@ class MapSearchBar extends StatelessWidget {
             ),
           ),
         ),
-        if (suggestions.isNotEmpty)
+        if (placeSuggestions.isNotEmpty || suggestions.isNotEmpty)
           Container(
             margin: const EdgeInsets.only(top: 8),
             constraints: const BoxConstraints(maxHeight: 260),
@@ -69,9 +74,28 @@ class MapSearchBar extends StatelessWidget {
             ),
             child: ListView.separated(
               shrinkWrap: true,
-              itemCount: suggestions.length,
+              itemCount:
+                  placeSuggestions.isNotEmpty
+                      ? placeSuggestions.length
+                      : suggestions.length,
               separatorBuilder: (_, __) => const Divider(height: 1),
               itemBuilder: (context, index) {
+                if (placeSuggestions.isNotEmpty) {
+                  final place = placeSuggestions[index];
+                  return ListTile(
+                    leading: const Icon(Icons.restaurant_rounded),
+                    title: Text(place.name),
+                    subtitle:
+                        place.address.trim().isEmpty
+                            ? null
+                            : Text(
+                              place.address,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                    onTap: () => onSelectPlace?.call(place),
+                  );
+                }
                 final item = suggestions[index];
                 return ListTile(
                   title: Text(item.description),

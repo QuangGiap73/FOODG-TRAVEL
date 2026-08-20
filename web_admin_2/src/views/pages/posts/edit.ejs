@@ -103,7 +103,11 @@
       <section class="post-edit-card">
         <h3>Xem nhanh</h3>
         <div class="post-edit-preview">
-          <% if (post.coverImage) { %>
+          <% if (post.primaryMedia && post.primaryMedia.type === 'video') { %>
+            <video controls playsinline preload="metadata" <% if (post.primaryMedia.thumbnailUrl) { %>poster="<%= post.primaryMedia.thumbnailUrl %>"<% } %>>
+              <source src="<%= post.primaryMedia.url %>" />
+            </video>
+          <% } else if (post.coverImage) { %>
             <img src="<%= post.coverImage %>" alt="" />
           <% } else { %>
             <div class="post-edit-preview__empty">Chưa có media</div>

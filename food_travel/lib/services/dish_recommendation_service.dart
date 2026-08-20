@@ -18,7 +18,7 @@ class DishRecommendationService {
     required List<DishModel> dishes,
     required UserPreferences? preferences,
     required DateTime now,
-    int limit = 12,
+    int limit = 21,
     String languageCode = 'vi',
   }) {
     return engine.recommendToday(
@@ -34,7 +34,7 @@ class DishRecommendationService {
     required List<DishModel> dishes,
     required UserPreferences? preferences,
     required DateTime now,
-    int limit = 12,
+    int limit = 21,
     String languageCode = 'vi',
   }) {
     return engine.recommendTodayWithReasons(

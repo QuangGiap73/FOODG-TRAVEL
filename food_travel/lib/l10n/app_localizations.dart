@@ -2105,7 +2105,7 @@ abstract class AppLocalizations {
   /// No description provided for @mapSearchHint.
   ///
   /// In en, this message translates to:
-  /// **'Search place...'**
+  /// **'Search nearby restaurants...'**
   String get mapSearchHint;
 
   /// No description provided for @mapCategoryRestaurants.
@@ -2804,6 +2804,54 @@ abstract class AppLocalizations {
   /// **'Forgot password?'**
   String get authForgotPassword;
 
+  /// No description provided for @authResetPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset password'**
+  String get authResetPasswordTitle;
+
+  /// No description provided for @authResetPasswordDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email to receive a password reset link.'**
+  String get authResetPasswordDescription;
+
+  /// No description provided for @authResetPasswordSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send instructions'**
+  String get authResetPasswordSend;
+
+  /// No description provided for @authResetPasswordCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get authResetPasswordCancel;
+
+  /// No description provided for @authResetPasswordSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'If the email is registered, password reset instructions will be sent to that address.'**
+  String get authResetPasswordSuccess;
+
+  /// No description provided for @authResetPasswordTooManyRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many requests. Please wait a while and try again.'**
+  String get authResetPasswordTooManyRequests;
+
+  /// No description provided for @authResetPasswordNetworkError.
+  ///
+  /// In en, this message translates to:
+  /// **'No network connection. Please check your Internet connection.'**
+  String get authResetPasswordNetworkError;
+
+  /// No description provided for @authResetPasswordFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to send instructions right now. Please try again later.'**
+  String get authResetPasswordFailed;
+
   /// No description provided for @authNoAccount.
   ///
   /// In en, this message translates to:
@@ -3031,6 +3079,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Share coming soon.'**
   String get dishShareTodo;
+
+  /// No description provided for @dishSpecialtyFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Local specialty'**
+  String get dishSpecialtyFallback;
+
+  /// No description provided for @dishSpicyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Spice level'**
+  String get dishSpicyLabel;
+
+  /// No description provided for @dishSatietyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Satiety level'**
+  String get dishSatietyLabel;
+
+  /// No description provided for @dishBestSeasonTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Best season'**
+  String get dishBestSeasonTitle;
+
+  /// No description provided for @dishBestTimeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Best time to eat'**
+  String get dishBestTimeTitle;
+
+  /// No description provided for @dishNotUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Not updated yet'**
+  String get dishNotUpdated;
+
+  /// No description provided for @dishIntroductionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Introduction'**
+  String get dishIntroductionTitle;
+
+  /// No description provided for @dishNoDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'No description is available for this dish.'**
+  String get dishNoDescription;
+
+  /// No description provided for @dishReadMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Read more'**
+  String get dishReadMore;
+
+  /// No description provided for @dishCollapse.
+  ///
+  /// In en, this message translates to:
+  /// **'Show less'**
+  String get dishCollapse;
+
+  /// No description provided for @dishIngredientsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ingredients'**
+  String get dishIngredientsTitle;
+
+  /// No description provided for @dishPreparationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparation'**
+  String get dishPreparationTitle;
+
+  /// No description provided for @dishNoInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'No preparation instructions are available.'**
+  String get dishNoInstructions;
+
+  /// No description provided for @dishPriceRangeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Price range'**
+  String get dishPriceRangeTitle;
+
+  /// No description provided for @dishFindNearby.
+  ///
+  /// In en, this message translates to:
+  /// **'Find nearby restaurants'**
+  String get dishFindNearby;
 
   /// No description provided for @routeMissingProvinceId.
   ///

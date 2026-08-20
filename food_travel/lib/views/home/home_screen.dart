@@ -51,6 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _checkedSurvey = false;
   late final List<Widget?> _pages;
   final ValueNotifier<bool> _homeTabActive = ValueNotifier<bool>(true);
+  final ValueNotifier<bool> _mapTabActive = ValueNotifier<bool>(false);
   // Ten tinh dang hien thi tren app bar (duoc HomeFeed cap nhat theo GPS/khao sat).
   String _appBarProvinceText = '';
   // Callback de app bar goi mo danh sach tinh trong HomeFeed.
@@ -77,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case 1:
         return const CommunityFeedPage();
       case 2:
-        return const MapPage();
+        return MapPage(isActive: _mapTabActive);
       case 3:
         return const FavoritesTabsPage();
       case 4:
@@ -92,6 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // Notify Home before IndexedStack makes it offstage so active PageView
     // animations can be stopped while their Material ancestor is still active.
     _homeTabActive.value = index == 0;
+    _mapTabActive.value = index == 2;
     setState(() {
       _pages[index] ??= _createPage(index);
       _currentIndex = index;
@@ -147,6 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     _homeTabActive.dispose();
+    _mapTabActive.dispose();
     super.dispose();
   }
 
@@ -359,6 +362,12 @@ class _HomeFeedState extends State<_HomeFeed> {
   ProvinceModel? _selectedProvince;
   String _query = '';
   List<DishModel> _todayDishesCache = const <DishModel>[];
+  List<RecommendedDish> _recommendationCache = const <RecommendedDish>[];
+  List<DishModel>? _recommendationCacheSource;
+  String? _recommendationCachePreferencesKey;
+  String? _recommendationCacheProvinceId;
+  String? _recommendationCacheLanguage;
+  String? _recommendationCacheTimeBucket;
   bool _bootResolved = false;
   String? _bootTargetProvinceId;
   Timer? _bootTimer;
@@ -1062,26 +1071,12 @@ class _HomeFeedState extends State<_HomeFeed> {
                                           ),
                                           const SizedBox(width: 10),
                                           Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  p.name,
-                                                  style: TextStyle(
-                                                    color: textPrimary,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 2),
-                                                Text(
-                                                  p.code,
-                                                  style: TextStyle(
-                                                    color: textSecondary,
-                                                    fontSize: 12,
-                                                  ),
-                                                ),
-                                              ],
+                                            child: Text(
+                                              p.name,
+                                              style: TextStyle(
+                                                color: textPrimary,
+                                                fontWeight: FontWeight.w600,
+                                              ),
                                             ),
                                           ),
                                           if (isSelected)
@@ -1422,30 +1417,51 @@ class _HomeFeedState extends State<_HomeFeed> {
         _provinceDishes.isNotEmpty ? _provinceDishes : _todayDishesCache;
     if (dishes.isEmpty) return const SizedBox.shrink();
 
+    final now = DateTime.now();
+    final timeBucket = _recommendationTimeBucket(now);
+    final provinceId = _selectedProvince?.id;
+    final preferencesKey = _recommendationPreferencesKey(_userPreferences);
+    final canReuseCache =
+        identical(_recommendationCacheSource, dishes) &&
+        _recommendationCachePreferencesKey == preferencesKey &&
+        _recommendationCacheProvinceId == provinceId &&
+        _recommendationCacheLanguage == languageCode &&
+        _recommendationCacheTimeBucket == timeBucket;
+
     late final List<RecommendedDish> recommendedDishes;
-    try {
-      recommendedDishes = _recommendationService.recommendTodayWithReasons(
-        dishes: dishes,
-        preferences: _userPreferences,
-        now: DateTime.now(),
-        languageCode: languageCode,
-      );
-    } catch (error) {
-      debugPrint('[Home] recommendation failed: $error');
-      recommendedDishes =
-          dishes
-              .take(12)
-              .map(
-                (dish) => RecommendedDish(
-                  dish: dish,
-                  score: 0,
-                  explanation:
-                      languageCode == 'en'
-                          ? 'A discovery pick for you today.'
-                          : 'Gợi ý khám phá dành cho bạn hôm nay.',
-                ),
-              )
-              .toList();
+    if (canReuseCache) {
+      recommendedDishes = _recommendationCache;
+    } else {
+      try {
+        recommendedDishes = _recommendationService.recommendTodayWithReasons(
+          dishes: dishes,
+          preferences: _userPreferences,
+          now: now,
+          languageCode: languageCode,
+        );
+      } catch (error) {
+        debugPrint('[Home] recommendation failed: $error');
+        recommendedDishes =
+            dishes
+                .take(21)
+                .map(
+                  (dish) => RecommendedDish(
+                    dish: dish,
+                    score: 0,
+                    explanation:
+                        languageCode == 'en'
+                            ? 'A discovery pick for you today.'
+                            : 'Gợi ý khám phá dành cho bạn hôm nay.',
+                  ),
+                )
+                .toList();
+      }
+      _recommendationCache = recommendedDishes;
+      _recommendationCacheSource = dishes;
+      _recommendationCachePreferencesKey = preferencesKey;
+      _recommendationCacheProvinceId = provinceId;
+      _recommendationCacheLanguage = languageCode;
+      _recommendationCacheTimeBucket = timeBucket;
     }
     if (recommendedDishes.isEmpty) return const SizedBox.shrink();
 
@@ -1467,6 +1483,25 @@ class _HomeFeedState extends State<_HomeFeed> {
         ],
       ),
     );
+  }
+
+  String _recommendationPreferencesKey(UserPreferences? preferences) {
+    if (preferences == null) return 'none';
+    final map = preferences.toMap();
+    final keys = map.keys.toList()..sort();
+    return keys.map((key) => '$key=${map[key]}').join('|');
+  }
+
+  /// Cache thay đổi theo đúng các mốc bữa ăn mà RecommendationContext sử dụng.
+  String _recommendationTimeBucket(DateTime now) {
+    final mealTime = switch (now.hour) {
+      >= 5 && < 10 => 'breakfast',
+      >= 10 && < 14 => 'lunch',
+      >= 14 && < 17 => 'snack',
+      >= 17 && < 21 => 'dinner',
+      _ => 'late_night',
+    };
+    return '${now.year}-${now.month}-${now.day}:$mealTime';
   }
 
   List<DishModel> _filterDishes(List<DishModel> dishes) {

@@ -6,6 +6,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 
 import '../../config/app_scaffold_messenger.dart';
 import '../../models/user_notification.dart';
+import '../../router/route_names.dart';
+import '../../views/notifications/foreground_notification_banner.dart';
 
 class NotificationService {
   NotificationService._internal();
@@ -20,6 +22,7 @@ class NotificationService {
   String? _boundUid;
   StreamSubscription<String>? _tokenSub;
   StreamSubscription<RemoteMessage>? _foregroundSub;
+  OverlayEntry? _foregroundBanner;
 
   // Bind user de luu token, tranh goi lap lai
   Future<void> bindUser(String? uid) async {
@@ -27,6 +30,7 @@ class NotificationService {
     _boundUid = uid;
     await _tokenSub?.cancel();
     await _foregroundSub?.cancel();
+    _removeForegroundBanner();
 
     if (uid == null) return;
 
@@ -44,16 +48,45 @@ class NotificationService {
       _saveToken(uid, t);
     });
 
-    // Hien thong bao khi app dang mo (foreground)
+    // Hiển thị banner phía trên khi ứng dụng đang mở (foreground).
     _foregroundSub = FirebaseMessaging.onMessage.listen((message) {
-      final title = message.notification?.title ?? 'Thong bao moi';
-      final body = message.notification?.body ?? '';
-      final messenger = appScaffoldMessengerKey.currentState;
-      if (messenger == null) return;
-      messenger.showSnackBar(
-        SnackBar(content: Text(body.isEmpty ? title : '$title: $body')),
-      );
+      final payloadTitle = message.notification?.title ?? message.data['title'];
+      final payloadBody = message.notification?.body ?? message.data['body'];
+      final title = payloadTitle?.toString().trim().isNotEmpty == true
+          ? payloadTitle.toString().trim()
+          : 'Thông báo mới';
+      final body = payloadBody?.toString().trim() ?? '';
+      _showForegroundBanner(title: title, body: body);
     });
+  }
+
+  void _showForegroundBanner({required String title, required String body}) {
+    final overlay = appNavigatorKey.currentState?.overlay;
+    if (overlay == null) return;
+
+    _removeForegroundBanner();
+    late final OverlayEntry entry;
+    entry = OverlayEntry(
+      builder: (_) => ForegroundNotificationBanner(
+        title: title,
+        body: body,
+        onTap: () {
+          appNavigatorKey.currentState?.pushNamed(RouteNames.notifications);
+        },
+        onDismissed: () {
+          if (identical(_foregroundBanner, entry)) {
+            _removeForegroundBanner();
+          }
+        },
+      ),
+    );
+    _foregroundBanner = entry;
+    overlay.insert(entry);
+  }
+
+  void _removeForegroundBanner() {
+    _foregroundBanner?.remove();
+    _foregroundBanner = null;
   }
 
   Future<void> _saveToken(String uid, String token) async {

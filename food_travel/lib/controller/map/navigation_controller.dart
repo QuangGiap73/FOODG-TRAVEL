@@ -9,7 +9,7 @@ import '../../services/map/directions_service.dart';
 import '../../services/map/route_utils.dart';
 
 class NavigationController extends ChangeNotifier {
-  NavigationController(): _directions = DirectionsService();
+  NavigationController() : _directions = DirectionsService();
 
   static const errorPermissionDenied = 'permission_denied';
   static const errorRouteUnavailable = 'route_unavailable';
@@ -31,7 +31,7 @@ class NavigationController extends ChangeNotifier {
 
   // bo loc nhieu gps, dem so lan lech lien tiep
   int _offRouteHits = 0;
-  // Stream postition 
+  // Stream postition
   StreamSubscription<Position>? _posSub;
   String? _lastErrorCode;
   String? get lastErrorCode => _lastErrorCode;
@@ -88,6 +88,7 @@ class NavigationController extends ChangeNotifier {
       return false;
     }
   }
+
   Future<void> stopNavigation() async {
     _navigating = false;
     _route = null;
@@ -98,6 +99,19 @@ class NavigationController extends ChangeNotifier {
     _posSub = null;
     notifyListeners();
   }
+
+  /// Tạm dừng GPS khi màn bản đồ bị ẩn nhưng vẫn giữ tuyến đường hiện tại.
+  Future<void> pauseTracking() async {
+    await _posSub?.cancel();
+    _posSub = null;
+  }
+
+  /// Tiếp tục GPS khi người dùng quay lại bản đồ.
+  void resumeTracking() {
+    if (!_navigating || _destination == null || _posSub != null) return;
+    _startPositionStream();
+  }
+
   void _startPositionStream() {
     _posSub?.cancel();
     _posSub = Geolocator.getPositionStream(
@@ -105,28 +119,30 @@ class NavigationController extends ChangeNotifier {
         accuracy: LocationAccuracy.high,
         distanceFilter: 8,
       ),
-    ).listen((pos){
+    ).listen((pos) {
       _onPositionUpdate(LatLng(pos.latitude, pos.longitude));
     });
   }
+
   Future<void> _onPositionUpdate(LatLng pos) async {
-    if(!_navigating || _destination == null) return;
+    if (!_navigating || _destination == null) return;
     _current = pos;
 
     // kiem tra lech route
-    if(_route != null){
+    if (_route != null) {
       final dist = RouteUtils.distanceToRoute(pos, _route!.points);
 
-      if(dist > 50){
+      if (dist > 50) {
         _offRouteHits++;
-      }else {
+      } else {
         _offRouteHits = 0;
       }
       final now = DateTime.now();
-      final inCooldown = _lastRerouteAt != null &&
-        now.difference(_lastRerouteAt!).inSeconds < 20;
+      final inCooldown =
+          _lastRerouteAt != null &&
+          now.difference(_lastRerouteAt!).inSeconds < 20;
       // neu lech nhieu lan va khong trong cooldown -> reroute
-      if(_offRouteHits >=3 && !inCooldown){
+      if (_offRouteHits >= 3 && !inCooldown) {
         _offRouteHits = 0;
         _lastRerouteAt = now;
 
@@ -140,5 +156,12 @@ class NavigationController extends ChangeNotifier {
       }
     }
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _posSub?.cancel();
+    _posSub = null;
+    super.dispose();
   }
 }

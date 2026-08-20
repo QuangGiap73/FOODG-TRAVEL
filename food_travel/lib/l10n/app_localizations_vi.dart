@@ -1104,7 +1104,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get amenityFreeParking => 'Đỗ xe miễn phí';
 
   @override
-  String get mapSearchHint => 'Tìm địa điểm...';
+  String get mapSearchHint => 'Tìm tên quán gần bạn...';
 
   @override
   String get mapCategoryRestaurants => 'Quán ăn';
@@ -1471,6 +1471,35 @@ class AppLocalizationsVi extends AppLocalizations {
   String get authForgotPassword => 'Quên mật khẩu?';
 
   @override
+  String get authResetPasswordTitle => 'Đặt lại mật khẩu';
+
+  @override
+  String get authResetPasswordDescription =>
+      'Nhập email của bạn để nhận đường dẫn đặt lại mật khẩu.';
+
+  @override
+  String get authResetPasswordSend => 'Gửi hướng dẫn';
+
+  @override
+  String get authResetPasswordCancel => 'Hủy';
+
+  @override
+  String get authResetPasswordSuccess =>
+      'Nếu email đã được đăng ký, hướng dẫn đặt lại mật khẩu sẽ được gửi đến email đó.';
+
+  @override
+  String get authResetPasswordTooManyRequests =>
+      'Bạn đã gửi quá nhiều yêu cầu. Vui lòng đợi một lúc rồi thử lại.';
+
+  @override
+  String get authResetPasswordNetworkError =>
+      'Không có kết nối mạng. Vui lòng kiểm tra Internet.';
+
+  @override
+  String get authResetPasswordFailed =>
+      'Không thể gửi hướng dẫn lúc này. Vui lòng thử lại sau.';
+
+  @override
   String get authNoAccount => 'Chưa có tài khoản? ';
 
   @override
@@ -1587,6 +1616,51 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get dishShareTodo => 'Chia sẻ sắp có.';
+
+  @override
+  String get dishSpecialtyFallback => 'Món ăn đặc sản';
+
+  @override
+  String get dishSpicyLabel => 'Độ cay';
+
+  @override
+  String get dishSatietyLabel => 'Độ no';
+
+  @override
+  String get dishBestSeasonTitle => 'Mùa ngon nhất';
+
+  @override
+  String get dishBestTimeTitle => 'Thời điểm ăn';
+
+  @override
+  String get dishNotUpdated => 'Chưa cập nhật';
+
+  @override
+  String get dishIntroductionTitle => 'Giới thiệu';
+
+  @override
+  String get dishNoDescription => 'Chưa có mô tả cho món ăn này.';
+
+  @override
+  String get dishReadMore => 'Đọc thêm';
+
+  @override
+  String get dishCollapse => 'Thu gọn';
+
+  @override
+  String get dishIngredientsTitle => 'Nguyên liệu';
+
+  @override
+  String get dishPreparationTitle => 'Cách chế biến';
+
+  @override
+  String get dishNoInstructions => 'Chưa có hướng dẫn chế biến.';
+
+  @override
+  String get dishPriceRangeTitle => 'Khoảng giá';
+
+  @override
+  String get dishFindNearby => 'Tìm quán gần đây';
 
   @override
   String get routeMissingProvinceId => 'Thiếu id tỉnh';

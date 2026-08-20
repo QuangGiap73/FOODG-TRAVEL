@@ -216,7 +216,9 @@ class _HeroHeader extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.fromLTRB(18, topInset + 12, 18, 18),
+                // Bám sát vùng an toàn, chỉ chừa thêm 2 px để phần đầu trang
+                // không bị rộng trên máy có status bar/camera cao.
+                padding: EdgeInsets.fromLTRB(18, topInset + 2, 18, 18),
                 child: Column(
                   children: [
                     Row(

@@ -174,6 +174,140 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  Future<void> _showForgotPasswordDialog() async {
+    final t = AppLocalizations.of(context)!;
+    final resetEmailController = TextEditingController(
+      text: _emailController.text.trim(),
+    );
+    final resetFormKey = GlobalKey<FormState>();
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        var isSending = false;
+        String? errorMessage;
+
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            Future<void> submit() async {
+              if (isSending || !resetFormKey.currentState!.validate()) return;
+              setDialogState(() {
+                isSending = true;
+                errorMessage = null;
+              });
+
+              var succeeded = false;
+              try {
+                await _authService
+                    .sendPasswordResetEmail(
+                      email: resetEmailController.text.trim(),
+                    )
+                    .timeout(const Duration(seconds: 20));
+                succeeded = true;
+              } on FirebaseAuthException catch (error) {
+                // Không tiết lộ email có tồn tại trong hệ thống hay không.
+                if (error.code == 'user-not-found') {
+                  succeeded = true;
+                } else if (error.code == 'too-many-requests') {
+                  errorMessage = t.authResetPasswordTooManyRequests;
+                } else if (error.code == 'network-request-failed') {
+                  errorMessage = t.authResetPasswordNetworkError;
+                } else if (error.code == 'invalid-email') {
+                  errorMessage = t.authEmailInvalid;
+                } else {
+                  errorMessage = t.authResetPasswordFailed;
+                }
+              } on TimeoutException {
+                errorMessage = t.authResetPasswordNetworkError;
+              } catch (_) {
+                errorMessage = t.authResetPasswordFailed;
+              }
+
+              if (!dialogContext.mounted) return;
+              if (succeeded) {
+                Navigator.of(dialogContext).pop();
+                if (!mounted) return;
+                ScaffoldMessenger.of(this.context)
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(
+                    SnackBar(content: Text(t.authResetPasswordSuccess)),
+                  );
+                return;
+              }
+
+              setDialogState(() => isSending = false);
+            }
+
+            return AlertDialog(
+              title: Text(t.authResetPasswordTitle),
+              content: Form(
+                key: resetFormKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(t.authResetPasswordDescription),
+                    const SizedBox(height: 18),
+                    TextFormField(
+                      controller: resetEmailController,
+                      enabled: !isSending,
+                      autofocus: true,
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.done,
+                      autofillHints: const [AutofillHints.email],
+                      decoration: InputDecoration(
+                        labelText: t.authEmailLabel,
+                        prefixIcon: const Icon(Icons.email_outlined),
+                        border: const OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        final email = value?.trim() ?? '';
+                        if (email.isEmpty) return t.authEmailRequired;
+                        if (!RegExp(
+                          r'^[^\s@]+@[^\s@]+\.[^\s@]+$',
+                        ).hasMatch(email)) {
+                          return t.authEmailInvalid;
+                        }
+                        return null;
+                      },
+                      onFieldSubmitted: (_) => submit(),
+                    ),
+                    if (errorMessage != null) ...[
+                      const SizedBox(height: 12),
+                      Text(
+                        errorMessage!,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed:
+                      isSending ? null : () => Navigator.of(context).pop(),
+                  child: Text(t.authResetPasswordCancel),
+                ),
+                FilledButton(
+                  onPressed: isSending ? null : submit,
+                  child: isSending
+                      ? const SizedBox.square(
+                          dimension: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : Text(t.authResetPasswordSend),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+    resetEmailController.dispose();
+  }
+
   Future<void> _handleGoogleLogin() async {
     if (_isLoading) return;
     setState(() {
@@ -446,9 +580,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                   const Spacer(),
                                   TextButton(
-                                    onPressed: () {},
+                                    onPressed: _showForgotPasswordDialog,
                                     child: Text(
-                                      'Quên mật khẩu?',
+                                      t.authForgotPassword,
                                       style: TextStyle(
                                         color: accent,
                                         fontSize: 12,

@@ -1,5 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../models/dish_model.dart';
 
 class DishDetailContentSheet extends StatelessWidget {
@@ -17,6 +18,7 @@ class DishDetailContentSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final t = AppLocalizations.of(context)!;
     final isDark = theme.brightness == Brightness.dark;
     final lang = Localizations.localeOf(context).languageCode;
     final name = dish.getName(lang);
@@ -34,7 +36,7 @@ class DishDetailContentSheet extends StatelessWidget {
     final satiety = _clampLevel(dish.satietyLevel);
 
     final tags = _dedupeTags([
-      ...dish.tags,
+      ..._toTags(dish.getTagsText(lang)),
       if (province.isNotEmpty) province,
       if (category.isNotEmpty) category,
     ]);
@@ -66,7 +68,7 @@ class DishDetailContentSheet extends StatelessWidget {
           const SizedBox(height: 8),
 
           Text(
-            category.isNotEmpty ? category : 'Món ăn đặc sản',
+            category.isNotEmpty ? category : t.dishSpecialtyFallback,
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.onSurface.withOpacity(0.65),
               fontWeight: FontWeight.w600,
@@ -81,7 +83,7 @@ class DishDetailContentSheet extends StatelessWidget {
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
-                  _buildLocationText(dish),
+                  _buildLocationText(context, dish),
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurface.withOpacity(0.75),
                     fontWeight: FontWeight.w600,
@@ -117,7 +119,7 @@ class DishDetailContentSheet extends StatelessWidget {
                 child: _Meter(
                   icon: Icons.local_fire_department_outlined,
                   iconColor: Colors.red.shade500,
-                  label: 'Độ cay',
+                  label: t.dishSpicyLabel,
                   level: spicy,
                   activeColor: Colors.red.shade500,
                   inactiveColor: isDark
@@ -130,7 +132,7 @@ class DishDetailContentSheet extends StatelessWidget {
                 child: _Meter(
                   icon: Icons.emoji_food_beverage_outlined,
                   iconColor: Colors.orange.shade600,
-                  label: 'Độ no',
+                  label: t.dishSatietyLabel,
                   level: satiety,
                   activeColor: Colors.orange.shade600,
                   inactiveColor: isDark
@@ -153,10 +155,10 @@ class DishDetailContentSheet extends StatelessWidget {
                     icon: Icons.calendar_month_outlined,
                     iconBg: Colors.blue.withOpacity(isDark ? 0.25 : 0.14),
                     iconColor: Colors.blue.shade600,
-                    title: 'Mùa ngon nhất',
+                    title: t.dishBestSeasonTitle,
                     value: bestSeason.isNotEmpty
                         ? bestSeason
-                        : 'Chưa cập nhật',
+                        : t.dishNotUpdated,
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -165,10 +167,10 @@ class DishDetailContentSheet extends StatelessWidget {
                     icon: Icons.access_time_outlined,
                     iconBg: Colors.amber.withOpacity(isDark ? 0.25 : 0.16),
                     iconColor: Colors.amber.shade700,
-                    title: 'Thời điểm ăn',
+                    title: t.dishBestTimeTitle,
                     value: bestTime.isNotEmpty
                         ? bestTime
-                        : 'Chưa cập nhật',
+                        : t.dishNotUpdated,
                   ),
                 ),
               ],
@@ -178,12 +180,12 @@ class DishDetailContentSheet extends StatelessWidget {
           const SizedBox(height: 18),
 
           // Description
-          _SectionTitle(title: 'Giới thiệu'),
+          _SectionTitle(title: t.dishIntroductionTitle),
           const SizedBox(height: 8),
           Text(
             description.isNotEmpty
                 ? description
-                : 'Chưa có mô tả cho món ăn này.',
+                : t.dishNoDescription,
             maxLines: descExpanded ? null : 3,
             overflow: descExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
             style: theme.textTheme.bodyMedium?.copyWith(
@@ -200,7 +202,7 @@ class DishDetailContentSheet extends StatelessWidget {
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
               child: Text(
-                descExpanded ? 'Thu gọn' : 'Đọc thêm',
+                descExpanded ? t.dishCollapse : t.dishReadMore,
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   color: Colors.orange.shade700,
@@ -217,7 +219,10 @@ class DishDetailContentSheet extends StatelessWidget {
           const SizedBox(height: 18),
 
           // Ingredients
-          _SectionTitle(title: 'Nguyên liệu', icon: Icons.shopping_bag_outlined),
+          _SectionTitle(
+            title: t.dishIngredientsTitle,
+            icon: Icons.shopping_bag_outlined,
+          ),
           const SizedBox(height: 10),
           ..._toLines(ingredients).map((x) => _BulletLine(text: x)),
 
@@ -225,7 +230,9 @@ class DishDetailContentSheet extends StatelessWidget {
 
           // Instructions timeline
           _SectionTitle(
-              title: 'Cách chế biến', icon: Icons.list_alt_outlined),
+            title: t.dishPreparationTitle,
+            icon: Icons.list_alt_outlined,
+          ),
           const SizedBox(height: 12),
           _TimelineSteps(steps: _toLines(instructions)),
 
@@ -241,15 +248,15 @@ class DishDetailContentSheet extends StatelessWidget {
 
   int _clampLevel(int v) => v.clamp(0, 5);
 
-  String _buildLocationText(DishModel dish) {
+  String _buildLocationText(BuildContext context, DishModel dish) {
     // Keep fallback behavior for old data while preferring i18n fields.
-    final lang = WidgetsBinding.instance.platformDispatcher.locale.languageCode;
+    final lang = Localizations.localeOf(context).languageCode;
     final parts = <String>[];
     final province = dish.getProvince(lang).trim();
     final region = dish.getRegion(lang).trim();
     if (province.isNotEmpty) parts.add(province);
     if (region.isNotEmpty) parts.add(region);
-    if (parts.isEmpty) return 'Chưa cập nhật';
+    if (parts.isEmpty) return AppLocalizations.of(context)!.dishNotUpdated;
     return parts.join(', ');
   }
 
@@ -263,6 +270,14 @@ class DishDetailContentSheet extends StatelessWidget {
       set.add(s);
     }
     return set.toList();
+  }
+
+  List<String> _toTags(String raw) {
+    return raw
+        .split(RegExp(r'[,;|•]+'))
+        .map((value) => value.trim())
+        .where((value) => value.isNotEmpty)
+        .toList();
   }
 
   List<String> _toLines(String raw) {
@@ -530,7 +545,7 @@ class _TimelineSteps extends StatelessWidget {
 
     if (steps.isEmpty) {
       return Text(
-        'Chưa có hướng dẫn chế biến.',
+        AppLocalizations.of(context)!.dishNoInstructions,
         style: theme.textTheme.bodyMedium?.copyWith(
           color: theme.colorScheme.onSurface.withOpacity(0.65),
         ),
@@ -663,7 +678,7 @@ class _PriceCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Khoảng giá',
+                  AppLocalizations.of(context)!.dishPriceRangeTitle,
                   style: theme.textTheme.labelSmall?.copyWith(
                     color: theme.colorScheme.onSurface.withOpacity(0.55),
                     fontWeight: FontWeight.w700,

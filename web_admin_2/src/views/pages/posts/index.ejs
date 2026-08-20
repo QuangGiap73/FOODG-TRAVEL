@@ -159,8 +159,17 @@
               </td>
 
               <td>
-                <% if (post.coverImage) { %>
-                  <img class="posts-thumb" src="<%= post.coverImage %>" alt="" />
+                <% if (post.primaryMedia && post.primaryMedia.type === 'video') { %>
+                  <a class="posts-thumb posts-thumb--video" href="/admin/posts/<%= post.id %>" aria-label="Xem video bài viết">
+                    <% if (post.primaryMedia.thumbnailUrl) { %>
+                      <img src="<%= post.primaryMedia.thumbnailUrl %>" alt="" loading="lazy" />
+                    <% } else { %>
+                      <video src="<%= post.primaryMedia.url %>" muted playsinline preload="metadata"></video>
+                    <% } %>
+                    <span aria-hidden="true">▶</span>
+                  </a>
+                <% } else if (post.coverImage) { %>
+                  <img class="posts-thumb" src="<%= post.coverImage %>" alt="" loading="lazy" />
                 <% } else { %>
                   <div class="posts-thumb posts-thumb--empty">No media</div>
                 <% } %>

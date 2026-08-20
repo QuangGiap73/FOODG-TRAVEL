@@ -19,10 +19,11 @@ class DishScoringEngine {
     var score = 0;
     final reasons = <String>[];
 
-    final dishIngredients = IngredientAliasUtils.expand(
+    final dishIngredients = IngredientAliasUtils.canonicalizeDishIngredients(
       dish.ingredientsListNormalized,
     );
-    if (dishIngredients.intersection(profile.avoidIngredients).isNotEmpty) {
+    if (dishIngredients.intersection(profile.avoidIngredients).isNotEmpty ||
+        _containsAvoidedIngredientInDishText(dish, profile.avoidIngredients)) {
       return DishScore(
         dish: dish,
         value: -10000,
@@ -206,6 +207,35 @@ class DishScoringEngine {
         .map(RecommendationTextUtils.normalizeToken)
         .where((value) => value.isNotEmpty)
         .toSet();
+  }
+
+  bool _containsAvoidedIngredientInDishText(
+    DishModel dish,
+    Set<String> avoidIngredients,
+  ) {
+    if (avoidIngredients.isEmpty) return false;
+
+    // Một số món cũ chưa có ingredientsListNormalized. Dùng thêm tên và
+    // nguyên liệu đa ngôn ngữ làm nguồn dự phòng để điều kiện an toàn không
+    // phụ thuộc hoàn toàn vào việc dữ liệu Firestore đã được chuẩn hóa hay chưa.
+    final searchableText = [
+      dish.name,
+      dish.ingredients,
+      ...dish.nameI18n.values,
+      ...dish.ingredientsI18n.values,
+      ...dish.ingredientsListNormalized,
+    ].where((value) => value.trim().isNotEmpty).join(' ');
+    final normalized = RecommendationTextUtils.normalizeToken(searchableText);
+    if (normalized.isEmpty) return false;
+
+    // Bọc dấu gạch dưới để so khớp theo từ/cụm từ hoàn chỉnh: "ga" sẽ khớp
+    // "thit ga" nhưng không khớp nhầm một phần của từ "gao".
+    final haystack = '_${normalized}_';
+    for (final avoided in avoidIngredients) {
+      final token = RecommendationTextUtils.normalizeToken(avoided);
+      if (token.isNotEmpty && haystack.contains('_${token}_')) return true;
+    }
+    return false;
   }
 
   String _localized(
