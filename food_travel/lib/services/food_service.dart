@@ -14,7 +14,11 @@ class FoodService {
   static const _canonicalProvinceCollection = 'provinces_v2';
   static const _legacyProvinceCollection = 'provinces';
   static const _provinceDishDisplayLimit = 60;
+  static const _dishSearchPageSize = 250;
+  static const _dishSearchCatalogTtl = Duration(minutes: 10);
   Future<List<ProvinceModel>>? _legacyProvincesCache;
+  Future<List<DishModel>>? _dishSearchCatalogFuture;
+  DateTime? _dishSearchCatalogLoadedAt;
 
   /// Lang nghe danh sach tinh (sap xep theo ten).
   Stream<List<ProvinceModel>> watchProvinces() {
@@ -243,11 +247,11 @@ class FoodService {
             .where((token) => token.isNotEmpty)
             .toList();
 
-    // Lay rong hon roi loc client vi Firestore chua full-text.
-    final snap = await _db.collection('dishes').limit(limit * 6).get();
+    // Firestore không hỗ trợ full-text search. Tải danh mục theo từng trang và
+    // cache dùng chung để không bỏ sót món nằm sau 300 document đầu tiên.
+    final catalog = await _getDishSearchCatalog();
     final ranked =
-        snap.docs
-            .map(DishModel.fromDoc)
+        catalog
             .where((d) {
               if (normalizedProvince.isEmpty) return true;
               return _provinceCandidates(d).contains(normalizedProvince);
@@ -267,6 +271,52 @@ class FoodService {
           });
 
     return ranked.take(limit).map((entry) => entry.key).toList();
+  }
+
+  Future<List<DishModel>> _getDishSearchCatalog() async {
+    final cachedFuture = _dishSearchCatalogFuture;
+    final loadedAt = _dishSearchCatalogLoadedAt;
+    if (cachedFuture != null &&
+        (loadedAt == null ||
+            DateTime.now().difference(loadedAt) < _dishSearchCatalogTtl)) {
+      return cachedFuture;
+    }
+
+    final request = _loadDishSearchCatalog();
+    _dishSearchCatalogFuture = request;
+    try {
+      final dishes = await request;
+      if (identical(_dishSearchCatalogFuture, request)) {
+        _dishSearchCatalogLoadedAt = DateTime.now();
+      }
+      return dishes;
+    } catch (_) {
+      if (identical(_dishSearchCatalogFuture, request)) {
+        _dishSearchCatalogFuture = null;
+        _dishSearchCatalogLoadedAt = null;
+      }
+      rethrow;
+    }
+  }
+
+  Future<List<DishModel>> _loadDishSearchCatalog() async {
+    final collection = _db.collection('dishes');
+    final dishes = <DishModel>[];
+    DocumentSnapshot<Map<String, dynamic>>? cursor;
+
+    while (true) {
+      Query<Map<String, dynamic>> query = collection
+          .orderBy(FieldPath.documentId)
+          .limit(_dishSearchPageSize);
+      if (cursor != null) query = query.startAfterDocument(cursor);
+
+      final page = await query.get();
+      dishes.addAll(page.docs.map((doc) => DishModel.fromDoc(doc)));
+      if (page.docs.length < _dishSearchPageSize) break;
+      cursor = page.docs.last;
+    }
+
+    return List<DishModel>.unmodifiable(dishes);
   }
 
   int _dishSearchScore(

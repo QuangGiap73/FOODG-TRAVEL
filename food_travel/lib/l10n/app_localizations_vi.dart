@@ -1686,4 +1686,78 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get reviewHint => 'Chia sẻ cảm nhận của bạn...';
+
+  @override
+  String get searchDishTab => 'Món ăn';
+
+  @override
+  String get searchPlaceTab => 'Quán ăn';
+
+  @override
+  String get searchResultHint => 'Tìm món ăn, nguyên liệu, quán ngon...';
+
+  @override
+  String get searchDishLoadErrorTitle => 'Không thể tìm món ăn';
+
+  @override
+  String get searchDishLoadErrorSubtitle =>
+      'Dữ liệu tìm kiếm đang gặp lỗi. Vui lòng thử lại sau.';
+
+  @override
+  String get searchDishEmptyTitle => 'Chưa tìm thấy món phù hợp';
+
+  @override
+  String get searchDishEmptyStart =>
+      'Nhập tên món, nguyên liệu hoặc đặc sản để bắt đầu tìm.';
+
+  @override
+  String get searchDishEmptyTryAgain =>
+      'Thử đổi từ khóa ngắn hơn hoặc tìm theo tỉnh thành khác.';
+
+  @override
+  String get searchMatchingDishes => 'món ăn phù hợp';
+
+  @override
+  String get searchProvincePriority => 'Ưu tiên đặc sản tại';
+
+  @override
+  String get searchRelevanceSorted => 'Kết quả được sắp xếp theo độ liên quan';
+
+  @override
+  String get searchPlaceLoadErrorTitle => 'Không thể tìm quán ăn';
+
+  @override
+  String get searchPlaceLoadErrorSubtitle =>
+      'Dịch vụ tìm địa điểm đang tạm thời gián đoạn.';
+
+  @override
+  String get searchPlaceEmptyTitle => 'Không tìm thấy quán ăn';
+
+  @override
+  String get searchPlaceEmptyStart =>
+      'Nhập tên quán hoặc khu vực để hiển thị kết quả.';
+
+  @override
+  String get searchPlaceEmptyTryAgain =>
+      'Thử thêm tên đường, khu vực hoặc một từ khóa cụ thể hơn.';
+
+  @override
+  String get searchRelevantPlaces => 'quán ăn liên quan';
+
+  @override
+  String get searchNearbySorted =>
+      'Đã ưu tiên sắp xếp theo khoảng cách gần bạn';
+
+  @override
+  String get searchPlaceRelevance =>
+      'Kết quả địa điểm phù hợp với từ khóa của bạn';
+
+  @override
+  String get searchSpicy => 'Cay';
+
+  @override
+  String get searchOpenNow => 'Đang mở cửa';
+
+  @override
+  String get searchTemporarilyClosed => 'Tạm đóng';
 }

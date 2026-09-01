@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../../models/dish_model.dart';
 import '../../../models/places_model.dart';
@@ -236,6 +237,7 @@ class _SearchResultPageState extends State<SearchResultPage>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final t = AppLocalizations.of(context)!;
     final isDark = theme.brightness == Brightness.dark;
     final hasContextHeader = _provinceLabel.isNotEmpty || _query.isNotEmpty;
 
@@ -296,7 +298,10 @@ class _SearchResultPageState extends State<SearchResultPage>
                     labelColor: Colors.white,
                     unselectedLabelColor:
                         isDark ? Colors.white70 : const Color(0xFF7A6F66),
-                    tabs: const [Tab(text: 'Mon an'), Tab(text: 'Quan an')],
+                    tabs: [
+                      Tab(text: t.searchDishTab),
+                      Tab(text: t.searchPlaceTab),
+                    ],
                   ),
                 ),
               ],
@@ -342,6 +347,7 @@ class _SearchInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final t = AppLocalizations.of(context)!;
     final isDark = theme.brightness == Brightness.dark;
 
     return Container(
@@ -360,7 +366,7 @@ class _SearchInput extends StatelessWidget {
         onChanged: onChanged,
         onSubmitted: onSubmitted,
         decoration: InputDecoration(
-          hintText: 'Tim mon an, nguyen lieu, quan ngon...',
+          hintText: t.searchResultHint,
           hintStyle: TextStyle(
             color: isDark ? Colors.white54 : const Color(0xFF9A8F86),
           ),
@@ -462,6 +468,7 @@ class _DishResultList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return FutureBuilder<List<DishModel>>(
       future: future,
       builder: (context, snap) {
@@ -469,21 +476,21 @@ class _DishResultList extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
         if (snap.hasError) {
-          return const _EmptySearchState(
+          return _EmptySearchState(
             icon: Icons.error_outline_rounded,
-            title: 'Khong the tim mon an',
-            subtitle: 'Du lieu tim kiem dang gap loi. Thu lai sau.',
+            title: t.searchDishLoadErrorTitle,
+            subtitle: t.searchDishLoadErrorSubtitle,
           );
         }
         final data = snap.data ?? const <DishModel>[];
         if (data.isEmpty) {
           return _EmptySearchState(
             icon: Icons.ramen_dining_outlined,
-            title: 'Chua tim thay mon phu hop',
+            title: t.searchDishEmptyTitle,
             subtitle:
                 query.isEmpty
-                    ? 'Nhap ten mon, nguyen lieu hoac dac san de bat dau tim.'
-                    : 'Thu doi tu khoa ngan hon hoac tim theo tinh thanh khac.',
+                    ? t.searchDishEmptyStart
+                    : t.searchDishEmptyTryAgain,
           );
         }
 
@@ -493,11 +500,11 @@ class _DishResultList extends StatelessWidget {
           itemBuilder: (context, index) {
             if (index == 0) {
               return _ResultSectionHeader(
-                title: '${data.length} mon an phu hop',
+                title: '${data.length} ${t.searchMatchingDishes}',
                 subtitle:
                     provinceLabel.isNotEmpty
-                        ? 'Uu tien dac san tai $provinceLabel'
-                        : 'Ket qua duoc sap xep theo do lien quan',
+                        ? '${t.searchProvincePriority} $provinceLabel'
+                        : t.searchRelevanceSorted,
               );
             }
 
@@ -539,6 +546,7 @@ class _PlaceResultList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     return FutureBuilder<List<GoongNearbyPlace>>(
       future: future,
       builder: (context, snap) {
@@ -546,21 +554,21 @@ class _PlaceResultList extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
         if (snap.hasError) {
-          return const _EmptySearchState(
+          return _EmptySearchState(
             icon: Icons.store_mall_directory_outlined,
-            title: 'Khong the tim quan an',
-            subtitle: 'Dich vu tim dia diem dang tam thoi gian doan.',
+            title: t.searchPlaceLoadErrorTitle,
+            subtitle: t.searchPlaceLoadErrorSubtitle,
           );
         }
         final data = snap.data ?? const <GoongNearbyPlace>[];
         if (data.isEmpty) {
           return _EmptySearchState(
             icon: Icons.storefront_outlined,
-            title: 'Khong tim thay quan an',
+            title: t.searchPlaceEmptyTitle,
             subtitle:
                 query.isEmpty
-                    ? 'Nhap ten quan hoac khu vuc de hien thi ket qua.'
-                    : 'Thu them ten duong, khu vuc hoac mot tu khoa cu the hon.',
+                    ? t.searchPlaceEmptyStart
+                    : t.searchPlaceEmptyTryAgain,
           );
         }
 
@@ -570,11 +578,11 @@ class _PlaceResultList extends StatelessWidget {
           itemBuilder: (context, index) {
             if (index == 0) {
               return _ResultSectionHeader(
-                title: '${data.length} quan an lien quan',
+                title: '${data.length} ${t.searchRelevantPlaces}',
                 subtitle:
                     userLat != null && userLng != null
-                        ? 'Da uu tien sap xep theo khoang cach gan ban'
-                        : 'Ket qua dia diem phu hop voi tu khoa cua ban',
+                        ? t.searchNearbySorted
+                        : t.searchPlaceRelevance,
               );
             }
 
@@ -658,6 +666,7 @@ class _DishSearchCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final t = AppLocalizations.of(context)!;
     final isDark = theme.brightness == Brightness.dark;
     final lang = Localizations.localeOf(context).languageCode;
     final province =
@@ -751,7 +760,7 @@ class _DishSearchCard extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            'Cay ${dish.spicyLevel}/5',
+                            '${t.searchSpicy} ${dish.spicyLevel}/5',
                             style: theme.textTheme.labelMedium?.copyWith(
                               fontWeight: FontWeight.w700,
                             ),
@@ -790,6 +799,7 @@ class _PlaceSearchCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final t = AppLocalizations.of(context)!;
     final isDark = theme.brightness == Brightness.dark;
     final meta = <Widget>[];
 
@@ -813,7 +823,9 @@ class _PlaceSearchCard extends StatelessWidget {
     final openLabel =
         place.isOpen == null
             ? ''
-            : (place.isOpen! ? 'Dang mo cua' : 'Tam dong');
+            : (place.isOpen!
+                ? t.searchOpenNow
+                : t.searchTemporarilyClosed);
 
     return Material(
       color: Colors.transparent,

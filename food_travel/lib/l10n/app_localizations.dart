@@ -3217,6 +3217,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Share your experience...'**
   String get reviewHint;
+
+  /// No description provided for @searchDishTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Dishes'**
+  String get searchDishTab;
+
+  /// No description provided for @searchPlaceTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Restaurants'**
+  String get searchPlaceTab;
+
+  /// No description provided for @searchResultHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search dishes, ingredients, restaurants...'**
+  String get searchResultHint;
+
+  /// No description provided for @searchDishLoadErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to search dishes'**
+  String get searchDishLoadErrorTitle;
+
+  /// No description provided for @searchDishLoadErrorSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Search data is currently unavailable. Please try again later.'**
+  String get searchDishLoadErrorSubtitle;
+
+  /// No description provided for @searchDishEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching dishes found'**
+  String get searchDishEmptyTitle;
+
+  /// No description provided for @searchDishEmptyStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a dish, ingredient, or specialty to start searching.'**
+  String get searchDishEmptyStart;
+
+  /// No description provided for @searchDishEmptyTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a shorter keyword or search in another province.'**
+  String get searchDishEmptyTryAgain;
+
+  /// No description provided for @searchMatchingDishes.
+  ///
+  /// In en, this message translates to:
+  /// **'matching dishes'**
+  String get searchMatchingDishes;
+
+  /// No description provided for @searchProvincePriority.
+  ///
+  /// In en, this message translates to:
+  /// **'Prioritizing specialties in'**
+  String get searchProvincePriority;
+
+  /// No description provided for @searchRelevanceSorted.
+  ///
+  /// In en, this message translates to:
+  /// **'Results are sorted by relevance'**
+  String get searchRelevanceSorted;
+
+  /// No description provided for @searchPlaceLoadErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to search restaurants'**
+  String get searchPlaceLoadErrorTitle;
+
+  /// No description provided for @searchPlaceLoadErrorSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The place search service is temporarily unavailable.'**
+  String get searchPlaceLoadErrorSubtitle;
+
+  /// No description provided for @searchPlaceEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No restaurants found'**
+  String get searchPlaceEmptyTitle;
+
+  /// No description provided for @searchPlaceEmptyStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a restaurant name or area to see results.'**
+  String get searchPlaceEmptyStart;
+
+  /// No description provided for @searchPlaceEmptyTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try adding a street, area, or a more specific keyword.'**
+  String get searchPlaceEmptyTryAgain;
+
+  /// No description provided for @searchRelevantPlaces.
+  ///
+  /// In en, this message translates to:
+  /// **'relevant restaurants'**
+  String get searchRelevantPlaces;
+
+  /// No description provided for @searchNearbySorted.
+  ///
+  /// In en, this message translates to:
+  /// **'Results are prioritized by distance from you'**
+  String get searchNearbySorted;
+
+  /// No description provided for @searchPlaceRelevance.
+  ///
+  /// In en, this message translates to:
+  /// **'Places matching your keyword'**
+  String get searchPlaceRelevance;
+
+  /// No description provided for @searchSpicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Spicy'**
+  String get searchSpicy;
+
+  /// No description provided for @searchOpenNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Open now'**
+  String get searchOpenNow;
+
+  /// No description provided for @searchTemporarilyClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Temporarily closed'**
+  String get searchTemporarilyClosed;
 }
 
 class _AppLocalizationsDelegate

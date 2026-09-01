@@ -1691,4 +1691,77 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reviewHint => 'Share your experience...';
+
+  @override
+  String get searchDishTab => 'Dishes';
+
+  @override
+  String get searchPlaceTab => 'Restaurants';
+
+  @override
+  String get searchResultHint => 'Search dishes, ingredients, restaurants...';
+
+  @override
+  String get searchDishLoadErrorTitle => 'Unable to search dishes';
+
+  @override
+  String get searchDishLoadErrorSubtitle =>
+      'Search data is currently unavailable. Please try again later.';
+
+  @override
+  String get searchDishEmptyTitle => 'No matching dishes found';
+
+  @override
+  String get searchDishEmptyStart =>
+      'Enter a dish, ingredient, or specialty to start searching.';
+
+  @override
+  String get searchDishEmptyTryAgain =>
+      'Try a shorter keyword or search in another province.';
+
+  @override
+  String get searchMatchingDishes => 'matching dishes';
+
+  @override
+  String get searchProvincePriority => 'Prioritizing specialties in';
+
+  @override
+  String get searchRelevanceSorted => 'Results are sorted by relevance';
+
+  @override
+  String get searchPlaceLoadErrorTitle => 'Unable to search restaurants';
+
+  @override
+  String get searchPlaceLoadErrorSubtitle =>
+      'The place search service is temporarily unavailable.';
+
+  @override
+  String get searchPlaceEmptyTitle => 'No restaurants found';
+
+  @override
+  String get searchPlaceEmptyStart =>
+      'Enter a restaurant name or area to see results.';
+
+  @override
+  String get searchPlaceEmptyTryAgain =>
+      'Try adding a street, area, or a more specific keyword.';
+
+  @override
+  String get searchRelevantPlaces => 'relevant restaurants';
+
+  @override
+  String get searchNearbySorted =>
+      'Results are prioritized by distance from you';
+
+  @override
+  String get searchPlaceRelevance => 'Places matching your keyword';
+
+  @override
+  String get searchSpicy => 'Spicy';
+
+  @override
+  String get searchOpenNow => 'Open now';
+
+  @override
+  String get searchTemporarilyClosed => 'Temporarily closed';
 }
