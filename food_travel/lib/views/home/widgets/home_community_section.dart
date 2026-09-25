@@ -150,7 +150,7 @@ class HomeCommunitySection extends StatelessWidget {
                                         Text(
                                           featured.authorName.isNotEmpty
                                               ? featured.authorName
-                                              : 'FoodG User',
+                                              : 'FOODS User',
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(

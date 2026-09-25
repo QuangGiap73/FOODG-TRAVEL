@@ -22,7 +22,7 @@ class PersonalViewData { // dữ liệu đã sử dụng để UI sử dụng
         ? profileName
         : authName.isNotEmpty
             ? authName
-            : 'FoodG User';
+            : 'FOODS User';
 
     final profileEmail = profile?.email.trim() ?? '';
     final authEmail = authUser?.email?.trim() ?? '';

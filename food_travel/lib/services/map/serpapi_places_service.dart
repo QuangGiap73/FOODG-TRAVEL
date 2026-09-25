@@ -10,7 +10,8 @@ class SerpApiPlacesService {
   // Model review don gian tu SerpAPI
   // Chi su dung trong UI chi tiet quan
   // (khong can luu DB)
-  static const _defaultReviewLimit = 6;
+  static const _defaultReviewLimit = 40;
+  static const _maxReviewLimit = 40;
 
   Future<List<SerpApiReview>> fetchReviews({
     required String dataId,
@@ -19,33 +20,59 @@ class SerpApiPlacesService {
     final trimmed = dataId.trim();
     if (trimmed.isEmpty) return const [];
 
-    final params = <String, String>{
-      'engine': 'google_maps_reviews',
-      'api_key': serpapiKey,
-      'data_id': trimmed,
-      'hl': 'vi',
-      'gl': 'vn',
-    };
-    final uri = Uri.https('serpapi.com', '/search.json', params);
+    final requestedLimit = limit.clamp(1, _maxReviewLimit).toInt();
+    final reviews = <SerpApiReview>[];
+    final seenReviews = <String>{};
+    final seenPageTokens = <String>{};
+    String? nextPageToken;
+
     try {
-      final res = await http.get(uri).timeout(const Duration(seconds: 12));
-      if (res.statusCode != 200) {
-        debugPrint('SerpAPI reviews http=${res.statusCode} body=${res.body}');
-        return const [];
-      }
-      final bodyText = utf8.decode(res.bodyBytes, allowMalformed: true);
-      final data = jsonDecode(bodyText) as Map<String, dynamic>;
-      final list = data['reviews'];
-      if (list is! List) return const [];
-      return list
-          .whereType<Map>()
-          .map((e) => SerpApiReview.fromJson(Map<String, dynamic>.from(e)))
-          .where((e) => e.text.isNotEmpty)
-          .take(limit)
-          .toList();
+      do {
+        final params = <String, String>{
+          'engine': 'google_maps_reviews',
+          'api_key': serpapiKey,
+          'data_id': trimmed,
+          'hl': 'vi',
+          'gl': 'vn',
+          if (nextPageToken != null) 'next_page_token': nextPageToken,
+        };
+        final uri = Uri.https('serpapi.com', '/search.json', params);
+        final res = await http.get(uri).timeout(const Duration(seconds: 12));
+        if (res.statusCode != 200) {
+          debugPrint('SerpAPI reviews http=${res.statusCode} body=${res.body}');
+          break;
+        }
+
+        final bodyText = utf8.decode(res.bodyBytes, allowMalformed: true);
+        final data = jsonDecode(bodyText) as Map<String, dynamic>;
+        final list = data['reviews'];
+        if (list is! List) break;
+
+        for (final raw in list.whereType<Map>()) {
+          final review = SerpApiReview.fromJson(
+            Map<String, dynamic>.from(raw),
+          );
+          if (review.text.isEmpty) continue;
+          final identity = '${review.userName}|${review.dateText}|${review.text}';
+          if (seenReviews.add(identity)) reviews.add(review);
+          if (reviews.length >= requestedLimit) break;
+        }
+
+        final pagination = data['serpapi_pagination'];
+        final token = pagination is Map
+            ? pagination['next_page_token']?.toString().trim()
+            : null;
+        nextPageToken = token != null &&
+                token.isNotEmpty &&
+                seenPageTokens.add(token)
+            ? token
+            : null;
+      } while (reviews.length < requestedLimit && nextPageToken != null);
+
+      return reviews.take(requestedLimit).toList();
     } catch (e) {
       debugPrint('SerpAPI reviews error: $e');
-      return const [];
+      return reviews.take(requestedLimit).toList();
     }
   }
 

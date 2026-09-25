@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'FoodG Travel';
+  String get appTitle => 'FOODS';
 
   @override
   String get language => 'Language';
@@ -156,7 +156,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get actionComment => 'Comment';
 
   @override
-  String get commonUserFallback => 'FoodG User';
+  String get commonUserFallback => 'FOODS User';
 
   @override
   String get timeJustNow => 'just now';
@@ -647,6 +647,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get navSaved => 'Saved';
+
+  @override
+  String get navJourney => 'Journey';
 
   @override
   String get navProfile => 'Profile';
@@ -1175,6 +1178,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get mapDirections => 'Directions';
+
+  @override
+  String get directionsChoiceTitle => 'Choose directions';
+
+  @override
+  String get directionsInApp => 'Navigate in the app';
+
+  @override
+  String get directionsGoogleMaps => 'Open Google Maps';
+
+  @override
+  String get directionsInvalidCoordinates =>
+      'The restaurant coordinates are invalid.';
+
+  @override
+  String get directionsOpenGoogleMapsError =>
+      'Google Maps cannot be opened on this device.';
 
   @override
   String mapNearbyPlacesTitle(Object count) {
@@ -1764,4 +1784,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get searchTemporarilyClosed => 'Temporarily closed';
+
+  @override
+  String get placeCheckinAction => 'I\'ve eaten here';
+
+  @override
+  String get placeCheckinLoading => 'Checking in...';
 }

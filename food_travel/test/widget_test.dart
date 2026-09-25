@@ -14,16 +14,16 @@ void main() {
         localeController: LocaleController(),
         home: const Scaffold(
           key: testHomeKey,
-          body: Text('FoodG Travel'),
+          body: Text('FOODS'),
         ),
       ),
     );
     await tester.pump();
 
     final materialApp = tester.widget<MaterialApp>(find.byType(MaterialApp));
-    expect(materialApp.title, 'FoodG Travel');
+    expect(materialApp.title, 'FOODS');
     expect(materialApp.supportedLocales, const [Locale('vi'), Locale('en')]);
     expect(find.byKey(testHomeKey), findsOneWidget);
-    expect(find.text('FoodG Travel'), findsOneWidget);
+    expect(find.text('FOODS'), findsOneWidget);
   });
 }

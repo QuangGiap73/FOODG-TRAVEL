@@ -23,6 +23,7 @@ class NotificationService {
   StreamSubscription<String>? _tokenSub;
   StreamSubscription<RemoteMessage>? _foregroundSub;
   OverlayEntry? _foregroundBanner;
+  final Map<String, Stream<int>> _unreadCountStreams = {};
 
   // Bind user de luu token, tranh goi lap lai
   Future<void> bindUser(String? uid) async {
@@ -120,13 +121,16 @@ class NotificationService {
 
   // Dem thong bao chua doc (badge)
   Stream<int> watchUnreadCount(String uid) {
-    return _db
-        .collection('users')
-        .doc(uid)
-        .collection('notifications')
-        .where('read', isEqualTo: false)
-        .snapshots()
-        .map((snap) => snap.docs.length);
+    return _unreadCountStreams.putIfAbsent(
+      uid,
+      () => _db
+          .collection('users')
+          .doc(uid)
+          .collection('notifications')
+          .where('read', isEqualTo: false)
+          .snapshots()
+          .map((snap) => snap.docs.length),
+    );
   }
 
   // Danh dau 1 thong bao da doc

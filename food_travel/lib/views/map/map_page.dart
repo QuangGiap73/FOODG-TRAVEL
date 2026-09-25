@@ -14,6 +14,7 @@ import '../../models/places_model.dart';
 import '../../services/map/places_service.dart';
 import '../../services/map/serpapi_places_service.dart';
 import '../../services/location_preference_service.dart';
+import '../../services/location_repository.dart';
 import '../../views/favorites/place_detail_page.dart';
 import 'widgets/map_search_bar.dart';
 import 'widgets/nearby_places_layer.dart';
@@ -116,6 +117,7 @@ class _MapPageState extends State<MapPage> {
 
   MapLibreMapController? _controller;
   final _locationPrefs = LocationPreferenceService();
+  final _locationRepository = LocationRepository.instance;
   late final MapSearchController _searchController;
   final _searchTextController = TextEditingController();
   final _serpService = SerpApiPlacesService();
@@ -442,6 +444,7 @@ class _MapPageState extends State<MapPage> {
         distanceFilter: 5,
       ),
     ).listen((pos) async {
+      _locationRepository.update(pos);
       if (!_styleReady) return;
       final latLng = LatLng(pos.latitude, pos.longitude);
       _lastLatLng = latLng;
@@ -633,15 +636,16 @@ class _MapPageState extends State<MapPage> {
           limit: 12,
           enrichDetails: false,
         );
-        places = raw.where((place) {
-          final distance = Geolocator.distanceBetween(
-            origin.latitude,
-            origin.longitude,
-            place.lat,
-            place.lng,
-          );
-          return distance <= 30000;
-        }).toList();
+        places =
+            raw.where((place) {
+              final distance = Geolocator.distanceBetween(
+                origin.latitude,
+                origin.longitude,
+                place.lat,
+                place.lng,
+              );
+              return distance <= 30000;
+            }).toList();
         places = _sortPlacesByDistance(places, origin);
         _nearbyCache[cacheKey] = _NearbyCacheEntry(
           DateTime.now(),
@@ -908,6 +912,10 @@ class _MapPageState extends State<MapPage> {
   @override
   void initState() {
     super.initState();
+    final sharedPosition = _locationRepository.position;
+    if (sharedPosition != null) {
+      _lastLatLng = LatLng(sharedPosition.latitude, sharedPosition.longitude);
+    }
     _mapActive = widget.isActive?.value ?? true;
     widget.isActive?.addListener(_handleExternalVisibility);
     final loadFuture = _locationPrefs.load();

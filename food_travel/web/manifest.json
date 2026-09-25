@@ -1,11 +1,11 @@
 {
-    "name": "food_travel",
-    "short_name": "food_travel",
+    "name": "FOODS",
+    "short_name": "FOODS",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "FOODS - Khám phá ẩm thực và du lịch Việt Nam.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

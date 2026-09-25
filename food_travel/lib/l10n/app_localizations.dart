@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'FoodG Travel'**
+  /// **'FOODS'**
   String get appTitle;
 
   /// No description provided for @language.
@@ -377,7 +377,7 @@ abstract class AppLocalizations {
   /// No description provided for @commonUserFallback.
   ///
   /// In en, this message translates to:
-  /// **'FoodG User'**
+  /// **'FOODS User'**
   String get commonUserFallback;
 
   /// No description provided for @timeJustNow.
@@ -1225,6 +1225,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Saved'**
   String get navSaved;
+
+  /// No description provided for @navJourney.
+  ///
+  /// In en, this message translates to:
+  /// **'Journey'**
+  String get navJourney;
 
   /// No description provided for @navProfile.
   ///
@@ -2233,6 +2239,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Directions'**
   String get mapDirections;
+
+  /// No description provided for @directionsChoiceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose directions'**
+  String get directionsChoiceTitle;
+
+  /// No description provided for @directionsInApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Navigate in the app'**
+  String get directionsInApp;
+
+  /// No description provided for @directionsGoogleMaps.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Google Maps'**
+  String get directionsGoogleMaps;
+
+  /// No description provided for @directionsInvalidCoordinates.
+  ///
+  /// In en, this message translates to:
+  /// **'The restaurant coordinates are invalid.'**
+  String get directionsInvalidCoordinates;
+
+  /// No description provided for @directionsOpenGoogleMapsError.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Maps cannot be opened on this device.'**
+  String get directionsOpenGoogleMapsError;
 
   /// No description provided for @mapNearbyPlacesTitle.
   ///
@@ -3349,6 +3385,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Temporarily closed'**
   String get searchTemporarilyClosed;
+
+  /// No description provided for @placeCheckinAction.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'ve eaten here'**
+  String get placeCheckinAction;
+
+  /// No description provided for @placeCheckinLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking in...'**
+  String get placeCheckinLoading;
 }
 
 class _AppLocalizationsDelegate

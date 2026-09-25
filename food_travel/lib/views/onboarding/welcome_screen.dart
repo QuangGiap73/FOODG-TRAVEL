@@ -66,7 +66,7 @@ class WelcomeScreen extends StatelessWidget {
                 const SizedBox(height: 22),
 
                 const Text(
-                  'FoodG Travel',
+                  'FOODS',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w800,
@@ -75,7 +75,7 @@ class WelcomeScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 const Text(
-                  'FoodG Travel will bring you the best experience; welcome to the culinary journey of FoodG Travel.',
+                  'FOODS will bring you the best experience; welcome to the culinary journey of FOODS.',
                   style: TextStyle(color: Colors.grey, height: 1.4),
                   textAlign: TextAlign.center,
                 ),

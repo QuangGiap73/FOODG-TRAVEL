@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_travel/l10n/app_localizations.dart';
 
-// Thanh dieu huong duoi (Home, Explore, Map, Saved, Profile)
+// Thanh điều hướng dưới (Trang chủ, Khám phá, Bản đồ, Hành trình, Cá nhân).
 class HomeBottomNav extends StatelessWidget {
   const HomeBottomNav({
     super.key,
@@ -46,7 +46,14 @@ class HomeBottomNav extends StatelessWidget {
           Expanded(child: _buildItem(0, Icons.home_outlined, t.navHome, inactive)),
           Expanded(child: _buildItem(1, Icons.explore_outlined, t.navExplore, inactive)),
           Expanded(child: _buildCenterMapButton(context, 2, inactive, borderColor)),
-          Expanded(child: _buildItem(3, Icons.favorite_border, t.navSaved, inactive)),
+          Expanded(
+            child: _buildItem(
+              3,
+              Icons.route_outlined,
+              t.navJourney,
+              inactive,
+            ),
+          ),
           Expanded(child: _buildItem(4, Icons.person_outline, t.navProfile, inactive)),
         ],
       ),

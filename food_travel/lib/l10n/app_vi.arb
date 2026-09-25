@@ -1,5 +1,5 @@
 ﻿{
-  "appTitle": "FoodG Travel",
+  "appTitle": "FOODS",
   "language": "Ngôn ngữ",
   "chooseLanguage": "Chọn ngôn ngữ",
   "languageAppSection": "Ngôn ngữ ứng dụng",
@@ -45,7 +45,7 @@
   "postDetailNotFound": "Bài viết không còn tồn tại.",
   "actionLike": "Thích",
   "actionComment": "Bình luận",
-  "commonUserFallback": "FoodG User",
+  "commonUserFallback": "Người dùng FOODS",
   "timeJustNow": "vừa xong",
   "timeMinutesAgo": "{count} phút trước",
   "timeHoursAgo": "{count} giờ trước",
@@ -284,6 +284,7 @@
   "navExplore": "Khám phá",
   "navMap": "Bản đồ",
   "navSaved": "Lưu",
+  "navJourney": "Hành trình",
   "navProfile": "Tôi",
   "commonCancel": "Hủy",
   "commonConfirm": "Xác nhận",
@@ -466,6 +467,11 @@
   "mapOpenNow": "Đang mở",
   "mapClosed": "Đang đóng",
   "mapDirections": "Chỉ đường",
+  "directionsChoiceTitle": "Chọn cách chỉ đường",
+  "directionsInApp": "Dẫn đường trong ứng dụng",
+  "directionsGoogleMaps": "Mở Google Maps",
+  "directionsInvalidCoordinates": "Tọa độ quán ăn không hợp lệ.",
+  "directionsOpenGoogleMapsError": "Không thể mở Google Maps trên thiết bị này.",
   "mapNearbyPlacesTitle": "Quán gần đây ({count})",
   "mapEtaMinutes": "~{minutes} phút",
   "mapSortDistance": "Khoảng cách",
@@ -651,5 +657,7 @@
   "searchPlaceRelevance": "Kết quả địa điểm phù hợp với từ khóa của bạn",
   "searchSpicy": "Cay",
   "searchOpenNow": "Đang mở cửa",
-  "searchTemporarilyClosed": "Tạm đóng"
+  "searchTemporarilyClosed": "Tạm đóng",
+  "placeCheckinAction": "Tôi đã ăn ở đây",
+  "placeCheckinLoading": "Đang check-in..."
 }

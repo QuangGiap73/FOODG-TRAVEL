@@ -86,7 +86,7 @@ class CommunityService {
         ? user.displayName!.trim()
         : (user.email?.trim().isNotEmpty ?? false)
             ? user.email!.trim()
-            : 'FoodG User';
+            : 'FOODS User';
 
     final payload = <String, dynamic>{
       'authorId': user.uid,

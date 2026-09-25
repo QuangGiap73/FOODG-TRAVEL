@@ -12,7 +12,10 @@ import '../../../views/journey/widgets/recent_checkin_section.dart';
 import '../../../views/journey/widgets/vietnam_journer_map_card.dart';
 
 class FoodJourneyPage extends StatelessWidget {
-  const FoodJourneyPage({super.key});
+  const FoodJourneyPage({super.key, this.showBackButton = true});
+
+  /// Tab Hành trình không cần nút quay lại; các màn hình được push vẫn có.
+  final bool showBackButton;
 
   @override
   Widget build(BuildContext context) {
@@ -24,20 +27,23 @@ class FoodJourneyPage extends StatelessWidget {
       backgroundColor:
           isDark ? const Color(0xFF0D1218) : const Color(0xFFFFFBF3),
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor:
             isDark ? const Color(0xFF0D1218) : const Color(0xFFFFFBF3),
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
         toolbarHeight: 72,
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: Icon(
-            Icons.arrow_back_ios_new_rounded,
-            size: 20,
-            color: isDark ? Colors.white : const Color(0xFF111111),
-          ),
-        ),
+        leading: showBackButton
+            ? IconButton(
+                onPressed: () => Navigator.of(context).maybePop(),
+                icon: Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  size: 20,
+                  color: isDark ? Colors.white : const Color(0xFF111111),
+                ),
+              )
+            : null,
         title: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

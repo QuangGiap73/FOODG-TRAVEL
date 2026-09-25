@@ -68,7 +68,7 @@ Future<List<SerpApiReview>> _fetchSerpReviews(GoongNearbyPlace place) async {
   final service = SerpApiPlacesService();
   final dataId = await _resolveReviewDataId(place, service);
   if (dataId.isEmpty) return const <SerpApiReview>[];
-  return service.fetchReviews(dataId: dataId, limit: 8);
+  return service.fetchReviews(dataId: dataId, limit: 40);
 }
 
 Future<String> _resolveReviewDataId(

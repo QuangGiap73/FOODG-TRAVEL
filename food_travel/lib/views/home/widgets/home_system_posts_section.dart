@@ -26,181 +26,208 @@ class _HomeSystemPostsSectionState extends State<HomeSystemPostsSection> {
     final t = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final languageCode = Localizations.localeOf(context).languageCode;
+    final language = Localizations.localeOf(context).languageCode;
 
     return StreamBuilder<List<SystemPost>>(
       stream: _postsStream,
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
+        if (snapshot.connectionState == ConnectionState.waiting ||
+            snapshot.hasError) {
           return const SizedBox.shrink();
         }
-        if (snapshot.hasError) {
-          return const SizedBox.shrink();
-        }
-
         final posts = snapshot.data ?? const <SystemPost>[];
         if (posts.isEmpty) return const SizedBox.shrink();
 
-        final featured = posts.first;
-        final title = featured.title(languageCode);
-        final summary = featured.summary(languageCode);
-        final category = featured.category(languageCode);
+        final post = posts.first;
+        final title = post.title(language);
+        final summary = post.summary(language);
+        final category = post.category(language);
+        final location = post.provinceName34 ??
+            post.regionCode ??
+            (language == 'vi' ? 'Toàn quốc' : 'Nationwide');
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                const Icon(
-                  Icons.article_outlined,
-                  size: 18,
-                  color: Color(0xFFFF8A00),
-                ),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text(
-                    t.systemGuideTitle,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
+                Container(
+                  width: 34,
+                  height: 34,
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? const Color(0xFF3A2518)
+                        : const Color(0xFFFFE9D2),
+                    borderRadius: BorderRadius.circular(11),
                   ),
+                  child: const Icon(Icons.celebration_rounded,
+                      size: 19, color: Color(0xFFF97316)),
                 ),
+                const SizedBox(width: 10),
+                Text(t.systemGuideTitle,
+                    style: theme.textTheme.titleMedium
+                        ?.copyWith(fontWeight: FontWeight.w800)),
               ],
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 12),
             InkWell(
               borderRadius: BorderRadius.circular(20),
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => SystemPostDetailPage(postId: featured.id),
-                  ),
-                );
-              },
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                builder: (_) => SystemPostDetailPage(postId: post.id),
+              )),
               child: Ink(
                 decoration: BoxDecoration(
-                  color:
-                      isDark
-                          ? const Color(0xFF2A1C14)
-                          : const Color(0xFFFFF1E4),
+                  color: isDark
+                      ? const Color(0xFF2A1C14)
+                      : const Color(0xFFFFF1E4),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color:
-                        isDark
-                            ? const Color(0xFF55321D)
-                            : const Color(0xFFFFD8B5),
+                    color: isDark
+                        ? const Color(0xFF2B303A)
+                        : const Color(0xFFFFD9B8),
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(
-                        0xFFFF8A00,
-                      ).withValues(alpha: isDark ? 0.10 : 0.08),
+                      color: Colors.black
+                          .withValues(alpha: isDark ? 0.24 : 0.08),
                       blurRadius: 16,
-                      offset: const Offset(0, 8),
+                      offset: const Offset(0, 7),
                     ),
                   ],
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Expanded(
+                      SizedBox(
+                        height: 130,
+                        child: Stack(fit: StackFit.expand, children: [
+                          post.coverImage.trim().isNotEmpty
+                              ? Image.network(post.coverImage,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) =>
+                                      _fallbackImage(isDark))
+                              : _fallbackImage(isDark),
+                          const DecoratedBox(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Color(0x24000000),
+                                  Color(0x05000000),
+                                  Color(0x90000000)
+                                ],
+                              ),
+                            ),
+                          ),
+                          if (category.trim().isNotEmpty)
+                            Positioned(
+                              left: 11,
+                              top: 10,
+                              child: Container(
+                                constraints:
+                                    const BoxConstraints(maxWidth: 190),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 9, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.94),
+                                  borderRadius: BorderRadius.circular(999),
+                                ),
+                                child: Text(category,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                        color: Color(0xFFF97316),
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w800)),
+                              ),
+                            ),
+                          Positioned(
+                            left: 11,
+                            bottom: 9,
+                            child: Row(children: [
+                              const Icon(Icons.auto_awesome_rounded,
+                                  size: 13, color: Color(0xFFFFB45C)),
+                              const SizedBox(width: 5),
+                              Text(
+                                language == 'vi'
+                                    ? 'Nổi bật hôm nay'
+                                    : 'Featured today',
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w700),
+                              ),
+                            ]),
+                          ),
+                        ]),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(13, 11, 10, 11),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            if (category.trim().isNotEmpty)
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 5,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFFFF3E4),
-                                  borderRadius: BorderRadius.circular(999),
-                                ),
-                                child: Text(
-                                  category,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w700,
-                                    color: Color(0xFFFF7A00),
-                                  ),
-                                ),
-                              ),
-                            const SizedBox(height: 10),
                             Text(
-                              title.isNotEmpty ? title : 'Bài viết hệ thống',
+                              title.isNotEmpty
+                                  ? title
+                                  : (language == 'vi'
+                                      ? 'Bài viết nổi bật'
+                                      : 'Featured story'),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 fontSize: 15,
+                                height: 1.28,
                                 fontWeight: FontWeight.w800,
-                                height: 1.35,
-                                color:
-                                    isDark
-                                        ? Colors.white
-                                        : const Color(0xFF1F2937),
+                                color: isDark
+                                    ? Colors.white
+                                    : const Color(0xFF172033),
                               ),
                             ),
+                            if (summary.trim().isNotEmpty) ...[
+                              const SizedBox(height: 4),
+                              Text(summary,
+                                maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    height: 1.4,
+                                    color: isDark
+                                        ? const Color(0xFFB8C0CC)
+                                        : const Color(0xFF667085),
+                                  )),
+                            ],
                             const SizedBox(height: 8),
-                            Text(
-                              summary.trim().isNotEmpty
-                                  ? summary
-                                  : 'Khám phá thêm các nội dung hệ thống được biên tập sẵn.',
-                              maxLines: 3,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontSize: 12,
-                                height: 1.55,
-                                color:
-                                    isDark
-                                        ? Colors.white70
-                                        : const Color(0xFF4B5563),
+                            Row(children: [
+                              const Icon(Icons.location_on_outlined,
+                                  size: 14, color: Color(0xFFF97316)),
+                              const SizedBox(width: 5),
+                              Expanded(
+                                child: Text(location,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                      color: isDark
+                                          ? const Color(0xFF9DA7B5)
+                                          : const Color(0xFF7A8494),
+                                    )),
                               ),
-                            ),
-                            const SizedBox(height: 10),
-                            Text(
-                              (featured.provinceName34 ??
-                                      featured.regionCode ??
-                                      'Xem chi tiết')
-                                  .toString(),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF9CA3AF),
+                              Container(
+                                width: 30,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFF97316),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: const Icon(Icons.arrow_forward_rounded,
+                                    size: 16, color: Colors.white),
                               ),
-                            ),
+                            ]),
                           ],
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: Container(
-                          width: 118,
-                          height: 82,
-                          color:
-                              isDark
-                                  ? const Color(0xFF211A16)
-                                  : const Color(0xFFFFE9D4),
-                          child:
-                              featured.coverImage.trim().isNotEmpty
-                                  ? Image.network(
-                                    featured.coverImage,
-                                    // Ảnh cẩm nang có thể không cùng tỷ lệ với
-                                    // thumbnail. contain giữ lại toàn bộ banner
-                                    // thay vì cắt mất hai cạnh như BoxFit.cover.
-                                    fit: BoxFit.contain,
-                                    alignment: Alignment.center,
-                                    errorBuilder:
-                                        (_, __, ___) => _fallbackImage(),
-                                  )
-                                  : _fallbackImage(),
                         ),
                       ),
                     ],
@@ -214,15 +241,18 @@ class _HomeSystemPostsSectionState extends State<HomeSystemPostsSection> {
     );
   }
 
-  Widget _fallbackImage() {
-    return Container(
-      color: const Color(0xFFFFF1E4),
-      alignment: Alignment.center,
-      child: const Icon(
-        Icons.menu_book_rounded,
-        color: Color(0xFFFF8A00),
-        size: 28,
-      ),
-    );
-  }
+  Widget _fallbackImage(bool isDark) => Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: isDark
+                ? const [Color(0xFF342015), Color(0xFF1C2028)]
+                : const [Color(0xFFFFE3C6), Color(0xFFFFF4E8)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        alignment: Alignment.center,
+        child: const Icon(Icons.celebration_rounded,
+            color: Color(0xFFFF8A00), size: 42),
+      );
 }

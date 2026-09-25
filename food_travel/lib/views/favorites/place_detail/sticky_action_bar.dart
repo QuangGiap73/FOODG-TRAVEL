@@ -258,7 +258,9 @@ class _PlaceStickyActionBarState extends State<PlaceStickyActionBar> {
                     )
                   : const Icon(Icons.location_on_outlined, size: 18),
               label: Text(
-                _isCheckingIn ? 'Dang check-in...' : 'Toi da an o day',
+                _isCheckingIn
+                    ? t.placeCheckinLoading
+                    : t.placeCheckinAction,
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFFF6A00),

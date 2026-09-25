@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:food_travel/l10n/app_localizations.dart';
 import 'package:food_travel/widgets/network_image_fallback.dart';
@@ -65,7 +63,7 @@ class FavoriteDishesTab extends StatelessWidget {
             crossAxisCount: 2,
             crossAxisSpacing: 12,
             mainAxisSpacing: 12,
-            childAspectRatio: 0.76,
+            childAspectRatio: 0.66,
           ),
           itemBuilder: (context, index) {
             final dish = filtered[index];
@@ -114,7 +112,6 @@ class _DishCard extends StatelessWidget {
     final province = dish.getProvince(lang).trim();
     final region = _formatRegion(dish.getRegion(lang), t);
     final provinceRegion = _formatProvinceRegion(province, region, t);
-    final tag = dish.getCategory(lang).trim();
     final dishName = dish.getName(lang);
     final spicy = dish.spicyLevel;
 
@@ -173,160 +170,78 @@ class _DishCard extends StatelessWidget {
                         onTap: onRemove,
                       ),
                     ),
-                    // Badge tag (neu co)
-                    if (tag.isNotEmpty)
-                      Positioned(
-                        left: 10,
-                        bottom: 10,
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 165),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFF97316),
-                              borderRadius: BorderRadius.circular(999),
-                            ),
-                            child: _AutoMarqueeText(
-                              text: tag,
-                              textStyle: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
                   ],
                 ),
               ),
               // Noi dung
-              Padding(
-                padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      dishName,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: textPrimary,
+              SizedBox(
+                height: 112,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: 38,
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            dishName,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              height: 1.25,
+                              color: textPrimary,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Icon(Icons.place, size: 12, color: textSecondary),
-                        const SizedBox(width: 4),
-                        Text(
-                          provinceRegion,
-                          style: TextStyle(fontSize: 11, color: textSecondary),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    // Muc do cay (spicyLevel)
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.local_fire_department,
-                          size: 12,
-                          color: Color(0xFFF97316),
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          spicy == 0
-                              ? t.favoriteSpicyNone
-                              : t.favoriteSpicyLevel(spicy),
-                          style: TextStyle(fontSize: 11, color: textSecondary),
-                        ),
-                      ],
-                    ),
-                  ],
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Icon(Icons.place, size: 12, color: textSecondary),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              provinceRegion,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: textSecondary,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.local_fire_department,
+                            size: 12,
+                            color: Color(0xFFF97316),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            spicy == 0
+                                ? t.favoriteSpicyNone
+                                : t.favoriteSpicyLevel(spicy),
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _AutoMarqueeText extends StatefulWidget {
-  const _AutoMarqueeText({
-    required this.text,
-    required this.textStyle,
-  });
-
-  final String text;
-  final TextStyle textStyle;
-
-  @override
-  State<_AutoMarqueeText> createState() => _AutoMarqueeTextState();
-}
-
-class _AutoMarqueeTextState extends State<_AutoMarqueeText> {
-  final ScrollController _controller = ScrollController();
-  Timer? _timer;
-  bool _forward = true;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _startMarquee());
-  }
-
-  @override
-  void didUpdateWidget(covariant _AutoMarqueeText oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.text != widget.text) {
-      _timer?.cancel();
-      WidgetsBinding.instance.addPostFrameCallback((_) => _startMarquee());
-    }
-  }
-
-  void _startMarquee() {
-    if (!mounted || !_controller.hasClients) return;
-    final max = _controller.position.maxScrollExtent;
-    if (max <= 0) return;
-
-    _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: 3), (_) async {
-      if (!mounted || !_controller.hasClients) return;
-      final target = _forward ? _controller.position.maxScrollExtent : 0.0;
-      _forward = !_forward;
-      await _controller.animateTo(
-        target,
-        duration: const Duration(milliseconds: 1300),
-        curve: Curves.easeInOut,
-      );
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      controller: _controller,
-      scrollDirection: Axis.horizontal,
-      physics: const NeverScrollableScrollPhysics(),
-      child: Text(
-        widget.text,
-        maxLines: 1,
-        softWrap: false,
-        style: widget.textStyle,
       ),
     );
   }

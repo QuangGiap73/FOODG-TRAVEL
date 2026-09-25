@@ -23,7 +23,9 @@ import '../personal/personal.dart';
 import '../map/map_page.dart';
 import '../../services/location_preference_service.dart';
 import '../../services/location_service.dart';
+import '../../services/location_repository.dart';
 import '../../services/map/geocode_service.dart';
+import '../../services/notifications/notification_service.dart';
 import '../favorites/place_detail_page.dart';
 import 'search/search_result_page.dart';
 import 'widgets/home_bottom_nav.dart';
@@ -80,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
       case 2:
         return MapPage(isActive: _mapTabActive);
       case 3:
-        return const FavoritesTabsPage();
+        return const FoodJourneyPage(showBackButton: false);
       case 4:
         return const PersonalPage();
       default:
@@ -98,6 +100,74 @@ class _HomeScreenState extends State<HomeScreen> {
       _pages[index] ??= _createPage(index);
       _currentIndex = index;
     });
+  }
+
+  Widget _buildNotificationBell(AppLocalizations t) {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) {
+      return IconButton(
+        icon: const Icon(Icons.notifications_none_rounded),
+        onPressed: () {
+          Navigator.pushNamed(context, RouteNames.notifications);
+        },
+        tooltip: t.notificationsTitle,
+        visualDensity: VisualDensity.compact,
+      );
+    }
+
+    return StreamBuilder<int>(
+      stream: NotificationService().watchUnreadCount(uid),
+      builder: (context, snapshot) {
+        final count = snapshot.data ?? 0;
+        return Stack(
+          clipBehavior: Clip.none,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.notifications_none_rounded),
+              onPressed: () {
+                Navigator.pushNamed(context, RouteNames.notifications);
+              },
+              tooltip: count > 0
+                  ? '${t.notificationsTitle} ($count)'
+                  : t.notificationsTitle,
+              visualDensity: VisualDensity.compact,
+            ),
+            if (count > 0)
+              Positioned(
+                right: 1,
+                top: 1,
+                child: IgnorePointer(
+                  child: Container(
+                    constraints: const BoxConstraints(
+                      minWidth: 18,
+                      minHeight: 18,
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFE53935),
+                      borderRadius: BorderRadius.circular(999),
+                      border: Border.all(
+                        color: Theme.of(context).colorScheme.surface,
+                        width: 1.5,
+                      ),
+                    ),
+                    child: Text(
+                      count > 99 ? '99+' : '$count',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 9,
+                        height: 1,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -265,14 +335,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 actions: [
-                  IconButton(
-                    icon: const Icon(Icons.notifications_none_rounded),
-                    onPressed: () {
-                      Navigator.pushNamed(context, RouteNames.notifications);
-                    },
-                    tooltip: t.notificationsTitle,
-                    visualDensity: VisualDensity.compact,
-                  ),
+                  _buildNotificationBell(t),
                   // IconButton(
                   //   icon: const Icon(Icons.favorite_border_rounded),
                   //   onPressed: () => setState(() => _currentIndex = 3),
@@ -346,6 +409,7 @@ class _HomeFeedState extends State<_HomeFeed> {
 
   final _locationPrefs = LocationPreferenceService();
   final _locationService = LocationService();
+  final _locationRepository = LocationRepository.instance;
   final _geocodeService = GeocodeService();
   // Controller rieng cho section "Quan ngon gan ban" tren Home.
   late final NearbyHomeController _nearbyHomeController;
@@ -414,6 +478,7 @@ class _HomeFeedState extends State<_HomeFeed> {
     _locationPrefs.load();
     _gpsEnabled = LocationPreferenceService.enabled.value;
     LocationPreferenceService.enabled.addListener(_onLocationPrefChanged);
+    _locationRepository.addListener(_onSharedLocationChanged);
 
     if (_gpsEnabled) {
       _resolveGpsProvince();
@@ -428,6 +493,7 @@ class _HomeFeedState extends State<_HomeFeed> {
     widget.isActive.removeListener(_onHomeTabVisibilityChanged);
     widget.onProvincePickerReady(null);
     LocationPreferenceService.enabled.removeListener(_onLocationPrefChanged);
+    _locationRepository.removeListener(_onSharedLocationChanged);
     _stopGpsListener();
     _profileSub?.cancel();
     _provincesSub?.cancel();
@@ -448,9 +514,34 @@ class _HomeFeedState extends State<_HomeFeed> {
   }
 
   void _onHomeTabVisibilityChanged() {
-    if (widget.isActive.value) return;
+    if (widget.isActive.value) {
+      _applySharedLocation(refreshNearby: true);
+      return;
+    }
     _stopPageAnimation(_pageController, _imageIndex.value);
     _stopPageAnimation(_promoBannerController, _promoBannerIndex.value);
+  }
+
+  void _onSharedLocationChanged() {
+    if (!mounted || !widget.isActive.value) return;
+    _applySharedLocation(refreshNearby: true);
+  }
+
+  void _applySharedLocation({required bool refreshNearby}) {
+    final position = _locationRepository.position;
+    if (position == null) return;
+
+    final previous = _gpsPosition;
+    final changed =
+        previous == null ||
+        previous.latitude != position.latitude ||
+        previous.longitude != position.longitude;
+    if (!changed) return;
+
+    _updateGpsProvinceFromPosition(position);
+    if (refreshNearby) {
+      _nearbyHomeController.load(force: true);
+    }
   }
 
   void _stopPageAnimation(PageController controller, int fallbackPage) {
@@ -856,6 +947,7 @@ class _HomeFeedState extends State<_HomeFeed> {
 
   Future<bool> _updateGpsProvinceFromPosition(Position pos) async {
     if (!_gpsEnabled) return false;
+    _locationRepository.update(pos);
     // Luu vi tri GPS hien tai de map theo centerLat/centerLng.
     _gpsPosition = pos;
     // Reverse geocode de lay ten tinh.
@@ -894,11 +986,12 @@ class _HomeFeedState extends State<_HomeFeed> {
     if (_gpsResolving) return;
     _gpsResolving = true;
     try {
-      // Lay vi tri hien tai (uu tien last known de nhanh hon).
+      // Province selection must use a fresh fix. Reusing last-known here can
+      // keep the previous city after the emulator/device location has moved.
       final result = await _locationService.getCurrentLocation(
         accuracy: LocationAccuracy.medium,
         timeLimit: const Duration(seconds: 8),
-        useLastKnown: true,
+        useLastKnown: false,
       );
 
       if (!result.isSuccess) {

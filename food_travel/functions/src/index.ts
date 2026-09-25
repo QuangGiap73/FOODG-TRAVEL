@@ -7,6 +7,8 @@ import {
 import {onCall, HttpsError} from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 
+export {searchNearbyRestaurants} from "./nearbyRestaurants.js";
+
 // Khoi tao Firebase Admin (bat buoc de dung Firestore + FCM)
 admin.initializeApp();
 

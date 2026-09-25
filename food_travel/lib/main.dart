@@ -69,7 +69,7 @@ class MyApp extends StatelessWidget {
           ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
-            title: 'FoodG Travel',
+            title: 'FOODS',
             scaffoldMessengerKey: appScaffoldMessengerKey,
             navigatorKey: appNavigatorKey,
             theme: ThemeData.light(),

@@ -38,7 +38,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
         final items = snapshot.data ?? const <UserNotification>[];
         final unread = items.where((e) => e.read == false).length;
         final filteredItems = _applyFilter(items, _filter);
-        final sections = _buildSections(filteredItems);
+        final sections = _buildSections(context, filteredItems);
 
         return Scaffold(
           backgroundColor: bg,
@@ -59,7 +59,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
               if (unread > 0)
                 TextButton(
                   onPressed: () => service.markAllRead(user.uid),
-                  child: const Text('\u0110\u00e1nh d\u1ea5u \u0111\u00e3 \u0111\u1ecdc'),
+                  child: Text(t.notificationsMarkAllRead),
                 ),
             ],
           ),
@@ -100,7 +100,11 @@ class _NotificationsPageState extends State<NotificationsPage> {
                       child: _EmptyState(
                         message: items.isEmpty
                             ? t.notificationsEmpty
-                            : '\u0110ang kh\u00f4ng c\u00f3 th\u00f4ng b\u00e1o ph\u00f9 h\u1ee3p b\u1ed9 l\u1ecdc n\u00e0y.',
+                            : _localized(
+                                context,
+                                vi: 'Không có thông báo phù hợp với bộ lọc này.',
+                                en: 'No notifications match this filter.',
+                              ),
                         icon: Icons.notifications_off_outlined,
                       ),
                     )
@@ -200,7 +204,11 @@ List<UserNotification> _applyFilter(
   }
 }
 
-List<_NotificationSection> _buildSections(List<UserNotification> items) {
+List<_NotificationSection> _buildSections(
+  BuildContext context,
+  List<UserNotification> items,
+) {
+  final t = AppLocalizations.of(context)!;
   final now = DateTime.now();
   final today = DateTime(now.year, now.month, now.day);
   final yesterday = today.subtract(const Duration(days: 1));
@@ -227,36 +235,24 @@ List<_NotificationSection> _buildSections(List<UserNotification> items) {
 
   final sections = <_NotificationSection>[];
   if (todayItems.isNotEmpty) {
-    sections.add(const _NotificationSection(
-      title: 'H\u00f4m nay',
-      items: [],
-    ).copyWith(items: todayItems));
+    sections.add(_NotificationSection(
+      title: t.notificationsTodayLabel,
+      items: todayItems,
+    ));
   }
   if (yesterdayItems.isNotEmpty) {
-    sections.add(const _NotificationSection(
-      title: 'H\u00f4m qua',
-      items: [],
-    ).copyWith(items: yesterdayItems));
+    sections.add(_NotificationSection(
+      title: _localized(context, vi: 'Hôm qua', en: 'Yesterday'),
+      items: yesterdayItems,
+    ));
   }
   if (olderItems.isNotEmpty) {
-    sections.add(const _NotificationSection(
-      title: 'Tr\u01b0\u1edbc \u0111\u00f3',
-      items: [],
-    ).copyWith(items: olderItems));
+    sections.add(_NotificationSection(
+      title: _localized(context, vi: 'Trước đó', en: 'Earlier'),
+      items: olderItems,
+    ));
   }
   return sections;
-}
-
-extension on _NotificationSection {
-  _NotificationSection copyWith({
-    String? title,
-    List<UserNotification>? items,
-  }) {
-    return _NotificationSection(
-      title: title ?? this.title,
-      items: items ?? this.items,
-    );
-  }
 }
 
 void _openNotification(
@@ -372,8 +368,9 @@ class _OverviewCard extends StatelessWidget {
               children: [
                 Text(
                   unreadCount == 0
-                      ? 'Kh\u00f4ng c\u00f3 th\u00f4ng b\u00e1o m\u1edbi'
-                      : 'B\u1ea1n c\u00f3 $unreadCount th\u00f4ng b\u00e1o m\u1edbi',
+                      ? AppLocalizations.of(context)!.notificationsSummaryNone
+                      : AppLocalizations.of(context)!
+                          .notificationsSummaryUnread(unreadCount),
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
@@ -383,8 +380,16 @@ class _OverviewCard extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   totalCount == 0
-                      ? 'Th\u00f4ng b\u00e1o s\u1ebd hi\u1ec7n t\u1ea1i \u0111\u00e2y khi c\u00f3 t\u01b0\u01a1ng t\u00e1c m\u1edbi.'
-                      : 'C\u1eadp nh\u1eadt ho\u1ea1t \u0111\u1ed9ng m\u1edbi nh\u1ea5t t\u1eeb c\u1ed9ng \u0111\u1ed3ng v\u00e0 h\u00e0nh tr\u00ecnh c\u1ee7a b\u1ea1n.',
+                      ? _localized(
+                          context,
+                          vi: 'Thông báo sẽ xuất hiện tại đây khi có hoạt động mới.',
+                          en: 'New activity will appear here.',
+                        )
+                      : _localized(
+                          context,
+                          vi: 'Cập nhật mới nhất từ cộng đồng và hành trình của bạn.',
+                          en: 'Latest updates from the community and your journey.',
+                        ),
                   style: TextStyle(
                     fontSize: 13,
                     height: 1.35,
@@ -420,10 +425,13 @@ class _FilterBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final chips = <(_NotificationFilter, String)>[
-      (_NotificationFilter.all, 'T\u1ea5t c\u1ea3'),
-      (_NotificationFilter.interaction, 'T\u01b0\u01a1ng t\u00e1c'),
-      (_NotificationFilter.journey, 'H\u00e0nh tr\u00ecnh'),
-      (_NotificationFilter.system, 'H\u1ec7 th\u1ed1ng'),
+      (_NotificationFilter.all, _localized(context, vi: 'Tất cả', en: 'All')),
+      (_NotificationFilter.interaction,
+        _localized(context, vi: 'Tương tác', en: 'Interactions')),
+      (_NotificationFilter.journey,
+        _localized(context, vi: 'Hành trình', en: 'Journey')),
+      (_NotificationFilter.system,
+        _localized(context, vi: 'Hệ thống', en: 'System')),
     ];
 
     return SingleChildScrollView(
@@ -506,7 +514,7 @@ class _NotificationTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final tone = _toneFor(item);
+    final tone = _toneFor(context, item);
     final isUnread = item.read == false;
     final titleColor = isDark ? Colors.white : const Color(0xFF111827);
     final subColor = isDark ? Colors.white70 : const Color(0xFF6B7280);
@@ -544,7 +552,7 @@ class _NotificationTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      _titleFor(item),
+                      _titleFor(context, item),
                       style: TextStyle(
                         fontSize: 15,
                         height: 1.3,
@@ -552,10 +560,10 @@ class _NotificationTile extends StatelessWidget {
                         color: titleColor,
                       ),
                     ),
-                    if (item.snippet.trim().isNotEmpty) ...[
+                    if (_snippetFor(context, item).isNotEmpty) ...[
                       const SizedBox(height: 5),
                       Text(
-                        item.snippet,
+                        _snippetFor(context, item),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -713,88 +721,157 @@ class _NotificationTone {
   final String label;
 }
 
-_NotificationTone _toneFor(UserNotification item) {
+_NotificationTone _toneFor(BuildContext context, UserNotification item) {
+  late final Color color;
+  late final Color softColor;
+  late final IconData icon;
+  late final String label;
+
   switch (item.type) {
     case 'comment':
-      return const _NotificationTone(
-        color: Color(0xFF2563EB),
-        softColor: Color(0xFFDBEAFE),
-        icon: Icons.chat_bubble_rounded,
-        label: 'T\u01b0\u01a1ng t\u00e1c',
-      );
+      color = const Color(0xFF2563EB);
+      softColor = const Color(0xFFDBEAFE);
+      icon = Icons.chat_bubble_rounded;
+      label = _localized(context, vi: 'Tương tác', en: 'Interaction');
+      break;
     case 'post_pending_review':
-      return const _NotificationTone(
-        color: Color(0xFFF59E0B),
-        softColor: Color(0xFFFEF3C7),
-        icon: Icons.schedule_rounded,
-        label: 'Kiểm duyệt',
+      color = const Color(0xFFF59E0B);
+      softColor = const Color(0xFFFEF3C7);
+      icon = Icons.schedule_rounded;
+      label = _localized(context, vi: 'Kiểm duyệt', en: 'Moderation');
+      break;
+    case 'post_moderation_update':
+      color = const Color(0xFF16A34A);
+      softColor = const Color(0xFFDCFCE7);
+      icon = Icons.verified_rounded;
+      label = _localized(context, vi: 'Kiểm duyệt', en: 'Moderation');
+      break;
+    case 'journey_checkin':
+      color = const Color(0xFF16A34A);
+      softColor = const Color(0xFFDCFCE7);
+      icon = Icons.check_circle_rounded;
+      label = _localized(context, vi: 'Hành trình', en: 'Journey');
+      break;
+    case 'journey_checkin_failed':
+      color = const Color(0xFFDC2626);
+      softColor = const Color(0xFFFEE2E2);
+      icon = Icons.location_off_rounded;
+      label = _localized(context, vi: 'Hành trình', en: 'Journey');
+      break;
+    case 'journey_badge':
+      color = const Color(0xFFF59E0B);
+      softColor = const Color(0xFFFEF3C7);
+      icon = Icons.emoji_events_rounded;
+      label = _localized(context, vi: 'Huy hiệu', en: 'Badge');
+      break;
+    default:
+      color = const Color(0xFFF97316);
+      softColor = const Color(0xFFFFEDD5);
+      icon = Icons.favorite_rounded;
+      label = _localized(context, vi: 'Tương tác', en: 'Interaction');
+      break;
+  }
+
+  return _NotificationTone(
+    color: color,
+    softColor: softColor,
+    icon: icon,
+    label: label,
+  );
+}
+
+String _titleFor(BuildContext context, UserNotification item) {
+  final t = AppLocalizations.of(context)!;
+  final fallbackName = _localized(context, vi: 'Ai đó', en: 'Someone');
+  final actorName = item.actorName.trim().isEmpty
+      ? fallbackName
+      : item.actorName.trim();
+
+  switch (item.type) {
+    case 'comment':
+      return t.notificationCommentTitle(actorName);
+    case 'post_pending_review':
+      return _localized(
+        context,
+        vi: 'Bài viết đang chờ duyệt',
+        en: 'Post awaiting review',
       );
     case 'post_moderation_update':
-      return const _NotificationTone(
-        color: Color(0xFF16A34A),
-        softColor: Color(0xFFDCFCE7),
-        icon: Icons.verified_rounded,
-        label: 'Kiểm duyệt',
+      final source = '${item.actorName} ${item.snippet}'.toLowerCase();
+      if (source.contains('duyệt') || source.contains('approved')) {
+        return _localized(
+          context,
+          vi: 'Bài viết đã được duyệt',
+          en: 'Post approved',
+        );
+      }
+      if (source.contains('bị ẩn') || source.contains('hidden')) {
+        return _localized(
+          context,
+          vi: 'Bài viết đã bị ẩn',
+          en: 'Post hidden',
+        );
+      }
+      return _localized(
+        context,
+        vi: 'Trạng thái bài viết đã thay đổi',
+        en: 'Post status updated',
       );
     case 'journey_checkin':
-      return const _NotificationTone(
-        color: Color(0xFF16A34A),
-        softColor: Color(0xFFDCFCE7),
-        icon: Icons.check_circle_rounded,
-        label: 'H\u00e0nh tr\u00ecnh',
+      return _localized(
+        context,
+        vi: 'Check-in thành công',
+        en: 'Check-in successful',
       );
     case 'journey_checkin_failed':
-      return const _NotificationTone(
-        color: Color(0xFFDC2626),
-        softColor: Color(0xFFFEE2E2),
-        icon: Icons.location_off_rounded,
-        label: 'H\u00e0nh tr\u00ecnh',
+      return _localized(
+        context,
+        vi: 'Check-in thất bại',
+        en: 'Check-in failed',
       );
     case 'journey_badge':
-      return const _NotificationTone(
-        color: Color(0xFFF59E0B),
-        softColor: Color(0xFFFEF3C7),
-        icon: Icons.emoji_events_rounded,
-        label: 'Huy hi\u1ec7u',
+      return _localized(
+        context,
+        vi: 'Mở khóa huy hiệu mới',
+        en: 'New badge unlocked',
       );
+    case 'like':
+      return t.notificationLikeTitle(actorName);
     default:
-      return const _NotificationTone(
-        color: Color(0xFFF97316),
-        softColor: Color(0xFFFFEDD5),
-        icon: Icons.favorite_rounded,
-        label: 'T\u01b0\u01a1ng t\u00e1c',
-      );
+      return item.actorName.trim().isEmpty
+          ? _localized(context, vi: 'Thông báo mới', en: 'New notification')
+          : item.actorName;
   }
 }
 
-String _titleFor(UserNotification item) {
+String _snippetFor(BuildContext context, UserNotification item) {
   switch (item.type) {
-    case 'comment':
-      final name = item.actorName.trim().isEmpty ? 'Ai \u0111\u00f3' : item.actorName;
-      return '$name \u0111\u00e3 b\u00ecnh lu\u1eadn';
     case 'post_pending_review':
-      return 'Bài viết đang chờ duyệt';
+      return _localized(
+        context,
+        vi: 'Bài viết đã được gửi và đang chờ duyệt.',
+        en: 'Your post was submitted and is awaiting review.',
+      );
     case 'post_moderation_update':
-      return item.actorName.trim().isEmpty
-          ? 'Trạng thái bài viết đã thay đổi'
-          : item.actorName;
+      return _localized(
+        context,
+        vi: 'Trạng thái kiểm duyệt bài viết của bạn vừa được cập nhật.',
+        en: 'Your post moderation status has been updated.',
+      );
     case 'journey_checkin':
-      return 'Check-in th\u00e0nh c\u00f4ng';
+      return _localized(
+        context,
+        vi: 'Địa điểm đã được ghi nhận vào hành trình của bạn.',
+        en: 'The place was added to your journey.',
+      );
     case 'journey_checkin_failed':
-      return item.actorName.trim().isEmpty
-          ? 'Check-in thất bại'
-          : item.actorName;
-    case 'journey_badge':
-      return item.actorName.trim().isEmpty
-          ? 'Mở khóa huy hiệu mới'
-          : item.actorName;
-    case 'like':
-      final name = item.actorName.trim().isEmpty ? 'Ai \u0111\u00f3' : item.actorName;
-      return '$name \u0111\u00e3 th\u00edch b\u00e0i vi\u1ebft c\u1ee7a b\u1ea1n';
+      return _localized(
+        context,
+        vi: 'Bạn đang ở quá xa quán để check-in.',
+        en: 'You are too far from the place to check in.',
+      );
     default:
-      return item.actorName.trim().isEmpty
-          ? 'Th\u00f4ng b\u00e1o m\u1edbi'
-          : item.actorName;
+      return item.snippet.trim();
   }
 }
 
@@ -839,21 +916,29 @@ class _SettingsHintCard extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Kh\u00f4ng b\u1ecf l\u1ee1 th\u00f4ng b\u00e1o quan tr\u1ecdng',
-                  style: TextStyle(
+                  _localized(
+                    context,
+                    vi: 'Không bỏ lỡ thông báo quan trọng',
+                    en: 'Never miss an important notification',
+                  ),
+                  style: const TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 14,
                   ),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(
-                  'B\u1eadt th\u00f4ng b\u00e1o \u0111\u1ec3 nh\u1eadn c\u1eadp nh\u1eadt m\u1edbi nh\u1ea5t t\u1eeb Foods.',
-                  style: TextStyle(
+                  _localized(
+                    context,
+                    vi: 'Bật thông báo để nhận cập nhật mới nhất từ Foods.',
+                    en: 'Enable notifications to receive the latest updates from Foods.',
+                  ),
+                  style: const TextStyle(
                     fontSize: 12,
                     height: 1.35,
                     color: Color(0xFF6B7280),
@@ -873,7 +958,9 @@ class _SettingsHintCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16),
               ),
             ),
-            child: const Text('C\u00e0i \u0111\u1eb7t'),
+            child: Text(
+              _localized(context, vi: 'Cài đặt', en: 'Settings'),
+            ),
           ),
         ],
       ),
@@ -970,7 +1057,11 @@ class _EmptyState extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Ch\u01b0a c\u00f3 th\u00f4ng b\u00e1o',
+              _localized(
+                context,
+                vi: 'Chưa có thông báo',
+                en: 'No notifications yet',
+              ),
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w800,
@@ -992,4 +1083,12 @@ class _EmptyState extends StatelessWidget {
       ),
     );
   }
+}
+
+String _localized(
+  BuildContext context, {
+  required String vi,
+  required String en,
+}) {
+  return Localizations.localeOf(context).languageCode == 'vi' ? vi : en;
 }

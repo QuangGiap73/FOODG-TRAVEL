@@ -9,7 +9,7 @@ class AppLocalizationsVi extends AppLocalizations {
   AppLocalizationsVi([String locale = 'vi']) : super(locale);
 
   @override
-  String get appTitle => 'FoodG Travel';
+  String get appTitle => 'FOODS';
 
   @override
   String get language => 'Ngôn ngữ';
@@ -156,7 +156,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get actionComment => 'Bình luận';
 
   @override
-  String get commonUserFallback => 'FoodG User';
+  String get commonUserFallback => 'Người dùng FOODS';
 
   @override
   String get timeJustNow => 'vừa xong';
@@ -645,6 +645,9 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get navSaved => 'Lưu';
+
+  @override
+  String get navJourney => 'Hành trình';
 
   @override
   String get navProfile => 'Tôi';
@@ -1170,6 +1173,22 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get mapDirections => 'Chỉ đường';
+
+  @override
+  String get directionsChoiceTitle => 'Chọn cách chỉ đường';
+
+  @override
+  String get directionsInApp => 'Dẫn đường trong ứng dụng';
+
+  @override
+  String get directionsGoogleMaps => 'Mở Google Maps';
+
+  @override
+  String get directionsInvalidCoordinates => 'Tọa độ quán ăn không hợp lệ.';
+
+  @override
+  String get directionsOpenGoogleMapsError =>
+      'Không thể mở Google Maps trên thiết bị này.';
 
   @override
   String mapNearbyPlacesTitle(Object count) {
@@ -1760,4 +1779,10 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get searchTemporarilyClosed => 'Tạm đóng';
+
+  @override
+  String get placeCheckinAction => 'Tôi đã ăn ở đây';
+
+  @override
+  String get placeCheckinLoading => 'Đang check-in...';
 }

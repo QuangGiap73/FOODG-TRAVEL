@@ -1,5 +1,5 @@
 ﻿{
-  "appTitle": "FoodG Travel",
+  "appTitle": "FOODS",
   "language": "Language",
   "chooseLanguage": "Choose language",
   "languageAppSection": "App language",
@@ -45,7 +45,7 @@
   "postDetailNotFound": "Post no longer exists.",
   "actionLike": "Like",
   "actionComment": "Comment",
-  "commonUserFallback": "FoodG User",
+  "commonUserFallback": "FOODS User",
   "timeJustNow": "just now",
   "timeMinutesAgo": "{count} minutes ago",
   "timeHoursAgo": "{count} hours ago",
@@ -284,6 +284,7 @@
   "navExplore": "Explore",
   "navMap": "Map",
   "navSaved": "Saved",
+  "navJourney": "Journey",
   "navProfile": "Profile",
   "commonCancel": "Cancel",
   "commonConfirm": "Confirm",
@@ -466,6 +467,11 @@
   "mapOpenNow": "Open now",
   "mapClosed": "Closed",
   "mapDirections": "Directions",
+  "directionsChoiceTitle": "Choose directions",
+  "directionsInApp": "Navigate in the app",
+  "directionsGoogleMaps": "Open Google Maps",
+  "directionsInvalidCoordinates": "The restaurant coordinates are invalid.",
+  "directionsOpenGoogleMapsError": "Google Maps cannot be opened on this device.",
   "mapNearbyPlacesTitle": "Nearby places ({count})",
   "mapEtaMinutes": "~{minutes} min",
   "mapSortDistance": "Distance",
@@ -651,5 +657,7 @@
   "searchPlaceRelevance": "Places matching your keyword",
   "searchSpicy": "Spicy",
   "searchOpenNow": "Open now",
-  "searchTemporarilyClosed": "Temporarily closed"
+  "searchTemporarilyClosed": "Temporarily closed",
+  "placeCheckinAction": "I've eaten here",
+  "placeCheckinLoading": "Checking in..."
 }

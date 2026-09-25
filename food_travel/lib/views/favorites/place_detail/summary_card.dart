@@ -1,5 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/foundation.dart';
 import 'package:food_travel/l10n/app_localizations.dart';
 
 import '../../../models/places_model.dart';
@@ -190,6 +191,110 @@ class _QuickActionsState extends State<_QuickActions> {
     });
   }
 
+  Future<void> _showDirectionsChooser() async {
+    final t = AppLocalizations.of(context)!;
+    final choice = await showModalBottomSheet<_PlaceDirectionsChoice>(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      builder: (sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 8),
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade400,
+                borderRadius: BorderRadius.circular(999),
+              ),
+            ),
+            const SizedBox(height: 12),
+            ListTile(
+              title: Text(
+                t.directionsChoiceTitle,
+                style: const TextStyle(fontWeight: FontWeight.w700),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.navigation_rounded),
+              title: Text(t.directionsInApp),
+              onTap: () => Navigator.of(
+                sheetContext,
+              ).pop(_PlaceDirectionsChoice.inApp),
+            ),
+            ListTile(
+              leading: const Icon(Icons.map_outlined),
+              title: Text(t.directionsGoogleMaps),
+              onTap: () => Navigator.of(
+                sheetContext,
+              ).pop(_PlaceDirectionsChoice.googleMaps),
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+
+    if (!mounted || choice == null) return;
+    switch (choice) {
+      case _PlaceDirectionsChoice.inApp:
+        await Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => MapPage(initialPlace: widget.place),
+          ),
+        );
+        break;
+      case _PlaceDirectionsChoice.googleMaps:
+        await _openGoogleMapsDirections();
+        break;
+    }
+  }
+
+  Future<void> _openGoogleMapsDirections() async {
+    final t = AppLocalizations.of(context)!;
+    final lat = widget.place.lat;
+    final lng = widget.place.lng;
+    if (!lat.isFinite || !lng.isFinite || (lat == 0 && lng == 0)) {
+      _showMessage(t.directionsInvalidCoordinates);
+      return;
+    }
+
+    final appUri = defaultTargetPlatform == TargetPlatform.iOS
+        ? Uri.parse(
+            'comgooglemaps://?daddr=$lat,$lng&directionsmode=driving',
+          )
+        : Uri.parse('google.navigation:q=$lat,$lng&mode=d');
+    final webUri = Uri.https('www.google.com', '/maps/dir/', {
+      'api': '1',
+      'destination': '$lat,$lng',
+      'travelmode': 'driving',
+    });
+
+    try {
+      if (await canLaunchUrl(appUri) &&
+          await launchUrl(appUri, mode: LaunchMode.externalApplication)) {
+        return;
+      }
+      if (await launchUrl(webUri, mode: LaunchMode.externalApplication)) {
+        return;
+      }
+      _showMessage(t.directionsOpenGoogleMapsError);
+    } catch (error) {
+      debugPrint('Không thể mở Google Maps từ trang chi tiết quán: $error');
+      _showMessage(t.directionsOpenGoogleMapsError);
+    }
+  }
+
+  void _showMessage(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
+  }
+
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
@@ -211,12 +316,7 @@ class _QuickActionsState extends State<_QuickActions> {
           isActive: _selected == 1,
           onTap: () {
             _onSelect(1);
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => MapPage(initialPlace: widget.place),
-              ),
-            );
+            _showDirectionsChooser();
           },
         ),
         _QuickAction(
@@ -235,6 +335,8 @@ class _QuickActionsState extends State<_QuickActions> {
     );
   }
 }
+
+enum _PlaceDirectionsChoice { inApp, googleMaps }
 
 class _QuickAction extends StatelessWidget {
   const _QuickAction({

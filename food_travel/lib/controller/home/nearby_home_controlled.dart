@@ -6,6 +6,7 @@ import 'package:maplibre_gl/maplibre_gl.dart';
 
 import '../../models/places_model.dart';
 import '../../services/location_service.dart';
+import '../../services/location_repository.dart';
 import '../../services/map/serpapi_places_service.dart';
 
 enum NearbyHomeStatus { idle, loading, success, empty, locationDisabled, error }
@@ -21,17 +22,22 @@ class NearbyHomeController extends ChangeNotifier {
   NearbyHomeController({
     SerpApiPlacesService? placesService,
     LocationService? locationService,
+    LocationRepository? locationRepository,
   }) : _placesService = placesService ?? SerpApiPlacesService(),
-       _locationService = locationService ?? LocationService();
+       _locationService = locationService ?? LocationService(),
+       _locationRepository = locationRepository ?? LocationRepository.instance;
 
   final SerpApiPlacesService _placesService;
   final LocationService _locationService;
+  final LocationRepository _locationRepository;
   final Random _random = Random();
 
   static const Duration _cacheTtl = Duration(minutes: 8);
   static const List<int> _radiusSteps = [6000, 10000, 15000];
   static const int _limit = 12;
-  static const int _targetPlaceCount = 18;
+  // Home only renders 12 cards. Stop as soon as that many places are found so
+  // one refresh does not unnecessarily consume several SerpAPI searches.
+  static const int _targetPlaceCount = _limit;
   static const int _queriesPerRadius = 3;
 
   final Map<String, _NearbyCacheEntry> _cache = {};
@@ -55,11 +61,26 @@ class NearbyHomeController extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
 
-    final location = await _locationService.getCurrentLocation(
-      accuracy: LocationAccuracy.medium,
-      timeLimit: const Duration(seconds: 10),
-      useLastKnown: true,
-    );
+    final sharedPosition = _locationRepository.position;
+    var location =
+        sharedPosition == null
+            ? await _locationService.getCurrentLocation(
+              accuracy: LocationAccuracy.medium,
+              timeLimit: const Duration(seconds: 10),
+              // Home must still be usable while the GPS provider is warming
+              // up. LocationService will prefer the last device fix and only
+              // wait for a fresh one when no fix exists.
+              useLastKnown: true,
+            )
+            : LocationResult.success(sharedPosition);
+
+    // A provider can publish a last-known fix just after the request times out.
+    // It is better to show nearby places from that fix than hide the whole Home
+    // section. The active location stream will refresh the list when GPS moves.
+    if (!location.isSuccess) {
+      final lastKnown = await Geolocator.getLastKnownPosition();
+      if (lastKnown != null) location = LocationResult.success(lastKnown);
+    }
     if (!location.isSuccess || location.position == null) {
       if (location.failReason == LocationFailReason.serviceDisabled ||
           location.failReason == LocationFailReason.permissionDenied ||
@@ -74,6 +95,7 @@ class NearbyHomeController extends ChangeNotifier {
     }
 
     final pos = location.position!;
+    _locationRepository.update(pos);
     _userLatLng = LatLng(pos.latitude, pos.longitude);
     final cacheKey = _buildCacheKey(_userLatLng!);
     final cached = _cache[cacheKey];
@@ -112,7 +134,9 @@ class NearbyHomeController extends ChangeNotifier {
       _status =
           _places.isEmpty ? NearbyHomeStatus.empty : NearbyHomeStatus.success;
       notifyListeners();
-    } catch (_) {
+    } catch (error, stackTrace) {
+      debugPrint('[NearbyHome] load failed: $error');
+      debugPrintStack(stackTrace: stackTrace);
       _status = NearbyHomeStatus.error;
       _errorMessage = 'Khong tai duoc danh sach quan an gan day.';
       notifyListeners();
@@ -232,6 +256,7 @@ class NearbyHomeController extends ChangeNotifier {
         for (final place in result) {
           merged.putIfAbsent(_placeDedupKey(place), () => place);
         }
+        if (merged.length >= _targetPlaceCount) break;
       }
 
       // Chi mo rong ban kinh khi khu vuc hien tai chua du phong phu.
@@ -300,5 +325,10 @@ class NearbyHomeControlled extends NearbyHomeController {
   NearbyHomeControlled({
     SerpApiPlacesService? placesService,
     LocationService? locationService,
-  }) : super(placesService: placesService, locationService: locationService);
+    LocationRepository? locationRepository,
+  }) : super(
+         placesService: placesService,
+         locationService: locationService,
+         locationRepository: locationRepository,
+       );
 }

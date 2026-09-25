@@ -30,16 +30,8 @@ class DishDetailContentSheet extends StatelessWidget {
     final ingredients = dish.getIngredients(lang);
     final instructions = dish.getInstructions(lang);
     final priceRange = dish.getPriceRange(lang);
-    final province = dish.getProvince(lang);
-
     final spicy = _clampLevel(dish.spicyLevel);
     final satiety = _clampLevel(dish.satietyLevel);
-
-    final tags = _dedupeTags([
-      ..._toTags(dish.getTagsText(lang)),
-      if (province.isNotEmpty) province,
-      if (category.isNotEmpty) category,
-    ]);
 
     return Container(
       decoration: BoxDecoration(
@@ -91,21 +83,6 @@ class DishDetailContentSheet extends StatelessWidget {
                 ),
               ),
             ],
-          ),
-
-          const SizedBox(height: 12),
-
-          // Tags
-          if (tags.isNotEmpty) Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: tags.map((t) {
-              final isProvince = t == province;
-              return _TagChip(
-                text: t,
-                highlight: isProvince,
-              );
-            }).toList(),
           ),
 
           const SizedBox(height: 18),
@@ -260,26 +237,6 @@ class DishDetailContentSheet extends StatelessWidget {
     return parts.join(', ');
   }
 
-  List<String> _dedupeTags(List<String> input) {
-    final set = <String>{};
-    for (final t in input) {
-      final s = t.trim();
-      if (s.isEmpty) continue;
-      // Bo cac tag kieu mo ta dai/liet ke, chi giu chip ngan gon.
-      if (s.contains(';') || s.length > 28) continue;
-      set.add(s);
-    }
-    return set.toList();
-  }
-
-  List<String> _toTags(String raw) {
-    return raw
-        .split(RegExp(r'[,;|•]+'))
-        .map((value) => value.trim())
-        .where((value) => value.isNotEmpty)
-        .toList();
-  }
-
   List<String> _toLines(String raw) {
     final s = raw.trim();
     if (s.isEmpty) return const [];
@@ -299,48 +256,6 @@ class DishDetailContentSheet extends StatelessWidget {
           .toList();
     }
     return parts;
-  }
-}
-
-class _TagChip extends StatelessWidget {
-  const _TagChip({required this.text, required this.highlight});
-  final String text;
-  final bool highlight;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final baseBg = theme.brightness == Brightness.dark
-        ? Colors.white.withOpacity(0.06)
-        : Colors.black.withOpacity(0.05);
-
-    final hlBg = theme.brightness == Brightness.dark
-        ? Colors.orange.withOpacity(0.16)
-        : Colors.orange.withOpacity(0.10);
-
-    final hlBorder = theme.brightness == Brightness.dark
-        ? Colors.orange.withOpacity(0.25)
-        : Colors.orange.withOpacity(0.18);
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-      decoration: BoxDecoration(
-        color: highlight ? hlBg : baseBg,
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(
-          color: highlight ? hlBorder : theme.dividerColor.withOpacity(0.22),
-        ),
-      ),
-      child: Text(
-        text,
-        style: theme.textTheme.labelSmall?.copyWith(
-          fontWeight: FontWeight.w700,
-          color: highlight
-              ? Colors.orange.shade700
-              : theme.colorScheme.onSurface.withOpacity(0.75),
-        ),
-      ),
-    );
   }
 }
 
